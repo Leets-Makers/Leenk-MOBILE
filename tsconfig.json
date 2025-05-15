@@ -1,0 +1,15 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@app/*": ["app/*"], // app 디렉토리
+      "@assets/*": ["assets/*"], // assets 디렉토리
+      "@components/*": ["components/*"], // components 디렉토리
+      "@constants/*": ["constants/*"] // constants 디렉토리
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+}
