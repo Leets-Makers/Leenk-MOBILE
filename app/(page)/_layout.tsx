@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Text } from 'react-native';
 
+// 네비게이션
 export default function TabLayout() {
   const router = useRouter();
 
