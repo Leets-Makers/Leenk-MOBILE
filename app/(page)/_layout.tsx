@@ -3,6 +3,8 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Text } from 'react-native';
+import colors from '@/theme/color';
+import Colors from '@/constants/Colors';
 
 // 네비게이션
 export default function TabLayout() {
@@ -107,13 +109,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     height: 70,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   writeButton: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#8E44FF',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
@@ -126,12 +128,12 @@ const styles = StyleSheet.create({
 
   tabLabel: {
     fontSize: 10,
-    color: '#888',
+    color: colors.black,
     marginTop: 4,
   },
 
   tabLabelFocused: {
-    color: '#000',
+    color: colors.primary,
     fontWeight: '600',
   },
 });
