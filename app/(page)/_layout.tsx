@@ -1,9 +1,14 @@
 import { Tabs } from 'expo-router';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Text } from 'react-native';
 import colors from '@/theme/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import FeedIcon from '@/assets/images/ic_navi_feed.svg';
+import HomeIcon from '@/assets/images/ic_navi_leenk.svg';
+import LockIcon from '@/assets/images/ic_navi_lock.svg';
+import MypageIcon from '@/assets/images/ic_navi_mypage.svg';
+import PlusIcon from '@/assets/images/ic_navi_plus.svg';
 
 // 네비게이션
 export default function TabLayout() {
@@ -24,78 +29,89 @@ export default function TabLayout() {
       tabBar={({ state, descriptors, navigation }) => {
         const orderedRoutes = ['home', 'feed', 'write', 'private', 'mypage'];
 
+        const iconMap: Record<string, React.FC<any>> = {
+          home: HomeIcon,
+          feed: FeedIcon,
+          write: PlusIcon,
+          private: LockIcon,
+          mypage: MypageIcon,
+        };
+
         return (
-          <View style={styles.tabContainer}>
-            {orderedRoutes.map((name, index) => {
-              const route = state.routes.find((r) => r.name === name);
-              if (!route) return null;
+          <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+            <View style={styles.tabContainer}>
+              {orderedRoutes.map((name) => {
+                const route = state.routes.find((r) => r.name === name);
+                if (!route) return null;
 
-              const { options } = descriptors[route.key];
-              const isFocused =
-                state.index === state.routes.findIndex((r) => r.name === name);
+                const isFocused =
+                  state.index ===
+                  state.routes.findIndex((r) => r.name === name);
 
-              if (route.name === 'write') {
+                const onPress = () => {
+                  const event = navigation.emit({
+                    type: 'tabPress',
+                    target: route.key,
+                    canPreventDefault: true,
+                  });
+
+                  if (!isFocused && !event.defaultPrevented) {
+                    if (route.name === 'write') {
+                      router.push('/write' as const);
+                    } else {
+                      navigation.navigate(route.name);
+                    }
+                  }
+                };
+
+                const IconComponent = iconMap[route.name];
+
                 return (
                   <TouchableOpacity
                     key={route.key}
-                    onPress={() => router.push('/write' as const)}
-                    style={styles.writeButton}
+                    onPress={onPress}
+                    style={
+                      route.name === 'write'
+                        ? styles.writeButton
+                        : styles.tabButton
+                    }
                   >
-                    <Ionicons name="add" size={28} color="#fff" />
+                    {IconComponent && (
+                      <IconComponent
+                        width={22}
+                        height={22}
+                        fill={
+                          route.name === 'write'
+                            ? '#fff'
+                            : isFocused
+                              ? colors.primary
+                              : colors.gray[500]
+                        }
+                      />
+                    )}
+                    {route.name !== 'write' && (
+                      <Text
+                        style={[
+                          styles.tabLabel,
+                          isFocused && styles.tabLabelFocused,
+                        ]}
+                      >
+                        {route.name === 'home'
+                          ? '링크'
+                          : route.name === 'feed'
+                            ? '피드'
+                            : route.name === 'private'
+                              ? '부가'
+                              : route.name === 'mypage'
+                                ? '마이'
+                                : ''}
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 );
-              }
-
-              const onPress = () => {
-                const event = navigation.emit({
-                  type: 'tabPress',
-                  target: route.key,
-                  canPreventDefault: true,
-                });
-
-                if (!isFocused && !event.defaultPrevented) {
-                  navigation.navigate(route.name);
-                }
-              };
-
-              const iconMap: Record<string, any> = {
-                home: 'link-outline',
-                feed: 'heart-outline',
-                private: 'lock-closed-outline',
-                mypage: 'person-outline',
-              };
-
-              return (
-                <TouchableOpacity
-                  key={route.key}
-                  onPress={onPress}
-                  style={styles.tabButton}
-                >
-                  <Ionicons
-                    name={iconMap[route.name] || 'ellipse'}
-                    size={22}
-                    color={isFocused ? '#000' : '#888'}
-                  />
-                  <Text
-                    style={[
-                      styles.tabLabel,
-                      isFocused && styles.tabLabelFocused,
-                    ]}
-                  >
-                    {route.name === 'home'
-                      ? '홈'
-                      : route.name === 'feed'
-                        ? '피드'
-                        : route.name === 'private'
-                          ? '부가'
-                          : route.name === 'mypage'
-                            ? '마이'
-                            : ''}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+              })}
+            </View>
+          </SafeAreaView>
         );
       }}
     />
@@ -103,6 +119,9 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: colors.white,
+  },
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -124,13 +143,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   tabLabel: {
-    fontSize: 10,
+    fontSize: 12,
     color: colors.black,
     marginTop: 4,
   },
-
   tabLabelFocused: {
     color: colors.primary,
     fontWeight: '600',
