@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Text } from 'react-native';
 import colors from '@/theme/color';
-import Colors from '@/constants/Colors';
 
 // 네비게이션
 export default function TabLayout() {
