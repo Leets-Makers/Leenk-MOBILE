@@ -80,7 +80,7 @@ export default function TabLayout() {
                             ? '#fff'
                             : isFocused
                               ? colors.primary
-                              : colors.gray[500]
+                              : colors.black
                         }
                       />
                     )}
