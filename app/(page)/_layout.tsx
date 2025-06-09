@@ -19,14 +19,9 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarStyle: {
-          height: 70,
-          position: 'absolute',
-          borderTopWidth: 0,
-          elevation: 0,
-        },
+        tabBarStyle: styles.tabBarStyle,
       }}
-      tabBar={({ state, descriptors, navigation }) => {
+      tabBar={({ state, navigation }) => {
         const orderedRoutes = ['home', 'feed', 'write', 'private', 'mypage'];
 
         const iconMap: Record<string, React.FC<any>> = {
@@ -78,9 +73,9 @@ export default function TabLayout() {
                   >
                     {IconComponent && (
                       <IconComponent
-                        width={22}
-                        height={22}
-                        fill={
+                        width={24}
+                        height={24}
+                        stroke={
                           route.name === 'write'
                             ? '#fff'
                             : isFocused
@@ -119,24 +114,36 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  tabBarStyle: {
+    height: 73,
+    position: 'absolute',
+    borderTopWidth: 0,
+    elevation: 0,
+    overflow: 'hidden',
+  },
   safeArea: {
-    backgroundColor: colors.white,
+    backgroundColor: 'transparent',
   },
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 70,
+    height: 85,
+    paddingBottom: 34,
     backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   writeButton: {
-    width: 60,
-    height: 60,
+    width: 48,
+    height: 48,
     borderRadius: 30,
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   tabButton: {
     flex: 1,
@@ -145,11 +152,11 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 12,
-    color: colors.black,
+    color: colors.gray[500],
     marginTop: 4,
+    fontWeight: '700',
   },
   tabLabelFocused: {
     color: colors.primary,
-    fontWeight: '600',
   },
 });
