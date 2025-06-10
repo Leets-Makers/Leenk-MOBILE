@@ -2,7 +2,7 @@
 import colors from '@/theme/color';
 import { View, Text } from 'react-native';
 
-export default function feed() {
+export default function Leenk() {
   return (
     <View
       style={{
@@ -12,7 +12,7 @@ export default function feed() {
         backgroundColor: colors.bg[2],
       }}
     >
-      <Text>피드</Text>
+      <Text>링크 페이지</Text>
     </View>
   );
 }

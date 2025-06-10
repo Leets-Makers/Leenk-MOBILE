@@ -5,7 +5,7 @@ import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import FeedIcon from '@/assets/images/ic_navi_feed.svg';
-import HomeIcon from '@/assets/images/ic_navi_leenk.svg';
+import LeenkIcon from '@/assets/images/ic_navi_leenk.svg';
 import LockIcon from '@/assets/images/ic_navi_lock.svg';
 import MypageIcon from '@/assets/images/ic_navi_mypage.svg';
 import PlusIcon from '@/assets/images/ic_navi_plus.svg';
@@ -22,10 +22,10 @@ export default function TabLayout() {
         tabBarStyle: styles.tabBarStyle,
       }}
       tabBar={({ state, navigation }) => {
-        const orderedRoutes = ['home', 'feed', 'write', 'private', 'mypage'];
+        const orderedRoutes = ['leenk', 'feed', 'write', 'private', 'mypage'];
 
         const iconMap: Record<string, React.FC<any>> = {
-          home: HomeIcon,
+          leenk: LeenkIcon,
           feed: FeedIcon,
           write: PlusIcon,
           private: LockIcon,
@@ -91,7 +91,7 @@ export default function TabLayout() {
                           isFocused && styles.tabLabelFocused,
                         ]}
                       >
-                        {route.name === 'home'
+                        {route.name === 'leenk'
                           ? '링크'
                           : route.name === 'feed'
                             ? '피드'
