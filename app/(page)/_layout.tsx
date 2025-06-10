@@ -10,6 +10,21 @@ import LockIcon from '@/assets/images/ic_navi_lock.svg';
 import MypageIcon from '@/assets/images/ic_navi_mypage.svg';
 import PlusIcon from '@/assets/images/ic_navi_plus.svg';
 
+type TabConfigItem = {
+  name: string;
+  label: string;
+  icon: React.FC<any>;
+  isSpecial?: boolean;
+};
+
+const TAB_CONFIG: readonly TabConfigItem[] = [
+  { name: 'leenk', label: '링크', icon: LeenkIcon },
+  { name: 'feed', label: '피드', icon: FeedIcon },
+  { name: 'write', label: '', icon: PlusIcon, isSpecial: true },
+  { name: 'private', label: '부가', icon: LockIcon },
+  { name: 'mypage', label: '마이', icon: MypageIcon },
+];
+
 // 네비게이션
 export default function TabLayout() {
   const router = useRouter();
@@ -22,26 +37,16 @@ export default function TabLayout() {
         tabBarStyle: styles.tabBarStyle,
       }}
       tabBar={({ state, navigation }) => {
-        const orderedRoutes = ['leenk', 'feed', 'write', 'private', 'mypage'];
-
-        const iconMap: Record<string, React.FC<any>> = {
-          leenk: LeenkIcon,
-          feed: FeedIcon,
-          write: PlusIcon,
-          private: LockIcon,
-          mypage: MypageIcon,
-        };
-
         return (
           <SafeAreaView edges={['bottom']} style={styles.safeArea}>
             <View style={styles.tabContainer}>
-              {orderedRoutes.map((name) => {
-                const route = state.routes.find((r) => r.name === name);
+              {TAB_CONFIG.map((tab) => {
+                const route = state.routes.find((r) => r.name === tab.name);
                 if (!route) return null;
 
                 const isFocused =
                   state.index ===
-                  state.routes.findIndex((r) => r.name === name);
+                  state.routes.findIndex((r) => r.name === tab.name);
 
                 const onPress = () => {
                   const event = navigation.emit({
@@ -59,16 +64,14 @@ export default function TabLayout() {
                   }
                 };
 
-                const IconComponent = iconMap[route.name];
+                const IconComponent = tab.icon;
 
                 return (
                   <TouchableOpacity
                     key={route.key}
                     onPress={onPress}
                     style={
-                      route.name === 'write'
-                        ? styles.writeButton
-                        : styles.tabButton
+                      tab.isSpecial ? styles.writeButton : styles.tabButton
                     }
                   >
                     {IconComponent && (
@@ -76,7 +79,7 @@ export default function TabLayout() {
                         width={24}
                         height={24}
                         stroke={
-                          route.name === 'write'
+                          tab.isSpecial
                             ? '#fff'
                             : isFocused
                               ? colors.primary
@@ -84,22 +87,14 @@ export default function TabLayout() {
                         }
                       />
                     )}
-                    {route.name !== 'write' && (
+                    {tab.label !== '' && (
                       <Text
                         style={[
                           styles.tabLabel,
                           isFocused && styles.tabLabelFocused,
                         ]}
                       >
-                        {route.name === 'leenk'
-                          ? '링크'
-                          : route.name === 'feed'
-                            ? '피드'
-                            : route.name === 'private'
-                              ? '부가'
-                              : route.name === 'mypage'
-                                ? '마이'
-                                : ''}
+                        {tab.label}
                       </Text>
                     )}
                   </TouchableOpacity>

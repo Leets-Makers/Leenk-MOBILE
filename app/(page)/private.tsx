@@ -1,4 +1,3 @@
-// app/(tabs)/write.tsx
 import colors from '@/theme/color';
 import { View, Text } from 'react-native';
 
