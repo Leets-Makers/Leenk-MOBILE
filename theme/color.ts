@@ -41,8 +41,29 @@ const colors = {
     800: '#9D134B',
     900: '#801741',
   },
-
   primary: '#8032FF', // violet[500]
+  primaryLight: '#B085F9', // violet[300]
+  primaryDark: '#6123C9', // violet[700]
+  secondary: '#E43F82', // pink[500]
+  secondaryLight: '#F180AE', // pink[300]
+  secondaryDark: '#B01D58', // pink[700]
+
+  bg: {
+    1: '#FFFFFF',
+    2: '#F7F7FA',
+  },
+
+  text: {
+    1: '#17191A',
+    2: '#525463',
+    3: '#8C8F9F',
+    4: '#CDCED6',
+  },
+
+  divider: {
+    1: '#F0F0F5',
+    2: '#E1E1E8',
+  },
 };
 
 export default colors;

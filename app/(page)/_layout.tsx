@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabLabel: {
+    fontFamily: 'NanumSquareNeo-Regular',
     fontSize: 12,
     color: colors.gray[500],
     marginTop: 4,
