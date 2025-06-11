@@ -1,7 +1,14 @@
+import PopupModal from '@/components/Modal/PopupModal';
 import colors from '@/theme/color';
-import { View, Text } from 'react-native';
+import { useState } from 'react';
+import { View, Text, Button, Pressable } from 'react-native';
 
 export default function Feed() {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleModalClose = () => {
+    setModalVisible(!modalVisible);
+  };
   return (
     <View
       style={{
@@ -12,6 +19,18 @@ export default function Feed() {
       }}
     >
       <Text>피드</Text>
+      <PopupModal
+        isOpen={modalVisible}
+        onClose={handleModalClose}
+        mainText="태스트"
+        subText="wkrdf"
+        isWarning={true}
+        rightBtnText="아무거나"
+      />
+
+      <Pressable onPress={() => setModalVisible(true)}>
+        <Text>Show Modal</Text>
+      </Pressable>
     </View>
   );
 }
