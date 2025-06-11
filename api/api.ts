@@ -14,7 +14,8 @@ const api = axios.create({
 // 리프레시 토큰으로 accessToken 갱신
 const getRefreshToken = async () => {
   try {
-    const response = await api.post('/api/v1/users/refresh');
+    // TODO: 리프레시 토큰 요청 주소 설정
+    const response = await api.post('');
     if (response.data.code === 200) {
       const { accessToken, refreshToken } = response.data.data;
       await AsyncStorage.setItem('accessToken', accessToken);

@@ -4,11 +4,13 @@ import { useRouter } from 'expo-router';
 import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import FeedIcon from '@/assets/images/ic_navi_feed.svg';
-import LeenkIcon from '@/assets/images/ic_navi_leenk.svg';
-import LockIcon from '@/assets/images/ic_navi_lock.svg';
-import MypageIcon from '@/assets/images/ic_navi_mypage.svg';
-import PlusIcon from '@/assets/images/ic_navi_plus.svg';
+import {
+  FeedIcon,
+  LeenkIcon,
+  LockIcon,
+  MypageIcon,
+  PlusIcon,
+} from '@/components/Index';
 
 type TabConfigItem = {
   name: string;
