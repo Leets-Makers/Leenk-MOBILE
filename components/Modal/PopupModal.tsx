@@ -12,7 +12,7 @@ import colors from '@/theme/color';
 
 //TODO: 버튼 공용 컴포넌트로 변경
 
-interface BaseModalProps {
+interface PopupModalProps {
   isOpen: boolean;
   onClose: () => void;
   mainText: string;
@@ -32,7 +32,7 @@ export default function PopupModal({
   isWarning = false,
   leftBtnText = '취소',
   rightBtnText,
-}: BaseModalProps) {
+}: PopupModalProps) {
   return (
     <View>
       <Modal
