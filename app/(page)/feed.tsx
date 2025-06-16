@@ -2,13 +2,15 @@ import PopupModal from '@/components/Modal/PopupModal';
 import colors from '@/theme/color';
 import { useState } from 'react';
 import { View, Text, Button, Pressable } from 'react-native';
-
+import { useToastStore } from '@/stores/toastStore';
 export default function Feed() {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleModalClose = () => {
     setModalVisible(!modalVisible);
   };
+
+  const showToast = useToastStore((s) => s.showToast);
   return (
     <View
       style={{
@@ -31,6 +33,15 @@ export default function Feed() {
       <Pressable onPress={() => setModalVisible(true)}>
         <Text>Show Modal</Text>
       </Pressable>
+
+      <Button
+        title="성공 토스트"
+        onPress={() => showToast('작업 성공!', 'success')}
+      />
+      <Button
+        title="실패 토스트"
+        onPress={() => showToast('작업 실패!', 'error')}
+      />
     </View>
   );
 }

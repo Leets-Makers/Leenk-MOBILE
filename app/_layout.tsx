@@ -12,6 +12,7 @@ import { useColorScheme, Platform } from 'react-native';
 import 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Toast from '@/components/Toast';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -74,6 +75,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(page)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
+        <Toast />
       </ThemeProvider>
     </SafeAreaProvider>
   );
