@@ -8,7 +8,7 @@ export default function WritePage() {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: colors.bg[2],
+        backgroundColor: 'transparent',
       }}
     >
       <Text>글쓰기 페이지</Text>
