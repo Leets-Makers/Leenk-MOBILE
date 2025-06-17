@@ -39,7 +39,8 @@
     "react-native-svg-transformer": "^1.5.1",
     "react-native-web": "~0.20.0",
     "styled-components": "^6.1.18",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.5",
+    "expo-blur": "~14.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
