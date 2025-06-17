@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import colors from '@/theme/color';
 
-import LinkIcon from '@/assets/icons/ic_link.svg';
-import FeedIcon from '@/assets/icons/ic_feed.svg';
+import LeenkIcon from '@/assets/images/ic_menu_leenk.svg';
+import FeedIcon from '@/assets/images/ic_nebu_feed.svg';
 
 interface WriteMenuModalProps {
   visible: boolean;
@@ -35,11 +35,11 @@ export default function WriteMenuModal({
       <Pressable style={styles.overlay} onPress={onClose}>
         <View style={styles.menuContainer}>
           <Pressable style={styles.menuItem} onPress={onPressLink}>
-            <LinkIcon width={20} height={20} stroke={colors.primary} />
+            <LeenkIcon width={20} height={20} />
             <Text style={styles.menuText}>링크 글 쓰기</Text>
           </Pressable>
           <Pressable style={styles.menuItem} onPress={onPressFeed}>
-            <FeedIcon width={20} height={20} stroke={colors.primary} />
+            <FeedIcon width={20} height={20} />
             <Text style={styles.menuText}>피드 글 쓰기</Text>
           </Pressable>
         </View>
@@ -56,8 +56,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   menuContainer: {
-    width: 160,
-    paddingVertical: 14,
+    width: 130,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     backgroundColor: colors.white,
     borderRadius: 16,
     elevation: 6,
@@ -70,13 +71,15 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    gap: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 4,
+    gap: 10,
   },
   menuText: {
     fontFamily: 'NanumSquareNeo-Regular',
     fontSize: 14,
+    lineHeight: 22,
+    fontWeight: 700,
     color: colors.black,
   },
 });
