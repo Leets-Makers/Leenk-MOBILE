@@ -40,11 +40,23 @@ export default function WriteMenuModal({
           style={styles.menuContainer}
           experimentalBlurMethod="none"
         >
-          <Pressable style={styles.menuItem} onPress={onPressLink}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.menuItem,
+              pressed && styles.menuItemPressed,
+            ]}
+            onPress={onPressLink}
+          >
             <LeenkIcon width={20} height={20} />
             <Text style={styles.menuText}>링크 글 쓰기</Text>
           </Pressable>
-          <Pressable style={styles.menuItem} onPress={onPressFeed}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.menuItem,
+              pressed && styles.menuItemPressed,
+            ]}
+            onPress={onPressFeed}
+          >
             <FeedIcon width={20} height={20} />
             <Text style={styles.menuText}>피드 글 쓰기</Text>
           </Pressable>
@@ -63,9 +75,9 @@ const styles = StyleSheet.create({
   menuContainer: {
     position: 'absolute',
     bottom: 105,
-    width: 130,
+    width: 134,
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     backgroundColor: colors.white,
     borderRadius: 16,
     gap: 8,
@@ -75,9 +87,13 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 4,
     paddingHorizontal: 4,
-    gap: 10,
+    borderRadius: 8,
+    gap: 6,
+  },
+  menuItemPressed: {
+    backgroundColor: colors.bg[2],
   },
   menuText: {
     fontFamily: 'NanumSquareNeo-Regular',
