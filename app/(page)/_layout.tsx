@@ -3,14 +3,7 @@ import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import {
-  FeedIcon,
-  LeenkIcon,
-  LockIcon,
-  MypageIcon,
-  PlusIcon,
-} from '@/components/Index';
+import { FeedIcon, LeenkIcon, LockIcon, MypageIcon, PlusIcon } from '@/assets';
 
 type TabConfigItem = {
   name: string;

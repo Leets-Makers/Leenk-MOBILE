@@ -1,5 +1,6 @@
 import colors from '@/theme/color';
 import { View, Text } from 'react-native';
+import { CustomButton } from '@/components';
 
 export default function Feed() {
   return (
@@ -12,6 +13,14 @@ export default function Feed() {
       }}
     >
       <Text>피드</Text>
+      <CustomButton
+        variant="primary"
+        size="lg"
+        rounded="md"
+        onPress={() => console.log('clicked')}
+      >
+        확인
+      </CustomButton>
     </View>
   );
 }
