@@ -51,11 +51,12 @@ export default function WriteMenuModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    alignItems: 'center',
   },
   menuContainer: {
+    position: 'absolute',
+    bottom: 105,
     width: 130,
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -63,8 +64,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     gap: 8,
   },
