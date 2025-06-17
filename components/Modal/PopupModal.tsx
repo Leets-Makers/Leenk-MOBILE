@@ -1,6 +1,7 @@
 import { View, Modal, StyleSheet, Text, Pressable } from 'react-native';
 import React from 'react';
 import colors from '@/theme/color';
+import { BlurView } from 'expo-blur';
 
 /* 
 🦄스타일링 설명
@@ -42,7 +43,7 @@ export default function PopupModal({
         onRequestClose={onClose}
       >
         <View style={styles.overlay}>
-          <View style={styles.container}>
+          <BlurView intensity={20} tint="light" style={styles.container}>
             <Text style={styles.titleText}>{mainText}</Text>
             <Text
               style={[
@@ -88,7 +89,7 @@ export default function PopupModal({
                 </Text>
               </Pressable>
             </Pressable>
-          </View>
+          </BlurView>
         </View>
       </Modal>
     </View>
@@ -110,6 +111,8 @@ const styles = StyleSheet.create({
     width: 302,
     height: 158,
     borderRadius: 20,
+    overflow: 'hidden',
+    backdropFilter: 'blur(10px)',
   },
   buttonContainer: {
     flexDirection: 'row',
