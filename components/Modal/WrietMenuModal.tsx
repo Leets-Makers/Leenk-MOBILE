@@ -10,7 +10,7 @@ import {
 import colors from '@/theme/color';
 
 import LeenkIcon from '@/assets/images/ic_menu_leenk.svg';
-import FeedIcon from '@/assets/images/ic_nebu_feed.svg';
+import FeedIcon from '@/assets/images/ic_menu_feed.svg';
 
 interface WriteMenuModalProps {
   visible: boolean;

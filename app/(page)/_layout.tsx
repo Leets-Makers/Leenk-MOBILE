@@ -3,6 +3,8 @@ import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useWriteMenuStore } from '@/stores/writeMenuStore';
+import WriteMenuModal from '@/components/Modal/WrietMenuModal';
 
 import {
   FeedIcon,
@@ -30,6 +32,10 @@ const TAB_CONFIG: readonly TabConfigItem[] = [
 // 네비게이션
 export default function TabLayout() {
   const router = useRouter();
+  const openWriteMenu = useWriteMenuStore((s) => s.open);
+  // 글쓰기 메뉴 모달
+  const isWriteMenuOpen = useWriteMenuStore((s) => s.isVisible);
+  const closeWriteMenu = useWriteMenuStore((s) => s.close);
 
   return (
     <Tabs
@@ -40,70 +46,84 @@ export default function TabLayout() {
       }}
       tabBar={({ state, navigation }) => {
         return (
-          <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-            <View style={styles.tabContainer}>
-              {TAB_CONFIG.map((tab) => {
-                const route = state.routes.find((r) => r.name === tab.name);
-                if (!route) return null;
+          <>
+            <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+              <View style={styles.tabContainer}>
+                {TAB_CONFIG.map((tab) => {
+                  const route = state.routes.find((r) => r.name === tab.name);
+                  if (!route) return null;
 
-                const isFocused =
-                  state.index ===
-                  state.routes.findIndex((r) => r.name === tab.name);
+                  const isFocused =
+                    state.index ===
+                    state.routes.findIndex((r) => r.name === tab.name);
 
-                const onPress = () => {
-                  const event = navigation.emit({
-                    type: 'tabPress',
-                    target: route.key,
-                    canPreventDefault: true,
-                  });
+                  const onPress = () => {
+                    const event = navigation.emit({
+                      type: 'tabPress',
+                      target: route.key,
+                      canPreventDefault: true,
+                    });
 
-                  if (!isFocused && !event.defaultPrevented) {
-                    if (route.name === 'write') {
-                      router.push('/write' as const);
-                    } else {
-                      navigation.navigate(route.name);
+                    if (!isFocused && !event.defaultPrevented) {
+                      if (route.name === 'write') {
+                        openWriteMenu();
+                      } else {
+                        navigation.navigate(route.name);
+                      }
                     }
-                  }
-                };
+                  };
 
-                const IconComponent = tab.icon;
+                  const IconComponent = tab.icon;
 
-                return (
-                  <TouchableOpacity
-                    key={route.key}
-                    onPress={onPress}
-                    style={
-                      tab.isSpecial ? styles.writeButton : styles.tabButton
-                    }
-                  >
-                    {IconComponent && (
-                      <IconComponent
-                        width={24}
-                        height={24}
-                        stroke={
-                          tab.isSpecial
-                            ? '#fff'
-                            : isFocused
-                              ? colors.primary
-                              : colors.black
-                        }
-                      />
-                    )}
-                    {tab.label !== '' && (
-                      <Text
-                        style={[
-                          styles.tabLabel,
-                          isFocused && styles.tabLabelFocused,
-                        ]}
-                      >
-                        {tab.label}
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </SafeAreaView>
+                  return (
+                    <TouchableOpacity
+                      key={route.key}
+                      onPress={onPress}
+                      style={
+                        tab.isSpecial ? styles.writeButton : styles.tabButton
+                      }
+                    >
+                      {IconComponent && (
+                        <IconComponent
+                          width={24}
+                          height={24}
+                          stroke={
+                            tab.isSpecial
+                              ? '#fff'
+                              : isFocused
+                                ? colors.primary
+                                : colors.black
+                          }
+                        />
+                      )}
+                      {tab.label !== '' && (
+                        <Text
+                          style={[
+                            styles.tabLabel,
+                            isFocused && styles.tabLabelFocused,
+                          ]}
+                        >
+                          {tab.label}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </SafeAreaView>
+            <WriteMenuModal
+              visible={isWriteMenuOpen}
+              onClose={closeWriteMenu}
+              onPressLink={() => {
+                closeWriteMenu();
+                router.push('/post/leenk' as const);
+              }}
+              onPressFeed={() => {
+                closeWriteMenu();
+                router.push('/post/feed' as const);
+              }}
+            />
+          </>
         );
       }}
     />
