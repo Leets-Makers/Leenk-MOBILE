@@ -45,3 +45,16 @@ export const fonts = {
   Regular: 'SpoqaHanSansNeo-Regular',
   Light: 'SpoqaHanSansNeo-Light',
 };
+
+export const radius = {
+  sm: 8 * width,
+  md: 16 * width,
+  lg: 20 * width,
+  full: 99 * width,
+};
+
+export const stroke = {
+  thin: 1 * width,
+  medium: 2 * width,
+  thick: 3 * width,
+};
