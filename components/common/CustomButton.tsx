@@ -1,5 +1,5 @@
 // CustomButton.tsx
-import { TextStyle, ViewStyle } from 'react-native';
+import { PressableStateCallbackType, TextStyle, ViewStyle } from 'react-native';
 import {
   StyledButton,
   StyledButtonText,
@@ -47,7 +47,7 @@ export default function CustomButton({
     <StyledButton
       onPress={onPress}
       disabled={disabled}
-      style={({ pressed }) => [
+      style={({ pressed }: PressableStateCallbackType) => [
         {
           height: sizeStyle.height,
           paddingHorizontal: sizeStyle.paddingHorizontal,

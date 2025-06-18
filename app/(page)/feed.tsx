@@ -1,6 +1,7 @@
 import colors from '@/theme/color';
 import { View, Text } from 'react-native';
 import { CustomButton } from '@/components';
+import ButtonExamples from '@/components/examples/ButtonExamples';
 
 export default function Feed() {
   return (
@@ -13,9 +14,7 @@ export default function Feed() {
       }}
     >
       <Text>피드</Text>
-      <CustomButton onPress={() => console.log('Primary')}>
-        모집하기
-      </CustomButton>
+      <ButtonExamples />
     </View>
   );
 }
