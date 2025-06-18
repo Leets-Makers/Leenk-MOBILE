@@ -73,7 +73,7 @@ const ToastBox = styled.View<{ $backgroundColor: string }>`
   align-items: center;
   gap: ${12 * width}px;
   border-radius: ${radius.full}px;
-  padding: ${10 * height}px ${12 * width}px;
+  padding: ${4 * height}px ${5 * width}px;
   width: 90%;
   background-color: ${({ $backgroundColor }) => $backgroundColor};
 `;
@@ -82,6 +82,5 @@ const ToastText = styled.Text`
   color: ${colors.white};
   font-size: ${fontSize.md}px;
   font-family: ${fonts.Regular};
-  font-weight: 700;
   line-height: ${lineHeight.m}px;
 `;
