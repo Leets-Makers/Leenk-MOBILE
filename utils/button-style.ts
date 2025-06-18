@@ -3,7 +3,7 @@ import {
   ButtonVariant,
 } from '@/components/common/Button/CustomButton';
 import colors from '@/theme/color';
-
+import { radius } from '@/theme/globalStyles';
 /**
  *  버튼 Press 시 색상 변화
  *
@@ -58,14 +58,14 @@ export const getButtonTextColor = ({
 export const getBorderRadius = (rounded: ButtonRounded): number => {
   switch (rounded) {
     case 'sm':
-      return 8;
+      return radius.sm;
     case 'md':
-      return 16;
+      return radius.md;
     case 'lg':
-      return 20;
+      return radius.lg;
     case 'full':
-      return 9999;
+      return radius.full;
     default:
-      return 8;
+      return radius.sm;
   }
 };

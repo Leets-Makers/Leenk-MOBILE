@@ -55,9 +55,12 @@ export const Title = styled.Text`
 export const InputBox = styled.View<{ focused: boolean }>`
   width: 100%;
   border-radius: ${radius.sm}px;
-  padding: ${12 * height}px ${16 * width}px;
-  border: 1px solid
-    ${({ focused }) => (focused ? colors.primary : colors.gray[300])};
+  padding-vertical: ${12 * height}px;
+  padding-horizontal: ${16 * width}px;
+  border-width: 1px;
+  border-color: ${({ focused }) =>
+    focused ? colors.primary : colors.gray[300]};
+  border-style: solid;
   background-color: transparent;
 `;
 

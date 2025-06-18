@@ -1,5 +1,9 @@
-// CustomButton.tsx
-import { PressableStateCallbackType, TextStyle, ViewStyle } from 'react-native';
+import {
+  PressableStateCallbackType,
+  TextStyle,
+  ViewStyle,
+  StyleProp,
+} from 'react-native';
 import {
   StyledButton,
   StyledButtonText,
@@ -22,8 +26,8 @@ type CustomButtonProps = {
   size?: ButtonSize;
   rounded?: ButtonRounded;
   disabled?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   fullWidth?: boolean;
   textColor?: 'primary' | 'black';
 };
@@ -65,10 +69,10 @@ export default function CustomButton({
     >
       <StyledButtonText
         variant={variant}
-        style={{
-          color: getButtonTextColor({ variant, disabled, textColor }),
-          ...(textStyle || {}),
-        }}
+        style={[
+          { color: getButtonTextColor({ variant, disabled, textColor }) },
+          textStyle,
+        ]}
       >
         {children}
       </StyledButtonText>

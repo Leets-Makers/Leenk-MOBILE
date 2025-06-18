@@ -1,4 +1,4 @@
-import { Input, Textarea } from '@/components';
+import { CustomButton, Input, Textarea } from '@/components';
 import ButtonExamples from '@/components/examples/ButtonExamples';
 import InputExamples from '@/components/examples/InputExamples';
 import colors from '@/theme/color';
@@ -14,7 +14,10 @@ export default function FeedPage() {
         backgroundColor: colors.bg[2],
       }}
     >
-      <ButtonExamples />
+      <Textarea placeholder="안녕하세요 " />
+      <CustomButton variant="primary" onPress={() => console.log('pressed')}>
+        확인
+      </CustomButton>
     </View>
   );
 }

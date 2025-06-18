@@ -48,14 +48,24 @@ export default function TabLayout() {
           <StyledSafeArea edges={['bottom']}>
             <TabContainer>
               {TAB_CONFIG.map((tab) => {
+                const isCustomTab = tab.name === 'write';
                 const route = state.routes.find((r) => r.name === tab.name);
-                if (!route) return null;
 
-                const isFocused =
-                  state.index ===
-                  state.routes.findIndex((r) => r.name === tab.name);
+                if (!isCustomTab && !route) return null;
+
+                const isFocused = isCustomTab
+                  ? false
+                  : state.index ===
+                    state.routes.findIndex((r) => r.name === tab.name);
 
                 const onPress = () => {
+                  if (isCustomTab) {
+                    openWriteMenu();
+                    return;
+                  }
+
+                  if (!route) return;
+
                   const event = navigation.emit({
                     type: 'tabPress',
                     target: route.key,
@@ -63,11 +73,7 @@ export default function TabLayout() {
                   });
 
                   if (!isFocused && !event.defaultPrevented) {
-                    if (route.name === 'write') {
-                      openWriteMenu();
-                    } else {
-                      navigation.navigate(route.name);
-                    }
+                    navigation.navigate(route.name);
                   }
                 };
 
@@ -75,7 +81,7 @@ export default function TabLayout() {
 
                 return (
                   <TabButton
-                    key={route.key}
+                    key={route?.key}
                     onPress={onPress}
                     $isSpecial={tab.isSpecial}
                   >

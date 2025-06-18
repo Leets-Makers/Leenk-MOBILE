@@ -1,6 +1,7 @@
-import styled, { css } from 'styled-components/native';
+import styled from 'styled-components/native';
 import { ButtonSize, ButtonVariant } from './CustomButton';
 import { Pressable, Text } from 'react-native';
+import { width, height } from '@/theme/globalStyles';
 
 export const StyledButton = styled(Pressable)`
   flex-direction: row;
@@ -17,9 +18,29 @@ export const sizeStyles: Record<
   ButtonSize,
   { height: number; paddingHorizontal: number; paddingVertical: number }
 > = {
-  xs: { height: 32, paddingHorizontal: 12, paddingVertical: 8 },
-  sm: { height: 38, paddingHorizontal: 16, paddingVertical: 10 },
-  md: { height: 44, paddingHorizontal: 20, paddingVertical: 12 },
-  lg: { height: 52, paddingHorizontal: 24, paddingVertical: 14 },
-  xl: { height: 60, paddingHorizontal: 28, paddingVertical: 16 },
+  xs: {
+    height: 32 * height,
+    paddingHorizontal: 12 * width,
+    paddingVertical: 8 * height,
+  },
+  sm: {
+    height: 38 * height,
+    paddingHorizontal: 16 * width,
+    paddingVertical: 10 * height,
+  },
+  md: {
+    height: 44 * height,
+    paddingHorizontal: 20 * width,
+    paddingVertical: 12 * height,
+  },
+  lg: {
+    height: 52 * height,
+    paddingHorizontal: 24 * width,
+    paddingVertical: 14 * height,
+  },
+  xl: {
+    height: 60 * height,
+    paddingHorizontal: 28 * width,
+    paddingVertical: 16 * height,
+  },
 };

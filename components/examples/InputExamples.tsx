@@ -41,7 +41,6 @@ export default function InputExamples() {
 
 const Section = styled.View`
   margin-bottom: 40px;
-  gap: 20px;
 `;
 
 const Title = styled.Text`
