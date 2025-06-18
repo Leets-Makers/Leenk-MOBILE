@@ -47,7 +47,8 @@ export const fonts = {
 };
 
 export const radius = {
-  sm: 8 * width,
+  xs: 8 * width,
+  sm: 12 * width,
   md: 16 * width,
   lg: 20 * width,
   full: 99 * width,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInputProps } from 'react-native';
 import styled from 'styled-components/native';
-import { fontSize, radius, height, width, fonts } from '@/theme/globalStyles';
+import { fontSize, radius, height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { Wrapper, Title, SubMessage } from './Input';
 

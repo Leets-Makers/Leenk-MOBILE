@@ -78,7 +78,7 @@ const MenuItem = styled.Pressable.attrs(() => ({
   flex-direction: row;
   align-items: center;
   padding: ${4 * height}px ${4 * width}px;
-  border-radius: ${radius.sm}px;
+  border-radius: ${radius.xs}px;
   gap: ${6 * width}px;
 `;
 

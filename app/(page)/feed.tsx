@@ -18,6 +18,7 @@ export default function FeedPage() {
       <CustomButton variant="primary" onPress={() => console.log('pressed')}>
         확인
       </CustomButton>
+      <Input placeholder="안녕하세요" />
     </View>
   );
 }

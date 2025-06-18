@@ -57,6 +57,8 @@ export const getButtonTextColor = ({
 
 export const getBorderRadius = (rounded: ButtonRounded): number => {
   switch (rounded) {
+    case 'xs':
+      return radius.xs;
     case 'sm':
       return radius.sm;
     case 'md':

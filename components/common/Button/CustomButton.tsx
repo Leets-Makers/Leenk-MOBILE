@@ -16,7 +16,7 @@ import {
 } from '@/utils/button-style';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'text';
-export type ButtonRounded = 'sm' | 'md' | 'lg' | 'full';
+export type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'full';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 type CustomButtonProps = {
