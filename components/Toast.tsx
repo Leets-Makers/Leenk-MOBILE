@@ -48,7 +48,7 @@ const Toast = () => {
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: 138,
+    bottom: 114,
     left: 0,
     right: 0,
     alignItems: 'center',
