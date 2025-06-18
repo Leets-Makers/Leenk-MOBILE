@@ -1,8 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import styled from 'styled-components/native';
-import Input from '@/components/common/Input';
-import Textarea from '@/components/common/Textarea';
+import { Input, Textarea } from '@/components';
 
 export default function InputExamples() {
   return (

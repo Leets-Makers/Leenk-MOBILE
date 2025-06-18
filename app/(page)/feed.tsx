@@ -1,4 +1,5 @@
 import { Input, Textarea } from '@/components';
+import ButtonExamples from '@/components/examples/ButtonExamples';
 import InputExamples from '@/components/examples/InputExamples';
 import colors from '@/theme/color';
 import { View, Text } from 'react-native';
@@ -13,7 +14,7 @@ export default function FeedPage() {
         backgroundColor: colors.bg[2],
       }}
     >
-      <InputExamples />
+      <ButtonExamples />
     </View>
   );
 }
