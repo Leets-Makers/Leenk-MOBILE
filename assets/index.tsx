@@ -5,7 +5,7 @@ import MypageIcon from '@/assets/images/ic_navi_mypage.svg';
 import PlusIcon from '@/assets/images/ic_navi_plus.svg';
 import BackArrowIcon from '@/assets/images/ic_back_arrow.svg';
 import KebabIcon from '@/assets/images/ic_kebab.svg';
-import AlarmIcon from '@/assets/images/ic_alarm.svg';
+import BellIcon from '@/assets/images/ic_alarm.svg';
 import CheckBoxIcon from '@/assets/images/ic_checkbox.svg';
 import ToastCheckIcon from '@/assets/images/ic_toast_check.svg';
 import CopyIcon from '@/assets/images/ic_copy.svg';
@@ -15,6 +15,7 @@ import ToastAlertIcon from '@/assets/images/ic_toast_alert.svg';
 import LogoSymbol from '@/assets/images/Logo_symbol.svg';
 import LogoText from '@/assets/images/Logo_text.svg';
 import WhiteLockIcon from '@/assets/images/ic_lock.svg';
+import XIcon from '@/assets/images/ic_close.svg';
 
 export {
   FeedIcon,
@@ -24,7 +25,7 @@ export {
   PlusIcon,
   BackArrowIcon,
   KebabIcon,
-  AlarmIcon,
+  BellIcon,
   CheckBoxIcon,
   ToastCheckIcon,
   CopyIcon,
@@ -34,4 +35,5 @@ export {
   LogoSymbol,
   LogoText,
   WhiteLockIcon,
+  XIcon,
 };

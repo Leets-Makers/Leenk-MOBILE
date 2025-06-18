@@ -4,7 +4,7 @@ interface CheckIconProps {
   checked: boolean;
 }
 
-export default function CheckIcon({ checked }: CheckIconProps) {
+export default function CheckBox({ checked }: CheckIconProps) {
   return checked ? <ToastCheckIcon /> : <CheckBoxIcon />;
 }
 
