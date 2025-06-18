@@ -43,7 +43,7 @@ export default function PopupModal({
         onRequestClose={onClose}
       >
         <View style={styles.overlay}>
-          <BlurView intensity={20} tint="light" style={styles.container}>
+          <View style={styles.container}>
             <Text style={styles.titleText}>{mainText}</Text>
             <Text
               style={[
@@ -89,7 +89,7 @@ export default function PopupModal({
                 </Text>
               </Pressable>
             </Pressable>
-          </BlurView>
+          </View>
         </View>
       </Modal>
     </View>
@@ -113,6 +113,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     backdropFilter: 'blur(10px)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
   buttonContainer: {
     flexDirection: 'row',

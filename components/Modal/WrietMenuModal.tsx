@@ -11,7 +11,6 @@ import colors from '@/theme/color';
 
 import LeenkIcon from '@/assets/images/ic_menu_leenk.svg';
 import FeedIcon from '@/assets/images/ic_menu_feed.svg';
-import { BlurView } from 'expo-blur';
 
 interface WriteMenuModalProps {
   visible: boolean;
@@ -34,12 +33,7 @@ export default function WriteMenuModal({
       onRequestClose={onClose}
     >
       <Pressable style={styles.overlay} onPress={onClose}>
-        <BlurView
-          intensity={20}
-          tint="light"
-          style={styles.menuContainer}
-          experimentalBlurMethod="none"
-        >
+        <View style={styles.menuContainer}>
           <Pressable
             style={({ pressed }) => [
               styles.menuItem,
@@ -60,7 +54,7 @@ export default function WriteMenuModal({
             <FeedIcon width={20} height={20} />
             <Text style={styles.menuText}>피드 글 쓰기</Text>
           </Pressable>
-        </BlurView>
+        </View>
       </Pressable>
     </Modal>
   );
@@ -83,7 +77,16 @@ const styles = StyleSheet.create({
     gap: 8,
     overflow: 'hidden',
     elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
+  webBlur: {
+    backdropFilter: 'blur(10px)', // ✅ 웹에서 blur 직접 적용
+    backgroundColor: 'rgba(255, 255, 255, 0.5)', // ✅ 투명도 추가
+  },
+
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
