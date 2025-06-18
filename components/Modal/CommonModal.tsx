@@ -1,5 +1,14 @@
 import { View, Modal, StyleSheet, Text } from 'react-native';
 import React from 'react';
+import {
+  width,
+  height,
+  fonts,
+  fontSize,
+  lineHeight,
+  radius,
+} from '@/theme/globalStyles';
+import colors from '@/theme/color';
 
 interface CommonModalProps {
   isOpen: boolean;
@@ -41,20 +50,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: '#D1D1D1',
-    fontFamily: 'NanumSquareNeo-Regular',
+    backgroundColor: colors.white,
     alignItems: 'center',
-    paddingHorizontal: 16,
-    width: 355,
-    height: 448,
-    borderRadius: 16,
+    paddingHorizontal: 16 * width,
+    width: 355 * width,
+    height: 448 * height,
+    borderRadius: radius.md,
   },
-
   titleText: {
-    fontFamily: 'NanumSquareNeo-Bold',
-    fontSize: 18,
-    fontWeight: 800,
-    lineHeight: 22,
-    marginTop: 22,
+    fontFamily: fonts.Bold,
+    fontSize: fontSize.xl,
+    fontWeight: '800',
+    lineHeight: lineHeight.l,
+    marginTop: 22 * height,
+    color: colors.black,
   },
 });

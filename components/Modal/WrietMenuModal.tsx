@@ -7,10 +7,18 @@ import {
   Pressable,
   GestureResponderEvent,
 } from 'react-native';
-import colors from '@/theme/color';
+import {
+  fonts,
+  fontSize,
+  lineHeight,
+  radius,
+  width,
+  height,
+} from '@/theme/globalStyles';
 
 import LeenkIcon from '@/assets/images/ic_menu_leenk.svg';
 import FeedIcon from '@/assets/images/ic_menu_feed.svg';
+import colors from '@/theme/color';
 
 interface WriteMenuModalProps {
   visible: boolean;
@@ -41,7 +49,7 @@ export default function WriteMenuModal({
             ]}
             onPress={onPressLink}
           >
-            <LeenkIcon width={20} height={20} />
+            <LeenkIcon width={20 * width} height={20 * width} />
             <Text style={styles.menuText}>링크 글 쓰기</Text>
           </Pressable>
           <Pressable
@@ -51,7 +59,7 @@ export default function WriteMenuModal({
             ]}
             onPress={onPressFeed}
           >
-            <FeedIcon width={20} height={20} />
+            <FeedIcon width={20 * width} height={20 * width} />
             <Text style={styles.menuText}>피드 글 쓰기</Text>
           </Pressable>
         </View>
@@ -68,13 +76,13 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     position: 'absolute',
-    bottom: 105,
-    width: 134,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    bottom: 105 * height,
+    width: 134 * width,
+    paddingVertical: 8 * height,
+    paddingHorizontal: 10 * width,
     backgroundColor: colors.white,
-    borderRadius: 16,
-    gap: 8,
+    borderRadius: radius.md,
+    gap: 8 * height,
     overflow: 'hidden',
     elevation: 6,
     shadowColor: '#000',
@@ -82,27 +90,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 4,
   },
-  webBlur: {
-    backdropFilter: 'blur(10px)', // ✅ 웹에서 blur 직접 적용
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // ✅ 투명도 추가
-  },
-
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 4,
-    borderRadius: 8,
-    gap: 6,
+    paddingVertical: 4 * height,
+    paddingHorizontal: 4 * width,
+    borderRadius: radius.sm,
+    gap: 6 * width,
   },
   menuItemPressed: {
     backgroundColor: colors.bg[2],
   },
   menuText: {
-    fontFamily: 'NanumSquareNeo-Regular',
-    fontSize: 14,
-    lineHeight: 22,
-    fontWeight: 700,
-    color: colors.black,
+    fontFamily: fonts.Regular,
+    fontSize: fontSize.md,
+    lineHeight: lineHeight.m,
+    fontWeight: '700',
+    color: colors.text[1],
   },
 });

@@ -14,6 +14,8 @@ import {
   PlusIcon,
 } from '@/components/Index';
 
+import { fontSize, radius, width, height, fonts } from '@/theme/globalStyles';
+
 type TabConfigItem = {
   name: string;
   label: string;
@@ -132,7 +134,7 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBarStyle: {
-    height: 73,
+    height: 73 * height,
     position: 'absolute',
     borderTopWidth: 0,
     elevation: 0,
@@ -145,22 +147,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 85,
-    paddingBottom: 34,
+    height: 85 * height,
+    paddingBottom: 34 * height,
     backgroundColor: colors.white,
-    borderWidth: 1,
+    borderWidth: 1 * width,
     borderColor: 'transparent',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: radius.lg,
+    borderTopRightRadius: radius.lg,
   },
   writeButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 30,
+    width: 48 * width,
+    height: 48 * width,
+    borderRadius: radius.full,
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 20 * height,
   },
   tabButton: {
     flex: 1,
@@ -168,10 +170,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabLabel: {
-    fontFamily: 'NanumSquareNeo-Regular',
-    fontSize: 12,
+    fontFamily: fonts.Regular,
+    fontSize: fontSize.sm,
     color: colors.gray[500],
-    marginTop: 4,
+    marginTop: 4 * height,
     fontWeight: '700',
   },
   tabLabelFocused: {

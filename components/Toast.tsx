@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useToastStore } from '@/stores/toastStore';
-import colors from '@/theme/color';
+import { width, height, fontSize, radius, fonts } from '@/theme/globalStyles';
 import SuccessIcon from '@/assets/images/ic_toast_check.svg';
 import ErrorIcon from '@/assets/images/ic_toast_alert.svg';
+import { lineHeight } from '@/theme/globalStyles';
+import colors from '@/theme/color';
 
 const Toast = () => {
   const { visible, message, type, hideToast } = useToastStore();
@@ -31,15 +33,17 @@ const Toast = () => {
 
   if (!visible) return null;
 
-  const backgroundColor = type === 'success' ? '#B085F999' : '#F180AE99';
-
+  const backgroundColor =
+    type === 'success'
+      ? `${colors.primaryLight}99`
+      : `${colors.secondaryLight}99`;
   const IconComponent = type === 'success' ? SuccessIcon : ErrorIcon;
 
   return (
     <Animated.View style={[styles.wrapper, { opacity }]}>
       <View style={[styles.toast, { backgroundColor }]}>
-        <IconComponent width={20} height={20} />
-        <Text style={[styles.text]}>{message}</Text>
+        <IconComponent width={20 * width} height={20 * width} />
+        <Text style={styles.text}>{message}</Text>
       </View>
     </Animated.View>
   );
@@ -48,7 +52,7 @@ const Toast = () => {
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: 114,
+    bottom: 114 * height,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -57,18 +61,18 @@ const styles = StyleSheet.create({
   toast: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    borderRadius: 99,
-    paddingHorizontal: 5,
-    paddingVertical: 4,
+    gap: 12 * width,
+    borderRadius: radius.full,
+    paddingHorizontal: 12 * width,
+    paddingVertical: 10 * height,
     width: '90%',
   },
   text: {
     color: colors.white,
-    fontSize: 14,
-    fontFamily: 'NanumSquareNeo-Regular',
-    fontWeight: 700,
-    lineHeight: 22,
+    fontSize: fontSize.md,
+    fontFamily: fonts.Regular,
+    lineHeight: lineHeight.m,
+    fontWeight: '700',
   },
 });
 

@@ -1,7 +1,14 @@
 import { View, Modal, StyleSheet, Text, Pressable } from 'react-native';
 import React from 'react';
+import {
+  width,
+  height,
+  fontSize,
+  fonts,
+  lineHeight,
+  radius,
+} from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { BlurView } from 'expo-blur';
 
 /* 
 🦄스타일링 설명
@@ -45,15 +52,19 @@ export default function PopupModal({
         <View style={styles.overlay}>
           <View style={styles.container}>
             <Text style={styles.titleText}>{mainText}</Text>
-            <Text
-              style={[
-                styles.subText,
-                { color: isWarning ? colors.secondary : colors.black },
-              ]}
-            >
-              {subText}
-            </Text>
-            <Pressable style={styles.buttonContainer}>
+
+            {subText && (
+              <Text
+                style={[
+                  styles.subText,
+                  { color: isWarning ? colors.secondary : colors.text[1] },
+                ]}
+              >
+                {subText}
+              </Text>
+            )}
+
+            <View style={styles.buttonContainer}>
               {/* 왼쪽 버튼 */}
               <Pressable
                 onPress={onClose}
@@ -65,7 +76,7 @@ export default function PopupModal({
                 <Text
                   style={[
                     styles.buttonText,
-                    { color: isCancel ? colors.white : colors.black },
+                    { color: isCancel ? colors.white : colors.text[1] },
                   ]}
                 >
                   {leftBtnText}
@@ -82,13 +93,13 @@ export default function PopupModal({
                 <Text
                   style={[
                     styles.buttonText,
-                    { color: isCancel ? colors.black : colors.white },
+                    { color: isCancel ? colors.text[1] : colors.white },
                   ]}
                 >
                   {rightBtnText}
                 </Text>
               </Pressable>
-            </Pressable>
+            </View>
           </View>
         </View>
       </Modal>
@@ -99,67 +110,61 @@ export default function PopupModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   container: {
     backgroundColor: colors.white,
-    fontFamily: 'NanumSquareNeo-Regular',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    width: 302,
-    height: 158,
-    borderRadius: 20,
+    paddingHorizontal: 16 * width,
+    width: 302 * width,
+    height: 158 * height,
+    borderRadius: radius.lg,
     overflow: 'hidden',
-    backdropFilter: 'blur(10px)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 4,
   },
+  titleText: {
+    fontFamily: fonts.Bold,
+    fontSize: fontSize.lg,
+    fontWeight: '800',
+    lineHeight: lineHeight.l,
+    marginTop: 26 * height,
+    color: colors.text[1],
+  },
+  subText: {
+    fontFamily: fonts.Regular,
+    fontSize: fontSize.md,
+    lineHeight: lineHeight.m,
+    marginTop: 4 * height,
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
-    gap: 12,
+    marginTop: 20 * height,
+    gap: 12 * width,
+    width: 145.5 * width,
   },
-
   button: {
     flex: 1,
-    height: 44,
-    borderRadius: 12,
+    height: 44 * height,
+    borderRadius: radius.md,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   purpleButton: {
     backgroundColor: colors.primary,
   },
-
   grayButton: {
     backgroundColor: colors.gray[300],
   },
-
   buttonText: {
-    fontFamily: 'NanumSquareNeo-Regular',
-    fontSize: 14,
-    fontWeight: 700,
+    fontFamily: fonts.Regular,
+    fontSize: fontSize.md,
     color: colors.white,
-  },
-
-  titleText: {
-    fontFamily: 'NanumSquareNeo-Bold',
-    fontSize: 16,
-    fontWeight: 800,
-    lineHeight: 24,
-    marginTop: 26,
-  },
-  subText: {
-    fontFamily: 'NanumSquareNeo-Regular',
-    fontSize: 14,
-    lineHeight: 22,
-    marginTop: 4,
   },
 });
