@@ -13,13 +13,8 @@ export default function Feed() {
       }}
     >
       <Text>피드</Text>
-      <CustomButton
-        variant="primary"
-        size="lg"
-        rounded="md"
-        onPress={() => console.log('clicked')}
-      >
-        확인
+      <CustomButton onPress={() => console.log('Primary')}>
+        모집하기
       </CustomButton>
     </View>
   );

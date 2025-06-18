@@ -1,5 +1,15 @@
+// CustomButton.tsx
 import { TextStyle, ViewStyle } from 'react-native';
-import { StyledButton, StyledButtonText } from './CustomButton.styled';
+import {
+  StyledButton,
+  StyledButtonText,
+  sizeStyles,
+} from '@/components/common/CustomButton.styled';
+import {
+  getButtonBackgroundColor,
+  getButtonTextColor,
+  getBorderRadius,
+} from '@/utils/button-style';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'text';
 export type ButtonRounded = 'sm' | 'md' | 'large' | 'full';
@@ -15,34 +25,53 @@ type CustomButtonProps = {
   style?: ViewStyle;
   textStyle?: TextStyle;
   fullWidth?: boolean;
+  textColor?: 'primary' | 'black';
 };
 
 export default function CustomButton({
   children,
   onPress,
-  variant,
-  size,
-  rounded,
-  disabled,
+  variant = 'primary',
+  size = 'md',
+  rounded = 'md',
+  disabled = false,
   style,
   textStyle,
-  fullWidth,
+  fullWidth = false,
+  textColor,
 }: CustomButtonProps) {
+  const sizeStyle = sizeStyles[size];
+  const borderRadius = getBorderRadius(rounded);
+
   return (
     <StyledButton
       onPress={onPress}
-      variant={variant}
-      size={size}
-      rounded={rounded}
       disabled={disabled}
-      style={style}
-      fullWidth={fullWidth}
+      style={({ pressed }) => [
+        {
+          height: sizeStyle.height,
+          paddingHorizontal: sizeStyle.paddingHorizontal,
+          paddingVertical: sizeStyle.paddingVertical,
+          borderRadius,
+          backgroundColor: getButtonBackgroundColor({
+            variant,
+            disabled,
+            pressed,
+          }),
+          width: fullWidth ? '100%' : undefined,
+        },
+        style,
+      ]}
     >
-      {children && (
-        <StyledButtonText variant={variant} style={textStyle}>
-          {children}
-        </StyledButtonText>
-      )}
+      <StyledButtonText
+        variant={variant}
+        style={{
+          color: getButtonTextColor({ variant, disabled, textColor }),
+          ...(textStyle || {}),
+        }}
+      >
+        {children}
+      </StyledButtonText>
     </StyledButton>
   );
 }
