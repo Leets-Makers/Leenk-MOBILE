@@ -1,4 +1,4 @@
-import { View, Modal, StyleSheet, Text } from 'react-native';
+import { View, Modal, StyleSheet, Text, Pressable } from 'react-native';
 import React from 'react';
 import {
   width,
@@ -24,21 +24,19 @@ export default function CommonModal({
   children,
 }: CommonModalProps) {
   return (
-    <View>
-      <Modal
-        animationType="none"
-        transparent={true}
-        visible={isOpen}
-        onRequestClose={onClose}
-      >
-        <View style={styles.overlay}>
-          <View style={styles.container}>
-            <Text style={styles.titleText}>{title}</Text>
-            {children}
-          </View>
+    <Modal
+      animationType="none"
+      transparent={true}
+      visible={isOpen}
+      onRequestClose={onClose}
+    >
+      <Pressable style={styles.overlay} onPress={onClose}>
+        <View style={styles.container}>
+          <Text style={styles.titleText}>{title}</Text>
+          {children}
         </View>
-      </Modal>
-    </View>
+      </Pressable>
+    </Modal>
   );
 }
 
