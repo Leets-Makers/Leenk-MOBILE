@@ -1,17 +1,16 @@
-import colors from '@/theme/color';
 import { View, Text } from 'react-native';
 
-export default function FeedPage() {
+export default function PostLeenkPage() {
   return (
     <View
       style={{
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: colors.bg[2],
+        backgroundColor: 'transparent',
       }}
     >
-      <Text>feed</Text>
+      <Text>링크 글쓰기 페이지</Text>
     </View>
   );
 }

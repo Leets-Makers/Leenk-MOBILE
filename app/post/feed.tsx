@@ -1,17 +1,16 @@
-import colors from '@/theme/color';
 import { View, Text } from 'react-native';
 
-export default function WritePage() {
+export default function PostFeedPage() {
   return (
     <View
       style={{
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: colors.bg[2],
+        backgroundColor: 'transparent',
       }}
     >
-      <Text>글쓰기 페이지</Text>
+      <Text>피드 글쓰기 페이지</Text>
     </View>
   );
 }
