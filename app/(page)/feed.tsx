@@ -19,7 +19,11 @@ export default function FeedPage() {
         subMessage="메세지에 마침표를 찍어요."
       />
       <Textarea variant="dark" placeholder="텍스트입력ㄱㄱㄱㄱㄱㄱㄱ" />
-      <Textarea placeholder="텍스트입력ㄱㄱㄱㄱㄱㄱㄱ" maxLength={100} />
+      <Textarea
+        placeholder="텍스트입력ㄱㄱㄱㄱㄱㄱㄱ"
+        maxLength={60}
+        minHeight={40}
+      />
     </View>
   );
 }

@@ -10,6 +10,7 @@ interface TextareaProps extends TextInputProps {
   subMessage?: string;
   maxLength?: number;
   variant?: 'light' | 'dark'; // 밝은 테마 / 어두운 테마
+  minHeight?: number;
 }
 
 export default function Textarea({
@@ -18,6 +19,7 @@ export default function Textarea({
   maxLength = 200,
   placeholder,
   variant = 'light',
+  minHeight,
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
@@ -37,6 +39,7 @@ export default function Textarea({
           maxLength={maxLength}
           value={value}
           isDark={isDark}
+          minHeight={minHeight}
           onChangeText={(text) => setValue(text)}
           onFocus={(e) => {
             setFocused(true);
@@ -64,9 +67,10 @@ const InputBox = styled.View<{ focused: boolean; isDark: boolean }>`
   background-color: ${({ isDark }) => (isDark ? '#999' : 'transparent')};
 `;
 
-const StyledTextarea = styled.TextInput<{ isDark: boolean }>`
+const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
   width: 100%;
-  min-height: ${74 * height}px;
+  min-height: ${({ minHeight }) =>
+    minHeight ? `${minHeight * height}px` : `${74 * height}px`};
   font-size: ${fontSize.md}px;
   color: ${({ isDark }) => (isDark ? colors.white : colors.black)};
   text-align-vertical: top;
