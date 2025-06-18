@@ -51,6 +51,8 @@ const colors = {
   bg: {
     1: '#FFFFFF',
     2: '#F7F7FA',
+    3: '#F0F0F5',
+    4: '#EBEBEE',
   },
 
   text: {

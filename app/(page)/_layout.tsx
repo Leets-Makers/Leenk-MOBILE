@@ -1,9 +1,13 @@
 import { Tabs } from 'expo-router';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import React from 'react';
 import { useRouter } from 'expo-router';
+import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useWriteMenuStore } from '@/stores/writeMenuStore';
+import WriteMenuModal from '@/components/Modal/WriteMenuModal';
 import { FeedIcon, LeenkIcon, LockIcon, MypageIcon, PlusIcon } from '@/assets';
+import { fontSize, radius, width, height, fonts } from '@/theme/globalStyles';
 
 type TabConfigItem = {
   name: string;
@@ -20,21 +24,29 @@ const TAB_CONFIG: readonly TabConfigItem[] = [
   { name: 'mypage', label: '마이', icon: MypageIcon },
 ];
 
-// 네비게이션
 export default function TabLayout() {
   const router = useRouter();
+  const openWriteMenu = useWriteMenuStore((s) => s.open);
+  const isWriteMenuOpen = useWriteMenuStore((s) => s.isVisible);
+  const closeWriteMenu = useWriteMenuStore((s) => s.close);
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarStyle: styles.tabBarStyle,
+        tabBarStyle: {
+          height: 73 * height,
+          position: 'absolute',
+          borderTopWidth: 0,
+          elevation: 0,
+          overflow: 'hidden',
+        },
       }}
-      tabBar={({ state, navigation }) => {
-        return (
-          <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-            <View style={styles.tabContainer}>
+      tabBar={({ state, navigation }) => (
+        <>
+          <StyledSafeArea edges={['bottom']}>
+            <TabContainer>
               {TAB_CONFIG.map((tab) => {
                 const route = state.routes.find((r) => r.name === tab.name);
                 if (!route) return null;
@@ -52,7 +64,7 @@ export default function TabLayout() {
 
                   if (!isFocused && !event.defaultPrevented) {
                     if (route.name === 'write') {
-                      router.push('/write' as const);
+                      openWriteMenu();
                     } else {
                       navigation.navigate(route.name);
                     }
@@ -62,12 +74,10 @@ export default function TabLayout() {
                 const IconComponent = tab.icon;
 
                 return (
-                  <TouchableOpacity
+                  <TabButton
                     key={route.key}
                     onPress={onPress}
-                    style={
-                      tab.isSpecial ? styles.writeButton : styles.tabButton
-                    }
+                    $isSpecial={tab.isSpecial}
                   >
                     {IconComponent && (
                       <IconComponent
@@ -83,71 +93,72 @@ export default function TabLayout() {
                       />
                     )}
                     {tab.label !== '' && (
-                      <Text
-                        style={[
-                          styles.tabLabel,
-                          isFocused && styles.tabLabelFocused,
-                        ]}
-                      >
-                        {tab.label}
-                      </Text>
+                      <TabLabel $focused={isFocused}>{tab.label}</TabLabel>
                     )}
-                  </TouchableOpacity>
+                  </TabButton>
                 );
               })}
-            </View>
-          </SafeAreaView>
-        );
-      }}
+            </TabContainer>
+          </StyledSafeArea>
+
+          <WriteMenuModal
+            visible={isWriteMenuOpen}
+            onClose={closeWriteMenu}
+            onPressLink={() => {
+              closeWriteMenu();
+              router.push('/post/leenk' as const);
+            }}
+            onPressFeed={() => {
+              closeWriteMenu();
+              router.push('/post/feed' as const);
+            }}
+          />
+        </>
+      )}
     />
   );
 }
 
-const styles = StyleSheet.create({
-  tabBarStyle: {
-    height: 73,
-    position: 'absolute',
-    borderTopWidth: 0,
-    elevation: 0,
-    overflow: 'hidden',
-  },
-  safeArea: {
-    backgroundColor: 'transparent',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 85,
-    paddingBottom: 34,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: 'transparent',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  writeButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 30,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  tabButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabLabel: {
-    fontFamily: 'NanumSquareNeo-Regular',
-    fontSize: 12,
-    color: colors.gray[500],
-    marginTop: 4,
-    fontWeight: '700',
-  },
-  tabLabelFocused: {
-    color: colors.primary,
-  },
-});
+const StyledSafeArea = styled(SafeAreaView)`
+  background-color: transparent;
+`;
+
+const TabContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: ${85 * height}px;
+  padding-bottom: ${34 * height}px;
+  background-color: ${colors.white};
+  border-top-left-radius: ${radius.lg}px;
+  border-top-right-radius: ${radius.lg}px;
+  border-width: ${1 * width}px;
+  border-color: transparent;
+`;
+
+const TabButton = styled.TouchableOpacity<{ $isSpecial?: boolean }>`
+  ${({ $isSpecial }) =>
+    $isSpecial
+      ? `
+    width: ${48 * width}px;
+    height: ${48 * width}px;
+    border-radius: ${radius.full}px;
+    background-color: ${colors.primary};
+    justify-content: center;
+    align-items: center;
+    margin-bottom: ${20 * height}px;
+  `
+      : `
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  `}
+`;
+
+const TabLabel = styled.Text<{ $focused: boolean }>`
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.sm}px;
+  font-weight: 700;
+  margin-top: ${4 * height}px;
+  color: ${({ $focused }) => ($focused ? colors.primary : colors.gray[500])};
+`;
