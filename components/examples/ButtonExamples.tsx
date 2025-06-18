@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
-import CustomButton from '@/components/common/CustomButton';
+import CustomButton from '@/components/common/Button/CustomButton';
 
 export default function ButtonExamples() {
   return (
@@ -13,7 +13,7 @@ export default function ButtonExamples() {
 
       {/** size = xs, sm, md, lg, xl */}
       <Text style={{ fontSize: 18, fontWeight: 'bold' }}>📏 사이즈별</Text>
-      <CustomButton size="xs" onPress={() => {}}>
+      <CustomButton size="xs" rounded="full" onPress={() => {}}>
         XS 버튼
       </CustomButton>
       <CustomButton size="lg" onPress={() => {}}>

@@ -1,4 +1,7 @@
-import { ButtonRounded, ButtonVariant } from '@/components/common/CustomButton';
+import {
+  ButtonRounded,
+  ButtonVariant,
+} from '@/components/common/Button/CustomButton';
 import colors from '@/theme/color';
 
 /**
@@ -58,7 +61,7 @@ export const getBorderRadius = (rounded: ButtonRounded): number => {
       return 8;
     case 'md':
       return 16;
-    case 'large':
+    case 'lg':
       return 20;
     case 'full':
       return 9999;
