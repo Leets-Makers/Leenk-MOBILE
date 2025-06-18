@@ -1,4 +1,3 @@
-import colors from '@/theme/color';
 import { View, Text } from 'react-native';
 
 export default function PostLeenkPage() {

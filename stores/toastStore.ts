@@ -16,5 +16,10 @@ export const useToastStore = create<ToastState>((set) => ({
   type: 'success',
   showToast: (msg, type = 'success') =>
     set({ visible: true, message: msg, type }),
-  hideToast: () => set({ visible: false }),
+  hideToast: () =>
+    set({
+      visible: false,
+      message: '',
+      type: 'success',
+    }),
 }));

@@ -7,7 +7,7 @@ export default function Feed() {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleModalClose = () => {
-    setModalVisible(!modalVisible);
+    setModalVisible(false);
   };
   const handleConfirm = () => {
     console.log('확인');

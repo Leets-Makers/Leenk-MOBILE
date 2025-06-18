@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useToastStore } from '@/stores/toastStore';
 import { width, height, fontSize, radius, fonts } from '@/theme/globalStyles';
@@ -9,7 +9,7 @@ import colors from '@/theme/color';
 
 const Toast = () => {
   const { visible, message, type, hideToast } = useToastStore();
-  const opacity = new Animated.Value(0);
+  const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
