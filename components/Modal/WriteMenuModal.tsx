@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  GestureResponderEvent,
-} from 'react-native';
+import { Modal, GestureResponderEvent } from 'react-native';
+import styled from 'styled-components/native';
 import {
   fonts,
   fontSize,
@@ -15,10 +9,10 @@ import {
   width,
   height,
 } from '@/theme/globalStyles';
+import colors from '@/theme/color';
 
 import LeenkIcon from '@/assets/images/ic_menu_leenk.svg';
 import FeedIcon from '@/assets/images/ic_menu_feed.svg';
-import colors from '@/theme/color';
 
 interface WriteMenuModalProps {
   visible: boolean;
@@ -40,72 +34,58 @@ export default function WriteMenuModal({
       visible={visible}
       onRequestClose={onClose}
     >
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <View style={styles.menuContainer}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.menuItem,
-              pressed && styles.menuItemPressed,
-            ]}
-            onPress={onPressLink}
-          >
+      <Overlay onPress={onClose}>
+        <MenuContainer>
+          <MenuItem onPress={onPressLink}>
             <LeenkIcon width={20 * width} height={20 * width} />
-            <Text style={styles.menuText}>링크 글 쓰기</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [
-              styles.menuItem,
-              pressed && styles.menuItemPressed,
-            ]}
-            onPress={onPressFeed}
-          >
+            <MenuText>링크 글 쓰기</MenuText>
+          </MenuItem>
+          <MenuItem onPress={onPressFeed}>
             <FeedIcon width={20 * width} height={20 * width} />
-            <Text style={styles.menuText}>피드 글 쓰기</Text>
-          </Pressable>
-        </View>
-      </Pressable>
+            <MenuText>피드 글 쓰기</MenuText>
+          </MenuItem>
+        </MenuContainer>
+      </Overlay>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    alignItems: 'center',
-  },
-  menuContainer: {
-    position: 'absolute',
-    bottom: 105 * height,
-    width: 134 * width,
-    paddingVertical: 8 * height,
-    paddingHorizontal: 10 * width,
-    backgroundColor: colors.white,
-    borderRadius: radius.md,
-    gap: 8 * height,
-    overflow: 'hidden',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 4 * height,
-    paddingHorizontal: 4 * width,
-    borderRadius: radius.sm,
-    gap: 6 * width,
-  },
-  menuItemPressed: {
-    backgroundColor: colors.bg[2],
-  },
-  menuText: {
-    fontFamily: fonts.Regular,
-    fontSize: fontSize.md,
-    lineHeight: lineHeight.m,
-    fontWeight: '700',
-    color: colors.text[1],
-  },
-});
+const Overlay = styled.Pressable`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.3);
+  align-items: center;
+`;
+
+const MenuContainer = styled.View`
+  position: absolute;
+  bottom: ${105 * height}px;
+  width: ${134 * width}px;
+  padding: ${8 * height}px ${10 * width}px;
+  background-color: ${colors.white};
+  border-radius: ${radius.md}px;
+  gap: ${8 * height}px;
+  elevation: 6;
+
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.15;
+  shadow-radius: 4px;
+`;
+
+const MenuItem = styled.Pressable.attrs(() => ({
+  android_ripple: { color: colors.bg[2], borderless: false },
+}))`
+  flex-direction: row;
+  align-items: center;
+  padding: ${4 * height}px ${4 * width}px;
+  border-radius: ${radius.sm}px;
+  gap: ${6 * width}px;
+`;
+
+const MenuText = styled.Text`
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.md}px;
+  line-height: ${lineHeight.m}px;
+  font-weight: 700;
+  color: ${colors.text[1]};
+`;

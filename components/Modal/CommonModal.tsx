@@ -1,5 +1,6 @@
-import { View, Modal, StyleSheet, Text, Pressable } from 'react-native';
 import React from 'react';
+import { Modal } from 'react-native';
+import styled from 'styled-components/native';
 import {
   width,
   height,
@@ -26,41 +27,41 @@ export default function CommonModal({
   return (
     <Modal
       animationType="none"
-      transparent={true}
+      transparent
       visible={isOpen}
       onRequestClose={onClose}
     >
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <View style={styles.container}>
-          <Text style={styles.titleText}>{title}</Text>
+      <Overlay onPress={onClose}>
+        <Container>
+          <Title>{title}</Title>
           {children}
-        </View>
-      </Pressable>
+        </Container>
+      </Overlay>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    paddingHorizontal: 16 * width,
-    width: 355 * width,
-    height: 448 * height,
-    borderRadius: radius.md,
-  },
-  titleText: {
-    fontFamily: fonts.Bold,
-    fontSize: fontSize.xl,
-    fontWeight: '800',
-    lineHeight: lineHeight.l,
-    marginTop: 22 * height,
-    color: colors.black,
-  },
-});
+const Overlay = styled.Pressable`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+`;
+
+const Container = styled.View`
+  background-color: ${colors.white};
+  align-items: center;
+  padding: 0 ${16 * width}px;
+  width: ${355 * width}px;
+  height: ${448 * height}px;
+  border-radius: ${radius.md}px;
+`;
+
+const Title = styled.Text`
+  font-family: ${fonts.Bold};
+  font-size: ${fontSize.xl}px;
+  font-weight: 800;
+  line-height: ${lineHeight.l}px;
+  margin-top: ${22 * height}px;
+  color: ${colors.black};
+`;

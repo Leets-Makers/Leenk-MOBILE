@@ -1,11 +1,18 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { Animated } from 'react-native';
+import styled from 'styled-components/native';
 import { useToastStore } from '@/stores/toastStore';
-import { width, height, fontSize, radius, fonts } from '@/theme/globalStyles';
+import {
+  width,
+  height,
+  fontSize,
+  radius,
+  fonts,
+  lineHeight,
+} from '@/theme/globalStyles';
+import colors from '@/theme/color';
 import SuccessIcon from '@/assets/images/ic_toast_check.svg';
 import ErrorIcon from '@/assets/images/ic_toast_alert.svg';
-import { lineHeight } from '@/theme/globalStyles';
-import colors from '@/theme/color';
 
 const Toast = () => {
   const { visible, message, type, hideToast } = useToastStore();
@@ -37,43 +44,44 @@ const Toast = () => {
     type === 'success'
       ? `${colors.primaryLight}99`
       : `${colors.secondaryLight}99`;
+
   const IconComponent = type === 'success' ? SuccessIcon : ErrorIcon;
 
   return (
-    <Animated.View style={[styles.wrapper, { opacity }]}>
-      <View style={[styles.toast, { backgroundColor }]}>
+    <Wrapper style={{ opacity }}>
+      <ToastBox $backgroundColor={backgroundColor}>
         <IconComponent width={20 * width} height={20 * width} />
-        <Text style={styles.text}>{message}</Text>
-      </View>
-    </Animated.View>
+        <ToastText>{message}</ToastText>
+      </ToastBox>
+    </Wrapper>
   );
 };
 
-const styles = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    bottom: 114 * height,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 9999,
-  },
-  toast: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12 * width,
-    borderRadius: radius.full,
-    paddingHorizontal: 12 * width,
-    paddingVertical: 10 * height,
-    width: '90%',
-  },
-  text: {
-    color: colors.white,
-    fontSize: fontSize.md,
-    fontFamily: fonts.Regular,
-    lineHeight: lineHeight.m,
-    fontWeight: '700',
-  },
-});
-
 export default Toast;
+
+const Wrapper = styled(Animated.View)`
+  position: absolute;
+  bottom: ${114 * height}px;
+  left: 0;
+  right: 0;
+  align-items: center;
+  z-index: 9999;
+`;
+
+const ToastBox = styled.View<{ $backgroundColor: string }>`
+  flex-direction: row;
+  align-items: center;
+  gap: ${12 * width}px;
+  border-radius: ${radius.full}px;
+  padding: ${10 * height}px ${12 * width}px;
+  width: 90%;
+  background-color: ${({ $backgroundColor }) => $backgroundColor};
+`;
+
+const ToastText = styled.Text`
+  color: ${colors.white};
+  font-size: ${fontSize.md}px;
+  font-family: ${fonts.Regular};
+  font-weight: 700;
+  line-height: ${lineHeight.m}px;
+`;

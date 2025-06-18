@@ -1,18 +1,7 @@
-import PopupModal from '@/components/Modal/PopupModal';
 import colors from '@/theme/color';
-import { useState } from 'react';
-import { View, Text, Button, Pressable } from 'react-native';
-import { useToastStore } from '@/stores/toastStore';
-export default function Feed() {
-  const [modalVisible, setModalVisible] = useState(false);
+import { View, Text } from 'react-native';
 
-  const handleModalClose = () => {
-    setModalVisible(false);
-  };
-  const handleConfirm = () => {
-    console.log('확인');
-  };
-  const showToast = useToastStore((s) => s.showToast);
+export default function FeedPage() {
   return (
     <View
       style={{
@@ -22,29 +11,7 @@ export default function Feed() {
         backgroundColor: colors.bg[2],
       }}
     >
-      <Text>피드</Text>
-      <PopupModal
-        isOpen={modalVisible}
-        onClose={handleModalClose}
-        onConfirm={handleConfirm}
-        mainText="태스트"
-        subText="wkrdf"
-        isWarning={true}
-        rightBtnText="아무거나"
-      />
-
-      <Pressable onPress={() => setModalVisible(true)}>
-        <Text>Show Modal</Text>
-      </Pressable>
-
-      <Button
-        title="성공 토스트"
-        onPress={() => showToast('작업 성공!', 'success')}
-      />
-      <Button
-        title="실패 토스트"
-        onPress={() => showToast('작업 실패!', 'error')}
-      />
+      <Text>feed</Text>
     </View>
   );
 }

@@ -1,4 +1,5 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import React from 'react';
+import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import LockIcon from '@/assets/images/ic_lock.svg';
 import {
@@ -12,49 +13,47 @@ import {
 
 export default function PrivatePage() {
   return (
-    <View style={styles.container}>
+    <Container>
       <LockIcon width={120 * width} height={120 * width} />
-
-      <Text style={styles.text}>
+      <MessageText>
         재밌는 기능들을 {'\n'}
         준비중이야
-      </Text>
-
-      <Pressable style={styles.buttonContainer}>
-        <Text style={styles.buttonText}>이런 것도 있으면 좋겠어</Text>
-      </Pressable>
-    </View>
+      </MessageText>
+      <FeedbackButton>
+        <ButtonLabel>이런 것도 있으면 좋겠어</ButtonLabel>
+      </FeedbackButton>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.bg[2],
-    gap: 20 * height,
-  },
-  text: {
-    fontSize: fontSize.lg,
-    lineHeight: lineHeight.l,
-    fontFamily: fonts.Regular,
-    fontWeight: '600',
-    color: colors.text[3],
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    height: 32 * height,
-    backgroundColor: colors.white,
-    borderRadius: radius.md,
-    paddingHorizontal: 12 * width,
-    paddingVertical: 8 * height,
-    justifyContent: 'center',
-  },
-  buttonText: {
-    fontSize: fontSize.sm,
-    fontFamily: fonts.Light,
-    fontWeight: '700',
-    color: colors.primaryLight,
-  },
-});
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.bg[2]};
+  gap: 20px;
+`;
+
+const MessageText = styled.Text`
+  font-size: ${fontSize.lg}px;
+  line-height: ${lineHeight.l}px;
+  font-family: ${fonts.Regular};
+  font-weight: 600;
+  color: ${colors.text[3]};
+  text-align: center;
+`;
+
+const FeedbackButton = styled.Pressable`
+  height: 32px;
+  background-color: ${colors.white};
+  border-radius: ${radius.md}px;
+  padding: ${8 * height}px ${12 * width}px;
+  justify-content: center;
+`;
+
+const ButtonLabel = styled.Text`
+  font-size: ${fontSize.sm}px;
+  font-family: ${fonts.Light};
+  font-weight: 700;
+  color: ${colors.primaryLight};
+`;

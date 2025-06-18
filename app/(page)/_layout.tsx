@@ -1,11 +1,11 @@
 import { Tabs } from 'expo-router';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import React from 'react';
 import { useRouter } from 'expo-router';
+import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWriteMenuStore } from '@/stores/writeMenuStore';
-import WriteMenuModal from '@/components/Modal/WrietMenuModal';
-
+import WriteMenuModal from '@/components/Modal/WriteMenuModal';
 import {
   FeedIcon,
   LeenkIcon,
@@ -13,7 +13,6 @@ import {
   MypageIcon,
   PlusIcon,
 } from '@/components/Index';
-
 import { fontSize, radius, width, height, fonts } from '@/theme/globalStyles';
 
 type TabConfigItem = {
@@ -31,11 +30,9 @@ const TAB_CONFIG: readonly TabConfigItem[] = [
   { name: 'mypage', label: '마이', icon: MypageIcon },
 ];
 
-// 네비게이션
 export default function TabLayout() {
   const router = useRouter();
   const openWriteMenu = useWriteMenuStore((s) => s.open);
-  // 글쓰기 메뉴 모달
   const isWriteMenuOpen = useWriteMenuStore((s) => s.isVisible);
   const closeWriteMenu = useWriteMenuStore((s) => s.close);
 
@@ -44,139 +41,130 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarStyle: styles.tabBarStyle,
+        tabBarStyle: {
+          height: 73 * height,
+          position: 'absolute',
+          borderTopWidth: 0,
+          elevation: 0,
+          overflow: 'hidden',
+        },
       }}
-      tabBar={({ state, navigation }) => {
-        return (
-          <>
-            <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-              <View style={styles.tabContainer}>
-                {TAB_CONFIG.map((tab) => {
-                  const route = state.routes.find((r) => r.name === tab.name);
-                  if (!route) return null;
+      tabBar={({ state, navigation }) => (
+        <>
+          <StyledSafeArea edges={['bottom']}>
+            <TabContainer>
+              {TAB_CONFIG.map((tab) => {
+                const route = state.routes.find((r) => r.name === tab.name);
+                if (!route) return null;
 
-                  const isFocused =
-                    state.index ===
-                    state.routes.findIndex((r) => r.name === tab.name);
+                const isFocused =
+                  state.index ===
+                  state.routes.findIndex((r) => r.name === tab.name);
 
-                  const onPress = () => {
-                    const event = navigation.emit({
-                      type: 'tabPress',
-                      target: route.key,
-                      canPreventDefault: true,
-                    });
+                const onPress = () => {
+                  const event = navigation.emit({
+                    type: 'tabPress',
+                    target: route.key,
+                    canPreventDefault: true,
+                  });
 
-                    if (!isFocused && !event.defaultPrevented) {
-                      if (route.name === 'write') {
-                        openWriteMenu();
-                      } else {
-                        navigation.navigate(route.name);
-                      }
+                  if (!isFocused && !event.defaultPrevented) {
+                    if (route.name === 'write') {
+                      openWriteMenu();
+                    } else {
+                      navigation.navigate(route.name);
                     }
-                  };
+                  }
+                };
 
-                  const IconComponent = tab.icon;
+                const IconComponent = tab.icon;
 
-                  return (
-                    <TouchableOpacity
-                      key={route.key}
-                      onPress={onPress}
-                      style={
-                        tab.isSpecial ? styles.writeButton : styles.tabButton
-                      }
-                    >
-                      {IconComponent && (
-                        <IconComponent
-                          width={24}
-                          height={24}
-                          stroke={
-                            tab.isSpecial
-                              ? '#fff'
-                              : isFocused
-                                ? colors.primary
-                                : colors.black
-                          }
-                        />
-                      )}
-                      {tab.label !== '' && (
-                        <Text
-                          style={[
-                            styles.tabLabel,
-                            isFocused && styles.tabLabelFocused,
-                          ]}
-                        >
-                          {tab.label}
-                        </Text>
-                      )}
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </SafeAreaView>
-            <WriteMenuModal
-              visible={isWriteMenuOpen}
-              onClose={closeWriteMenu}
-              onPressLink={() => {
-                closeWriteMenu();
-                router.push('/post/leenk' as const);
-              }}
-              onPressFeed={() => {
-                closeWriteMenu();
-                router.push('/post/feed' as const);
-              }}
-            />
-          </>
-        );
-      }}
+                return (
+                  <TabButton
+                    key={route.key}
+                    onPress={onPress}
+                    $isSpecial={tab.isSpecial}
+                  >
+                    {IconComponent && (
+                      <IconComponent
+                        width={24}
+                        height={24}
+                        stroke={
+                          tab.isSpecial
+                            ? '#fff'
+                            : isFocused
+                              ? colors.primary
+                              : colors.black
+                        }
+                      />
+                    )}
+                    {tab.label !== '' && (
+                      <TabLabel $focused={isFocused}>{tab.label}</TabLabel>
+                    )}
+                  </TabButton>
+                );
+              })}
+            </TabContainer>
+          </StyledSafeArea>
+
+          <WriteMenuModal
+            visible={isWriteMenuOpen}
+            onClose={closeWriteMenu}
+            onPressLink={() => {
+              closeWriteMenu();
+              router.push('/post/leenk' as const);
+            }}
+            onPressFeed={() => {
+              closeWriteMenu();
+              router.push('/post/feed' as const);
+            }}
+          />
+        </>
+      )}
     />
   );
 }
 
-const styles = StyleSheet.create({
-  tabBarStyle: {
-    height: 73 * height,
-    position: 'absolute',
-    borderTopWidth: 0,
-    elevation: 0,
-    overflow: 'hidden',
-  },
-  safeArea: {
-    backgroundColor: 'transparent',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 85 * height,
-    paddingBottom: 34 * height,
-    backgroundColor: colors.white,
-    borderWidth: 1 * width,
-    borderColor: 'transparent',
-    borderTopLeftRadius: radius.lg,
-    borderTopRightRadius: radius.lg,
-  },
-  writeButton: {
-    width: 48 * width,
-    height: 48 * width,
-    borderRadius: radius.full,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20 * height,
-  },
-  tabButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabLabel: {
-    fontFamily: fonts.Regular,
-    fontSize: fontSize.sm,
-    color: colors.gray[500],
-    marginTop: 4 * height,
-    fontWeight: '700',
-  },
-  tabLabelFocused: {
-    color: colors.primary,
-  },
-});
+const StyledSafeArea = styled(SafeAreaView)`
+  background-color: transparent;
+`;
+
+const TabContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: ${85 * height}px;
+  padding-bottom: ${34 * height}px;
+  background-color: ${colors.white};
+  border-top-left-radius: ${radius.lg}px;
+  border-top-right-radius: ${radius.lg}px;
+  border-width: ${1 * width}px;
+  border-color: transparent;
+`;
+
+const TabButton = styled.TouchableOpacity<{ $isSpecial?: boolean }>`
+  ${({ $isSpecial }) =>
+    $isSpecial
+      ? `
+    width: ${48 * width}px;
+    height: ${48 * width}px;
+    border-radius: ${radius.full}px;
+    background-color: ${colors.primary};
+    justify-content: center;
+    align-items: center;
+    margin-bottom: ${20 * height}px;
+  `
+      : `
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  `}
+`;
+
+const TabLabel = styled.Text<{ $focused: boolean }>`
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.sm}px;
+  font-weight: 700;
+  margin-top: ${4 * height}px;
+  color: ${({ $focused }) => ($focused ? colors.primary : colors.gray[500])};
+`;

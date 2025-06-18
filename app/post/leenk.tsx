@@ -10,7 +10,7 @@ export default function PostLeenkPage() {
         backgroundColor: 'transparent',
       }}
     >
-      <Text>링크크 글쓰기 페이지</Text>
+      <Text>링크 글쓰기 페이지</Text>
     </View>
   );
 }
