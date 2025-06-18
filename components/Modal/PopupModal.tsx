@@ -23,6 +23,7 @@ import colors from '@/theme/color';
 interface PopupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onConfirm: () => void;
   mainText: string;
   subText?: string;
   isWarning?: boolean;
@@ -34,6 +35,7 @@ interface PopupModalProps {
 export default function PopupModal({
   isOpen,
   onClose,
+  onConfirm,
   mainText,
   subText,
   isCancel = true,
@@ -85,6 +87,7 @@ export default function PopupModal({
 
               {/* 오른쪽 버튼 */}
               <Pressable
+                onPress={onConfirm}
                 style={[
                   styles.button,
                   isCancel ? styles.grayButton : styles.purpleButton,

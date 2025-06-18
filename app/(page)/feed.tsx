@@ -9,7 +9,9 @@ export default function Feed() {
   const handleModalClose = () => {
     setModalVisible(!modalVisible);
   };
-
+  const handleConfirm = () => {
+    console.log('확인');
+  };
   const showToast = useToastStore((s) => s.showToast);
   return (
     <View
@@ -24,6 +26,7 @@ export default function Feed() {
       <PopupModal
         isOpen={modalVisible}
         onClose={handleModalClose}
+        onConfirm={handleConfirm}
         mainText="태스트"
         subText="wkrdf"
         isWarning={true}
