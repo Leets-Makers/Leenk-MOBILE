@@ -7,10 +7,13 @@ export default function PrivatePage() {
     <View style={styles.container}>
       <LockIcon width={120} height={120} />
 
-      <Text style={styles.text}>재밌는 기능들을 준비중이야</Text>
+      <Text style={styles.text}>
+        재밌는 기능들을 <br />
+        준비중이야
+      </Text>
 
       <Pressable style={styles.buttonContainer}>
-        <Text style={styles.buttonText}>이런 것도 있었으면 좋겠어</Text>
+        <Text style={styles.buttonText}>이런 것도 있으면 좋겠어</Text>
       </Pressable>
     </View>
   );
@@ -30,22 +33,25 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   text: {
-    fontWeight: '700',
+    fontWeight: '600',
     fontFamily: 'NanumSquareNeo-Regular',
     fontSize: 16,
     lineHeight: 24,
     color: colors.text[3],
+    textAlign: 'center',
   },
   buttonContainer: {
+    height: 32,
     backgroundColor: colors.white,
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    justifyContent: 'center',
   },
   buttonText: {
     fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Light',
     fontSize: 12,
-    color: colors.primary,
+    color: colors.primaryLight,
   },
 });
