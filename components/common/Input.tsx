@@ -42,32 +42,32 @@ export default function Input({
   );
 }
 
-const Wrapper = styled.View`
+export const Wrapper = styled.View`
   width: 100%;
   gap: 8px;
 `;
 
-const Title = styled.Text`
+export const Title = styled.Text`
   font-size: ${fontSize.md}px;
   color: ${colors.black};
 `;
 
-const InputBox = styled.View<{ focused: boolean }>`
+export const InputBox = styled.View<{ focused: boolean }>`
   width: 100%;
   border-radius: ${radius.sm}px;
   padding: ${12 * height}px ${16 * width}px;
   border: 1px solid
     ${({ focused }) => (focused ? colors.primary : colors.gray[300])};
-  background-color: ${colors.white};
+  background-color: transparent;
 `;
 
-const StyledTextInput = styled.TextInput`
+export const StyledTextInput = styled.TextInput`
   width: 100%;
   font-size: ${fontSize.lg}px;
   color: ${colors.black};
 `;
 
-const SubMessage = styled.Text`
+export const SubMessage = styled.Text`
   font-size: ${fontSize.sm}px;
   color: ${colors.text[3]};
 `;
