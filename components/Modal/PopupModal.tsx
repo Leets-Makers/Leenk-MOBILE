@@ -60,7 +60,6 @@ export default function PopupModal({
               variant={isCancel ? 'primary' : 'secondary'}
               size="lg"
               rounded="md"
-              textColor={isCancel ? 'primary' : 'black'}
               style={{ width: 145.5 * width }}
             >
               {leftBtnText}
@@ -71,7 +70,6 @@ export default function PopupModal({
               variant={isCancel ? 'secondary' : 'primary'}
               size="lg"
               rounded="md"
-              textColor={isCancel ? 'black' : 'primary'}
               style={{ width: 145.5 * width }}
             >
               {rightBtnText}
