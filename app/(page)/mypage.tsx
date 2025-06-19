@@ -3,6 +3,7 @@ import colors from '@/theme/color';
 import { useState } from 'react';
 import { View, Text, Button, Pressable } from 'react-native';
 import { useToastStore } from '@/stores/toastStore';
+import { fonts } from '@/theme/globalStyles';
 export default function MyPage() {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -42,6 +43,7 @@ export default function MyPage() {
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: colors.primary,
+            fontFamily: fonts.Regular,
           }}
         >
           Show Modal
