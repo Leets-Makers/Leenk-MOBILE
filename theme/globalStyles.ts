@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 // 디자인 기준 사이즈
 const DESIGN_WIDTH = 375;
@@ -7,11 +7,10 @@ const DESIGN_HEIGHT = 812;
 // 실제 기기 사이즈
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-// 비율 스케일링
-export const width = SCREEN_WIDTH / DESIGN_WIDTH;
-export const height = SCREEN_HEIGHT / DESIGN_HEIGHT;
+// 웹에서는 비율 고정, 모바일은 사이즈 스케일링
+export const width = Platform.OS === 'web' ? 1 : SCREEN_WIDTH / DESIGN_WIDTH;
 
-console.log(width);
+export const height = Platform.OS === 'web' ? 1 : SCREEN_HEIGHT / DESIGN_HEIGHT;
 
 // 폰트 크기
 export const fontSize = {
