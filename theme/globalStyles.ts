@@ -11,6 +11,8 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 export const width = SCREEN_WIDTH / DESIGN_WIDTH;
 export const height = SCREEN_HEIGHT / DESIGN_HEIGHT;
 
+console.log(width);
+
 // 폰트 크기
 export const fontSize = {
   xs: Math.round(10 * width),

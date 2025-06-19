@@ -5,11 +5,11 @@ import {
   fontSize,
   height,
   lineHeight,
+  radius,
   width,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { Text } from 'react-native';
-
+import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
 export default function LandingPage() {
   const handleKakaoLogin = () => {
     console.log('카카오 로그인');
@@ -20,11 +20,15 @@ export default function LandingPage() {
 
   return (
     <Container>
-      <LogoGif source={require('@/assets/images/gif/ic_logo.gif')} />
-      <KakaoLoginBtn
-        source={require('@/assets/images/kakao_login_btn.png')}
-        onPress={handleKakaoLogin}
+      <LogoGif
+        width="100%"
+        height="100%"
+        source={require('@/assets/images/gif/ic_logo.gif')}
       />
+      <KakaoBtn onPress={handleKakaoLogin}>
+        <KakaoLogo />
+        <KakaoBtnText>카카오로 로그인</KakaoBtnText>
+      </KakaoBtn>
       <SignUpBtn onPress={handleSignUp}>
         <SignUpBtnText>새로 가입하기</SignUpBtnText>
       </SignUpBtn>
@@ -40,12 +44,30 @@ const Container = styled.View`
 `;
 
 const LogoGif = styled.Image`
-  width: ${198 * width}px;
-  height: ${71 * height}px;
+  width: 198px;
+  height: 40px;
 `;
 
-const KakaoLoginBtn = styled.Image`
-  margin-top: ${256 * height}px;
+const KakaoBtn = styled.Pressable`
+  display: flex;
+  flex-direction: row;
+  width: ${335 * width}px;
+  height: ${40 * height}px;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.kakao};
+  border-radius: ${radius.md}px;
+  margin-top: 256px;
+`;
+
+const KakaoBtnText = styled.Text`
+  color: ${colors.text[2]};
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.md};
+  line-height: ${lineHeight.m};
+  margin-left: ${8 * width};
+  padding-bottom: 1px;
+  font-weight: 500;
 `;
 
 const SignUpBtn = styled.Pressable`
@@ -54,6 +76,7 @@ const SignUpBtn = styled.Pressable`
   height: ${40 * height}px;
   justify-content: center;
   align-items: center;
+  margin-top: 12px;
 `;
 
 const SignUpBtnText = styled.Text`
@@ -61,4 +84,5 @@ const SignUpBtnText = styled.Text`
   font-family: ${fonts.Regular};
   font-size: ${fontSize.md};
   line-height: ${lineHeight.m};
+  font-weight: 500;
 `;

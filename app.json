@@ -4,12 +4,12 @@
     "slug": "Leenk",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Logo_symbol.svg",
+    "icon": "@/assets/images/Logo_symbol.svg",
     "scheme": "leenk",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/ic_splash.png",
+      "image": "@/assets/images/ic_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#F7F7FA"
     },
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Logo_symbol.svg",
+        "foregroundImage": "@/assets/images/Logo_symbol.svg",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
@@ -26,7 +26,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/Logo_symbol.svg"
+      "favicon": "@/assets/images/Logo_symbol.svg"
     },
     "plugins": ["expo-router"],
     "experiments": {
