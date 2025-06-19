@@ -10,6 +10,7 @@ import {
   radius,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
+import CustomButton from '../common/Button/CustomButton';
 
 /* 
 🦄스타일링 설명
@@ -18,8 +19,6 @@ import colors from '@/theme/color';
 📢 isWarning: 부가 설명 색 설정 true-> 붉은 경고 / false-> 검정
 📢 isCancel: 버튼 색 설정 true-> 왼쪽 보라색, 오른쪽 회색 / false-> 왼쪽 회색, 오른쪽 보라색
 */
-
-//TODO: 버튼 공용 컴포넌트로 변경
 
 interface PopupModalProps {
   isOpen: boolean;
@@ -56,12 +55,27 @@ export default function PopupModal({
           <TitleText>{mainText}</TitleText>
           {subText && <SubText $isWarning={isWarning}>{subText}</SubText>}
           <ButtonRow>
-            <StyledButton $isPurple={isCancel} onPress={onClose}>
-              <ButtonLabel $isWhite={isCancel}>{leftBtnText}</ButtonLabel>
-            </StyledButton>
-            <StyledButton $isPurple={!isCancel} onPress={onConfirm}>
-              <ButtonLabel $isWhite={!isCancel}>{rightBtnText}</ButtonLabel>
-            </StyledButton>
+            <CustomButton
+              onPress={onClose}
+              variant={isCancel ? 'primary' : 'secondary'}
+              size="lg"
+              rounded="md"
+              textColor={isCancel ? 'primary' : 'black'}
+              style={{ width: 145.5 * width }}
+            >
+              {leftBtnText}
+            </CustomButton>
+
+            <CustomButton
+              onPress={onConfirm}
+              variant={isCancel ? 'secondary' : 'primary'}
+              size="lg"
+              rounded="md"
+              textColor={isCancel ? 'black' : 'primary'}
+              style={{ width: 145.5 * width }}
+            >
+              {rightBtnText}
+            </CustomButton>
           </ButtonRow>
         </Container>
       </Overlay>
@@ -80,7 +94,7 @@ const Container = styled.View`
   background-color: ${colors.white};
   align-items: center;
   padding: 0 ${16 * width}px;
-  width: ${302 * width}px;
+  width: ${335 * width}px;
   height: ${158 * height}px;
   border-radius: ${radius.lg}px;
   overflow: hidden;
@@ -110,25 +124,6 @@ const SubText = styled.Text<{ $isWarning: boolean }>`
 
 const ButtonRow = styled.View`
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
   margin-top: ${20 * height}px;
   gap: ${12 * width}px;
-  width: ${145.5 * width}px;
-`;
-
-const StyledButton = styled.Pressable<{ $isPurple: boolean }>`
-  flex: 1;
-  height: ${44 * height}px;
-  border-radius: ${radius.md}px;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({ $isPurple }) =>
-    $isPurple ? colors.primary : colors.gray[300]};
-`;
-
-const ButtonLabel = styled.Text<{ $isWhite: boolean }>`
-  font-family: ${fonts.Regular};
-  font-size: ${fontSize.md}px;
-  color: ${({ $isWhite }) => ($isWhite ? colors.white : colors.text[1])};
 `;
