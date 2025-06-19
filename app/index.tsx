@@ -23,19 +23,23 @@ export default function LandingPage() {
 
   return (
     <Container>
-      <LogoGif
-        source={require('@/assets/images/gif/ic_logo.gif')}
-        contentFit="cover"
-        transition={300}
-      />
+      <LogoWrapper>
+        <LogoGif
+          source={require('@/assets/images/gif/ic_logo.gif')}
+          contentFit="cover"
+          transition={300}
+        />
+      </LogoWrapper>
 
-      <KakaoBtn onPress={handleKakaoLogin}>
-        <KakaoLogo />
-        <KakaoBtnText>카카오로 로그인</KakaoBtnText>
-      </KakaoBtn>
-      <SignUpBtn onPress={handleSignUp}>
-        <SignUpBtnText>새로 가입하기</SignUpBtnText>
-      </SignUpBtn>
+      <BottomArea>
+        <KakaoBtn onPress={handleKakaoLogin}>
+          <KakaoLogo />
+          <KakaoBtnText>카카오로 로그인</KakaoBtnText>
+        </KakaoBtn>
+        <SignUpBtn onPress={handleSignUp}>
+          <SignUpBtnText>새로 가입하기</SignUpBtnText>
+        </SignUpBtn>
+      </BottomArea>
     </Container>
   );
 }
@@ -43,25 +47,33 @@ export default function LandingPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  justify-content: center;
   align-items: center;
+  position: relative;
+`;
+
+const LogoWrapper = styled.View`
+  margin-top: ${177 * height}px;
 `;
 
 const LogoGif = styled(Image)`
-  margin-top: ${277 * height}px;
   width: ${300 * width}px;
-  aspect-ratio: 5;
+  height: ${171 * height}px;
+`;
+
+const BottomArea = styled.View`
+  position: absolute;
+  bottom: ${108 * height}px;
+  align-items: center;
+  width: 100%;
 `;
 
 const KakaoBtn = styled.Pressable`
-  display: flex;
   flex-direction: row;
   width: ${335 * width}px;
   justify-content: center;
   align-items: center;
   background-color: ${colors.kakao};
   border-radius: ${radius.md}px;
-  margin-top: ${256 * height}px;
   padding: ${13 * width}px 0;
 `;
 
@@ -71,17 +83,15 @@ const KakaoBtnText = styled.Text`
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
   margin-left: ${8 * width}px;
-  padding-bottom: 1px;
   font-weight: 500;
 `;
 
 const SignUpBtn = styled.Pressable`
-  display: flex;
+  margin-top: ${12 * height}px;
   width: ${335 * width}px;
   height: ${40 * height}px;
   justify-content: center;
   align-items: center;
-  margin-top: 12px;
 `;
 
 const SignUpBtnText = styled.Text`
