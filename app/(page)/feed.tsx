@@ -12,6 +12,7 @@ import colors from '@/theme/color';
 import { useState } from 'react';
 import { View, Text } from 'react-native';
 import { BellIcon, LogoText, BackArrowIcon, KebabIcon } from '@/assets';
+import HeaderExamples from '@/components/examples/HeaderExamples';
 
 export default function FeedPage() {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -25,19 +26,7 @@ export default function FeedPage() {
         backgroundColor: colors.bg[2],
       }}
     >
-      <Header
-        LeftSection={<LogoText width={66} height={30} />}
-        RightSection={<BellIcon />}
-      />
-      <Header LeftSection={<BackArrowIcon />} />
-      <Header LeftSection={<BackArrowIcon />} RightSection={<KebabIcon />} />
-      <Header
-        LeftSection={<BackArrowIcon />}
-        TitleSection={
-          <Text style={{ fontWeight: 600, fontSize: 16 }}>프로필 편집</Text>
-        }
-        RightSection={<KebabIcon />}
-      />
+      <HeaderExamples />
 
       <Textarea placeholder="안녕하세요 " />
       <CustomButton variant="primary" onPress={() => console.log('pressed')}>
