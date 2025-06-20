@@ -42,6 +42,9 @@ export default function ProfilePage() {
     else router.back();
   };
 
+  const handleSkip = () => {
+    router.push('/(page)/feed');
+  };
   const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -83,7 +86,7 @@ export default function ProfilePage() {
           title="자기소개를 입력해줘"
           placeholder="안녕 나는 프론트 개발자 김링크야"
           maxLength={60}
-          minHeight={76 * height}
+          minHeight={1}
         />
       )}
 
@@ -127,7 +130,7 @@ export default function ProfilePage() {
           <CustomButton
             variant="text"
             textColor="text[2]"
-            onPress={() => setStep('id')}
+            onPress={handleSkip}
             rounded="md"
             size="lg"
             style={{
