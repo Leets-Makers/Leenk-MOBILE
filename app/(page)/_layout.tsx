@@ -81,7 +81,7 @@ export default function TabLayout() {
 
                 return (
                   <TabButton
-                    key={route?.key}
+                    key={tab.name}
                     onPress={onPress}
                     $isSpecial={tab.isSpecial}
                   >

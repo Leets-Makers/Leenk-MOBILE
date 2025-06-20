@@ -32,8 +32,10 @@ export default function ProfilePage() {
     setKakaoModalVisible(false);
   };
   const handleConfirm = () => {
-    setStep('photo');
     setKakaoModalVisible(false);
+    setTimeout(() => {
+      setStep('photo');
+    }, 100);
   };
 
   const router = useRouter();
@@ -55,7 +57,10 @@ export default function ProfilePage() {
   };
 
   const handleSkip = () => {
-    router.push('/(page)/feed');
+    setSkipModalVisible(false);
+    setTimeout(() => {
+      router.push('/(page)/feed');
+    }, 200);
   };
   const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
