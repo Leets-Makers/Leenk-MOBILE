@@ -1,11 +1,14 @@
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
-import { CustomButton, Input } from '@/components';
+import { CustomButton, Header, Input } from '@/components';
 import TitleText from '@/components/signup/TitleText';
 import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
+import { TouchableOpacity } from 'react-native';
+import { BackArrowIcon } from '@/assets';
+import { useRouter } from 'expo-router';
 
 export default function ProfilePage() {
   const {
@@ -22,11 +25,18 @@ export default function ProfilePage() {
   } = useProfileStore();
 
   const handleNext = () => {
-    if (step === 'id') setStep('intro');
+    if (step === 'id') setStep('photo');
+    else if (step === 'photo') setStep('intro');
     else if (step === 'intro') setStep('mbti');
-    else if (step === 'mbti') setStep('photo');
     else console.log('제출: ', { kakaoId, intro, mbti, profileImage });
   };
+  const handlePrevStep = () => {
+    if (step === 'photo') setStep('id');
+    else if (step === 'intro') setStep('photo');
+    else if (step === 'mbti') setStep('intro');
+    else router.back();
+  };
+  const router = useRouter();
 
   const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -42,6 +52,14 @@ export default function ProfilePage() {
 
   return (
     <Container>
+      <Header
+        LeftSection={
+          <TouchableOpacity onPress={handlePrevStep}>
+            <BackArrowIcon />
+          </TouchableOpacity>
+        }
+      />
+
       <TitleText>프로필을 만들어보자</TitleText>
 
       {step === 'id' && (
@@ -127,7 +145,7 @@ export default function ProfilePage() {
             height: 48 * height,
           }}
         >
-          {step === 'photo' ? '시작하자' : '다음으로'}
+          {step === 'mbti' ? '시작하자' : '다음으로'}
         </CustomButton>
       </ButtonContainer>
     </Container>

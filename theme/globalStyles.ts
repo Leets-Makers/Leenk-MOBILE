@@ -40,10 +40,10 @@ export const letterSpacing = {
 
 // 폰트 패밀리
 export const fonts = {
-  ExtraBold: 'SpoqaHanSansNeo-ExtraBold',
-  Bold: 'SpoqaHanSansNeo-Bold',
-  Regular: 'SpoqaHanSansNeo-Regular',
-  Light: 'SpoqaHanSansNeo-Light',
+  ExtraBold: 'NanumSquare-ExtraBold',
+  Bold: 'NanumSquare-Bold',
+  Regular: 'NanumSquare-Regular',
+  Light: 'NanumSquare-Light',
 };
 
 // 테두리 반경 (radius)

@@ -1,8 +1,11 @@
-import { CustomButton } from '@/components';
+import { BackArrowIcon } from '@/assets';
+import { CustomButton, Header } from '@/components';
 import TitleText from '@/components/signup/TitleText';
 import UserCard from '@/components/signup/UserCard';
 import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
+import { useRouter } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
 export default function VerifyPage() {
@@ -13,8 +16,17 @@ export default function VerifyPage() {
     console.log('확인');
   };
 
+  const router = useRouter();
+
   return (
     <Container>
+      <Header
+        LeftSection={
+          <TouchableOpacity onPress={() => router.back()}>
+            <BackArrowIcon />
+          </TouchableOpacity>
+        }
+      />
       <TitleText>너의 계정이 맞는지 확인해 줘</TitleText>
 
       <UserCard cardinal={5} name="이한별" position="D" />
