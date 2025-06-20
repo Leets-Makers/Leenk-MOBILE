@@ -25,20 +25,21 @@ export default function ProfilePage() {
     profileImage,
     setProfileImage,
   } = useProfileStore();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [kakaoModalVisible, setKakaoModalVisible] = useState(false);
+  const [skipModalVisible, setSkipModalVisible] = useState(false);
 
   const handleModalClose = () => {
-    setModalVisible(false);
+    setKakaoModalVisible(false);
   };
   const handleConfirm = () => {
     setStep('photo');
-    setModalVisible(false);
+    setKakaoModalVisible(false);
   };
 
   const router = useRouter();
 
   const handleNext = () => {
-    if (step === 'id') setModalVisible(true);
+    if (step === 'id') setKakaoModalVisible(true);
     else if (step === 'photo') setStep('intro');
     else if (step === 'intro') setStep('mbti');
     else {
@@ -80,28 +81,29 @@ export default function ProfilePage() {
 
       <TitleText>프로필을 만들어보자</TitleText>
 
-      <PopupModal
-        isOpen={modalVisible}
-        onClose={handleModalClose}
-        onConfirm={handleConfirm}
-        mainText={kakaoId}
-        subText="카톡 아이디가 맞는지 확인해 줘."
-        leftBtnText="아니야"
-        rightBtnText="맞아"
-        isCancel={false}
-      />
-
       {step === 'id' && (
-        <Input
-          title="카카오톡 ID를 입력해줘"
-          value={kakaoId}
-          onChangeText={(text) => {
-            const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
-            setKakaoId(filtered);
-          }}
-          placeholder="모임원들과의 연락을 위해 필요해"
-          subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
-        />
+        <>
+          <Input
+            title="카카오톡 ID를 입력해줘"
+            value={kakaoId}
+            onChangeText={(text) => {
+              const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
+              setKakaoId(filtered);
+            }}
+            placeholder="모임원들과의 연락을 위해 필요해"
+            subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
+          />
+          <PopupModal
+            isOpen={kakaoModalVisible}
+            onClose={handleModalClose}
+            onConfirm={handleConfirm}
+            mainText={kakaoId}
+            subText="카톡 아이디가 맞는지 확인해 줘."
+            leftBtnText="아니야"
+            rightBtnText="맞아"
+            isCancel={false}
+          />
+        </>
       )}
 
       {step === 'intro' && (
@@ -155,20 +157,32 @@ export default function ProfilePage() {
 
       <ButtonContainer>
         {step !== 'id' && (
-          <CustomButton
-            variant="text"
-            textColor="text[2]"
-            onPress={handleSkip}
-            rounded="md"
-            size="lg"
-            style={{
-              width: 303 * width,
-              height: 48 * height,
-              marginBottom: 10 * height,
-            }}
-          >
-            지금은 넘어갈래
-          </CustomButton>
+          <>
+            <CustomButton
+              variant="text"
+              textColor="text[2]"
+              onPress={() => setSkipModalVisible(true)}
+              rounded="md"
+              size="lg"
+              style={{
+                width: 303 * width,
+                height: 48 * height,
+                marginBottom: 10 * height,
+              }}
+            >
+              지금은 넘어갈래
+            </CustomButton>
+            <PopupModal
+              isOpen={skipModalVisible}
+              onClose={() => setSkipModalVisible(false)}
+              onConfirm={handleSkip}
+              mainText="프로필을 나중에 만들래?"
+              subText="마이페이지에서 마저 설정할 수 있어."
+              leftBtnText="취소"
+              rightBtnText="나중에 할래"
+              isCancel={false}
+            />
+          </>
         )}
 
         <CustomButton
