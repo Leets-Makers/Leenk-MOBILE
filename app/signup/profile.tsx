@@ -95,7 +95,10 @@ export default function ProfilePage() {
         <Input
           title="카카오톡 ID를 입력해줘"
           value={kakaoId}
-          onChangeText={setKakaoId}
+          onChangeText={(text) => {
+            const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
+            setKakaoId(filtered);
+          }}
           placeholder="모임원들과의 연락을 위해 필요해"
           subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
         />
@@ -116,7 +119,10 @@ export default function ProfilePage() {
         <Input
           title="MBTI를 입력해줘"
           value={mbti}
-          onChangeText={setMbti}
+          onChangeText={(text) => {
+            const filtered = text.replace(/[^a-zA-Z]/g, '').toUpperCase();
+            setMbti(filtered);
+          }}
           placeholder="ENFP"
           maxLength={4}
         />
