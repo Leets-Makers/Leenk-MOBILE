@@ -1,13 +1,8 @@
 import { CustomButton } from '@/components';
+import TitleText from '@/components/signup/TitleText';
 import UserCard from '@/components/signup/UserCard';
 import colors from '@/theme/color';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
 
 export default function VerifyPage() {
@@ -60,16 +55,6 @@ const Container = styled.View`
   align-items: center;
   position: relative;
   padding-top: ${80 * height}px;
-`;
-
-const TitleText = styled.Text`
-  font-size: ${fontSize.xl}px;
-  font-weight: 700;
-  color: ${colors.text[1]};
-  line-height: ${lineHeight.m}px;
-  margin: 0 0 ${20 * height}px ${40 * width}px;
-  font-family: ${fonts.Bold};
-  align-self: flex-start;
 `;
 
 const ButtonContainer = styled.View`
