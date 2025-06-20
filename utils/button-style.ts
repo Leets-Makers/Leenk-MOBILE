@@ -80,7 +80,7 @@ export const getBadgeBackgroundColor = (variant: BadgeVariant) => {
     case 'primary':
       return colors.primary;
     case 'gray':
-      return colors.gray[900];
+      return 'rgba(0,0,0,0.4)';
     case 'white':
       return colors.white;
     default:
