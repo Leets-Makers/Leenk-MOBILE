@@ -71,3 +71,19 @@ export const getBorderRadius = (rounded: ButtonRounded): number => {
       return radius.sm;
   }
 };
+
+//Badge 컴포넌트 관련 함수
+type BadgeVariant = 'primary' | 'gray' | 'white';
+
+export const getBadgeBackgroundColor = (variant: BadgeVariant) => {
+  switch (variant) {
+    case 'primary':
+      return colors.primary;
+    case 'gray':
+      return 'rgba(0,0,0,0.4)';
+    case 'white':
+      return colors.white;
+    default:
+      return colors.primary;
+  }
+};
