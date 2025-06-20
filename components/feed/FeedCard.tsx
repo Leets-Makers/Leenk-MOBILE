@@ -1,7 +1,7 @@
 import { FeedItem } from '@/types/feed';
 import { width, height, radius } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
-import { Badge } from '@/components';
+import { Badge, Textarea } from '@/components';
 
 interface FeedCardProps {
   item: FeedItem;
@@ -24,14 +24,15 @@ export default function ({ item }: FeedCardProps) {
 }
 
 export const CardContainer = styled.View`
+  width: 48%;
   border-radius: ${radius.md * width}px;
   overflow: hidden;
-  margin-bottom: ${100 * height};
+  margin-bottom: ${10 * height}px;
 `;
 
 export const Thumbnail = styled.ImageBackground`
   width: 100%;
-  height: ${300 * height}px;
+  height: ${290 * height};
   position: relative;
 `;
 
@@ -50,6 +51,6 @@ export const OverlayTopLeft = styled.View`
 
 export const OverlayBottomRight = styled.View`
   position: absolute;
-  bottom: ${12 * height}px;
-  right: ${12 * width}px;
+  bottom: ${10 * height}px;
+  right: ${30 * width}px;
 `;
