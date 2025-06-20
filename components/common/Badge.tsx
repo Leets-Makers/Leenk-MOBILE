@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import { XIcon, PlusIcon } from '@/assets';
 import { width, height, radius, fontSize } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { getBackgroundColor } from '@/utils/button-style';
+import { getBadgeBackgroundColor } from '@/utils/button-style';
 
 interface BadgeProps {
   label: string | number;
@@ -21,7 +21,10 @@ export default function Badge({
   onRemove,
 }: BadgeProps) {
   return (
-    <Container variant={variant} backgroundColor={getBackgroundColor(variant)}>
+    <Container
+      variant={variant}
+      backgroundColor={getBadgeBackgroundColor(variant)}
+    >
       {/* 왼쪽 아이콘: plus */}
       {iconType === 'plus' && (
         <IconWrapper style={{ marginRight: 4 }}>

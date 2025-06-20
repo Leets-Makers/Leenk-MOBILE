@@ -72,10 +72,10 @@ export const getBorderRadius = (rounded: ButtonRounded): number => {
   }
 };
 
-//Badge 컴포넌트
+//Badge 컴포넌트 관련 함수
 type BadgeVariant = 'primary' | 'gray' | 'white';
 
-export const getBackgroundColor = (variant: BadgeVariant) => {
+export const getBadgeBackgroundColor = (variant: BadgeVariant) => {
   switch (variant) {
     case 'primary':
       return colors.primary;
