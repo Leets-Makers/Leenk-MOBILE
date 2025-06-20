@@ -27,7 +27,7 @@ export default function FeedPage() {
     >
       <HeaderExamples />
 
-      <Textarea placeholder="안녕하세요 " />
+      <Textarea variant="dark" placeholder="안녕하세요 " />
       <CustomButton variant="primary" onPress={() => console.log('pressed')}>
         확인
       </CustomButton>
