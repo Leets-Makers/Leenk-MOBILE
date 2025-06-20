@@ -48,8 +48,8 @@ const Container = styled.View<{ backgroundColor: string }>`
   flex-direction: row;
   align-items: center;
   align-self: flex-start;
-  padding-vertical: ${4 * height}px;
-  padding-horizontal: ${10 * width}px;
+  padding-vertical: ${6 * height}px;
+  padding-horizontal: ${8 * width}px;
   border-radius: ${radius.full}px;
   background-color: ${({ backgroundColor }) => backgroundColor};
 `;
@@ -60,7 +60,7 @@ const Text = styled.Text<{ variant: string }>`
     variant === 'primary' || variant === 'gray'
       ? colors.white
       : colors.text[3]};
-  font-family: ${fonts.Regular};
+  font-family: ${fonts.Bold};
 `;
 
 const IconWrapper = styled.View`
