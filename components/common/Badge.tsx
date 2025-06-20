@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import { XIcon, PlusIcon } from '@/assets';
 import { width, height, radius, fontSize, fonts } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { getBadgeBackgroundColor } from '@/utils/button-style';
+import { getBadgeBackgroundColor } from '@/utils';
 
 interface BadgeProps {
   label: string | number;
