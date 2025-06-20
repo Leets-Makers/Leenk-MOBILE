@@ -3,13 +3,7 @@ import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Input } from '@/components';
 import TitleText from '@/components/signup/TitleText';
 import colors from '@/theme/color';
-import {
-  fontSize,
-  height,
-  width,
-  fonts,
-  lineHeight,
-} from '@/theme/globalStyles';
+import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 
@@ -56,7 +50,7 @@ export default function ProfilePage() {
           value={kakaoId}
           onChangeText={setKakaoId}
           placeholder="모임원들과의 연락을 위해 필요해"
-          subMessage="ID는 카카오톡 >  친구 추가 > 카카오톡 ID 에서 볼 수 있어."
+          subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
         />
       )}
 
@@ -74,8 +68,8 @@ export default function ProfilePage() {
       {step === 'mbti' && (
         <Input
           title="MBTI를 입력해줘"
-          value={intro}
-          onChangeText={setIntro}
+          value={mbti}
+          onChangeText={setMbti}
           placeholder="ENFP"
           maxLength={4}
         />
@@ -101,36 +95,44 @@ export default function ProfilePage() {
       )}
 
       <ButtonContainer>
-        <CustomButton
-          variant="secondary"
-          onPress={() => setStep('id')}
-          rounded="md"
-          size="lg"
-          style={{
-            width: 303 * width,
-            height: 48 * height,
-            marginBottom: 10 * height,
-          }}
-        >
-          지금은 넘어갈래
-        </CustomButton>
+        {step !== 'id' && (
+          <CustomButton
+            variant="secondary"
+            onPress={() => setStep('id')}
+            rounded="md"
+            size="lg"
+            style={{
+              width: 303 * width,
+              height: 48 * height,
+              marginBottom: 10 * height,
+            }}
+          >
+            지금은 넘어갈래
+          </CustomButton>
+        )}
 
         <CustomButton
           variant="primary"
           onPress={handleNext}
           rounded="md"
           size="lg"
+          disabled={
+            (step === 'id' && kakaoId.trim() === '') ||
+            (step === 'intro' && intro.trim() === '') ||
+            (step === 'mbti' && mbti.trim() === '')
+          }
           style={{
             width: 303 * width,
             height: 48 * height,
           }}
         >
-          {step === 'photo' ? '완료하기' : '다음으로'}
+          {step === 'photo' ? '시작하자' : '다음으로'}
         </CustomButton>
       </ButtonContainer>
     </Container>
   );
 }
+
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
@@ -143,26 +145,6 @@ const StyledText = styled.Text`
   font-weight: 500;
   font-family: ${fonts.Regular};
   margin-bottom: ${12 * height}px;
-`;
-
-const StyledInput = styled.TextInput`
-  width: 100%;
-  height: 48px;
-  background-color: white;
-  border-radius: 8px;
-  padding: 0 12px;
-  font-size: ${fontSize.md}px;
-  margin-bottom: ${20 * height}px;
-`;
-
-const StyledTextarea = styled.TextInput`
-  width: 100%;
-  height: 100px;
-  background-color: white;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: ${fontSize.md}px;
-  margin-bottom: ${20 * height}px;
 `;
 
 const ButtonContainer = styled.View`
