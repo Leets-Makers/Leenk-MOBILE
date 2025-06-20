@@ -11,10 +11,6 @@ interface BadgeProps {
   label: string | number;
   variant?: 'primary' | 'gray' | 'white';
   iconType?: 'plus' | 'x'; // plus면 왼쪽에 + , x 면 오른쪽에 표시
-  /**
-   * X 버튼을 눌렀을 때 호출될 함수
-   *  TODO: 링크 개발 시 수정
-   */
   onRemove?: () => void;
 }
 

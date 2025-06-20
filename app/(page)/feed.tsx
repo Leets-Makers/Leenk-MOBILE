@@ -1,10 +1,13 @@
-import { Badge, CustomButton, Input, Textarea } from '@/components';
+import { Badge, CustomButton, Input, Textarea, Toggle } from '@/components';
 import ButtonExamples from '@/components/examples/ButtonExamples';
 import InputExamples from '@/components/examples/InputExamples';
 import colors from '@/theme/color';
+import { useState } from 'react';
 import { View, Text } from 'react-native';
 
 export default function FeedPage() {
+  const [isEnabled, setIsEnabled] = useState(false);
+
   return (
     <View
       style={{
@@ -27,6 +30,13 @@ export default function FeedPage() {
         onRemove={() => console.log()}
       />
       <Badge variant="white" label={'1,230'} />
+      <Badge
+        variant="primary"
+        iconType="x"
+        onRemove={() => console.log()}
+        label={'이강혁'}
+      />
+      <Toggle isOn={isEnabled} onToggle={() => setIsEnabled((prev) => !prev)} />
     </View>
   );
 }
