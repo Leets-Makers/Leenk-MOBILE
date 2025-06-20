@@ -22,7 +22,7 @@ const StyledTitleText = styled.Text`
   font-weight: 700;
   color: ${colors.text[1]};
   line-height: ${lineHeight.m}px;
-  margin: 0 0 ${20 * height}px ${40 * width}px;
+  margin-bottom: ${20 * height}px;
   font-family: ${fonts.Bold};
   align-self: flex-start;
 `;
