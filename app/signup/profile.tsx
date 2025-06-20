@@ -9,6 +9,8 @@ import { Image } from 'expo-image';
 import { TouchableOpacity } from 'react-native';
 import { BackArrowIcon, DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import PopupModal from '@/components/Modal/PopupModal';
 
 export default function ProfilePage() {
   const {
@@ -23,11 +25,20 @@ export default function ProfilePage() {
     profileImage,
     setProfileImage,
   } = useProfileStore();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
+  const handleConfirm = () => {
+    setStep('photo');
+    setModalVisible(false);
+  };
 
   const router = useRouter();
 
   const handleNext = () => {
-    if (step === 'id') setStep('photo');
+    if (step === 'id') setModalVisible(true);
     else if (step === 'photo') setStep('intro');
     else if (step === 'intro') setStep('mbti');
     else {
@@ -68,6 +79,17 @@ export default function ProfilePage() {
       />
 
       <TitleText>프로필을 만들어보자</TitleText>
+
+      <PopupModal
+        isOpen={modalVisible}
+        onClose={handleModalClose}
+        onConfirm={handleConfirm}
+        mainText={kakaoId}
+        subText="카톡 아이디가 맞는지 확인해 줘."
+        leftBtnText="아니야"
+        rightBtnText="맞아"
+        isCancel={false}
+      />
 
       {step === 'id' && (
         <Input

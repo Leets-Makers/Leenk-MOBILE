@@ -108,7 +108,7 @@ const TitleText = styled.Text`
   font-weight: 800;
   line-height: ${lineHeight.l}px;
   margin-top: ${26 * height}px;
-  color: ${colors.text[1]};
+  color: ${colors.black};
 `;
 
 const SubText = styled.Text<{ $isWarning: boolean }>`
