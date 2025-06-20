@@ -14,7 +14,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "사진을 선택하려면 접근 권한이 필요합니다."
+      }
     },
     "android": {
       "adaptiveIcon": {

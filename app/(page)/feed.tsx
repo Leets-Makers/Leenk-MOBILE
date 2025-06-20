@@ -6,7 +6,7 @@ import FeedCard from '@/components/feed/FeedCard';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { FeedItem } from '@/types/feed';
 
-const mockFeeds: FeedItem[] = generateMockFeeds(5);
+const mockFeeds: FeedItem[] = generateMockFeeds(20);
 
 export default function FeedPage() {
   return (

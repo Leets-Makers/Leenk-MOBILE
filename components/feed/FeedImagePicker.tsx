@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
+  Image,
+  TouchableOpacity,
   Text,
   FlatList,
   Dimensions,
-  TouchableOpacity,
 } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 import styled from 'styled-components/native';
@@ -13,7 +14,7 @@ const numColumns = 3;
 const screenWidth = Dimensions.get('window').width;
 const imageSize = screenWidth / numColumns;
 
-export default function PostFeedPage() {
+export default function GallerySelectScreen() {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [selected, setSelected] = useState<MediaLibrary.Asset[]>([]);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -51,91 +52,48 @@ export default function PostFeedPage() {
     return index >= 0 ? index + 1 : null;
   };
 
-  if (hasPermission === false)
+  const renderItem = ({ item }: { item: MediaLibrary.Asset }) => {
+    const number = getSelectionNumber(item.id);
     return (
-      <View>
-        <Text>사진 접근 권한이 필요합니다.</Text>
-      </View>
-    );
-
-  return (
-    <Container>
-      <FlatList
-        data={photos}
-        renderItem={({ item }) => (
-          <GalleryItem
-            asset={item}
-            selected={selected}
-            onToggle={toggleSelect}
-            getSelectionNumber={getSelectionNumber}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        numColumns={numColumns}
-      />
-    </Container>
-  );
-}
-
-// ================== sub-component ==================
-
-interface GalleryItemProps {
-  asset: MediaLibrary.Asset;
-  selected: MediaLibrary.Asset[];
-  onToggle: (photo: MediaLibrary.Asset) => void;
-  getSelectionNumber: (id: string) => number | null;
-}
-
-const GalleryItem = ({
-  asset,
-  selected,
-  onToggle,
-  getSelectionNumber,
-}: GalleryItemProps) => {
-  const [uri, setUri] = useState<string | null>(null);
-
-  useEffect(() => {
-    MediaLibrary.getAssetInfoAsync(asset.id).then((info) => {
-      if (info.localUri) {
-        setUri(info.localUri);
-      }
-    });
-  }, []);
-
-  const number = getSelectionNumber(asset.id);
-
-  if (!uri) return null;
-
-  return (
-    <TouchableOpacity onPress={() => onToggle(asset)}>
-      <ImageWrapper>
-        <StyledImage source={{ uri }} resizeMode="cover" />
+      <TouchableOpacity onPress={() => toggleSelect(item)}>
+        <ImageBox source={{ uri: item.uri }} />
         {number && (
           <Badge>
             <BadgeText>{number}</BadgeText>
           </Badge>
         )}
-      </ImageWrapper>
-    </TouchableOpacity>
-  );
-};
+      </TouchableOpacity>
+    );
+  };
 
-// =================== styled ===================
+  if (hasPermission === false) return <Text>권한이 필요합니다.</Text>;
+
+  return (
+    <Container>
+      <FlatList
+        data={photos}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        numColumns={numColumns}
+      />
+      <BottomBar>
+        <SelectedCount>{selected.length} </SelectedCount>
+        <NextButton disabled={selected.length === 0}>
+          <NextText>다음</NextText>
+        </NextButton>
+      </BottomBar>
+    </Container>
+  );
+}
 
 const Container = styled.View`
   flex: 1;
   background-color: white;
-  padding: 16px;
 `;
 
-const ImageWrapper = styled.View`
-  position: relative;
-`;
-
-const StyledImage = styled.Image`
+const ImageBox = styled.Image`
   width: ${imageSize}px;
   height: ${(imageSize * 4) / 3}px;
-  margin: 1px;
 `;
 
 const Badge = styled.View`
@@ -154,4 +112,27 @@ const BadgeText = styled.Text`
   color: white;
   font-weight: bold;
   font-size: 12px;
+`;
+
+const BottomBar = styled.View`
+  padding: 16px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+const SelectedCount = styled.Text`
+  font-size: 14px;
+  margin-right: 12px;
+`;
+
+const NextButton = styled.TouchableOpacity<{ disabled: boolean }>`
+  background-color: ${({ disabled }) => (disabled ? '#eee' : '#7b42ff')};
+  padding: 10px 24px;
+  border-radius: 20px;
+`;
+
+const NextText = styled.Text`
+  color: white;
+  font-weight: bold;
 `;

@@ -55,6 +55,6 @@ export const OverlayTopLeft = styled.View`
 
 export const OverlayBottomRight = styled.View`
   position: absolute;
-  bottom: ${10 * height}px;
+  bottom: ${15 * height}px;
   right: ${15 * width}px;
 `;

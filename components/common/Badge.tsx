@@ -48,7 +48,7 @@ const Container = styled.View<{ backgroundColor: string }>`
   flex-direction: row;
   align-items: center;
   align-self: flex-start;
-  padding-vertical: ${6 * height}px;
+  padding-vertical: ${5.5 * height}px;
   padding-horizontal: ${8 * width}px;
   border-radius: ${radius.full}px;
   background-color: ${({ backgroundColor }) => backgroundColor};
