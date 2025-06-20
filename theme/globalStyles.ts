@@ -43,7 +43,6 @@ export const fonts = {
   ExtraBold: 'NanumSquare-ExtraBold',
   Bold: 'NanumSquare-Bold',
   Regular: 'NanumSquare-Regular',
-  Light: 'NanumSquare-Light',
 };
 
 // 테두리 반경 (radius)

@@ -30,7 +30,6 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   // 폰트 설정
   const [loaded, error] = useFonts({
-    'NanumSquareNeo-Light': require('../assets/fonts/NanumSquareNeo-aLt.ttf'),
     'NanumSquareNeo-Regular': require('../assets/fonts/NanumSquareNeo-bRg.ttf'),
     'NanumSquareNeo-Bold': require('../assets/fonts/NanumSquareNeo-cBd.ttf'),
     ...FontAwesome.font,
