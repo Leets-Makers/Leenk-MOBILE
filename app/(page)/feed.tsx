@@ -13,10 +13,9 @@ import { useState } from 'react';
 import { View, Text } from 'react-native';
 import { BellIcon, LogoText, BackArrowIcon, KebabIcon } from '@/assets';
 import HeaderExamples from '@/components/examples/HeaderExamples';
+import ToggleExample from '@/components/examples/ToggleExample';
 
 export default function FeedPage() {
-  const [isEnabled, setIsEnabled] = useState(false);
-
   return (
     <View
       style={{
@@ -47,7 +46,7 @@ export default function FeedPage() {
         onRemove={() => console.log()}
         label={'이강혁'}
       />
-      <Toggle isOn={isEnabled} onToggle={() => setIsEnabled((prev) => !prev)} />
+      <ToggleExample />
     </View>
   );
 }

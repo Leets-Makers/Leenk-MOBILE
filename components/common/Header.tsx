@@ -40,7 +40,6 @@ const Side = styled.View`
 `;
 
 const TitleWrapper = styled.View`
-  display: flex;
   align-items: center;
   justify-content: center;
 `;
