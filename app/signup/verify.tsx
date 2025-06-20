@@ -9,14 +9,14 @@ import { TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
 export default function VerifyPage() {
+  const router = useRouter();
+
   const handleCancel = () => {
     console.log('취소');
   };
   const handleRight = () => {
-    console.log('확인');
+    router.push('/signup/profile');
   };
-
-  const router = useRouter();
 
   return (
     <Container>

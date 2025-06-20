@@ -1,13 +1,13 @@
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
-import { CustomButton, Header, Input } from '@/components';
+import { CustomButton, Header, Input, Textarea } from '@/components';
 import TitleText from '@/components/signup/TitleText';
 import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { TouchableOpacity } from 'react-native';
-import { BackArrowIcon } from '@/assets';
+import { BackArrowIcon, DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
 
 export default function ProfilePage() {
@@ -24,11 +24,16 @@ export default function ProfilePage() {
     setProfileImage,
   } = useProfileStore();
 
+  const router = useRouter();
+
   const handleNext = () => {
     if (step === 'id') setStep('photo');
     else if (step === 'photo') setStep('intro');
     else if (step === 'intro') setStep('mbti');
-    else console.log('제출: ', { kakaoId, intro, mbti, profileImage });
+    else {
+      console.log('제출: ', { kakaoId, intro, mbti, profileImage });
+      router.push('/(page)/feed');
+    }
   };
   const handlePrevStep = () => {
     if (step === 'photo') setStep('id');
@@ -36,7 +41,6 @@ export default function ProfilePage() {
     else if (step === 'mbti') setStep('intro');
     else router.back();
   };
-  const router = useRouter();
 
   const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -73,13 +77,13 @@ export default function ProfilePage() {
       )}
 
       {step === 'intro' && (
-        <Input
-          title="자기소개를 입력해줘"
+        <Textarea
           value={intro}
           onChangeText={setIntro}
+          title="자기소개를 입력해줘"
           placeholder="안녕 나는 프론트 개발자 김링크야"
-          multiline
           maxLength={60}
+          minHeight={76 * height}
         />
       )}
 
@@ -95,7 +99,7 @@ export default function ProfilePage() {
 
       {step === 'photo' && (
         <>
-          <StyledText>프로필 사진을 선택해줘</StyledText>
+          <StyledText>프로필 사진을 설정해줘</StyledText>
           <ImagePreview>
             {profileImage ? (
               <Image
@@ -103,10 +107,16 @@ export default function ProfilePage() {
                 style={{ width: 100, height: 100, borderRadius: 50 }}
               />
             ) : (
-              <EmptyImage />
+              <DefaultProfileImage width={80 * width} height={80 * height} />
             )}
           </ImagePreview>
-          <CustomButton onPress={handleImagePick} variant="text" rounded="md">
+
+          <CustomButton
+            onPress={handleImagePick}
+            variant="text"
+            rounded="md"
+            textColor="primary"
+          >
             프로필 사진 선택하기
           </CustomButton>
         </>
@@ -173,13 +183,5 @@ const ButtonContainer = styled.View`
 `;
 
 const ImagePreview = styled.View`
-  margin-bottom: ${20 * height}px;
   align-items: center;
-`;
-
-const EmptyImage = styled.View`
-  width: 100px;
-  height: 100px;
-  background-color: ${colors.gray[200]};
-  border-radius: 50px;
 `;

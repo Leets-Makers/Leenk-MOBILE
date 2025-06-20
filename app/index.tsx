@@ -11,9 +11,13 @@ import {
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
+import { useRouter } from 'expo-router';
 export default function LandingPage() {
+  const router = useRouter();
+
   const handleKakaoLogin = () => {
     console.log('카카오 로그인');
+    router.push('/signup/verify');
   };
   const handleSignUp = () => {
     console.log('새로 가입하기');
