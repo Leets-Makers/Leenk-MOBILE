@@ -2,6 +2,7 @@ import { FeedItem } from '@/types/feed';
 import { width, height, radius } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
 import { Badge } from '@/components';
+import { getNumberWithComma } from '@/utils';
 
 interface FeedCardProps {
   item: FeedItem;
@@ -16,7 +17,10 @@ export default function ({ item }: FeedCardProps) {
         </OverlayTopLeft>
 
         <OverlayBottomRight>
-          <Badge variant="white" label={item.totalReactionCount} />
+          <Badge
+            variant="white"
+            label={getNumberWithComma(item.totalReactionCount)}
+          />
         </OverlayBottomRight>
       </Thumbnail>
     </CardContainer>
