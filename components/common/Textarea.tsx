@@ -67,7 +67,7 @@ const InputBox = styled.View<{ focused: boolean; isDark: boolean }>`
   border-color: ${({ focused }) =>
     focused ? colors.primary : colors.gray[300]};
   border-style: solid;
-  background-color: ${({ isDark }) => (isDark ? ' #ffffff33;' : 'transparent')};
+  background-color: ${({ isDark }) => (isDark ? ' #ffffff33' : 'transparent')};
 `;
 
 const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
