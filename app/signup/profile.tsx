@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
-import { CustomButton } from '@/components';
+import { CustomButton, Input } from '@/components';
 import TitleText from '@/components/signup/TitleText';
 import colors from '@/theme/color';
 import {
@@ -51,38 +51,34 @@ export default function ProfilePage() {
       <TitleText>프로필을 만들어보자</TitleText>
 
       {step === 'id' && (
-        <>
-          <StyledText>카카오톡 ID를 입력해줘</StyledText>
-          <StyledInput
-            value={kakaoId}
-            onChangeText={setKakaoId}
-            placeholder="예: abc123"
-          />
-        </>
+        <Input
+          title="카카오톡 ID를 입력해줘"
+          value={kakaoId}
+          onChangeText={setKakaoId}
+          placeholder="모임원들과의 연락을 위해 필요해"
+          subMessage="ID는 카카오톡 >  친구 추가 > 카카오톡 ID 에서 볼 수 있어."
+        />
       )}
 
       {step === 'intro' && (
-        <>
-          <StyledText>자기소개를 입력해줘</StyledText>
-          <StyledTextarea
-            value={intro}
-            onChangeText={setIntro}
-            placeholder="20자 이내로 입력"
-            multiline
-            maxLength={20}
-          />
-        </>
+        <Input
+          title="자기소개를 입력해줘"
+          value={intro}
+          onChangeText={setIntro}
+          placeholder="안녕 나는 프론트 개발자 김링크야"
+          multiline
+          maxLength={60}
+        />
       )}
 
       {step === 'mbti' && (
-        <>
-          <StyledText>MBTI를 입력해줘</StyledText>
-          <StyledInput
-            value={mbti}
-            onChangeText={setMbti}
-            placeholder="예: ENFP"
-          />
-        </>
+        <Input
+          title="MBTI를 입력해줘"
+          value={intro}
+          onChangeText={setIntro}
+          placeholder="ENFP"
+          maxLength={4}
+        />
       )}
 
       {step === 'photo' && (
@@ -98,12 +94,8 @@ export default function ProfilePage() {
               <EmptyImage />
             )}
           </ImagePreview>
-          <CustomButton
-            onPress={handleImagePick}
-            variant="primary"
-            rounded="md"
-          >
-            사진 선택하기
+          <CustomButton onPress={handleImagePick} variant="text" rounded="md">
+            프로필 사진 선택하기
           </CustomButton>
         </>
       )}
