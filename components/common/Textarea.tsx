@@ -67,7 +67,7 @@ const InputBox = styled.View<{ focused: boolean; isDark: boolean }>`
   border-color: ${({ focused }) =>
     focused ? colors.primary : colors.gray[300]};
   border-style: solid;
-  background-color: ${({ isDark }) => (isDark ? '#999' : 'transparent')};
+  background-color: ${({ isDark }) => (isDark ? ' #ffffff33' : 'transparent')};
 `;
 
 const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
@@ -81,7 +81,7 @@ const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
 
 const CharCount = styled.Text<{ isDark: boolean }>`
   font-size: ${fontSize.sm}px;
-  color: ${({ isDark }) => (isDark ? colors.divider[1] : colors.gray[500])};
+  color: ${({ isDark }) => (isDark ? colors.gray[400] : colors.gray[500])};
   text-align: right;
   margin-top: 4px;
 `;
