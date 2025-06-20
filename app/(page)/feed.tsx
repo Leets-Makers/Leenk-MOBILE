@@ -47,6 +47,7 @@ export default function FeedPage() {
         label={'이강혁'}
       />
       <ToggleExample />
+      <ToggleExample />
     </View>
   );
 }
