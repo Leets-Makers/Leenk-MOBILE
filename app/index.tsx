@@ -11,8 +11,6 @@ import {
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
-import UserCard from '@/components/signup/UserCard';
-
 export default function LandingPage() {
   const handleKakaoLogin = () => {
     console.log('카카오 로그인');
@@ -30,8 +28,6 @@ export default function LandingPage() {
           transition={300}
         />
       </LogoWrapper>
-      <UserCard cardinal={5} name="이한별" position="D" />
-
       <BottomArea>
         <KakaoBtn onPress={handleKakaoLogin}>
           <KakaoLogo />

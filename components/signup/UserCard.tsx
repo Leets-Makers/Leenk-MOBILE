@@ -53,20 +53,19 @@ const TextWrapper = styled.View`
   justify-content: center;
 `;
 
-// // TODO: 공통 컴포넌트로 변경
 const Bedge = styled.Text`
   background-color: ${colors.primaryLight};
-  color: white;
+  color: ${colors.white};
   font-size: ${fontSize.sm}px;
-  padding: 3px 10px;
-  border-radius: 14px;
+  padding: ${4 * height}px ${8 * width}px;
+  border-radius: ${radius.md}px;
   align-self: flex-start;
 `;
 
 const NameText = styled.Text`
   font-size: ${fontSize['4xl']}px;
   font-weight: 500;
-  color: ${colors.gray[900]};
+  color: ${colors.text[1]};
   line-height: ${lineHeight.l}px;
   margin-top: ${8 * height}px;
   font-family: ${fonts.Regular};
