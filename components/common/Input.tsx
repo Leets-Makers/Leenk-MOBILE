@@ -45,6 +45,7 @@ export default function Input({
 export const Wrapper = styled.View`
   width: 100%;
   gap: 8px;
+  font-family: ${fonts.Regular};
 `;
 
 export const Title = styled.Text`
@@ -77,4 +78,5 @@ export const StyledTextInput = styled.TextInput`
 export const SubMessage = styled.Text`
   font-size: ${fontSize.sm}px;
   color: ${colors.text[3]};
+  margin-left: ${12 * width}px;
 `;
