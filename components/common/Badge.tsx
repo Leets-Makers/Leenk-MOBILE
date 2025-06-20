@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 import { XIcon, PlusIcon } from '@/assets';
-import { width, height, radius, fontSize } from '@/theme/globalStyles';
+import { width, height, radius, fontSize, fonts } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { getBadgeBackgroundColor } from '@/utils/button-style';
 
@@ -60,6 +60,7 @@ const Text = styled.Text<{ variant: string }>`
     variant === 'primary' || variant === 'gray'
       ? colors.white
       : colors.text[3]};
+  font-family: ${fonts.Regular};
 `;
 
 const IconWrapper = styled.View`
