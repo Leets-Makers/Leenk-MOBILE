@@ -97,7 +97,8 @@ export default function ProfilePage() {
       <ButtonContainer>
         {step !== 'id' && (
           <CustomButton
-            variant="secondary"
+            variant="text"
+            textColor="text[2]"
             onPress={() => setStep('id')}
             rounded="md"
             size="lg"
