@@ -1,16 +1,6 @@
 // utils/mock/feed.ts
 import { faker } from '@faker-js/faker';
-
-export interface FeedItem {
-  feedId: number;
-  author: {
-    userId: number;
-    name: string;
-    profileImage: string;
-  };
-  thumbNail: string;
-  totalReactionCount: number;
-}
+import { FeedItem } from '@/types/feed';
 
 export const generateMockFeeds = (count: number = 10): FeedItem[] => {
   return Array.from({ length: count }, (_, i) => ({

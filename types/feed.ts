@@ -4,7 +4,7 @@ export interface Author {
   profileImage: string;
 }
 
-export interface Feed {
+export interface FeedItem {
   feedId: number;
   author: Author;
   thumbNail: string;
