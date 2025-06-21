@@ -13,7 +13,7 @@ import {
 type UserCardProps = {
   cardinal: number;
   name: string;
-  position: string;
+  position: 'FE' | 'BE' | 'D' | 'PM';
 };
 
 export default function UserCard({ cardinal, name, position }: UserCardProps) {
