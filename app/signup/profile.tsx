@@ -9,7 +9,7 @@ import { Image } from 'expo-image';
 import { TouchableOpacity } from 'react-native';
 import { BackArrowIcon, DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 
 export default function ProfilePage() {
@@ -74,6 +74,36 @@ export default function ProfilePage() {
     }
   };
 
+  const MBTI_LIST = [
+    'ENFP',
+    'INFJ',
+    'ISTP',
+    'ESFJ',
+    'ENTP',
+    'ISFP',
+    'INTJ',
+    'ESTJ',
+    'INFP',
+    'ESFP',
+    'ISFJ',
+    'ENTJ',
+    'ISTJ',
+    'ENFJ',
+    'ESTP',
+    'INTP',
+  ];
+
+  const [randomMbti, setRandomMbti] = useState('ENFP');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const random = MBTI_LIST[Math.floor(Math.random() * MBTI_LIST.length)];
+      setRandomMbti(random);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Container>
       <Header
@@ -130,7 +160,7 @@ export default function ProfilePage() {
             const filtered = text.replace(/[^a-zA-Z]/g, '').toUpperCase();
             setMbti(filtered);
           }}
-          placeholder="ENFP"
+          placeholder={randomMbti}
           maxLength={4}
         />
       )}
