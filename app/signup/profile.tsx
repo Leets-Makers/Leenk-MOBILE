@@ -228,7 +228,7 @@ export default function ProfilePage() {
           disabled={
             (step === 'id' && kakaoId.trim() === '') ||
             (step === 'intro' && intro.trim() === '') ||
-            (step === 'mbti' && mbti.trim() === '')
+            (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
           }
           style={{
             width: 335 * width,

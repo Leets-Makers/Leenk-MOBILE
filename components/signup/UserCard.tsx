@@ -29,7 +29,7 @@ export default function UserCard({ cardinal, name, position }: UserCardProps) {
   return (
     <Container>
       <TextWrapper>
-        <Bedge>{cardinal}기</Bedge>
+        <Badge>{cardinal}기</Badge>
         <NameText>{name}</NameText>
       </TextWrapper>
 
@@ -53,7 +53,7 @@ const TextWrapper = styled.View`
   justify-content: center;
 `;
 
-const Bedge = styled.Text`
+const Badge = styled.Text`
   background-color: ${colors.primaryLight};
   color: ${colors.white};
   font-size: ${fontSize.sm}px;

@@ -22,7 +22,7 @@ export default function VerifyPage() {
     cardinal: 5,
     name: '이한별',
     position: 'D',
-  };
+  } as const;
 
   return (
     <Container>
