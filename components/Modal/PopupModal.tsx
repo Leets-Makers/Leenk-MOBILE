@@ -60,7 +60,6 @@ export default function PopupModal({
               variant={isCancel ? 'primary' : 'secondary'}
               size="lg"
               rounded="md"
-              textColor={isCancel ? 'primary' : 'black'}
               style={{ width: 145.5 * width }}
             >
               {leftBtnText}
@@ -71,7 +70,6 @@ export default function PopupModal({
               variant={isCancel ? 'secondary' : 'primary'}
               size="lg"
               rounded="md"
-              textColor={isCancel ? 'black' : 'primary'}
               style={{ width: 145.5 * width }}
             >
               {rightBtnText}
@@ -98,19 +96,19 @@ const Container = styled.View`
   height: ${158 * height}px;
   border-radius: ${radius.lg}px;
   overflow: hidden;
-  shadow-color: #000;
+  shadow-color: #7c7c7c;
   shadow-offset: 0px 2px;
   shadow-opacity: 0.15;
   shadow-radius: 4px;
 `;
 
 const TitleText = styled.Text`
-  font-family: ${fonts.Bold};
+  font-family: ${fonts.ExtraBold};
   font-size: ${fontSize.lg}px;
-  font-weight: 800;
   line-height: ${lineHeight.l}px;
   margin-top: ${26 * height}px;
-  color: ${colors.text[1]};
+  color: ${colors.black};
+  font-weight: 500;
 `;
 
 const SubText = styled.Text<{ $isWarning: boolean }>`
@@ -120,6 +118,7 @@ const SubText = styled.Text<{ $isWarning: boolean }>`
   margin-top: ${4 * height}px;
   color: ${({ $isWarning }) =>
     $isWarning ? colors.secondary : colors.text[1]};
+  font-weight: 400;
 `;
 
 const ButtonRow = styled.View`

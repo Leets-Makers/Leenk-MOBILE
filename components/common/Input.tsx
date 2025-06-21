@@ -63,6 +63,10 @@ export const InputBox = styled.View<{ focused: boolean }>`
     focused ? colors.primary : colors.gray[300]};
   border-style: solid;
   background-color: transparent;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
 `;
 
 export const StyledTextInput = styled.TextInput`

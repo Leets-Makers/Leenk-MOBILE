@@ -44,7 +44,6 @@ const MessageText = styled.Text`
 `;
 
 const FeedbackButton = styled.Pressable`
-  height: 32px;
   background-color: ${colors.white};
   border-radius: ${radius.md}px;
   padding: ${8 * height}px ${12 * width}px;
@@ -53,7 +52,7 @@ const FeedbackButton = styled.Pressable`
 
 const ButtonLabel = styled.Text`
   font-size: ${fontSize.sm}px;
-  font-family: ${fonts.Light};
+  font-family: ${fonts.Regular};
   font-weight: 700;
   color: ${colors.primaryLight};
 `;

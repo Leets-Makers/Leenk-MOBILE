@@ -16,13 +16,21 @@ import LogoSymbol from '@/assets/images/Logo_symbol.svg';
 import LogoText from '@/assets/images/Logo_text.svg';
 import WhiteLockIcon from '@/assets/images/ic_lock.svg';
 import XIcon from '@/assets/images/ic_close.svg';
-
+import FEIcon from '@/assets/images/ic_char_FE.svg';
+import DEIcon from '@/assets/images/ic_char_DE.svg';
+import BEIcon from '@/assets/images/ic_char_BE.svg';
+import PMIcon from '@/assets/images/ic_char_PM.svg';
+import DefaultProfileImage from '@/assets/images/ic_default_profile.svg';
 export {
   FeedIcon,
   LeenkIcon,
   LockIcon,
   MypageIcon,
   PlusIcon,
+  FEIcon,
+  DEIcon,
+  BEIcon,
+  PMIcon,
   BackArrowIcon,
   KebabIcon,
   BellIcon,
@@ -36,4 +44,5 @@ export {
   LogoText,
   WhiteLockIcon,
   XIcon,
+  DefaultProfileImage,
 };
