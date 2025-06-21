@@ -12,10 +12,16 @@ export default function VerifyPage() {
   const router = useRouter();
 
   const handleCancel = () => {
-    console.log('취소');
+    router.back();
   };
   const handleRight = () => {
     router.push('/signup/profile');
+  };
+
+  const mockUserData = {
+    cardinal: 5,
+    name: '이한별',
+    position: 'D',
   };
 
   return (
@@ -29,7 +35,11 @@ export default function VerifyPage() {
       />
       <TitleText>너의 계정이 맞는지 확인해 줘</TitleText>
 
-      <UserCard cardinal={5} name="이한별" position="D" />
+      <UserCard
+        cardinal={mockUserData.cardinal}
+        name={mockUserData.name}
+        position={mockUserData.position}
+      />
 
       <ButtonContainer>
         <CustomButton
