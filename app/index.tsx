@@ -53,7 +53,7 @@ const Container = styled.View`
 `;
 
 const LogoWrapper = styled.View`
-  margin-top: ${277 * height}px;
+  margin-top: ${247 * height}px;
 `;
 
 const LogoGif = styled(Image)`

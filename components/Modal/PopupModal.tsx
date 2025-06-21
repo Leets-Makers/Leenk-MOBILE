@@ -96,19 +96,19 @@ const Container = styled.View`
   height: ${158 * height}px;
   border-radius: ${radius.lg}px;
   overflow: hidden;
-  shadow-color: #000;
+  shadow-color: #7c7c7c;
   shadow-offset: 0px 2px;
   shadow-opacity: 0.15;
   shadow-radius: 4px;
 `;
 
 const TitleText = styled.Text`
-  font-family: ${fonts.Bold};
+  font-family: ${fonts.ExtraBold};
   font-size: ${fontSize.lg}px;
-  font-weight: 800;
   line-height: ${lineHeight.l}px;
   margin-top: ${26 * height}px;
   color: ${colors.black};
+  font-weight: 500;
 `;
 
 const SubText = styled.Text<{ $isWarning: boolean }>`
@@ -118,6 +118,7 @@ const SubText = styled.Text<{ $isWarning: boolean }>`
   margin-top: ${4 * height}px;
   color: ${({ $isWarning }) =>
     $isWarning ? colors.secondary : colors.text[1]};
+  font-weight: 400;
 `;
 
 const ButtonRow = styled.View`

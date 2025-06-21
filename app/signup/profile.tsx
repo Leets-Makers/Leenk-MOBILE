@@ -170,7 +170,7 @@ export default function ProfilePage() {
               rounded="md"
               size="lg"
               style={{
-                width: 303 * width,
+                width: 335 * width,
                 height: 48 * height,
                 marginBottom: 10 * height,
               }}
@@ -201,7 +201,7 @@ export default function ProfilePage() {
             (step === 'mbti' && mbti.trim() === '')
           }
           style={{
-            width: 303 * width,
+            width: 335 * width,
             height: 48 * height,
           }}
         >
