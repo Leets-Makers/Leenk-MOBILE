@@ -13,15 +13,7 @@ import {
   width,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-
-const mockUserData = {
-  name: '이한별',
-  intro:
-    '안녕하세요 디자이너ㅇㅇㅇㅇㅇㅇㅇㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ 이ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ한별입니다. 이한별입니다람쥐렁이렁ㅇ얼어러어어얼',
-  kakaoId: 'hanbyeol1234',
-  mbti: 'ENTJ',
-  profileImage: null,
-};
+import { mockUserData } from '@/constants/mockData';
 
 const EditButton = ({
   title,
@@ -96,17 +88,26 @@ export default function ProfileEdit() {
       <EditButton
         title="카톡 아이디"
         content={mockUserData.kakaoId}
-        onPress={() => router.push('/')}
+        onPress={() =>
+          router.push({
+            pathname: '/account/edit',
+            params: { type: 'kakaoId' },
+          })
+        }
       />
       <EditButton
         title="MBTI"
         content={mockUserData.mbti}
-        onPress={() => router.push('/')}
+        onPress={() =>
+          router.push({ pathname: '/account/edit', params: { type: 'mbti' } })
+        }
       />
       <EditButton
         title="자기소개"
         content={mockUserData.intro}
-        onPress={() => router.push('/')}
+        onPress={() =>
+          router.push({ pathname: '/account/edit', params: { type: 'intro' } })
+        }
         isTextarea
       />
     </Container>
@@ -130,9 +131,10 @@ const EditWrapper = styled.View`
 
 const Title = styled.Text`
   font-size: ${fontSize.sm}px;
-  color: ${colors.text[1]};
+  color: ${colors.text[2]};
   font-family: ${fonts.Regular};
   margin-bottom: ${6 * height}px;
+  font-weight: 700;
 `;
 
 const Box = styled.Pressable`
@@ -145,7 +147,7 @@ const Box = styled.Pressable`
 
 const BoxText = styled.Text`
   font-size: ${fontSize.md}px;
-  color: ${colors.text[2]};
+  color: ${colors.black};
   font-family: ${fonts.Regular};
 `;
 const TextareaWrapper = styled.Pressable`
@@ -161,7 +163,7 @@ const TextareaWrapper = styled.Pressable`
 const ScrollableTextContainer = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
-  max-height: ${24 * height}px;
+  max-height: ${36 * height}px;
 `;
 
 const TextareaText = styled.Text`

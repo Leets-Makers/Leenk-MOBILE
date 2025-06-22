@@ -49,7 +49,7 @@ export default function ProfileCard({
         variant="text"
         textColor="text[2]"
         size="sm"
-        onPress={() => router.push('/')}
+        onPress={() => router.push('/account')}
         style={{
           width: 304 * width,
           height: 32 * height,
