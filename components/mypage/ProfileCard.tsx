@@ -11,6 +11,7 @@ import {
 import { DefaultProfileImage } from '@/assets';
 import CustomButton from '../common/Button/CustomButton';
 import { useRouter } from 'expo-router';
+import KakaoIdButton from './KakaoIdButton';
 
 type ProfileCardProps = {
   cardinal: number;
@@ -43,6 +44,7 @@ export default function ProfileCard({
         <DefaultProfileImage width={79 * width} height={79 * height} />
       </RowContainer>
       <IntroContainer>{intro}</IntroContainer>
+      <KakaoIdButton kakaoId={kakaoId} />
       <CustomButton
         variant="text"
         textColor="text[2]"
@@ -61,51 +63,58 @@ export default function ProfileCard({
 }
 
 const Container = styled.View`
-  display: flex;
   background-color: ${colors.white};
   width: ${336 * width}px;
-  height: ${347 * height}px;
-  border-radius: ${radius.md}px;
-  padding: ${24 * height}px ${16 * width}px ${16 * height}px${16 * width}px;
+  border-radius: ${radius.lg}px;
+  padding: ${24 * height}px ${20 * width}px;
+  align-items: center;
 `;
 
 const RowContainer = styled.View`
-  position: relative;
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
-`;
-
-const LeftSection = styled.View`
-  justify-content: center;
+  align-items: center;
 `;
 
 const TextWrapper = styled.View`
-  position: relative;
-  flex-direction: row;
+  flex: 1;
+  margin-right: ${12 * width}px;
 `;
 
-const MbtiText = styled.Text`
-  font-size: ${fontSize.md}px;
+const LeftSection = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+const NameText = styled.Text`
+  font-size: ${fontSize['2xl']}px;
   font-weight: 700;
-  color: ${colors.primary};
-  line-height: ${lineHeight.m}px;
-  margin-top: ${4 * height}px;
-  font-family: ${fonts.Regular};
+  color: ${colors.text[1]};
+  font-family: ${fonts.Bold};
 `;
 
 const Badge = styled.Text`
   background-color: ${colors.primaryLight};
   color: ${colors.white};
   font-size: ${fontSize.sm}px;
-  padding: ${4 * height}px ${8 * width}px;
-  border-radius: ${radius.md}px;
-  align-self: flex-start;
+  padding: ${2 * height}px ${8 * width}px;
+  border-radius: ${radius.sm}px;
+  margin-left: ${8 * width}px;
 `;
 
-const NameText = styled.Text`
-  font-size: ${fontSize.lg}px;
-  font-weight: 700;
-  color: ${colors.text[1]};
-  line-height: ${lineHeight.l}px;
+const MbtiText = styled.Text`
+  font-size: ${fontSize.md}px;
+  color: ${colors.primary};
   font-family: ${fonts.Regular};
+  margin-top: ${4 * height}px;
+`;
+
+const IntroContainer = styled.Text`
+  width: 100%;
+  margin-top: ${20 * height}px;
+  font-size: ${fontSize.md}px;
+  color: ${colors.text[2]};
+  font-family: ${fonts.Regular};
+  line-height: ${lineHeight.m}px;
 `;
