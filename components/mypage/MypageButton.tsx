@@ -22,7 +22,7 @@ export default function MyPageButton({
 const Container = styled.Pressable`
   flex-direction: row;
   background-color: ${colors.white};
-  width: ${336 * width}px;
+  width: 100%;
   border-radius: 13px;
   padding: ${14 * width}px;
   justify-content: space-between;

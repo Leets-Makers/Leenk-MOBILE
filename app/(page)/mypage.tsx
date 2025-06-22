@@ -69,4 +69,5 @@ const Container = styled.View`
   background-color: ${colors.bg[2]};
   gap: ${13 * height}px;
   padding-top: ${28 * height}px;
+  padding-horizontal: ${20 * width}px;
 `;

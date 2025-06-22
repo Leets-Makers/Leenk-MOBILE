@@ -33,7 +33,7 @@ export default function KakaoIdButton({ kakaoId }: { kakaoId: string }) {
 
 const Container = styled.Pressable`
   background-color: ${colors.bg[2]};
-  width: ${303 * width}px;
+  width: 100%;
   border-radius: ${radius.md}px;
   padding: ${12 * height}px ${16 * width}px;
   justify-content: center;

@@ -64,7 +64,7 @@ export default function ProfileCard({
 
 const Container = styled.View`
   background-color: ${colors.white};
-  width: ${336 * width}px;
+  width: 100%;
   border-radius: ${radius.lg}px;
   padding: ${24 * height}px ${16 * width}px ${16 * height}px ${16 * width}px;
   align-items: center;
