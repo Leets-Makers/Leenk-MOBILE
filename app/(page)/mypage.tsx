@@ -49,8 +49,14 @@ export default function MyPage() {
         intro={mockUserData.intro}
         mbti={mockUserData.mbti}
       />
-      <MyPageButton text="피드 보기" onPress={() => router.push('/')} />
-      <MyPageButton text="참여한 모임" onPress={() => router.push('/')} />
+      <MyPageButton
+        text="피드 보기"
+        onPress={() => router.push('/account/my-feed')}
+      />
+      <MyPageButton
+        text="참여한 모임"
+        onPress={() => router.push('/account/my-leenk')}
+      />
     </Container>
   );
 }
