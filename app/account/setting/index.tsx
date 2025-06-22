@@ -46,7 +46,7 @@ export default function SettingPage() {
         <MyPageButton
           text="의견 남기기"
           onPress={() => {
-            console.log('의견 남기기');
+            router.push('/account/setting/help');
           }}
         />
         <MyPageButton
