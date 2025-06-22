@@ -31,7 +31,7 @@ const Container = styled.View`
   justify-content: space-between;
   width: 100%;
   height: ${60 * height}px;
-  padding-horizontal: ${16 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const Side = styled.View`

@@ -98,7 +98,7 @@ const Badge = styled.Text`
   background-color: ${colors.primaryLight};
   color: ${colors.white};
   font-size: ${fontSize.sm}px;
-  padding: ${2 * height}px ${8 * width}px;
+  padding: ${4 * height}px ${12 * width}px;
   border-radius: ${radius.sm}px;
   margin-left: ${8 * width}px;
 `;
@@ -107,14 +107,17 @@ const MbtiText = styled.Text`
   font-size: ${fontSize.md}px;
   color: ${colors.primary};
   font-family: ${fonts.Regular};
-  margin-top: ${4 * height}px;
+  margin-top: ${8 * height}px;
+  font-weight: 700;
 `;
 
 const IntroContainer = styled.Text`
   width: 100%;
-  margin-top: ${20 * height}px;
+  margin: ${20 * height}px 0 ${24 * height}px 0;
   font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
   font-family: ${fonts.Regular};
   line-height: ${lineHeight.m}px;
+  font-weight: 700;
+  text-align: justify;
 `;

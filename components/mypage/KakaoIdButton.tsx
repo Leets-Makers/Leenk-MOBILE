@@ -9,10 +9,11 @@ import {
   width,
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
+import * as Clipboard from 'expo-clipboard';
 
 export default function KakaoIdButton({ kakaoId }: { kakaoId: string }) {
   return (
-    <Container>
+    <Container onPress={() => Clipboard.setStringAsync(kakaoId)}>
       <KakaoIdWrapper>
         <TitleText>카카오톡 ID</TitleText>
         <CopyIcon />
@@ -22,7 +23,7 @@ export default function KakaoIdButton({ kakaoId }: { kakaoId: string }) {
   );
 }
 
-const Container = styled.View`
+const Container = styled.Pressable`
   background-color: ${colors.bg[2]};
   width: ${303 * width}px;
   border-radius: ${radius.md}px;
