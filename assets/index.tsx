@@ -21,6 +21,8 @@ import DEIcon from '@/assets/images/ic_char_DE.svg';
 import BEIcon from '@/assets/images/ic_char_BE.svg';
 import PMIcon from '@/assets/images/ic_char_PM.svg';
 import DefaultProfileImage from '@/assets/images/ic_default_profile.svg';
+import SettingIcon from '@/assets/images/ic_setting.svg';
+
 export {
   FeedIcon,
   LeenkIcon,
@@ -45,4 +47,5 @@ export {
   WhiteLockIcon,
   XIcon,
   DefaultProfileImage,
+  SettingIcon,
 };
