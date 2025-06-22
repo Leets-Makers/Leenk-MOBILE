@@ -40,7 +40,7 @@ export default function SettingPage() {
         <MyPageButton
           text="알림 설정"
           onPress={() => {
-            console.log('알림설정');
+            router.push('/account/setting/notifications');
           }}
         />
         <MyPageButton
@@ -52,7 +52,7 @@ export default function SettingPage() {
         <MyPageButton
           text="계정 관리"
           onPress={() => {
-            console.log('계정 관리');
+            router.push('/account/setting/account-status');
           }}
         />
       </MarginContainer>
