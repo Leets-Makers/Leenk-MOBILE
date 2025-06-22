@@ -15,6 +15,7 @@ import { Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SettingIcon } from '@/assets';
 import ProfileCard from '@/components/mypage/ProfileCard';
+import MyPageButton from '@/components/mypage/MypageButton';
 
 export default function MyPage() {
   const router = useRouter();
@@ -56,14 +57,16 @@ export default function MyPage() {
         intro={mockUserData.intro}
         mbti={mockUserData.mbti}
       />
+      <MyPageButton text="피드 보기" onPress={() => router.push('/')} />
+      <MyPageButton text="참여한 모임" onPress={() => router.push('/')} />
     </Container>
   );
 }
 
 const Container = styled.View`
   flex: 1;
-  justify-content: center;
   align-items: center;
   background-color: ${colors.bg[2]};
-  gap: 20px;
+  gap: ${13 * height}px;
+  padding-top: ${28 * height}px;
 `;

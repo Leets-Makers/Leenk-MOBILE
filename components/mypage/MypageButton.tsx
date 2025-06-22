@@ -1,6 +1,6 @@
 import { RightArrowIcon } from '@/assets';
 import colors from '@/theme/color';
-import { fonts, fontSize, height, radius, width } from '@/theme/globalStyles';
+import { fonts, fontSize, width } from '@/theme/globalStyles';
 import React from 'react';
 import styled from 'styled-components/native';
 
@@ -9,7 +9,7 @@ export default function MyPageButton({
   onPress,
 }: {
   text: string;
-  onPress: React.ReactNode;
+  onPress: () => void;
 }) {
   return (
     <Container onPress={onPress}>
@@ -20,11 +20,13 @@ export default function MyPageButton({
 }
 
 const Container = styled.Pressable`
+  flex-direction: row;
   background-color: ${colors.white};
   width: ${336 * width}px;
-  border-radius: ${radius.lg}px;
+  border-radius: 13px;
   padding: ${14 * width}px;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const Title = styled.Text`
