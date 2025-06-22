@@ -16,7 +16,7 @@ import { useRouter } from 'expo-router';
 import { SettingIcon } from '@/assets';
 import ProfileCard from '@/components/mypage/ProfileCard';
 import MyPageButton from '@/components/mypage/MypageButton';
-import { mockUserData } from '@/constants/mockData';
+import { mockUserData } from '@/constants/mockUserData';
 
 export default function MyPage() {
   const router = useRouter();

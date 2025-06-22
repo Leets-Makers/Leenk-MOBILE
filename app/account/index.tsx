@@ -13,7 +13,7 @@ import {
   width,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { mockUserData } from '@/constants/mockData';
+import { mockUserData } from '@/constants/mockUserData';
 
 const EditButton = ({
   title,

@@ -1,5 +1,5 @@
 import { Header, Input, Textarea } from '@/components';
-import { mockUserData } from '@/constants/mockData';
+import { mockUserData } from '@/constants/mockUserData';
 import colors from '@/theme/color';
 import {
   fonts,
