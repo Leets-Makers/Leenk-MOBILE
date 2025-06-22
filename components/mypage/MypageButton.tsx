@@ -23,7 +23,7 @@ export default function MyPageButton({
   onToggle,
 }: MyPageButtonProps) {
   return (
-    <Container onPress={type === 'arrow' ? onPress : undefined}>
+    <Container onPress={onPress}>
       <Title onlyText={type === 'none'}>{text}</Title>
 
       {type === 'arrow' && <RightArrowIcon />}

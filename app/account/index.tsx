@@ -67,7 +67,7 @@ export default function ProfileEdit() {
           </Text>
         }
         RightSection={
-          <TouchableOpacity onPress={() => router.push('/')}>
+          <TouchableOpacity onPress={() => router.push('/account/setting')}>
             <SettingIcon />
           </TouchableOpacity>
         }

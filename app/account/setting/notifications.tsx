@@ -17,7 +17,6 @@ import styled from 'styled-components/native';
 export default function AccountStatusPage() {
   const router = useRouter();
 
-  // ✅ 상태 관리
   const [feedLike, setFeedLike] = useState(false);
   const [newLinkPost, setNewLinkPost] = useState(false);
   const [newFeedPost, setNewFeedPost] = useState(false);
