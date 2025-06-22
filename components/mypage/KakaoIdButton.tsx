@@ -29,11 +29,12 @@ const Container = styled.Pressable`
   border-radius: ${radius.md}px;
   padding: ${12 * height}px ${16 * width}px;
   justify-content: center;
+  align-items: center;
 `;
 
 const KakaoIdWrapper = styled.View`
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: ${4 * height}px;
 `;
