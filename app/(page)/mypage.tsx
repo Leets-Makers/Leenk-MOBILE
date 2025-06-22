@@ -1,11 +1,9 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import LockIcon from '@/assets/images/ic_lock.svg';
 import {
   fontSize,
   lineHeight,
-  radius,
   fonts,
   width,
   height,

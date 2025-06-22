@@ -10,17 +10,33 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
-const settingItems = [
-  { text: '알림 설정', route: '/account/setting/notifications' },
-  { text: '의견 남기기', route: '/account/setting/help' },
-  { text: '계정 관리', route: '/account/setting/account-status' },
-] as const;
-
-export default function SettingPage() {
+export default function NotificationsPage() {
   const router = useRouter();
+
+  const [toggles, setToggles] = useState({
+    feedLike: false,
+    newLinkPost: false,
+    newFeedPost: false,
+    linkJoinRequest: false,
+  });
+
+  const toggleKeys = [
+    { key: 'feedLike', label: '피드 좋아요' },
+    { key: 'newLinkPost', label: '링크 새 게시물' },
+    { key: 'newFeedPost', label: '피드 새 게시물' },
+    { key: 'linkJoinRequest', label: '링크 참여자 신청 시' },
+  ] as const;
+
+  const handleToggle = (key: keyof typeof toggles) => {
+    setToggles((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
   return (
     <Container>
@@ -33,22 +49,24 @@ export default function SettingPage() {
         TitleSection={
           <Text
             style={{
-              fontWeight: 700,
+              fontWeight: '700',
               fontSize: fontSize.lg,
               fontFamily: fonts.Regular,
               lineHeight: lineHeight.l,
             }}
           >
-            환경설정
+            계정 관리
           </Text>
         }
       />
       <MarginContainer>
-        {settingItems.map((item) => (
+        {toggleKeys.map(({ key, label }) => (
           <MyPageButton
-            key={item.route}
-            text={item.text}
-            onPress={() => router.push(item.route)}
+            key={key}
+            text={label}
+            type="toggle"
+            isToggleOn={toggles[key]}
+            onToggle={() => handleToggle(key)}
           />
         ))}
       </MarginContainer>
