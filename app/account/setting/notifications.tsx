@@ -10,17 +10,17 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
-export default function AccountStatusPage() {
-  const router = useRouter();
+const settingItems = [
+  { text: '알림 설정', route: '/account/setting/notifications' },
+  { text: '의견 남기기', route: '/account/setting/help' },
+  { text: '계정 관리', route: '/account/setting/account-status' },
+] as const;
 
-  const [feedLike, setFeedLike] = useState(false);
-  const [newLinkPost, setNewLinkPost] = useState(false);
-  const [newFeedPost, setNewFeedPost] = useState(false);
-  const [linkJoinRequest, setLinkJoinRequest] = useState(false);
+export default function SettingPage() {
+  const router = useRouter();
 
   return (
     <Container>
@@ -33,41 +33,24 @@ export default function AccountStatusPage() {
         TitleSection={
           <Text
             style={{
-              fontWeight: '700',
+              fontWeight: 700,
               fontSize: fontSize.lg,
               fontFamily: fonts.Regular,
               lineHeight: lineHeight.l,
             }}
           >
-            계정 관리
+            환경설정
           </Text>
         }
       />
       <MarginContainer>
-        <MyPageButton
-          text="피드 좋아요"
-          type="toggle"
-          isToggleOn={feedLike}
-          onToggle={() => setFeedLike((prev) => !prev)}
-        />
-        <MyPageButton
-          text="링크 새 게시물"
-          type="toggle"
-          isToggleOn={newLinkPost}
-          onToggle={() => setNewLinkPost((prev) => !prev)}
-        />
-        <MyPageButton
-          text="피드 새 게시물"
-          type="toggle"
-          isToggleOn={newFeedPost}
-          onToggle={() => setNewFeedPost((prev) => !prev)}
-        />
-        <MyPageButton
-          text="링크 참여자 신청 시"
-          type="toggle"
-          isToggleOn={linkJoinRequest}
-          onToggle={() => setLinkJoinRequest((prev) => !prev)}
-        />
+        {settingItems.map((item) => (
+          <MyPageButton
+            key={item.route}
+            text={item.text}
+            onPress={() => router.push(item.route)}
+          />
+        ))}
       </MarginContainer>
     </Container>
   );

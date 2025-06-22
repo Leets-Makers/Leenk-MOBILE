@@ -3,7 +3,6 @@ import {
   Platform,
   Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
