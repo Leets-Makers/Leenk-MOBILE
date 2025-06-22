@@ -10,10 +10,18 @@ import {
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
 import * as Clipboard from 'expo-clipboard';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function KakaoIdButton({ kakaoId }: { kakaoId: string }) {
+  const { showToast } = useToastStore();
+
+  const handleCopyClick = async () => {
+    await Clipboard.setStringAsync(kakaoId);
+    showToast('kakao ID를 클립보드에 복사했어', 'success');
+  };
+
   return (
-    <Container onPress={() => Clipboard.setStringAsync(kakaoId)}>
+    <Container onPress={handleCopyClick}>
       <KakaoIdWrapper>
         <TitleText>카카오톡 ID</TitleText>
         <CopyIcon />
