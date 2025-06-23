@@ -1,157 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
-import * as MediaLibrary from 'expo-media-library';
-import styled from 'styled-components/native';
-
-const numColumns = 3;
-const screenWidth = Dimensions.get('window').width;
-const imageSize = screenWidth / numColumns;
+// pages/post/feed.tsx
+import React, { useState } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import ImagePicker from '@/components/common/ImagePicker';
+import type * as MediaLibrary from 'expo-media-library';
 
 export default function PostFeedPage() {
-  const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
-  const [selected, setSelected] = useState<MediaLibrary.Asset[]>([]);
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status === 'granted') {
-        setHasPermission(true);
-        const album = await MediaLibrary.getAlbumAsync('Camera');
-        const { assets } = await MediaLibrary.getAssetsAsync({
-          album: album ?? undefined,
-          mediaType: 'photo',
-          sortBy: [['creationTime', false]],
-          first: 50,
-        });
-        setPhotos(assets);
-      } else {
-        setHasPermission(false);
-      }
-    })();
-  }, []);
-
-  const toggleSelect = (photo: MediaLibrary.Asset) => {
-    const isSelected = selected.find((item) => item.id === photo.id);
-    if (isSelected) {
-      setSelected((prev) => prev.filter((item) => item.id !== photo.id));
-    } else if (selected.length < 3) {
-      setSelected((prev) => [...prev, photo]);
-    }
-  };
-
-  const getSelectionNumber = (photoId: string) => {
-    const index = selected.findIndex((item) => item.id === photoId);
-    return index >= 0 ? index + 1 : null;
-  };
-
-  if (hasPermission === false)
-    return (
-      <View>
-        <Text>사진 접근 권한이 필요합니다.</Text>
-      </View>
-    );
+  const [selectedImages, setSelectedImages] = useState<MediaLibrary.Asset[]>(
+    [],
+  );
 
   return (
-    <Container>
-      <FlatList
-        data={photos}
-        renderItem={({ item }) => (
-          <GalleryItem
-            asset={item}
-            selected={selected}
-            onToggle={toggleSelect}
-            getSelectionNumber={getSelectionNumber}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        numColumns={numColumns}
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', margin: 16 }}>
+        피드 글쓰기
+      </Text>
+      <ImagePicker
+        maxSelect={3}
+        aspectRatio={4 / 3}
+        onChange={setSelectedImages}
       />
-    </Container>
+    </View>
   );
 }
-
-// ================== sub-component ==================
-
-interface GalleryItemProps {
-  asset: MediaLibrary.Asset;
-  selected: MediaLibrary.Asset[];
-  onToggle: (photo: MediaLibrary.Asset) => void;
-  getSelectionNumber: (id: string) => number | null;
-}
-
-const GalleryItem = ({
-  asset,
-  selected,
-  onToggle,
-  getSelectionNumber,
-}: GalleryItemProps) => {
-  const [uri, setUri] = useState<string | null>(null);
-
-  useEffect(() => {
-    MediaLibrary.getAssetInfoAsync(asset.id).then((info) => {
-      if (info.localUri) {
-        setUri(info.localUri);
-      }
-    });
-  }, []);
-
-  const number = getSelectionNumber(asset.id);
-
-  if (!uri) return null;
-
-  return (
-    <TouchableOpacity onPress={() => onToggle(asset)}>
-      <ImageWrapper>
-        <StyledImage source={{ uri }} resizeMode="cover" />
-        {number && (
-          <Badge>
-            <BadgeText>{number}</BadgeText>
-          </Badge>
-        )}
-      </ImageWrapper>
-    </TouchableOpacity>
-  );
-};
-
-// =================== styled ===================
-
-const Container = styled.View`
-  flex: 1;
-  background-color: white;
-  padding: 16px;
-`;
-
-const ImageWrapper = styled.View`
-  position: relative;
-`;
-
-const StyledImage = styled.Image`
-  width: ${imageSize}px;
-  height: ${(imageSize * 4) / 3}px;
-  margin: 1px;
-`;
-
-const Badge = styled.View`
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background-color: #7b42ff;
-  width: 22px;
-  height: 22px;
-  border-radius: 11px;
-  align-items: center;
-  justify-content: center;
-`;
-
-const BadgeText = styled.Text`
-  color: white;
-  font-weight: bold;
-  font-size: 12px;
-`;
