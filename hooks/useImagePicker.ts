@@ -12,23 +12,33 @@ export default function useImagePicker({
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [selected, setSelected] = useState<MediaLibrary.Asset[]>([]);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [pageInfo, setPageInfo] = useState<{
+    endCursor: string | null;
+    hasNextPage: boolean;
+  }>({ endCursor: null, hasNextPage: false });
 
   const fetchPhotos = useCallback(async () => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
-    if (status === 'granted') {
-      setHasPermission(true);
-      const album = await MediaLibrary.getAlbumAsync('Camera');
-      const { assets } = await MediaLibrary.getAssetsAsync({
+    if (status !== 'granted') {
+      setHasPermission(false);
+      return;
+    }
+
+    setHasPermission(true);
+    const album = await MediaLibrary.getAlbumAsync('Camera');
+
+    const { assets, endCursor, hasNextPage } =
+      await MediaLibrary.getAssetsAsync({
         album: album ?? undefined,
         mediaType: 'photo',
         sortBy: [['creationTime', false]],
         first: 50,
+        after: pageInfo?.endCursor ?? undefined,
       });
-      setPhotos(assets);
-    } else {
-      setHasPermission(false);
-    }
-  }, []);
+
+    setPhotos((prev) => [...prev, ...assets]);
+    setPageInfo({ endCursor, hasNextPage });
+  }, [pageInfo]);
 
   const toggleSelect = (photo: MediaLibrary.Asset) => {
     const isSelected = selected.find((item) => item.id === photo.id);
@@ -57,5 +67,6 @@ export default function useImagePicker({
     toggleSelect,
     getSelectionNumber,
     fetchPhotos,
+    hasNextPage: pageInfo?.hasNextPage,
   };
 }

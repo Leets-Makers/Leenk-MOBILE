@@ -29,6 +29,7 @@ export default function ImagePicker({
     getSelectionNumber,
     hasPermission,
     fetchPhotos,
+    hasNextPage,
   } = useImagePicker({ maxSelect, onChange });
 
   useEffect(() => {
@@ -47,6 +48,10 @@ export default function ImagePicker({
       }}
       columnWrapperStyle={{
         justifyContent: 'space-between',
+      }}
+      onEndReachedThreshold={0.5}
+      onEndReached={() => {
+        if (hasNextPage) fetchPhotos();
       }}
       renderItem={({ item }) => (
         <ThumbnailItem
