@@ -24,7 +24,8 @@
         "foregroundImage": "./assets/images/Logo_symbol.svg",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": ["READ_MEDIA_IMAGES", "READ_EXTERNAL_STORAGE"]
     },
     "web": {
       "bundler": "metro",
