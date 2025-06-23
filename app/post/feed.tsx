@@ -41,6 +41,7 @@ export default function PostFeedPage() {
         maxSelect={3}
         aspectRatio={9 / 16}
         onChange={setSelectedImages}
+        mode="feed"
       />
     </View>
   );

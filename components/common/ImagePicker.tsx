@@ -13,12 +13,14 @@ interface ImagePickerProps {
   maxSelect: number;
   aspectRatio: number;
   onChange: (selected: MediaLibrary.Asset[]) => void;
+  mode?: 'profile' | 'feed'; // 프로필 이미지 선택인지 피드 이미지 선택인지 구분
 }
 
 export default function ImagePicker({
   maxSelect,
   aspectRatio,
   onChange,
+  mode = 'profile',
 }: ImagePickerProps) {
   const {
     photos,
@@ -59,6 +61,7 @@ export default function ImagePicker({
                 ? '9:16'
                 : undefined
           }
+          mode={mode}
         />
       )}
     />

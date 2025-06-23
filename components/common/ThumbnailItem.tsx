@@ -4,7 +4,8 @@ import * as MediaLibrary from 'expo-media-library';
 import { TouchableOpacity } from 'react-native';
 import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
-import { BackArrowIcon } from '@/assets';
+import { ToastCheckIcon } from '@/assets';
+import { width, height, radius, fontSize } from '@/theme/globalStyles';
 
 interface ThumbnailItemProps {
   asset: MediaLibrary.Asset;
@@ -12,6 +13,7 @@ interface ThumbnailItemProps {
   onToggle: (photo: MediaLibrary.Asset) => void;
   getSelectionNumber: (id: string) => number | null;
   aspectRatio?: '1:1' | '9:16';
+  mode?: 'profile' | 'feed'; // 프로필 선택인지 피드 이미지 선택 페이지인지 구분
 }
 
 export default function ThumbnailItem({
@@ -20,6 +22,7 @@ export default function ThumbnailItem({
   onToggle,
   getSelectionNumber,
   aspectRatio = '1:1',
+  mode = 'profile',
 }: ThumbnailItemProps) {
   const [uri, setUri] = useState<string | null>(null);
 
@@ -33,8 +36,6 @@ export default function ThumbnailItem({
 
   const number = getSelectionNumber(asset.id);
   const isSelected = selected.some((item) => item.id === asset.id);
-
-  // const height = aspectRatio === '1:1' ? IMAGE_SIZE : (IMAGE_SIZE * 4) / 3;
 
   const aspectHeight =
     aspectRatio === '1:1'
@@ -52,11 +53,11 @@ export default function ThumbnailItem({
       <ImageWrapper>
         <StyledImage source={{ uri }} $height={height} />
         {isSelected && (
-          <Badge>
+          <CheckBadge>
             <BadgeText>
-              {selected.length === 1 ? <BackArrowIcon /> : number}
+              {mode === 'profile' ? <ToastCheckIcon /> : number}
             </BadgeText>
-          </Badge>
+          </CheckBadge>
         )}
       </ImageWrapper>
     </TouchableOpacity>
@@ -70,23 +71,23 @@ const ImageWrapper = styled.View`
 const StyledImage = styled.Image<{ $height: number }>`
   width: ${IMAGE_SIZE}px;
   height: ${({ $height }) => $height}px;
-  margin-bottom: ${ITEM_MARGIN}px;
+  margin-right: ${ITEM_MARGIN * width}px;
+  margin-bottom: ${ITEM_MARGIN * height}px;
 `;
 
-const Badge = styled.View`
+const CheckBadge = styled.View`
   position: absolute;
-  top: 6px;
-  right: 6px;
+  bottom: 10px;
+  right: 10px;
   background-color: ${colors.primary};
-  width: 22px;
-  height: 22px;
-  border-radius: 11px;
+  width: ${22 * width}px;
+  height: ${22 * height}px;
+  border-radius: ${radius.full}px;
   align-items: center;
   justify-content: center;
 `;
 
 const BadgeText = styled.Text`
-  color: white;
-  font-weight: bold;
-  font-size: 12px;
+  color: ${colors.white};
+  font-size: ${fontSize.sm};
 `;
