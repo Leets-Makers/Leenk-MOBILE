@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import * as MediaLibrary from 'expo-media-library';
 import { TouchableOpacity } from 'react-native';
-import { imageSize } from '@/constants/dimension.constants';
+import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { BackArrowIcon } from '@/assets';
 
@@ -11,7 +11,7 @@ interface ThumbnailItemProps {
   selected: MediaLibrary.Asset[];
   onToggle: (photo: MediaLibrary.Asset) => void;
   getSelectionNumber: (id: string) => number | null;
-  aspectRatio?: '1:1' | '4:3';
+  aspectRatio?: '1:1' | '9:16';
 }
 
 export default function ThumbnailItem({
@@ -19,7 +19,7 @@ export default function ThumbnailItem({
   selected,
   onToggle,
   getSelectionNumber,
-  aspectRatio = '4:3',
+  aspectRatio = '1:1',
 }: ThumbnailItemProps) {
   const [uri, setUri] = useState<string | null>(null);
 
@@ -34,7 +34,16 @@ export default function ThumbnailItem({
   const number = getSelectionNumber(asset.id);
   const isSelected = selected.some((item) => item.id === asset.id);
 
-  const height = aspectRatio === '1:1' ? imageSize : (imageSize * 4) / 3;
+  // const height = aspectRatio === '1:1' ? IMAGE_SIZE : (IMAGE_SIZE * 4) / 3;
+
+  const aspectHeight =
+    aspectRatio === '1:1'
+      ? IMAGE_SIZE
+      : aspectRatio === '9:16'
+        ? (IMAGE_SIZE * 16) / 9
+        : IMAGE_SIZE;
+
+  const height = aspectHeight;
 
   if (!uri) return null;
 
@@ -59,9 +68,9 @@ const ImageWrapper = styled.View`
 `;
 
 const StyledImage = styled.Image<{ $height: number }>`
-  width: ${imageSize}px;
+  width: ${IMAGE_SIZE}px;
   height: ${({ $height }) => $height}px;
-  margin: 1px;
+  margin-bottom: ${ITEM_MARGIN}px;
 `;
 
 const Badge = styled.View`
