@@ -1,4 +1,4 @@
-// pages/post/feed.tsx
+// 모달 -> 피드 글 쓰기 -> 피드 이미지 선택 페이지
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
@@ -26,7 +26,7 @@ export default function PostFeedPage() {
 
   const handleConfirmExit = () => {
     setIsModalOpen(false);
-    router.replace('/feed');
+    router.replace('/(page)/feed');
   };
 
   return (
@@ -87,11 +87,7 @@ export default function PostFeedPage() {
           variant="primary"
           size="lg"
           disabled={selectedImages.length === 0}
-          onPress={() => {
-            if (selectedImages.length > 0) {
-              console.log('pressed');
-            }
-          }}
+          onPress={() => router.push('/(post)/feed/write')}
         >
           {selectedImages.length > 0 && (
             <CircleBadge>

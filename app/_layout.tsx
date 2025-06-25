@@ -74,6 +74,7 @@ function RootLayoutNav() {
         <Stack>
           <Stack.Screen name="(page)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="(post)" options={{ headerShown: false }} />
         </Stack>
         <Toast />
       </ThemeProvider>

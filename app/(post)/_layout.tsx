@@ -1,3 +1,4 @@
+// (post)/_layout.tsx
 import { Stack } from 'expo-router';
 
 export default function PostLayout() {
@@ -5,8 +6,7 @@ export default function PostLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_bottom',
-        presentation: 'modal',
+        animation: 'slide_from_right',
       }}
     />
   );
