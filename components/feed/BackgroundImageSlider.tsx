@@ -1,38 +1,78 @@
-import React from 'react';
-import { Dimensions, ImageBackground, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Dimensions, ImageBackground } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import styled from 'styled-components/native';
 import { useImageStore } from '@/stores/feedImageStore';
+import { radius } from '@/theme/globalStyles';
 
 const { width, height } = Dimensions.get('window');
 
 export default function BackgroundImageSlider() {
   const selectedImages = useImageStore((state) => state.selectedImages);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   if (selectedImages.length === 0) return null;
 
   return (
-    <Carousel
-      loop
-      width={width}
-      height={height}
-      data={selectedImages}
-      renderItem={({ item }) => (
-        <ImageBackground
-          source={{ uri: item }}
-          style={styles.background}
-          resizeMode="cover"
+    <Wrapper>
+      <CarouselWrapper>
+        <Carousel
+          loop
+          width={width}
+          height={height}
+          data={selectedImages}
+          onSnapToItem={(index) => setCurrentIndex(index)}
+          renderItem={({ item }) => (
+            <StyledBackground source={{ uri: item }} resizeMode="cover" />
+          )}
+          autoPlay={false}
+          scrollAnimationDuration={500}
+          pagingEnabled
         />
-      )}
-      autoPlay={false}
-      scrollAnimationDuration={500}
-      pagingEnabled
-    />
+      </CarouselWrapper>
+
+      <IndicatorContainer>
+        {selectedImages.map((_, index) => (
+          <Dot key={index} isActive={index === currentIndex} />
+        ))}
+      </IndicatorContainer>
+    </Wrapper>
   );
 }
 
-const styles = StyleSheet.create({
-  background: {
-    width: '100%',
-    height: '100%',
-  },
-});
+const Wrapper = styled.View`
+  flex: 1;
+  position: relative;
+`;
+
+const CarouselWrapper = styled.View`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+`;
+
+const StyledBackground = styled(ImageBackground)`
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+`;
+
+const IndicatorContainer = styled.View`
+  position: absolute;
+  bottom: 80px;
+  align-self: center;
+  flex-direction: row;
+  gap: 8px;
+  z-index: 100;
+  elevation: 20;
+`;
+
+const Dot = styled.View<{ isActive: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: ${radius.full}px;
+  background-color: ${({ isActive }) =>
+    isActive ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.3)'};
+`;

@@ -6,6 +6,7 @@ import CheckBox from '@/components/common/CheckBox';
 import Toggle from '@/components/common/Toggle';
 import Header from '@/components/common/Header';
 import ImagePicker from '@/components/common/ImagePicker';
+import BackgroundImageSlider from '@/components/feed/BackgroundImageSlider';
 
 export {
   CustomButton,
@@ -16,4 +17,5 @@ export {
   Toggle,
   Header,
   ImagePicker,
+  BackgroundImageSlider,
 };
