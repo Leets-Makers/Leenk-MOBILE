@@ -50,8 +50,9 @@ export default function ThumbnailItem({
 
   return (
     <TouchableOpacity onPress={() => onToggle(asset)}>
-      <ImageWrapper>
+      <ImageWrapper $height={height}>
         <StyledImage source={{ uri }} $height={height} />
+        {isSelected && <Overlay />}
         {isSelected && (
           <CheckBadge>
             <BadgeText>
@@ -64,8 +65,20 @@ export default function ThumbnailItem({
   );
 }
 
-const ImageWrapper = styled.View`
+const Overlay = styled.View`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 10;
+`;
+
+const ImageWrapper = styled.View<{ $height: number }>`
   position: relative;
+  overflow: hidden;
+  height: ${({ $height }) => $height}px;
 `;
 
 const StyledImage = styled.Image<{ $height: number }>`
@@ -73,6 +86,7 @@ const StyledImage = styled.Image<{ $height: number }>`
   height: ${({ $height }) => $height}px;
   margin-right: ${ITEM_MARGIN * width}px;
   margin-bottom: ${ITEM_MARGIN * height}px;
+  z-index: 1;
 `;
 
 const CheckBadge = styled.View`
@@ -85,6 +99,7 @@ const CheckBadge = styled.View`
   border-radius: ${radius.full}px;
   align-items: center;
   justify-content: center;
+  z-index: 20;
 `;
 
 const BadgeText = styled.Text`

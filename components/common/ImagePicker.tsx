@@ -1,6 +1,6 @@
 // components/ImagePicker/ImagePicker.tsx
 import React, { useEffect } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 import ThumbnailItem from '@/components/common/ThumbnailItem';
 import useImagePicker from '@/hooks/useImagePicker';
@@ -39,36 +39,35 @@ export default function ImagePicker({
   if (hasPermission === false) return null;
 
   return (
-    <FlatList
-      data={photos}
-      numColumns={NUM_COLUMNS}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={{
-        paddingHorizontal: CONTAINER_PADDING,
-      }}
-      columnWrapperStyle={{
-        justifyContent: 'space-between',
-      }}
-      onEndReachedThreshold={0.5}
-      onEndReached={() => {
-        if (hasNextPage) fetchPhotos();
-      }}
-      renderItem={({ item }) => (
-        <ThumbnailItem
-          asset={item}
-          selected={selected}
-          onToggle={toggleSelect}
-          getSelectionNumber={getSelectionNumber}
-          aspectRatio={
-            aspectRatio === 1
-              ? '1:1'
-              : aspectRatio === 9 / 16
-                ? '9:16'
-                : undefined
-          }
-          mode={mode}
-        />
-      )}
-    />
+    <View style={{ maxHeight: 600 }}>
+      <FlatList
+        data={photos}
+        numColumns={NUM_COLUMNS}
+        keyExtractor={(item) => item.id}
+        columnWrapperStyle={{
+          justifyContent: 'space-between',
+        }}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          if (hasNextPage) fetchPhotos();
+        }}
+        renderItem={({ item }) => (
+          <ThumbnailItem
+            asset={item}
+            selected={selected}
+            onToggle={toggleSelect}
+            getSelectionNumber={getSelectionNumber}
+            aspectRatio={
+              aspectRatio === 1
+                ? '1:1'
+                : aspectRatio === 9 / 16
+                  ? '9:16'
+                  : undefined
+            }
+            mode={mode}
+          />
+        )}
+      />
+    </View>
   );
 }
