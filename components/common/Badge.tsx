@@ -3,7 +3,15 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 import { XIcon, PlusIcon } from '@/assets';
-import { width, height, radius, fontSize, fonts } from '@/theme/globalStyles';
+import {
+  width,
+  height,
+  radius,
+  fontSize,
+  fonts,
+  lineHeight,
+  letterSpacing,
+} from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { getBadgeBackgroundColor } from '@/utils';
 
@@ -47,8 +55,8 @@ export default function Badge({
 const Container = styled.View<{ backgroundColor: string }>`
   flex-direction: row;
   align-items: center;
-  align-self: flex-start;
-  padding-vertical: ${5.5 * height}px;
+  justify-content: center;
+  padding-vertical: ${4.5 * height}px;
   padding-horizontal: ${8 * width}px;
   border-radius: ${radius.full}px;
   background-color: ${({ backgroundColor }) => backgroundColor};
@@ -61,6 +69,7 @@ const Text = styled.Text<{ variant: string }>`
       ? colors.white
       : colors.text[3]};
   font-family: ${fonts.Bold};
+  line-height: ${lineHeight.s};
 `;
 
 const IconWrapper = styled.View`

@@ -33,6 +33,7 @@ export default function RootLayout() {
     'NanumSquareNeo-Light': require('../assets/fonts/NanumSquareNeo-aLt.ttf'),
     'NanumSquareNeo-Regular': require('../assets/fonts/NanumSquareNeo-bRg.ttf'),
     'NanumSquareNeo-Bold': require('../assets/fonts/NanumSquareNeo-cBd.ttf'),
+    'NanumSquareNeo-ExtraBold': require('../assets/fonts/NanumSquareNeo-dEb.ttf'),
     ...FontAwesome.font,
   });
 

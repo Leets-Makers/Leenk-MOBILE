@@ -4,6 +4,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import styled from 'styled-components/native';
 import { useImageStore } from '@/stores/feedImageStore';
 import { radius } from '@/theme/globalStyles';
+import { width as WIDTH, height as HEIGHT } from '@/theme/globalStyles';
 
 const { width, height } = Dimensions.get('window');
 
@@ -61,7 +62,7 @@ const StyledBackground = styled(ImageBackground)`
 
 const IndicatorContainer = styled.View`
   position: absolute;
-  bottom: 80px;
+  bottom: ${20 * HEIGHT}px;
   align-self: center;
   flex-direction: row;
   gap: 8px;
@@ -70,8 +71,8 @@ const IndicatorContainer = styled.View`
 `;
 
 const Dot = styled.View<{ isActive: boolean }>`
-  width: 8px;
-  height: 8px;
+  width: ${8 * WIDTH}px;
+  height: ${8 * HEIGHT}px;
   border-radius: ${radius.full}px;
   background-color: ${({ isActive }) =>
     isActive ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.3)'};
