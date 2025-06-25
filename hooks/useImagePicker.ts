@@ -7,7 +7,7 @@ export default function useImagePicker({
   onChange,
 }: {
   maxSelect: number;
-  onChange?: (selected: MediaLibrary.Asset[]) => void;
+  onChange?: (selected: string[]) => void;
 }) {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [selected, setSelected] = useState<MediaLibrary.Asset[]>([]);
@@ -40,7 +40,7 @@ export default function useImagePicker({
     setPageInfo({ endCursor, hasNextPage });
   }, [pageInfo]);
 
-  const toggleSelect = (photo: MediaLibrary.Asset) => {
+  const toggleSelect = async (photo: MediaLibrary.Asset) => {
     const isSelected = selected.find((item) => item.id === photo.id);
     let updated;
     if (isSelected) {
@@ -52,7 +52,19 @@ export default function useImagePicker({
     }
 
     setSelected(updated);
-    if (onChange) onChange(updated);
+    if (onChange) {
+      // Asset[] → localUri[] 변환
+      const uris: string[] = [];
+
+      for (const asset of updated) {
+        const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+        if (info.localUri) {
+          uris.push(info.localUri);
+        }
+      }
+
+      onChange(uris); // 이제 string[]이 넘어감
+    }
   };
 
   const getSelectionNumber = (photoId: string) => {

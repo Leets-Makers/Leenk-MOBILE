@@ -4,22 +4,18 @@ import { FlatList, View } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 import ThumbnailItem from '@/components/common/ThumbnailItem';
 import useImagePicker from '@/hooks/useImagePicker';
-import {
-  CONTAINER_PADDING,
-  NUM_COLUMNS,
-} from '@/constants/dimension.constants';
+import { NUM_COLUMNS } from '@/constants/dimension.constants';
+import { useImageStore } from '@/stores/feedImageStore';
 
 interface ImagePickerProps {
   maxSelect: number;
   aspectRatio: number;
-  onChange: (selected: MediaLibrary.Asset[]) => void;
   mode?: 'profile' | 'feed'; // 프로필 이미지 선택인지 피드 이미지 선택인지 구분
 }
 
 export default function ImagePicker({
   maxSelect,
   aspectRatio,
-  onChange,
   mode = 'profile',
 }: ImagePickerProps) {
   const {
@@ -30,11 +26,28 @@ export default function ImagePicker({
     hasPermission,
     fetchPhotos,
     hasNextPage,
-  } = useImagePicker({ maxSelect, onChange });
+  } = useImagePicker({ maxSelect });
 
+  // 사진 불러오기
   useEffect(() => {
     fetchPhotos();
   }, []);
+
+  // Zustand에 URI 저장
+  useEffect(() => {
+    const saveUris = async () => {
+      const uris: string[] = [];
+
+      for (const asset of selected) {
+        const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+        if (info.localUri) uris.push(info.localUri);
+      }
+
+      useImageStore.getState().setSelectedImages(uris);
+    };
+
+    saveUris();
+  }, [selected]);
 
   if (hasPermission === false) return null;
 

@@ -10,13 +10,13 @@ import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { useRouter } from 'expo-router';
 import PopupModal from '@/components/Modal/PopupModal';
+import { useImageStore } from '@/stores/feedImageStore';
 
 const SIDE_PADDING = 16;
 
 export default function PostFeedPage() {
-  const [selectedImages, setSelectedImages] = useState<MediaLibrary.Asset[]>(
-    [],
-  );
+  const selectedUris = useImageStore((state) => state.selectedImages);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
@@ -67,12 +67,7 @@ export default function PostFeedPage() {
           최대 3장까지 선택 가능해
         </Text>
         <View style={{ flex: 1 }}>
-          <ImagePicker
-            maxSelect={3}
-            aspectRatio={9 / 16}
-            onChange={setSelectedImages}
-            mode="feed"
-          />
+          <ImagePicker maxSelect={3} aspectRatio={9 / 16} mode="feed" />
         </View>
       </View>
 
@@ -86,12 +81,12 @@ export default function PostFeedPage() {
         <CustomButton
           variant="primary"
           size="lg"
-          disabled={selectedImages.length === 0}
+          disabled={selectedUris.length === 0}
           onPress={() => router.push('/(post)/feed/write')}
         >
-          {selectedImages.length > 0 && (
+          {selectedUris.length > 0 && (
             <CircleBadge>
-              <ButtonText>{selectedImages.length}</ButtonText>
+              <ButtonText>{selectedUris.length}</ButtonText>
             </CircleBadge>
           )}
           다음
