@@ -14,6 +14,7 @@ import {
   getButtonTextColor,
   getBorderRadius,
 } from '@/utils/button-style';
+import styled from 'styled-components/native';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'text';
 export type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'full';
@@ -30,6 +31,7 @@ type CustomButtonProps = {
   textStyle?: StyleProp<TextStyle>;
   fullWidth?: boolean;
   textColor?: 'primary' | 'black';
+  renderContent?: () => React.ReactNode;
 };
 
 export default function CustomButton({
@@ -43,6 +45,7 @@ export default function CustomButton({
   textStyle,
   fullWidth = false,
   textColor,
+  renderContent,
 }: CustomButtonProps) {
   const sizeStyle = sizeStyles[size];
   const borderRadius = getBorderRadius(rounded);
@@ -67,15 +70,23 @@ export default function CustomButton({
         style,
       ]}
     >
-      <StyledButtonText
-        variant={variant}
-        style={[
-          { color: getButtonTextColor({ variant, disabled, textColor }) },
-          textStyle,
-        ]}
-      >
-        {children}
-      </StyledButtonText>
+      <StyledContentWrapper>
+        <StyledButtonText
+          variant={variant}
+          style={[
+            { color: getButtonTextColor({ variant, disabled, textColor }) },
+            textStyle,
+          ]}
+        >
+          {children}
+        </StyledButtonText>
+      </StyledContentWrapper>
     </StyledButton>
   );
 }
+
+export const StyledContentWrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;

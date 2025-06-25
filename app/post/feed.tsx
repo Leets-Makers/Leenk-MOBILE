@@ -1,6 +1,6 @@
 // pages/post/feed.tsx
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import ImagePicker from '@/components/common/ImagePicker';
 import type * as MediaLibrary from 'expo-media-library';
@@ -8,6 +8,8 @@ import { CustomButton, Header } from '@/components';
 import { BackArrowIcon } from '@/assets';
 import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
 import colors from '@/theme/color';
+import { useRouter } from 'expo-router';
+import PopupModal from '@/components/Modal/PopupModal';
 
 const SIDE_PADDING = 16;
 
@@ -15,6 +17,17 @@ export default function PostFeedPage() {
   const [selectedImages, setSelectedImages] = useState<MediaLibrary.Asset[]>(
     [],
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+
+  const handleBackPress = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmExit = () => {
+    setIsModalOpen(false);
+    router.replace('/feed');
+  };
 
   return (
     <View
@@ -30,7 +43,11 @@ export default function PostFeedPage() {
         }}
       >
         <Header
-          LeftSection={<BackArrowIcon />}
+          LeftSection={
+            <TouchableOpacity onPress={handleBackPress}>
+              <BackArrowIcon />
+            </TouchableOpacity>
+          }
           TitleSection={
             <Text
               style={{ fontFamily: fonts.ExtraBold, fontSize: fontSize.lg }}
@@ -76,16 +93,24 @@ export default function PostFeedPage() {
             }
           }}
         >
-          <ButtonContent>
-            {selectedImages.length > 0 && (
-              <CircleBadge>
-                <ButtonText>{selectedImages.length}</ButtonText>
-              </CircleBadge>
-            )}
-          </ButtonContent>
-          <Text>다음</Text>
+          {selectedImages.length > 0 && (
+            <CircleBadge>
+              <ButtonText>{selectedImages.length}</ButtonText>
+            </CircleBadge>
+          )}
+          다음
         </CustomButton>
       </View>
+
+      <PopupModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmExit}
+        mainText="글 작성을 그만둘래?"
+        subText="작성하던 내용은 저장되지 않아."
+        isCancel={true}
+        rightBtnText="취소"
+      />
     </View>
   );
 }
