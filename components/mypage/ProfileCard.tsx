@@ -41,7 +41,11 @@ export default function ProfileCard({
           </LeftSection>
           <MbtiText>{mbti}</MbtiText>
         </TextWrapper>
-        <DefaultProfileImage width={79 * width} height={79 * height} />
+        {imageUrl ? (
+          <ProfileImage source={{ uri: imageUrl }} />
+        ) : (
+          <DefaultProfileImage width={79 * width} height={79 * height} />
+        )}
       </RowContainer>
       <IntroContainer>{introduction}</IntroContainer>
       <KakaoIdButton kakaoTalkId={kakaoTalkId} />
@@ -120,4 +124,10 @@ const IntroContainer = styled.Text`
   line-height: ${lineHeight.m}px;
   font-weight: 700;
   text-align: justify;
+`;
+
+const ProfileImage = styled.Image`
+  width: ${79 * width}px;
+  height: ${79 * height}px;
+  border-radius: 99px;
 `;
