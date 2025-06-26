@@ -50,7 +50,7 @@ const Toast = () => {
   return (
     <Wrapper style={{ opacity }}>
       <ToastBox $backgroundColor={backgroundColor}>
-        <IconComponent width={20 * width} height={20 * width} />
+        <IconComponent width={20 * width} height={20 * height} />
         <ToastText>{message}</ToastText>
       </ToastBox>
     </Wrapper>

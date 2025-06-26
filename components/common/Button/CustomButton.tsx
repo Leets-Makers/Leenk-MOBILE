@@ -30,8 +30,7 @@ type CustomButtonProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   fullWidth?: boolean;
-  textColor?: 'primary' | 'black';
-  renderContent?: () => React.ReactNode;
+  textColor?: 'primary' | 'black' | 'text[2]';
 };
 
 export default function CustomButton({
@@ -45,7 +44,6 @@ export default function CustomButton({
   textStyle,
   fullWidth = false,
   textColor,
-  renderContent,
 }: CustomButtonProps) {
   const sizeStyle = sizeStyles[size];
   const borderRadius = getBorderRadius(rounded);

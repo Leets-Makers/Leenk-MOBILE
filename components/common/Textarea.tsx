@@ -25,7 +25,6 @@ export default function Textarea({
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
-
   const isDark = variant === 'dark';
 
   return (

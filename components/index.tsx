@@ -9,6 +9,7 @@ import ImagePicker from '@/components/common/ImagePicker';
 import BackgroundImageSlider from '@/components/feed/BackgroundImageSlider';
 import FeedCard from '@/components/feed/FeedCard';
 import ThumbnailItem from '@/components/common/ThumbnailItem';
+import { ProfileEditButton } from '@/components/common/Button/ProfileEditButton';
 
 export {
   CustomButton,
@@ -22,4 +23,5 @@ export {
   BackgroundImageSlider,
   FeedCard,
   ThumbnailItem,
+  ProfileEditButton,
 };
