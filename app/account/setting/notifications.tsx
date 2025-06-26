@@ -40,25 +40,7 @@ export default function NotificationsPage() {
 
   return (
     <Container>
-      <Header
-        LeftSection={
-          <TouchableOpacity onPress={() => router.back()}>
-            <BackArrowIcon />
-          </TouchableOpacity>
-        }
-        TitleSection={
-          <Text
-            style={{
-              fontWeight: '700',
-              fontSize: fontSize.lg,
-              fontFamily: fonts.Regular,
-              lineHeight: lineHeight.l,
-            }}
-          >
-            계정 관리
-          </Text>
-        }
-      />
+      <Header isBack TitleSection="계정 관리" />
       <MarginContainer>
         {toggleKeys.map(({ key, label }) => (
           <MyPageButton

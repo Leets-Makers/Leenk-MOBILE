@@ -39,25 +39,7 @@ export default function AccountEdit() {
     >
       <Wrapper>
         <Container>
-          <Header
-            LeftSection={
-              <TouchableOpacity onPress={() => router.back()}>
-                <BackArrowIcon />
-              </TouchableOpacity>
-            }
-            TitleSection={
-              <Text
-                style={{
-                  fontWeight: '700',
-                  fontSize: fontSize.lg,
-                  fontFamily: fonts.Regular,
-                  lineHeight: lineHeight.l,
-                }}
-              >
-                {headerText}
-              </Text>
-            }
-          />
+          <Header isBack TitleSection={headerText} />
           <MarginContainer>
             {type === 'kakaoTalkId' && (
               <Input

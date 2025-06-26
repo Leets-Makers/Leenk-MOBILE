@@ -48,25 +48,7 @@ export default function AccountStatusPage() {
 
   return (
     <Container>
-      <Header
-        LeftSection={
-          <TouchableOpacity onPress={() => router.back()}>
-            <BackArrowIcon />
-          </TouchableOpacity>
-        }
-        TitleSection={
-          <Text
-            style={{
-              fontWeight: 700,
-              fontSize: fontSize.lg,
-              fontFamily: fonts.Regular,
-              lineHeight: lineHeight.l,
-            }}
-          >
-            계정 관리
-          </Text>
-        }
-      />
+      <Header isBack TitleSection="계정 관리" />
       <MarginContainer>
         <MyPageButton text="로그아웃" onPress={handleLogout} type="none" />
         <MyPageButton text="회원탈퇴" onPress={handleDelete} type="none" />

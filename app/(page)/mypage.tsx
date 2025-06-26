@@ -22,23 +22,9 @@ export default function MyPage() {
   return (
     <Container>
       <Header
-        TitleSection={
-          <Text
-            style={{
-              fontWeight: 700,
-              fontSize: fontSize.lg,
-              fontFamily: fonts.Regular,
-              lineHeight: lineHeight.l,
-            }}
-          >
-            마이 페이지
-          </Text>
-        }
-        RightSection={
-          <TouchableOpacity onPress={() => router.push('/account/setting')}>
-            <SettingIcon />
-          </TouchableOpacity>
-        }
+        TitleSection="마이페이지"
+        RightSection={<SettingIcon />}
+        onRightPress={() => router.push('/account/setting')}
       />
       <ProfileCard
         cardinal={mockUserData.cardinal}

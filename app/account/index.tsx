@@ -34,28 +34,10 @@ export default function ProfileEdit() {
   return (
     <Container>
       <Header
-        LeftSection={
-          <TouchableOpacity onPress={() => router.back()}>
-            <BackArrowIcon />
-          </TouchableOpacity>
-        }
-        TitleSection={
-          <Text
-            style={{
-              fontWeight: 700,
-              fontSize: fontSize.lg,
-              fontFamily: fonts.Regular,
-              lineHeight: lineHeight.l,
-            }}
-          >
-            프로필 편집
-          </Text>
-        }
-        RightSection={
-          <TouchableOpacity onPress={() => router.push('/account/setting')}>
-            <SettingIcon />
-          </TouchableOpacity>
-        }
+        isBack
+        TitleSection="프로필 편집"
+        RightSection={<SettingIcon />}
+        onRightPress={() => router.push('/account/setting')}
       />
       <ProfileImageWrapper>
         <DefaultProfileImage width={80 * width} height={80 * height} />

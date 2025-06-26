@@ -37,13 +37,7 @@ export default function PostFeedPage() {
               <BackArrowIcon />
             </TouchableOpacity>
           }
-          TitleSection={
-            <Text
-              style={{ fontFamily: fonts.ExtraBold, fontSize: fontSize.lg }}
-            >
-              게시물 사진 선택
-            </Text>
-          }
+          TitleSection="게시물 사진 선택"
         />
         <SubText>최대 3장까지 선택 가능해</SubText>
         <View style={{ flex: 1 }}>
@@ -104,6 +98,7 @@ const SubText = styled.Text`
   font-family: ${fonts.Regular};
   font-size: ${fontSize.sm}px;
   color: ${colors.primary};
+  padding-top: ${12 * height}px;
   padding-bottom: ${16 * height}px;
 `;
 

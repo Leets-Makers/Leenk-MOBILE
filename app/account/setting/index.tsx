@@ -24,25 +24,7 @@ export default function SettingPage() {
 
   return (
     <Container>
-      <Header
-        LeftSection={
-          <TouchableOpacity onPress={() => router.back()}>
-            <BackArrowIcon />
-          </TouchableOpacity>
-        }
-        TitleSection={
-          <Text
-            style={{
-              fontWeight: 700,
-              fontSize: fontSize.lg,
-              fontFamily: fonts.Regular,
-              lineHeight: lineHeight.l,
-            }}
-          >
-            환경설정
-          </Text>
-        }
-      />
+      <Header isBack TitleSection="환경설정" />
       <MarginContainer>
         {settingItems.map((item) => (
           <MyPageButton
