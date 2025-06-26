@@ -20,8 +20,12 @@ export default function KakaoIdButton({
   const { showToast } = useToastStore();
 
   const handleCopyClick = async () => {
-    await Clipboard.setStringAsync(kakaoTalkId);
-    showToast('kakao ID를 클립보드에 복사했어', 'success');
+    try {
+      await Clipboard.setStringAsync(kakaoTalkId);
+      showToast('kakao ID를 클립보드에 복사했어', 'success');
+    } catch (error) {
+      showToast('복사에 실패했어. 다시 시도해줘', 'error');
+    }
   };
 
   return (
