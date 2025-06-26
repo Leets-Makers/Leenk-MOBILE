@@ -2,12 +2,11 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
-import ImagePicker from '@/components/common/ImagePicker';
-import { CustomButton, Header } from '@/components';
+import { useRouter } from 'expo-router';
+import colors from '@/theme/color';
+import { CustomButton, Header, ImagePicker } from '@/components';
 import { BackArrowIcon } from '@/assets';
 import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
-import colors from '@/theme/color';
-import { useRouter } from 'expo-router';
 import PopupModal from '@/components/Modal/PopupModal';
 import { useImageStore } from '@/stores/feedImageStore';
 import { AspectRatio } from '@/types/aspect-ratio';
@@ -30,18 +29,8 @@ export default function PostFeedPage() {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}
-    >
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: SIDE_PADDING * width,
-        }}
-      >
+    <Container>
+      <ContentWrapper>
         <Header
           LeftSection={
             <TouchableOpacity onPress={handleBackPress}>
@@ -56,16 +45,7 @@ export default function PostFeedPage() {
             </Text>
           }
         />
-        <Text
-          style={{
-            fontFamily: fonts.Regular,
-            fontSize: fontSize.sm,
-            color: colors.primary,
-            paddingBottom: 16 * height,
-          }}
-        >
-          최대 3장까지 선택 가능해
-        </Text>
+        <SubText>최대 3장까지 선택 가능해</SubText>
         <View style={{ flex: 1 }}>
           <ImagePicker
             maxSelect={3}
@@ -73,7 +53,7 @@ export default function PostFeedPage() {
             mode="feed"
           />
         </View>
-      </View>
+      </ContentWrapper>
 
       <View
         style={{
@@ -106,9 +86,26 @@ export default function PostFeedPage() {
         isCancel={true}
         rightBtnText="취소"
       />
-    </View>
+    </Container>
   );
 }
+
+const Container = styled.View`
+  flex: 1;
+  background-color: ${colors.white};
+`;
+
+const ContentWrapper = styled.View`
+  flex: 1;
+  padding: 0 ${SIDE_PADDING}px;
+`;
+
+const SubText = styled.Text`
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.sm}px;
+  color: ${colors.primary};
+  padding-bottom: ${16 * height}px;
+`;
 
 const ButtonContent = styled.View`
   flex-direction: row;

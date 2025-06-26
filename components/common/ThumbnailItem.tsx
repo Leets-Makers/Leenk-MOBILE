@@ -85,14 +85,15 @@ const Overlay = styled.View`
 const ImageWrapper = styled.View<{ $height: number }>`
   position: relative;
   overflow: hidden;
+  width: ${IMAGE_SIZE}px;
   height: ${({ $height }) => $height}px;
+  margin-bottom: ${ITEM_MARGIN * height}px;
 `;
 
 const StyledImage = styled.Image<{ $height: number }>`
   width: ${IMAGE_SIZE}px;
   height: ${({ $height }) => $height}px;
   margin-right: ${ITEM_MARGIN * width}px;
-  margin-bottom: ${ITEM_MARGIN * height}px;
   z-index: 1;
 `;
 

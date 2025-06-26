@@ -67,7 +67,6 @@ const IndicatorContainer = styled.View`
   flex-direction: row;
   gap: 8px;
   z-index: 100;
-  elevation: 20;
 `;
 
 const Dot = styled.View<{ isActive: boolean }>`
