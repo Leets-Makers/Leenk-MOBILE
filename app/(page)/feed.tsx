@@ -1,8 +1,7 @@
-import { Header } from '@/components';
+import { Header, FeedCard } from '@/components';
 import colors from '@/theme/color';
 import { View, FlatList } from 'react-native';
 import { LogoText, BellIcon } from '@/assets';
-import FeedCard from '@/components/feed/FeedCard';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { FeedItem } from '@/types/feed';
 

@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import ImagePicker from '@/components/common/ImagePicker';
-import type * as MediaLibrary from 'expo-media-library';
 import { CustomButton, Header } from '@/components';
 import { BackArrowIcon } from '@/assets';
 import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
@@ -11,6 +10,7 @@ import colors from '@/theme/color';
 import { useRouter } from 'expo-router';
 import PopupModal from '@/components/Modal/PopupModal';
 import { useImageStore } from '@/stores/feedImageStore';
+import { AspectRatio } from '@/types/aspect-ratio';
 
 const SIDE_PADDING = 16;
 
@@ -67,7 +67,11 @@ export default function PostFeedPage() {
           최대 3장까지 선택 가능해
         </Text>
         <View style={{ flex: 1 }}>
-          <ImagePicker maxSelect={3} aspectRatio={9 / 16} mode="feed" />
+          <ImagePicker
+            maxSelect={3}
+            aspectRatio={AspectRatio.PORTRAIT}
+            mode="feed"
+          />
         </View>
       </View>
 

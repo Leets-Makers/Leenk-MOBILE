@@ -8,7 +8,7 @@ interface FeedCardProps {
   item: FeedItem;
 }
 
-export default function ({ item }: FeedCardProps) {
+export default function FeedCard({ item }: FeedCardProps) {
   return (
     <CardContainer>
       <Thumbnail source={{ uri: item.thumbNail }} resizeMode="cover">

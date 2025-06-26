@@ -1,21 +1,21 @@
-// components/ImagePicker/ImagePicker.tsx
 import React, { useEffect } from 'react';
 import { FlatList, View } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
-import ThumbnailItem from '@/components/common/ThumbnailItem';
+import { ThumbnailItem } from '@/components';
 import useImagePicker from '@/hooks/useImagePicker';
-import { NUM_COLUMNS } from '@/constants/dimension.constants';
+import { NUM_COLUMNS } from '@/constants';
 import { useImageStore } from '@/stores/feedImageStore';
+import { AspectRatio } from '@/types/aspect-ratio';
 
 interface ImagePickerProps {
   maxSelect: number;
-  aspectRatio: number;
+  aspectRatio: AspectRatio; // 1:1(SQUARE) or 9:16(PORTRAIT)
   mode?: 'profile' | 'feed'; // 프로필 이미지 선택인지 피드 이미지 선택인지 구분
 }
 
 export default function ImagePicker({
   maxSelect,
-  aspectRatio,
+  aspectRatio = AspectRatio.SQUARE,
   mode = 'profile',
 }: ImagePickerProps) {
   const {
@@ -70,13 +70,7 @@ export default function ImagePicker({
             selected={selected}
             onToggle={toggleSelect}
             getSelectionNumber={getSelectionNumber}
-            aspectRatio={
-              aspectRatio === 1
-                ? '1:1'
-                : aspectRatio === 9 / 16
-                  ? '9:16'
-                  : undefined
-            }
+            aspectRatio={aspectRatio}
             mode={mode}
           />
         )}

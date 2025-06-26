@@ -27,11 +27,18 @@ export default function ThumbnailItem({
   const [uri, setUri] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const load = async () => {
       const info = await MediaLibrary.getAssetInfoAsync(asset.id);
-      setUri(info.localUri ?? asset.uri);
+      if (!cancelled) {
+        setUri(info.localUri ?? asset.uri);
+      }
     };
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [asset]);
 
   const number = getSelectionNumber(asset.id);
@@ -44,14 +51,14 @@ export default function ThumbnailItem({
         ? (IMAGE_SIZE * 16) / 9
         : IMAGE_SIZE;
 
-  const height = aspectHeight;
+  const imageHeight = aspectHeight;
 
   if (!uri) return null;
 
   return (
     <TouchableOpacity onPress={() => onToggle(asset)}>
-      <ImageWrapper $height={height}>
-        <StyledImage source={{ uri }} $height={height} />
+      <ImageWrapper $height={imageHeight}>
+        <StyledImage source={{ uri }} $height={imageHeight} />
         {isSelected && <Overlay />}
         {isSelected && (
           <CheckBadge>

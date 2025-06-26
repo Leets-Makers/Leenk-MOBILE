@@ -7,6 +7,8 @@ import Toggle from '@/components/common/Toggle';
 import Header from '@/components/common/Header';
 import ImagePicker from '@/components/common/ImagePicker';
 import BackgroundImageSlider from '@/components/feed/BackgroundImageSlider';
+import FeedCard from '@/components/feed/FeedCard';
+import ThumbnailItem from '@/components/common/ThumbnailItem';
 
 export {
   CustomButton,
@@ -18,4 +20,6 @@ export {
   Header,
   ImagePicker,
   BackgroundImageSlider,
+  FeedCard,
+  ThumbnailItem,
 };
