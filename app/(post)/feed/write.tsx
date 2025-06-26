@@ -1,4 +1,3 @@
-import { BackArrowIcon } from '@/assets';
 import {
   Header,
   BackgroundImageSlider,
@@ -8,17 +7,10 @@ import {
 } from '@/components';
 import colors from '@/theme/color';
 import { useRouter } from 'expo-router';
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  ScrollView,
-  Platform,
-} from 'react-native';
+import { Text, View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { Author } from '@/types/feed';
-import { fontSize, height } from '@/theme/globalStyles';
+import { fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
@@ -33,7 +25,6 @@ const mockProfile: Author = {
 };
 
 export default function FeedWritePage() {
-  const router = useRouter();
   const [content, setContent] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -60,12 +51,15 @@ export default function FeedWritePage() {
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider />
           <Header
-            LeftSection={
-              <TouchableOpacity onPress={() => router.back()}>
-                <BackArrowIcon color={colors.white} width={18} height={18} />
-              </TouchableOpacity>
-            }
-            style={{ position: 'absolute', top: 0, width: '100%', zIndex: 20 }}
+            isBack
+            isBackWhite
+            style={{
+              position: 'absolute',
+              top: 0,
+              width: '100%',
+              zIndex: 20,
+              paddingHorizontal: 16 * width,
+            }}
           />
           <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
             <View

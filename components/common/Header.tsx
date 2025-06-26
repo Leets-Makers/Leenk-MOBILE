@@ -3,9 +3,11 @@ import { TouchableOpacity, ViewProps } from 'react-native';
 import { fonts, fontSize, height, lineHeight } from '@/theme/globalStyles';
 import { BackArrowIcon } from '@/assets';
 import { useRouter } from 'expo-router';
+import colors from '@/theme/color';
 
 interface HeaderProps extends ViewProps {
   isBack?: boolean; // 뒤로가기
+  isBackWhite?: boolean; // 하얀색 뒤로가기
   TitleSection?: string;
   LeftSection?: React.ReactNode;
   RightSection?: React.ReactNode;
@@ -14,6 +16,7 @@ interface HeaderProps extends ViewProps {
 
 export default function Header({
   isBack = false,
+  isBackWhite = false,
   LeftSection,
   TitleSection,
   RightSection,
@@ -27,7 +30,11 @@ export default function Header({
       <Side>
         {isBack ? (
           <TouchableOpacity onPress={() => router.back()}>
-            <BackArrowIcon />
+            <BackArrowIcon
+              color={isBackWhite ? colors.white : colors.black}
+              width={18}
+              height={18}
+            />
           </TouchableOpacity>
         ) : (
           LeftSection
