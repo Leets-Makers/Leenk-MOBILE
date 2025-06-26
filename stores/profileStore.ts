@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 
 type ProfileState = {
-  step: 'id' | 'intro' | 'mbti' | 'photo';
-  kakaoId: string;
-  intro: string;
+  step: 'id' | 'introduction' | 'mbti' | 'photo';
+  kakaoTalkId: string;
+  introduction: string;
   mbti: string;
   profileImage: string;
   setStep: (step: ProfileState['step']) => void;
-  setKakaoId: (id: string) => void;
-  setIntro: (text: string) => void;
+  setkakaoTalkId: (id: string) => void;
+  setintroduction: (text: string) => void;
   setMbti: (mbti: string) => void;
   setProfileImage: (uri: string) => void;
   reset: () => void;
@@ -16,20 +16,20 @@ type ProfileState = {
 
 export const useProfileStore = create<ProfileState>((set) => ({
   step: 'id',
-  kakaoId: '',
-  intro: '',
+  kakaoTalkId: '',
+  introduction: '',
   mbti: '',
   profileImage: '',
   setStep: (step) => set({ step }),
-  setKakaoId: (kakaoId) => set({ kakaoId }),
-  setIntro: (intro) => set({ intro }),
+  setkakaoTalkId: (kakaoTalkId) => set({ kakaoTalkId }),
+  setintroduction: (introduction) => set({ introduction }),
   setMbti: (mbti) => set({ mbti }),
   setProfileImage: (uri) => set({ profileImage: uri }),
   reset: () =>
     set({
       step: 'id',
-      kakaoId: '',
-      intro: '',
+      kakaoTalkId: '',
+      introduction: '',
       mbti: '',
       profileImage: '',
     }),

@@ -19,12 +19,16 @@ export default function ProfileEdit() {
   const router = useRouter();
 
   const editFields = [
-    { title: '카톡 아이디', content: mockUserData.kakaoId, type: 'kakaoId' },
+    {
+      title: '카톡 아이디',
+      content: mockUserData.kakaoTalkId,
+      type: 'kakaoTalkId',
+    },
     { title: 'MBTI', content: mockUserData.mbti, type: 'mbti' },
     {
       title: '자기소개',
-      content: mockUserData.intro,
-      type: 'intro',
+      content: mockUserData.introductionduction,
+      type: 'introduction',
       isTextarea: true,
     },
   ];

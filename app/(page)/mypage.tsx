@@ -43,8 +43,8 @@ export default function MyPage() {
       <ProfileCard
         cardinal={mockUserData.cardinal}
         name={mockUserData.name}
-        kakaoId={mockUserData.kakaoId}
-        intro={mockUserData.intro}
+        kakaoTalkId={mockUserData.kakaoTalkId}
+        introduction={mockUserData.introduction}
         mbti={mockUserData.mbti}
       />
       <MyPageButton

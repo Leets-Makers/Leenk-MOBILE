@@ -9,16 +9,16 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { DefaultProfileImage } from '@/assets';
-import CustomButton from '../common/Button/CustomButton';
+import CustomButton from '@/components/common/Button/CustomButton';
 import { useRouter } from 'expo-router';
-import KakaoIdButton from './KakaoIdButton';
+import KakaoIdButton from '@/components/mypage/KakaoIdButton';
 
 type ProfileCardProps = {
   cardinal: number;
   name: string;
   imageUrl?: string;
-  intro: string;
-  kakaoId: string;
+  introduction: string;
+  kakaoTalkId: string;
   mbti: string;
 };
 
@@ -26,8 +26,8 @@ export default function ProfileCard({
   cardinal,
   name,
   imageUrl,
-  intro,
-  kakaoId,
+  introduction,
+  kakaoTalkId,
   mbti,
 }: ProfileCardProps) {
   const router = useRouter();
@@ -43,8 +43,8 @@ export default function ProfileCard({
         </TextWrapper>
         <DefaultProfileImage width={79 * width} height={79 * height} />
       </RowContainer>
-      <IntroContainer>{intro}</IntroContainer>
-      <KakaoIdButton kakaoId={kakaoId} />
+      <IntroContainer>{introduction}</IntroContainer>
+      <KakaoIdButton kakaoTalkId={kakaoTalkId} />
       <CustomButton
         variant="text"
         textColor="text[2]"

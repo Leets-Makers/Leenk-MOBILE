@@ -23,11 +23,11 @@ export default function AccountEdit() {
   const router = useRouter();
 
   const headerText =
-    type === 'kakaoId'
+    type === 'kakaoTalkId'
       ? '카톡 ID'
       : type === 'mbti'
         ? 'MBTI'
-        : type === 'intro'
+        : type === 'introduction'
           ? '자기소개'
           : '프로필 수정';
 
@@ -59,11 +59,11 @@ export default function AccountEdit() {
             }
           />
           <MarginContainer>
-            {type === 'kakaoId' && (
+            {type === 'kakaoTalkId' && (
               <Input
                 title="카카오톡 ID를 입력해줘"
                 subMessage="모임원들과의 연락을 위해 필요해."
-                placeholder={mockUserData.kakaoId}
+                placeholder={mockUserData.kakaoTalkId}
               />
             )}
 
@@ -71,10 +71,10 @@ export default function AccountEdit() {
               <Input title="MBTI를 입력해줘" placeholder={mockUserData.mbti} />
             )}
 
-            {type === 'intro' && (
+            {type === 'introduction' && (
               <Textarea
                 title="자기소개를 입력해줘"
-                placeholder={mockUserData.intro}
+                placeholder={mockUserData.introduction}
               />
             )}
           </MarginContainer>

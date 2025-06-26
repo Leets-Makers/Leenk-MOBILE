@@ -12,11 +12,15 @@ import styled from 'styled-components/native';
 import * as Clipboard from 'expo-clipboard';
 import { useToastStore } from '@/stores/toastStore';
 
-export default function KakaoIdButton({ kakaoId }: { kakaoId: string }) {
+export default function KakaoIdButton({
+  kakaoTalkId,
+}: {
+  kakaoTalkId: string;
+}) {
   const { showToast } = useToastStore();
 
   const handleCopyClick = async () => {
-    await Clipboard.setStringAsync(kakaoId);
+    await Clipboard.setStringAsync(kakaoTalkId);
     showToast('kakao ID를 클립보드에 복사했어', 'success');
   };
 
@@ -26,7 +30,7 @@ export default function KakaoIdButton({ kakaoId }: { kakaoId: string }) {
         <TitleText>카카오톡 ID</TitleText>
         <CopyIcon />
       </KakaoIdWrapper>
-      <KakaoIdText>{kakaoId}</KakaoIdText>
+      <KakaoIdText>{kakaoTalkId}</KakaoIdText>
     </Container>
   );
 }
