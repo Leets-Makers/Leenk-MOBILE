@@ -1,4 +1,3 @@
-import { FEIcon, DEIcon, BEIcon, PMIcon } from '@/assets';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import {
@@ -9,6 +8,7 @@ import {
   radius,
   width,
 } from '@/theme/globalStyles';
+import { Position, POSITION_ICON_MAP } from '@/constants/Position';
 
 type UserCardProps = {
   cardinal: number;
@@ -17,14 +17,7 @@ type UserCardProps = {
 };
 
 export default function UserCard({ cardinal, name, position }: UserCardProps) {
-  const PositionIcon =
-    position === 'FE'
-      ? FEIcon
-      : position === 'BE'
-        ? BEIcon
-        : position === 'D'
-          ? DEIcon
-          : PMIcon;
+  const PositionIcon = POSITION_ICON_MAP[position as Position];
 
   return (
     <Container>

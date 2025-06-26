@@ -10,8 +10,10 @@ import {
   width,
   height,
 } from '@/theme/globalStyles';
+import { useRouter } from 'expo-router';
 
 export default function PrivatePage() {
+  const router = useRouter();
   return (
     <Container>
       <LockIcon width={120 * width} height={120 * width} />
@@ -19,7 +21,11 @@ export default function PrivatePage() {
         재밌는 기능들을 {'\n'}
         준비중이야
       </MessageText>
-      <FeedbackButton>
+      <FeedbackButton
+        onPress={() => {
+          router.push('/account/setting/help');
+        }}
+      >
         <ButtonLabel>이런 것도 있으면 좋겠어</ButtonLabel>
       </FeedbackButton>
     </Container>

@@ -30,8 +30,7 @@ const Container = styled.View`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: ${60 * height}px;
-  padding-horizontal: ${16 * width}px;
+  height: ${44 * height}px;
 `;
 
 const Side = styled.View`

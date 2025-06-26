@@ -16,10 +16,10 @@ export default function ProfilePage() {
   const {
     step,
     setStep,
-    kakaoId,
-    setKakaoId,
-    intro,
-    setIntro,
+    kakaoTalkId,
+    setkakaoTalkId,
+    introduction,
+    setintroduction,
     mbti,
     setMbti,
     profileImage,
@@ -42,17 +42,17 @@ export default function ProfilePage() {
 
   const handleNext = () => {
     if (step === 'id') setKakaoModalVisible(true);
-    else if (step === 'photo') setStep('intro');
-    else if (step === 'intro') setStep('mbti');
+    else if (step === 'photo') setStep('introduction');
+    else if (step === 'introduction') setStep('mbti');
     else {
-      console.log('제출: ', { kakaoId, intro, mbti, profileImage });
+      console.log('제출: ', { kakaoTalkId, introduction, mbti, profileImage });
       router.push('/(page)/feed');
     }
   };
   const handlePrevStep = () => {
     if (step === 'photo') setStep('id');
-    else if (step === 'intro') setStep('photo');
-    else if (step === 'mbti') setStep('intro');
+    else if (step === 'introduction') setStep('photo');
+    else if (step === 'mbti') setStep('introduction');
     else router.back();
   };
 
@@ -120,10 +120,10 @@ export default function ProfilePage() {
         <>
           <Input
             title="카카오톡 ID를 입력해줘"
-            value={kakaoId}
+            value={kakaoTalkId}
             onChangeText={(text) => {
               const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
-              setKakaoId(filtered);
+              setkakaoTalkId(filtered);
             }}
             placeholder="모임원들과의 연락을 위해 필요해"
             subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
@@ -132,7 +132,7 @@ export default function ProfilePage() {
             isOpen={kakaoModalVisible}
             onClose={handleModalClose}
             onConfirm={handleConfirm}
-            mainText={kakaoId}
+            mainText={kakaoTalkId}
             subText="카톡 아이디가 맞는지 확인해 줘."
             leftBtnText="아니야"
             rightBtnText="맞아"
@@ -141,10 +141,10 @@ export default function ProfilePage() {
         </>
       )}
 
-      {step === 'intro' && (
+      {step === 'introduction' && (
         <Textarea
-          value={intro}
-          onChangeText={setIntro}
+          value={introduction}
+          onChangeText={setintroduction}
           title="자기소개를 입력해줘"
           placeholder="안녕 나는 프론트 개발자 김링크야"
           maxLength={60}
@@ -226,8 +226,8 @@ export default function ProfilePage() {
           rounded="md"
           size="lg"
           disabled={
-            (step === 'id' && kakaoId.trim() === '') ||
-            (step === 'intro' && intro.trim() === '') ||
+            (step === 'id' && kakaoTalkId.trim() === '') ||
+            (step === 'introduction' && introduction.trim() === '') ||
             (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
           }
           style={{
