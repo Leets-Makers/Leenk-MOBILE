@@ -26,13 +26,7 @@ export default function VerifyPage() {
 
   return (
     <Container>
-      <Header
-        LeftSection={
-          <TouchableOpacity onPress={() => router.back()}>
-            <BackArrowIcon />
-          </TouchableOpacity>
-        }
-      />
+      <Header isBack />
       <TitleText>너의 계정이 맞는지 확인해 줘</TitleText>
 
       <UserCard
