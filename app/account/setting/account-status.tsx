@@ -20,10 +20,6 @@ export default function AccountStatusPage() {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
-  useEffect(() => {
-    console.log(logoutModalVisible);
-  }, [logoutModalVisible]);
-
   const handleLogout = () => {
     setLogoutModalVisible(true);
   };

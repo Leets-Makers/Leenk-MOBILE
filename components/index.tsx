@@ -5,5 +5,15 @@ import Badge from '@/components/common/Badge';
 import CheckBox from '@/components/common/CheckBox';
 import Toggle from '@/components/common/Toggle';
 import Header from '@/components/common/Header';
+import { ProfileEditButton } from '@/components/common/Button/ProfileEditButton';
 
-export { CustomButton, Input, Textarea, Badge, CheckBox, Toggle, Header };
+export {
+  CustomButton,
+  Input,
+  Textarea,
+  Badge,
+  CheckBox,
+  Toggle,
+  Header,
+  ProfileEditButton,
+};

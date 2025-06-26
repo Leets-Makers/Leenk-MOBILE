@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { Text, TouchableOpacity } from 'react-native';
-import { Header } from '@/components';
+import { Header, CustomButton, ProfileEditButton } from '@/components';
 import { BackArrowIcon, DefaultProfileImage, SettingIcon } from '@/assets';
-import CustomButton from '@/components/common/Button/CustomButton';
 import {
   fontSize,
   fonts,
@@ -13,7 +12,6 @@ import {
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { mockUserData } from '@/constants/mockUserData';
-import { ProfileEditButton } from '@/components/common/Button/ProfileEditButton';
 
 export default function ProfileEdit() {
   const router = useRouter();
@@ -27,7 +25,7 @@ export default function ProfileEdit() {
     { title: 'MBTI', content: mockUserData.mbti, type: 'mbti' },
     {
       title: '자기소개',
-      content: mockUserData.introductionduction,
+      content: mockUserData.introduction,
       type: 'introduction',
       isTextarea: true,
     },
