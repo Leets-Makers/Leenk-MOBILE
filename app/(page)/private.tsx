@@ -10,6 +10,8 @@ import {
   width,
   height,
 } from '@/theme/globalStyles';
+import { SafeAreaView } from 'react-native';
+import HeartButton from '@/components/HeartButton';
 
 export default function PrivatePage() {
   return (
@@ -22,6 +24,9 @@ export default function PrivatePage() {
       <FeedbackButton>
         <ButtonLabel>이런 것도 있으면 좋겠어</ButtonLabel>
       </FeedbackButton>
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeartButton />
+      </SafeAreaView>
     </Container>
   );
 }

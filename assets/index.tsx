@@ -16,6 +16,7 @@ import LogoSymbol from '@/assets/images/Logo_symbol.svg';
 import LogoText from '@/assets/images/Logo_text.svg';
 import WhiteLockIcon from '@/assets/images/ic_lock.svg';
 import XIcon from '@/assets/images/ic_close.svg';
+import HeartIcon from '@/assets/images/ic_heart.svg';
 
 export {
   FeedIcon,
@@ -36,4 +37,5 @@ export {
   LogoText,
   WhiteLockIcon,
   XIcon,
+  HeartIcon,
 };
