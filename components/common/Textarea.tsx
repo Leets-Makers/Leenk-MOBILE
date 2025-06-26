@@ -20,11 +20,11 @@ export default function Textarea({
   placeholder,
   variant = 'light',
   minHeight,
+  value,
+  onChangeText,
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
-  const [value, setValue] = useState('');
-
   const isDark = variant === 'dark';
 
   return (
@@ -40,7 +40,7 @@ export default function Textarea({
           value={value}
           isDark={isDark}
           minHeight={minHeight}
-          onChangeText={(text) => setValue(text)}
+          onChangeText={onChangeText}
           onFocus={(e) => {
             setFocused(true);
             props.onFocus?.(e);
@@ -50,7 +50,9 @@ export default function Textarea({
             props.onBlur?.(e);
           }}
         />
-        <CharCount isDark={isDark}>{`${value.length}/${maxLength}`}</CharCount>
+        <CharCount
+          isDark={isDark}
+        >{`${value?.length ?? 0}/${maxLength}`}</CharCount>
       </InputBox>
 
       {subMessage && <SubMessage>{subMessage}</SubMessage>}

@@ -21,7 +21,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(page)',
+  initialRouteName: 'index',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -30,7 +30,6 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   // 폰트 설정
   const [loaded, error] = useFonts({
-    'NanumSquareNeo-Light': require('../assets/fonts/NanumSquareNeo-aLt.ttf'),
     'NanumSquareNeo-Regular': require('../assets/fonts/NanumSquareNeo-bRg.ttf'),
     'NanumSquareNeo-Bold': require('../assets/fonts/NanumSquareNeo-cBd.ttf'),
     ...FontAwesome.font,
@@ -71,8 +70,11 @@ function RootLayoutNav() {
 
       {/* 앱 전체 Theme 적용 */}
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(page)" options={{ headerShown: false }} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
         <Toast />

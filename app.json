@@ -4,21 +4,21 @@
     "slug": "Leenk",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/Logo_symbol.svg",
+    "icon": "./assets/images/ic_logo.png",
     "scheme": "leenk",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/ic_splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#F7F7FA"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Logo_symbol.svg",
+        "foregroundImage": "./assets/images/ic_logo.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
@@ -26,7 +26,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/Logo_symbol.svg"
+      "favicon": "./assets/images/ic_logo.png"
     },
     "plugins": ["expo-router"],
     "experiments": {

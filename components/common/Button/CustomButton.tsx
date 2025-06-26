@@ -29,7 +29,7 @@ type CustomButtonProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   fullWidth?: boolean;
-  textColor?: 'primary' | 'black';
+  textColor?: 'primary' | 'black' | 'text[2]';
 };
 
 export default function CustomButton({
