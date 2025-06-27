@@ -6,10 +6,10 @@ import Animated, {
   withSequence,
   withRepeat,
   runOnJS,
+  Easing,
 } from 'react-native-reanimated';
 import styled from 'styled-components/native';
 import HeartIcon from './HeartIcon';
-import { Easing } from 'react-native-reanimated';
 
 interface Props {
   onComplete: () => void;

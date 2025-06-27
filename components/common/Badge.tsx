@@ -10,7 +10,6 @@ import {
   fontSize,
   fonts,
   lineHeight,
-  letterSpacing,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { getBadgeBackgroundColor } from '@/utils';
@@ -30,7 +29,7 @@ export default function Badge({
   onRemove,
   onPress,
 }: BadgeProps) {
-  return (
+  const BadgeContent = (
     <Container
       variant={variant}
       backgroundColor={getBadgeBackgroundColor(variant)}
@@ -52,6 +51,14 @@ export default function Badge({
       )}
     </Container>
   );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress}>{BadgeContent}</TouchableOpacity>
+    );
+  }
+
+  return BadgeContent;
 }
 
 const Container = styled.View<{

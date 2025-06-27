@@ -1,5 +1,12 @@
 import colors from '@/theme/color';
-import { fonts, fontSize, lineHeight, radius } from '@/theme/globalStyles';
+import {
+  fonts,
+  fontSize,
+  height,
+  lineHeight,
+  radius,
+  width,
+} from '@/theme/globalStyles';
 import { FeedReactedUser, FeedConnectedUser } from '@/types/feed';
 import { BlurView } from 'expo-blur';
 import { Modal, Pressable, FlatList } from 'react-native';
@@ -62,7 +69,9 @@ const BlurSheet = styled(BlurView)`
   background-color: rgba(255, 255, 255, 0.6);
   border-top-left-radius: ${radius.md}px;
   border-top-right-radius: ${radius.md}px;
-  padding: 16px 20px 0 20px;
+  margin-horizontal: ${12 * width}px;
+  padding-horizontal: ${12 * width}px;
+  padding-vertical: ${12 * height}px;
   max-height: 80%;
 `;
 
