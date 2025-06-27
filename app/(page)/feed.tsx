@@ -6,7 +6,7 @@ import { LogoText, BellIcon } from '@/assets';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { FeedItem } from '@/types/feed';
 import { width, height } from '@/theme/globalStyles';
-import BottomModal from '@/components/Modal/BottomModal';
+import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import OnBoarding from '@/components/OnBoarding';
 
 const mockFeeds: FeedItem[] = generateMockFeeds(20);
@@ -44,12 +44,12 @@ export default function FeedPage() {
         showsVerticalScrollIndicator={true}
       />
 
-      <BottomModal
+      <BottomSheetModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
       >
         <OnBoarding onClose={() => setModalVisible(false)} />
-      </BottomModal>
+      </BottomSheetModal>
     </View>
   );
 }
