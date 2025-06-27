@@ -14,6 +14,7 @@ import {
   getButtonTextColor,
   getBorderRadius,
 } from '@/utils/button-style';
+import styled from 'styled-components/native';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'text';
 export type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'full';
@@ -29,7 +30,7 @@ type CustomButtonProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   fullWidth?: boolean;
-  textColor?: 'primary' | 'black';
+  textColor?: 'primary' | 'black' | 'text[2]';
 };
 
 export default function CustomButton({
@@ -67,15 +68,23 @@ export default function CustomButton({
         style,
       ]}
     >
-      <StyledButtonText
-        variant={variant}
-        style={[
-          { color: getButtonTextColor({ variant, disabled, textColor }) },
-          textStyle,
-        ]}
-      >
-        {children}
-      </StyledButtonText>
+      <StyledContentWrapper>
+        <StyledButtonText
+          variant={variant}
+          style={[
+            { color: getButtonTextColor({ variant, disabled, textColor }) },
+            textStyle,
+          ]}
+        >
+          {children}
+        </StyledButtonText>
+      </StyledContentWrapper>
     </StyledButton>
   );
 }
+
+export const StyledContentWrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;

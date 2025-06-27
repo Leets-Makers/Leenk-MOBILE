@@ -56,7 +56,7 @@ const colors = {
   },
 
   text: {
-    1: '#17191A',
+    1: '#2B2D36',
     2: '#525463',
     3: '#8C8F9F',
     4: '#CDCED6',
@@ -66,6 +66,7 @@ const colors = {
     1: '#F0F0F5',
     2: '#E1E1E8',
   },
+  kakao: '#FEE500',
 };
 
 export default colors;

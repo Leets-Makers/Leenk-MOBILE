@@ -16,7 +16,7 @@ type Props = {
   variant: ButtonVariant;
   disabled?: boolean;
   pressed?: boolean;
-  textColor?: 'primary' | 'black';
+  textColor?: 'primary' | 'black' | 'text[2]';
 };
 
 export const getButtonBackgroundColor = ({
@@ -49,7 +49,11 @@ export const getButtonTextColor = ({
   if (variant === 'primary') return colors.white;
   if (variant === 'secondary') return colors.gray[700];
   if (variant === 'text') {
-    return textColor === 'black' ? colors.black : colors.primary;
+    return textColor === 'black'
+      ? colors.black
+      : textColor === 'primary'
+        ? colors.primary
+        : colors.text[2];
   }
 
   return colors.white;
@@ -78,7 +82,7 @@ type BadgeVariant = 'primary' | 'gray' | 'white';
 export const getBadgeBackgroundColor = (variant: BadgeVariant) => {
   switch (variant) {
     case 'primary':
-      return colors.primary;
+      return colors.primaryLight;
     case 'gray':
       return 'rgba(0,0,0,0.4)';
     case 'white':
