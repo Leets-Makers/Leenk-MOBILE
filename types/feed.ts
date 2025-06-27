@@ -30,3 +30,16 @@ export interface FeedDetail {
     profileImage?: string; // isAuthor = false일 경우 없을 수 있음
   }[];
 }
+
+export interface FeedReactedUser {
+  userId: number;
+  name: string;
+  profileImage?: string;
+  reactionCount: number;
+}
+
+export interface FeedConnectedUser {
+  userId: number;
+  name: string;
+  profileImage?: string;
+}

@@ -65,9 +65,9 @@ const InputBox = styled.View<{ focused: boolean; isDark: boolean }>`
   border-radius: ${radius.sm}px;
   padding-vertical: ${12 * height}px;
   padding-horizontal: ${16 * width}px;
-  border-width: 1px;
+  border-width: 2px;
   border-color: ${({ focused }) =>
-    focused ? colors.primary : colors.gray[300]};
+    focused ? colors.violet[400] : colors.gray[300]};
   border-style: solid;
   background-color: ${({ isDark }) =>
     isDark ? 'rgba(255, 255, 255, 0.2)' : 'transparent'};

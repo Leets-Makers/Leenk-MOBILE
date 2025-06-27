@@ -25,6 +25,7 @@ export default function FeedDetailPage() {
         isBack
         isBackWhite
         RightSection={<KebabIcon color={colors.white} width={18} height={18} />}
+        onRightPress={() => console.log('pressed')}
         style={{
           position: 'absolute',
           top: 0,

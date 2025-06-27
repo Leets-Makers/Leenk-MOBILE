@@ -24,7 +24,7 @@ const AnimatedContainer = styled(Animated.View)`
 
 export default function FloatingHeart({ onComplete, color }: Props) {
   const translateY = useSharedValue(0);
-  const translateX = useSharedValue(Math.random() * 60 - 30); // -30 ~ +30 사이 랜덤 시작 위치
+  const translateX = useSharedValue(Math.random() * 50 - 30);
   const opacity = useSharedValue(1);
   const scale = useSharedValue(1);
 

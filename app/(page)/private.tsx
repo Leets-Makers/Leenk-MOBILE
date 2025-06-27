@@ -10,8 +10,6 @@ import {
   width,
   height,
 } from '@/theme/globalStyles';
-import { SafeAreaView } from 'react-native';
-import HeartButton from '@/components/feed/HeartButton';
 import { useRouter } from 'expo-router';
 
 export default function PrivatePage() {
@@ -30,9 +28,6 @@ export default function PrivatePage() {
       >
         <ButtonLabel>이런 것도 있으면 좋겠어</ButtonLabel>
       </FeedbackButton>
-      <SafeAreaView style={{ flex: 1 }}>
-        <HeartButton />
-      </SafeAreaView>
     </Container>
   );
 }

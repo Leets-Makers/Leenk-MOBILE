@@ -105,7 +105,7 @@ export default function HeartButton() {
               <HeartIcon width={28} height={28} fill="#E4387E" />
             </OutlineWrapper>
 
-            {/* 기본 하트 (항상 보이는 고정 아이콘) */}
+            {/* 기본 하트 */}
             <Animated.View style={heartStyle}>
               <HeartIcon width={28} height={28} fill="#E4387E" />
             </Animated.View>
