@@ -1,53 +1,38 @@
-import {
-  Badge,
-  CustomButton,
-  Header,
-  Input,
-  Textarea,
-  Toggle,
-} from '@/components';
-import ButtonExamples from '@/components/examples/ButtonExamples';
-import InputExamples from '@/components/examples/InputExamples';
+import { Header, FeedCard } from '@/components';
 import colors from '@/theme/color';
-import { useState } from 'react';
-import { View, Text } from 'react-native';
-import { BellIcon, LogoText, BackArrowIcon, KebabIcon } from '@/assets';
-import HeaderExamples from '@/components/examples/HeaderExamples';
-import ToggleExample from '@/components/examples/ToggleExample';
+import { View, FlatList } from 'react-native';
+import { LogoText, BellIcon } from '@/assets';
+import { generateMockFeeds } from '@/__mocks__/mockFeed';
+import { FeedItem } from '@/types/feed';
+import { width, height } from '@/theme/globalStyles';
+
+const mockFeeds: FeedItem[] = generateMockFeeds(20);
 
 export default function FeedPage() {
   return (
     <View
       style={{
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: colors.bg[2],
+        paddingHorizontal: 16 * width,
       }}
     >
-      <HeaderExamples />
-
-      <Textarea variant="dark" placeholder="안녕하세요 " />
-      <CustomButton variant="primary" onPress={() => console.log('pressed')}>
-        확인
-      </CustomButton>
-      <Input placeholder="안녕하세요" />
-      <Badge label={'3기'} />
-      <Badge
-        variant="gray"
-        label={'이강혁'}
-        iconType="plus"
-        onRemove={() => console.log()}
+      <Header
+        LeftSection={<LogoText width={65} height={24} />}
+        RightSection={<BellIcon />}
       />
-      <Badge variant="white" label={'1,230'} />
-      <Badge
-        variant="primary"
-        iconType="x"
-        onRemove={() => console.log()}
-        label={'이강혁'}
+      <FlatList
+        data={mockFeeds}
+        numColumns={2}
+        keyExtractor={(item) => item.feedId.toString()}
+        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        contentContainerStyle={{
+          paddingBottom: 100 * height,
+          paddingTop: 12 * height,
+        }}
+        renderItem={({ item }) => <FeedCard item={item} />}
+        showsVerticalScrollIndicator={true}
       />
-      <ToggleExample />
-      <ToggleExample />
     </View>
   );
 }

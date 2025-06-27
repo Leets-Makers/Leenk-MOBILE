@@ -32,6 +32,7 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     'NanumSquareNeo-Regular': require('../assets/fonts/NanumSquareNeo-bRg.ttf'),
     'NanumSquareNeo-Bold': require('../assets/fonts/NanumSquareNeo-cBd.ttf'),
+    'NanumSquareNeo-ExtraBold': require('../assets/fonts/NanumSquareNeo-dEb.ttf'),
     ...FontAwesome.font,
   });
 

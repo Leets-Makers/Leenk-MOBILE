@@ -14,14 +14,18 @@
       "backgroundColor": "#F7F7FA"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "사진을 선택하려면 접근 권한이 필요합니다."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/ic_logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": ["READ_MEDIA_IMAGES", "READ_EXTERNAL_STORAGE"]
     },
     "web": {
       "bundler": "metro",

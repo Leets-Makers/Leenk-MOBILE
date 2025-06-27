@@ -1,26 +1,60 @@
 import styled from 'styled-components/native';
-import { ViewProps } from 'react-native';
-import { height, width } from '@/theme/globalStyles';
+import { TouchableOpacity, ViewProps } from 'react-native';
+import { fonts, fontSize, height, lineHeight } from '@/theme/globalStyles';
+import { BackArrowIcon } from '@/assets';
+import { useRouter } from 'expo-router';
+import colors from '@/theme/color';
 
 interface HeaderProps extends ViewProps {
+  isBack?: boolean; // 뒤로가기
+  isBackWhite?: boolean; // 하얀색 뒤로가기
+  TitleSection?: string;
   LeftSection?: React.ReactNode;
-  TitleSection?: React.ReactNode;
   RightSection?: React.ReactNode;
+  onRightPress?: () => void;
 }
 
 export default function Header({
+  isBack = false,
+  isBackWhite = false,
   LeftSection,
   TitleSection,
   RightSection,
+  onRightPress,
   ...props
 }: HeaderProps) {
+  const router = useRouter();
+
   return (
     <Container {...props}>
-      <Side>{LeftSection}</Side>
+      <Side>
+        {isBack ? (
+          <TouchableOpacity onPress={() => router.back()}>
+            <BackArrowIcon
+              color={isBackWhite ? colors.white : colors.black}
+              width={18}
+              height={18}
+            />
+          </TouchableOpacity>
+        ) : (
+          LeftSection
+        )}
+      </Side>
 
-      <TitleWrapper>{TitleSection}</TitleWrapper>
+      <TitleWrapper>
+        {TitleSection && <TitleText>{TitleSection}</TitleText>}
+      </TitleWrapper>
 
-      <Side>{RightSection}</Side>
+      <Side>
+        {RightSection &&
+          (onRightPress ? (
+            <TouchableOpacity onPress={onRightPress}>
+              {RightSection}
+            </TouchableOpacity>
+          ) : (
+            RightSection
+          ))}
+      </Side>
     </Container>
   );
 }
@@ -31,6 +65,7 @@ const Container = styled.View`
   justify-content: space-between;
   width: 100%;
   height: ${44 * height}px;
+  margin-top: ${16 * height}px;
 `;
 
 const Side = styled.View`
@@ -41,4 +76,10 @@ const Side = styled.View`
 const TitleWrapper = styled.View`
   align-items: center;
   justify-content: center;
+`;
+
+const TitleText = styled.Text`
+  font-family: ${fonts.Bold};
+  font-size: ${fontSize.lg}px;
+  line-height: ${lineHeight.l};
 `;

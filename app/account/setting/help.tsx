@@ -28,25 +28,7 @@ export default function HelpPage() {
     >
       <Wrapper>
         <Container>
-          <Header
-            LeftSection={
-              <TouchableOpacity onPress={() => router.back()}>
-                <BackArrowIcon />
-              </TouchableOpacity>
-            }
-            TitleSection={
-              <Text
-                style={{
-                  fontWeight: 700,
-                  fontSize: fontSize.lg,
-                  fontFamily: fonts.Regular,
-                  lineHeight: lineHeight.l,
-                }}
-              >
-                의견남기기
-              </Text>
-            }
-          />
+          <Header isBack TitleSection="의견 남기기" />
           <MarginContainer>
             <Textarea
               title="LEENK에 대한 의견을 입력해줘"

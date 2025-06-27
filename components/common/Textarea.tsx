@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInputProps } from 'react-native';
 import styled from 'styled-components/native';
-import { fontSize, radius, height, width } from '@/theme/globalStyles';
+import { fontSize, radius, height, width, fonts } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { Wrapper, Title, SubMessage } from './Input';
 
@@ -69,7 +69,8 @@ const InputBox = styled.View<{ focused: boolean; isDark: boolean }>`
   border-color: ${({ focused }) =>
     focused ? colors.primary : colors.gray[300]};
   border-style: solid;
-  background-color: ${({ isDark }) => (isDark ? ' #ffffff33' : 'transparent')};
+  background-color: ${({ isDark }) =>
+    isDark ? 'rgba(255, 255, 255, 0.2)' : 'transparent'};
 `;
 
 const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
@@ -77,6 +78,7 @@ const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
   min-height: ${({ minHeight }) =>
     minHeight ? `${minHeight * height}px` : `${74 * height}px`};
   font-size: ${fontSize.md}px;
+  font-family: ${fonts.Bold};
   color: ${({ isDark }) => (isDark ? colors.white : colors.black)};
   text-align-vertical: top;
 `;

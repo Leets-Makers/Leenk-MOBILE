@@ -6,8 +6,7 @@ import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
-import { TouchableOpacity } from 'react-native';
-import { BackArrowIcon, DefaultProfileImage } from '@/assets';
+import { DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
@@ -106,13 +105,7 @@ export default function ProfilePage() {
 
   return (
     <Container>
-      <Header
-        LeftSection={
-          <TouchableOpacity onPress={handlePrevStep}>
-            <BackArrowIcon />
-          </TouchableOpacity>
-        }
-      />
+      <Header isBack />
 
       <TitleText>프로필을 만들어보자</TitleText>
 

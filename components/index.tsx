@@ -5,6 +5,10 @@ import Badge from '@/components/common/Badge';
 import CheckBox from '@/components/common/CheckBox';
 import Toggle from '@/components/common/Toggle';
 import Header from '@/components/common/Header';
+import ImagePicker from '@/components/common/ImagePicker';
+import BackgroundImageSlider from '@/components/feed/BackgroundImageSlider';
+import FeedCard from '@/components/feed/FeedCard';
+import ThumbnailItem from '@/components/common/ThumbnailItem';
 import { ProfileEditButton } from '@/components/common/Button/ProfileEditButton';
 
 export {
@@ -15,5 +19,9 @@ export {
   CheckBox,
   Toggle,
   Header,
+  ImagePicker,
+  BackgroundImageSlider,
+  FeedCard,
+  ThumbnailItem,
   ProfileEditButton,
 };

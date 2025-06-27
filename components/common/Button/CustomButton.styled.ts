@@ -1,7 +1,13 @@
 import styled from 'styled-components/native';
 import { ButtonSize, ButtonVariant } from './CustomButton';
 import { Pressable, Text } from 'react-native';
-import { width, height, fonts } from '@/theme/globalStyles';
+import {
+  width,
+  height,
+  fontSize,
+  lineHeight,
+  fonts,
+} from '@/theme/globalStyles';
 
 export const StyledButton = styled(Pressable)`
   flex-direction: row;
@@ -10,9 +16,9 @@ export const StyledButton = styled(Pressable)`
 `;
 
 export const StyledButtonText = styled(Text)<{ variant?: ButtonVariant }>`
-  font-size: 14px;
-  font-weight: 700;
-  font-family: ${fonts.Regular};
+  font-size: ${fontSize.md};
+  font-family: ${fonts.Bold};
+  line-height: ${lineHeight.m};
 `;
 
 export const sizeStyles: Record<
