@@ -1,12 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { FlatList, Dimensions } from 'react-native';
+import { FlatList } from 'react-native';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import styled from 'styled-components/native';
 import CustomButton from '@/components/common/Button/CustomButton';
-import { height, radius, width } from '@/theme/globalStyles';
+import { height, radius, SCREEN_WIDTH, width } from '@/theme/globalStyles';
 import { onboardingData } from '@/constants/onBoardingData';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
+import colors from '@/theme/color';
 
 const CommonBottomSheet = React.forwardRef<
   BottomSheetModal,
@@ -25,7 +24,10 @@ const CommonBottomSheet = React.forwardRef<
       ref={ref}
       index={0}
       snapPoints={[isOnboarding ? '75%' : '50%']}
-      backgroundStyle={{ borderRadius: 24, backgroundColor: '#fff' }}
+      backgroundStyle={{
+        borderRadius: 24,
+        backgroundColor: '#fff',
+      }}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}
@@ -104,8 +106,10 @@ const Container = styled.View`
 `;
 
 const Slide = styled.View`
-  width: ${SCREEN_WIDTH - 32}px;
   align-items: center;
+  justify-content: center;
+  padding-vertical: ${24 * height}px;
+  flex: 1;
 `;
 
 const SlideImage = styled.Image`
@@ -121,7 +125,7 @@ const Title = styled.Text`
 
 const SubText = styled.Text`
   font-size: 14px;
-  color: #666;
+  color: ${colors.text[2]};
   margin-bottom: 20px;
 `;
 

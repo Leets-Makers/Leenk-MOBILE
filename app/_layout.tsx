@@ -60,8 +60,8 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <BottomSheetModalProvider>
-      <GestureHandlerRootView>
+    <GestureHandlerRootView>
+      <BottomSheetModalProvider>
         <SafeAreaProvider>
           {/* StatusBar 설정 */}
           <StatusBar
@@ -90,7 +90,7 @@ function RootLayoutNav() {
             <Toast />
           </ThemeProvider>
         </SafeAreaProvider>
-      </GestureHandlerRootView>
-    </BottomSheetModalProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }

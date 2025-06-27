@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Header, FeedCard } from '@/components';
 import colors from '@/theme/color';
 import { View, FlatList } from 'react-native';
@@ -5,18 +6,18 @@ import { LogoText, BellIcon } from '@/assets';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { FeedItem } from '@/types/feed';
 import { width, height } from '@/theme/globalStyles';
-import { useEffect, useRef } from 'react';
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import CommonBottomSheet from '@/components/Modal/BottomSheetModal';
+import BottomModal from '@/components/Modal/BottomModal';
 
 const mockFeeds: FeedItem[] = generateMockFeeds(20);
 
 export default function FeedPage() {
-  const bottomSheetRef = useRef<BottomSheetModalMethods>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    bottomSheetRef.current?.present();
+    // 페이지 진입 시 모달 자동 표시
+    setModalVisible(true);
   }, []);
+
   return (
     <View
       style={{
@@ -41,12 +42,23 @@ export default function FeedPage() {
         renderItem={({ item }) => <FeedCard item={item} />}
         showsVerticalScrollIndicator={true}
       />
-      <CommonBottomSheet
-        isOnboarding
-        ref={bottomSheetRef}
-        title="피드에 오신 것을 환영합니다!"
-        subText="이 앱은 당신의 일상을 기록할 수 있어요."
-      />
+
+      <BottomModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      >
+        <View>
+          <HeaderText>피드에 오신 걸 환영해요!</HeaderText>
+        </View>
+      </BottomModal>
     </View>
   );
 }
+
+import styled from 'styled-components/native';
+
+const HeaderText = styled.Text`
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+`;
