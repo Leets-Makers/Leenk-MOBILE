@@ -1,4 +1,5 @@
 import 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {
   DarkTheme,
@@ -58,28 +59,32 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <SafeAreaProvider>
-      {/* StatusBar 설정 */}
-      <StatusBar
-        style={colorScheme === 'dark' ? 'light' : 'dark'}
-        backgroundColor="#F0ECFE"
-        translucent={Platform.OS === 'ios'}
-      />
+    <GestureHandlerRootView>
+      <SafeAreaProvider>
+        {/* StatusBar 설정 */}
+        <StatusBar
+          style={colorScheme === 'dark' ? 'light' : 'dark'}
+          backgroundColor="#F0ECFE"
+          translucent={Platform.OS === 'ios'}
+        />
 
-      {/* iOS 대응: SafeAreaView top 영역 배경 적용 */}
-      <SafeAreaView edges={['top']} style={{ backgroundColor: '#F0ECFE' }} />
+        {/* iOS 대응: SafeAreaView top 영역 배경 적용 */}
+        <SafeAreaView edges={['top']} style={{ backgroundColor: '#F0ECFE' }} />
 
-      {/* 앱 전체 Theme 적용 */}
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
+        {/* 앱 전체 Theme 적용 */}
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
         >
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-        <Toast />
-      </ThemeProvider>
-    </SafeAreaProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+          <Toast />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
