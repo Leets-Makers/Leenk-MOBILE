@@ -10,10 +10,11 @@ import { useRouter } from 'expo-router';
 import { Text, View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { Author } from '@/types/feed';
-import { fontSize, height, width } from '@/theme/globalStyles';
+import { fonts, fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
+import styled from 'styled-components/native';
 
 const mockFeed = generateMockFeeds();
 const { userId, name, profileImage } = mockFeed[0].author;
@@ -78,16 +79,7 @@ export default function FeedWritePage() {
                   marginRight: 8,
                 }}
               />
-              <Text
-                style={{
-                  color: colors.white,
-                  fontWeight: 800,
-                  fontSize: fontSize.lg,
-                  marginRight: 12,
-                }}
-              >
-                {mockProfile.name}
-              </Text>
+              <StyledText>{mockProfile.name}</StyledText>
               <Badge
                 variant="gray"
                 iconType="plus"
@@ -126,3 +118,10 @@ export default function FeedWritePage() {
     </KeyboardAvoidingView>
   );
 }
+
+export const StyledText = styled.Text`
+  color: ${colors.white};
+  font-family: ${fonts.ExtraBold};
+  font-size: ${fontSize.lg};
+  margin-right: ${12 * width}px;
+`;

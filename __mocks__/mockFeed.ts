@@ -1,6 +1,6 @@
 // utils/mock/feed.ts
 import { faker } from '@faker-js/faker';
-import { FeedItem } from '@/types/feed';
+import { FeedDetail, FeedItem } from '@/types/feed';
 
 export const generateMockFeeds = (count: number = 30): FeedItem[] => {
   return Array.from({ length: count }, (_, i) => {
@@ -16,4 +16,40 @@ export const generateMockFeeds = (count: number = 30): FeedItem[] => {
       totalReactionCount: faker.number.int({ min: 1, max: 9999 }),
     };
   });
+};
+
+export const generateMockFeedDetail = (): FeedDetail => {
+  const feedId = faker.number.int({ min: 1, max: 999 });
+  const authorSeed = faker.string.uuid();
+  const authorName = faker.person.fullName();
+  const linkedUserCount = faker.number.int({ min: 1, max: 5 });
+
+  return {
+    feedId,
+    author: {
+      userId: faker.number.int({ min: 1, max: 1000 }),
+      name: authorName,
+      profileImage: `https://picsum.photos/seed/author-${authorSeed}/100/100`,
+    },
+    description: faker.lorem.sentence(),
+    totalReactionCount: faker.number.int({ min: 1, max: 5000 }),
+    createdAt: faker.date.recent().toISOString(),
+    media: Array.from({ length: 2 }, (_, idx) => ({
+      position: idx + 1,
+      mediaUrl: `https://picsum.photos/seed/media-${faker.string.uuid()}/600/800`,
+      mediaType: 'IMAGE',
+    })),
+    linkedUserCount,
+    linkedUser: Array.from({ length: linkedUserCount }, (_, idx) => {
+      const isAuthor = idx === 0;
+      return {
+        userId: faker.number.int({ min: 1, max: 1000 }),
+        name: isAuthor ? authorName : faker.person.firstName(),
+        isAuthor,
+        profileImage: isAuthor
+          ? `https://picsum.photos/seed/author-${authorSeed}/100/100`
+          : `https://picsum.photos/seed/friend-${faker.string.uuid()}/100/100`,
+      };
+    }),
+  };
 };

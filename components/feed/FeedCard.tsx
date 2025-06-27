@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { FeedItem } from '@/types/feed';
 import { width, height, radius } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
@@ -9,8 +10,14 @@ interface FeedCardProps {
 }
 
 export default function FeedCard({ item }: FeedCardProps) {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push(`/feed/${item.feedId}`);
+  };
+
   return (
-    <CardContainer>
+    <CardContainer onPress={handlePress}>
       <Thumbnail source={{ uri: item.thumbNail }} resizeMode="cover">
         <OverlayTopLeft>
           <ProfileImage source={{ uri: item.author.profileImage }} />
@@ -27,7 +34,7 @@ export default function FeedCard({ item }: FeedCardProps) {
   );
 }
 
-export const CardContainer = styled.View`
+export const CardContainer = styled.Pressable`
   width: 48%;
   border-radius: ${radius.md * width}px;
   overflow: hidden;
