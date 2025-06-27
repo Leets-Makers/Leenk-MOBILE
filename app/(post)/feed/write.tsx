@@ -10,10 +10,12 @@ import { useRouter } from 'expo-router';
 import { Text, View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { Author } from '@/types/feed';
-import { fontSize, height, width } from '@/theme/globalStyles';
+import { fonts, fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
+import styled from 'styled-components/native';
+import { useImageStore } from '@/stores/feedImageStore';
 
 const mockFeed = generateMockFeeds();
 const { userId, name, profileImage } = mockFeed[0].author;
@@ -27,6 +29,7 @@ const mockProfile: Author = {
 export default function FeedWritePage() {
   const [content, setContent] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const selectedImages = useImageStore((state) => state.selectedImages);
 
   const handleUpload = () => {
     if (content.trim()) {
@@ -49,7 +52,7 @@ export default function FeedWritePage() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={{ flex: 1 }}>
-          <BackgroundImageSlider />
+          <BackgroundImageSlider mediaUrls={selectedImages} />
           <Header
             isBack
             isBackWhite
@@ -78,16 +81,7 @@ export default function FeedWritePage() {
                   marginRight: 8,
                 }}
               />
-              <Text
-                style={{
-                  color: colors.white,
-                  fontWeight: 800,
-                  fontSize: fontSize.lg,
-                  marginRight: 12,
-                }}
-              >
-                {mockProfile.name}
-              </Text>
+              <StyledText>{mockProfile.name}</StyledText>
               <Badge
                 variant="gray"
                 iconType="plus"
@@ -126,3 +120,10 @@ export default function FeedWritePage() {
     </KeyboardAvoidingView>
   );
 }
+
+export const StyledText = styled.Text`
+  color: ${colors.white};
+  font-family: ${fonts.ExtraBold};
+  font-size: ${fontSize.lg};
+  margin-right: ${12 * width}px;
+`;

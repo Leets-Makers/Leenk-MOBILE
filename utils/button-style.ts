@@ -49,11 +49,7 @@ export const getButtonTextColor = ({
   if (variant === 'primary') return colors.white;
   if (variant === 'secondary') return colors.gray[700];
   if (variant === 'text') {
-    return textColor === 'black'
-      ? colors.black
-      : textColor === 'primary'
-        ? colors.primary
-        : colors.text[2];
+    return textColor === 'black' ? colors.black : colors.primary;
   }
 
   return colors.white;

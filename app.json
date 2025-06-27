@@ -27,20 +27,18 @@
       "edgeToEdgeEnabled": true,
       "permissions": [
         "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
         "READ_EXTERNAL_STORAGE",
-        "READ_MEDIA_IMAGES",
-        "READ_EXTERNAL_STORAGE"
+        "WRITE_EXTERNAL_STORAGE"
       ],
-      "package": "com.anonymous.Leenk"
+      "package": "com.example.leenk"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/ic_logo.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
+    "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
     }

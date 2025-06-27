@@ -10,6 +10,7 @@ import BackgroundImageSlider from '@/components/feed/BackgroundImageSlider';
 import FeedCard from '@/components/feed/FeedCard';
 import ThumbnailItem from '@/components/common/ThumbnailItem';
 import { ProfileEditButton } from '@/components/common/Button/ProfileEditButton';
+import UserListModal from '@/components/Modal/UserListModal';
 
 export {
   CustomButton,
@@ -24,4 +25,5 @@ export {
   FeedCard,
   ThumbnailItem,
   ProfileEditButton,
+  UserListModal,
 };
