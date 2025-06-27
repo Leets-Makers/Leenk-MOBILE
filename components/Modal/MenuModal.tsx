@@ -37,17 +37,17 @@ export default function MenuModal({
       onRequestClose={onClose}
     >
       <Overlay onPress={onClose}>
-        <MenuContainer isWrite={isWrite}>
+        <MenuContainer $isWrite={isWrite}>
           <MenuItemWrapper onPress={onPressFirst}>
             {({ pressed }) => (
-              <MenuItem pressed={pressed} isWrite={isWrite}>
+              <MenuItem pressed={pressed} $isWrite={isWrite}>
                 {isWrite ? (
                   <>
                     <LeenkIcon width={20 * width} height={20 * width} />
-                    <MenuText isWrite={isWrite}>링크 글 쓰기</MenuText>
+                    <MenuText $isWrite={isWrite}>링크 글 쓰기</MenuText>
                   </>
                 ) : (
-                  <MenuText isWrite={isWrite}>수정하기</MenuText>
+                  <MenuText $isWrite={isWrite}>수정하기</MenuText>
                 )}
               </MenuItem>
             )}
@@ -55,14 +55,14 @@ export default function MenuModal({
 
           <MenuItemWrapper onPress={onPressSecond}>
             {({ pressed }) => (
-              <MenuItem pressed={pressed} isWrite={isWrite}>
+              <MenuItem pressed={pressed} $isWrite={isWrite}>
                 {isWrite ? (
                   <>
                     <FeedIcon width={20 * width} height={20 * width} />
-                    <MenuText isWrite={isWrite}>피드 글 쓰기</MenuText>
+                    <MenuText $isWrite={isWrite}>피드 글 쓰기</MenuText>
                   </>
                 ) : (
-                  <MenuText isWrite={isWrite}>삭제하기</MenuText>
+                  <MenuText $isWrite={isWrite}>삭제하기</MenuText>
                 )}
               </MenuItem>
             )}
@@ -73,20 +73,20 @@ export default function MenuModal({
   );
 }
 
-const Overlay = styled.Pressable<{ isWrite: boolean }>`
+const Overlay = styled.Pressable<{ $isWrite: boolean }>`
   flex: 1;
   background-color: rgba(0, 0, 0, 0.3);
   align-items: 'center';
 `;
 
-const MenuContainer = styled.View<{ isWrite: boolean }>`
+const MenuContainer = styled.View<{ $isWrite: boolean }>`
   position: absolute;
-  ${({ isWrite }) =>
-    isWrite
+  ${({ $isWrite }) =>
+    $isWrite
       ? `bottom: ${105 * height}px; left: 50%; transform: translateX(-${(134 * width) / 2}px);`
       : ''}
-  ${({ isWrite }) => (!isWrite ? `top: 88px; right: 20px;` : '')}
-  width: ${({ isWrite }) => (isWrite ? 134 * width : 100 * width)}px;
+  ${({ $isWrite }) => (!$isWrite ? `top: 88px; right: 20px;` : '')}
+  width: ${({ $isWrite }) => ($isWrite ? 134 * width : 100 * width)}px;
   padding: ${8 * height}px ${10 * width}px;
   background-color: ${colors.white};
   border-radius: ${radius.md}px;
@@ -99,19 +99,19 @@ const MenuContainer = styled.View<{ isWrite: boolean }>`
   shadow-radius: 4px;
 `;
 
-const MenuItem = styled.View<{ pressed: boolean; isWrite: boolean }>`
+const MenuItem = styled.View<{ pressed: boolean; $isWrite: boolean }>`
   flex-direction: row;
   align-items: center;
-  justify-content: ${({ isWrite }) => (isWrite ? 'flex-start' : 'center')};
+  justify-content: ${({ $isWrite }) => ($isWrite ? 'flex-start' : 'center')};
   padding: ${4 * height}px ${4 * width}px;
   border-radius: ${radius.xs}px;
-  gap: ${({ isWrite }) => (isWrite ? 6 * width : 0)}px;
+  gap: ${({ $isWrite }) => ($isWrite ? 6 * width : 0)}px;
   background-color: ${({ pressed }) =>
     pressed ? colors.bg[3] : 'transparent'};
 `;
 
-const MenuText = styled.Text<{ isWrite: boolean }>`
-  font-family: ${({ isWrite }) => (isWrite ? fonts.Bold : fonts.Regular)};
+const MenuText = styled.Text<{ $isWrite: boolean }>`
+  font-family: ${({ $isWrite }) => ($isWrite ? fonts.Bold : fonts.Regular)};
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
 `;

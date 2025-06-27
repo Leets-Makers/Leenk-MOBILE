@@ -1,15 +1,8 @@
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
-import { Text, TouchableOpacity } from 'react-native';
 import { Header, CustomButton, ProfileEditButton } from '@/components';
-import { BackArrowIcon, DefaultProfileImage, SettingIcon } from '@/assets';
-import {
-  fontSize,
-  fonts,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { DefaultProfileImage, SettingIcon } from '@/assets';
+import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { mockUserData } from '@/constants/mockUserData';
 

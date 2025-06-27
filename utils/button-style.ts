@@ -36,6 +36,8 @@ export const getButtonBackgroundColor = ({
     return colors.divider[2];
   }
 
+  if (variant === 'kakao') return colors.kakao;
+
   return 'transparent';
 };
 
