@@ -121,6 +121,7 @@ export default function HeartButton() {
 
 const HeartWithBadge = styled.View`
   align-items: center;
+  padding-right: ${17 * width}px;
 `;
 
 const Circle = styled.View`

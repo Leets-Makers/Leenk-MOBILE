@@ -1,4 +1,9 @@
-import { Header, BackgroundImageSlider, Badge } from '@/components';
+import {
+  Header,
+  BackgroundImageSlider,
+  Badge,
+  UserListModal,
+} from '@/components';
 import colors from '@/theme/color';
 import { formatDate } from '@/utils/format-date';
 import { Text, View, Image } from 'react-native';
@@ -14,9 +19,12 @@ import { StyledText } from '@/app/(post)/feed/write';
 import { KebabIcon } from '@/assets';
 import HeartButton from '@/components/feed/HeartButton';
 import styled from 'styled-components/native';
+import { useState } from 'react';
 
 export default function FeedDetailPage() {
   const feed = generateMockFeedDetail();
+  const [isModalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={{ flex: 1 }}>
       <BackgroundImageSlider mediaUrls={feed.media.map((m) => m.mediaUrl)} />
@@ -67,6 +75,7 @@ export default function FeedDetailPage() {
               <Badge
                 variant="gray"
                 label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
+                onPress={() => setModalVisible(true)}
               />
             )}
           </View>
@@ -78,7 +87,6 @@ export default function FeedDetailPage() {
           style={{
             paddingHorizontal: 18 * width,
             paddingBottom: 40 * height,
-            marginTop: 12 * height,
           }}
         >
           <Text
@@ -108,6 +116,12 @@ export default function FeedDetailPage() {
           </Text>
         </View>
       </View>
+      <UserListModal
+        visible={isModalVisible}
+        title="함께 연결된 Leets"
+        list={feed.linkedUser}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }

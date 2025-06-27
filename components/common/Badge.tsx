@@ -20,6 +20,7 @@ interface BadgeProps {
   variant?: 'primary' | 'gray' | 'white';
   iconType?: 'plus' | 'x'; // plus면 왼쪽에 + , x 면 오른쪽에 표시
   onRemove?: () => void;
+  onPress?: () => void;
 }
 
 export default function Badge({
@@ -27,6 +28,7 @@ export default function Badge({
   variant = 'primary',
   iconType,
   onRemove,
+  onPress,
 }: BadgeProps) {
   return (
     <Container
