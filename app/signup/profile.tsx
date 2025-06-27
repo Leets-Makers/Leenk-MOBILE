@@ -177,6 +177,7 @@ export default function ProfilePage() {
             variant="text"
             rounded="md"
             textColor="primary"
+            fullWidth
           >
             프로필 사진 선택하기
           </CustomButton>
@@ -192,9 +193,8 @@ export default function ProfilePage() {
               onPress={() => setSkipModalVisible(true)}
               rounded="md"
               size="lg"
+              fullWidth
               style={{
-                width: 335 * width,
-                height: 48 * height,
                 marginBottom: 10 * height,
               }}
             >
@@ -216,6 +216,7 @@ export default function ProfilePage() {
         <CustomButton
           variant="primary"
           onPress={handleNext}
+          fullWidth
           rounded="md"
           size="lg"
           disabled={
@@ -223,10 +224,6 @@ export default function ProfilePage() {
             (step === 'introduction' && introduction.trim() === '') ||
             (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
           }
-          style={{
-            width: 335 * width,
-            height: 48 * height,
-          }}
         >
           {step === 'mbti' ? '시작하자' : '다음으로'}
         </CustomButton>
@@ -244,7 +241,6 @@ const Container = styled.View`
 const StyledText = styled.Text`
   font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
-  font-weight: 500;
   font-family: ${fonts.Regular};
   margin-bottom: ${12 * height}px;
 `;
@@ -253,6 +249,7 @@ const ButtonContainer = styled.View`
   position: absolute;
   bottom: ${44 * height}px;
   align-self: center;
+  width: 100%;
 `;
 
 const ImagePreview = styled.View`
