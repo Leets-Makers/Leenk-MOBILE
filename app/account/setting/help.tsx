@@ -66,7 +66,7 @@ const Container = styled.ScrollView.attrs({
   keyboardShouldPersistTaps: 'handled',
 })`
   flex: 1;
-  padding: ${28 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const MarginContainer = styled.View`

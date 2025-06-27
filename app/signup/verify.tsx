@@ -70,7 +70,7 @@ const Container = styled.View`
   background-color: ${colors.bg[2]};
   align-items: center;
   position: relative;
-  padding: ${29 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const ButtonContainer = styled.View`

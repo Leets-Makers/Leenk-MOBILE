@@ -44,7 +44,7 @@ export default function PrivatePage() {
 
 const Container = styled.View`
   flex: 1;
-  padding: ${28 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
   align-items: center;
   background-color: ${colors.bg[2]};
   gap: ${20 * height};

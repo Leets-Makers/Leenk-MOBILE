@@ -238,7 +238,7 @@ export default function ProfilePage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding: ${29 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const StyledText = styled.Text`
