@@ -12,8 +12,9 @@ import React, { useRef } from 'react';
 import { FlatList, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import { ExpandingDot } from 'react-native-animated-pagination-dots';
+import CustomButton from './common/Button/CustomButton';
 
-export default function OnBoarding() {
+export default function OnBoarding({ onClose }: { onClose: () => void }) {
   const scrollX = useRef(new Animated.Value(0)).current;
 
   return (
@@ -29,36 +30,35 @@ export default function OnBoarding() {
         )}
         keyExtractor={(_, index) => index.toString()}
         horizontal
-        scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
         pagingEnabled
-        decelerationRate="fast"
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: false },
         )}
       />
-
       <ExpandingDot
         data={onboardingData}
         scrollX={scrollX}
-        expandingDotWidth={40}
-        inActiveDotOpacity={0.3}
+        expandingDotWidth={8}
+        inActiveDotOpacity={1}
         dotStyle={{
-          width: 6,
-          height: 6,
-          borderRadius: 3,
-          marginHorizontal: 6,
-          backgroundColor: colors.primary,
+          width: 8,
+          height: 8,
+          borderRadius: 99,
+          marginHorizontal: 8,
         }}
         containerStyle={{
           alignSelf: 'center',
           position: 'absolute',
-          bottom: 32,
+          bottom: 104,
         }}
-        inActiveDotColor={colors.primary}
-        activeDotColor="#F45916"
+        inActiveDotColor={'#0000004D'}
+        activeDotColor={colors.black}
       />
+      <CustomButton fullWidth size="lg" onPress={onClose}>
+        확인했어
+      </CustomButton>
     </Container>
   );
 }
@@ -69,10 +69,8 @@ const Container = styled.View`
 `;
 
 const SlideContainer = styled.View`
-  width: ${100 * width}%;
   justify-content: center;
-  align-items: center;
-  padding: 0 24px;
+  align-items: start;
 `;
 
 const TitleText = styled.Text`
@@ -80,7 +78,7 @@ const TitleText = styled.Text`
   line-height: ${lineHeight.l}px;
   font-family: ${fonts.Bold};
   color: ${colors.black};
-  text-align: center;
+  text-align: start;
 `;
 
 const SubText = styled.Text`
@@ -88,12 +86,12 @@ const SubText = styled.Text`
   line-height: ${lineHeight.m}px;
   font-family: ${fonts.Regular};
   color: ${colors.text[2]};
-  margin-top: ${12 * height}px;
-  text-align: center;
+  margin-top: ${4 * height}px;
+  text-align: start;
 `;
 
 const SlideImage = styled(Image)`
-  width: 100%;
-  height: 300px;
-  margin-top: ${24 * height}px;
+  width: ${324 * width}px;
+  height: ${430 * height}px;
+  margin: ${24 * height}px 0 ${64 * height}px 0;
 `;

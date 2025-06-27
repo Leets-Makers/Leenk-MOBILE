@@ -48,7 +48,7 @@ export default function FeedPage() {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
       >
-        <OnBoarding />
+        <OnBoarding onClose={() => setModalVisible(false)} />
       </BottomModal>
     </View>
   );
