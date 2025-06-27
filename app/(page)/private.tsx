@@ -10,12 +10,9 @@ import {
   width,
   height,
 } from '@/theme/globalStyles';
-<<<<<<< HEAD
 import { SafeAreaView } from 'react-native';
 import HeartButton from '@/components/HeartButton';
-=======
 import { useRouter } from 'expo-router';
->>>>>>> 2ef9f060d5136278de1d80233dec9e5e3e3a6d44
 
 export default function PrivatePage() {
   const router = useRouter();
