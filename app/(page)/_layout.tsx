@@ -133,8 +133,8 @@ const TabContainer = styled.View`
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  height: ${85 * height}px;
-  padding-bottom: ${34 * height}px;
+  height: ${51 * height}px;
+  padding-vertical: ${4 * height}px;
   background-color: ${colors.white};
   border-top-left-radius: ${radius.lg}px;
   border-top-right-radius: ${radius.lg}px;
