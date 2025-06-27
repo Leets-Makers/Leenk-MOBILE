@@ -61,7 +61,7 @@ export default Toast;
 
 const Wrapper = styled(Animated.View)`
   position: absolute;
-  bottom: ${114 * height}px;
+  bottom: ${84 * height}px;
   left: 0;
   right: 0;
   align-items: center;

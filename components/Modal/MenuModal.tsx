@@ -83,7 +83,7 @@ const MenuContainer = styled.View<{ $isWrite: boolean }>`
   position: absolute;
   ${({ $isWrite }) =>
     $isWrite
-      ? `bottom: ${105 * height}px; left: 50%; transform: translateX(-${(134 * width) / 2}px);`
+      ? `bottom: ${70 * height}px; left: 50%; transform: translateX(-${(134 * width) / 2}px);`
       : ''}
   ${({ $isWrite }) => (!$isWrite ? `top: 88px; right: 20px;` : '')}
   width: ${({ $isWrite }) => ($isWrite ? 134 * width : 100 * width)}px;
