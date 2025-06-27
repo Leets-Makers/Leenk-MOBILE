@@ -7,36 +7,72 @@ import colors from '@/theme/color';
 import { radius, width, height } from '@/theme/globalStyles';
 import { getNumberWithComma } from '@/utils';
 import { Badge } from '@/components';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
 
-const COLORS = [
-  '#f472b6', // pink
-  '#fbbf24', // yellow
-  '#34d399', //  green
-  '#38bdf8', // blue
-  '#a78bfa', // purple
-  '#fb7185', // rose
-  '#60a5fa', // sky blue
-  '#f87171', // red
-];
+// const COLORS = [
+//   '#f472b6', // pink
+//   '#fbbf24', // yellow
+//   '#34d399', //  green
+//   '#38bdf8', // blue
+//   '#a78bfa', // purple
+//   '#fb7185', // rose
+//   '#60a5fa', // sky blue
+//   '#f87171', // red
+// ];
 
-const getRandomColor = () => {
-  const index = Math.floor(Math.random() * COLORS.length);
-  return COLORS[index];
-};
+// const getRandomColor = () => {
+//   const index = Math.floor(Math.random() * COLORS.length);
+//   return COLORS[index];
+// };
 
 type HeartData = {
   id: number;
-  color: string;
+  color?: string;
 };
 
 export default function HeartButton() {
   const [hearts, setHearts] = useState<HeartData[]>([]);
   const [count, setCount] = useState<number>(0);
 
+  const heartScale = useSharedValue(1);
+  const outlineScale = useSharedValue(0.8);
+  const outlineOpacity = useSharedValue(0);
+
+  const heartStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: heartScale.value }],
+  }));
+
+  const outlineAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: outlineScale.value }],
+    opacity: outlineOpacity.value,
+  }));
+
   const handlePress = () => {
+    //햅틱 추가
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    outlineOpacity.value = 0.5;
+    outlineScale.value = 0.8;
+
+    outlineScale.value = withTiming(1.8, { duration: 400 });
+    outlineOpacity.value = withTiming(0, { duration: 400 });
+
+    heartScale.value = withSequence(
+      withTiming(0.85, { duration: 100 }),
+      withTiming(1.15, { duration: 100 }),
+      withTiming(1, { duration: 100 }),
+    );
+
+    //하트 생성
     const newHeart: HeartData = {
       id: Date.now(),
-      color: getRandomColor(),
+      // color: getRandomColor(),
     };
     setHearts((prev) => [...prev, newHeart]);
     setCount((prev) => prev + 1);
@@ -65,7 +101,14 @@ export default function HeartButton() {
       >
         <HeartWithBadge>
           <Circle>
-            <HeartIcon width={28} height={28} fill="#E4387E" />
+            <OutlineWrapper style={outlineAnimatedStyle}>
+              <HeartIcon width={28} height={28} fill="#E4387E" />
+            </OutlineWrapper>
+
+            {/* 기본 하트 (항상 보이는 고정 아이콘) */}
+            <Animated.View style={heartStyle}>
+              <HeartIcon width={28} height={28} fill="#E4387E" />
+            </Animated.View>
           </Circle>
           <BadgeWrapper>
             <Badge label={getNumberWithComma(count)} variant="white" />
@@ -95,5 +138,16 @@ const BadgeWrapper = styled.View`
 
 const FloatingHeartWrapper = styled.View`
   position: absolute;
-  bottom: ${54 * height}px;
+  bottom: ${9 * height}px;
+  z-index: 100;
+`;
+
+const OutlineWrapper = styled(Animated.View)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: center;
 `;

@@ -9,10 +9,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import styled from 'styled-components/native';
 import HeartIcon from './HeartIcon';
+import { Easing } from 'react-native-reanimated';
 
 interface Props {
   onComplete: () => void;
-  color: string;
+  color?: string;
 }
 
 const AnimatedContainer = styled(Animated.View)`
@@ -43,7 +44,10 @@ export default function FloatingHeart({ onComplete, color }: Props) {
     );
 
     // 위로 올라가기
-    translateY.value = withTiming(-150, { duration: 1000 });
+    translateY.value = withTiming(-550, {
+      duration: 1500,
+      easing: Easing.out(Easing.linear),
+    });
 
     // 좌우 흔들림 반복
     translateX.value = withRepeat(
