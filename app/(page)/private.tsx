@@ -11,12 +11,22 @@ import {
   height,
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
+import { Header } from '@/components';
+import { BellIcon, LogoText } from '@/assets';
 
 export default function PrivatePage() {
   const router = useRouter();
   return (
     <Container>
-      <LockIcon width={120 * width} height={120 * width} />
+      <Header
+        LeftSection={<LogoText width={65} height={24} />}
+        RightSection={<BellIcon />}
+      />
+      <LockIcon
+        width={120 * width}
+        height={120 * width}
+        style={{ marginTop: 162 * height }}
+      />
       <MessageText>
         재밌는 기능들을 {'\n'}
         준비중이야
@@ -34,17 +44,17 @@ export default function PrivatePage() {
 
 const Container = styled.View`
   flex: 1;
-  justify-content: center;
+  padding: ${28 * height}px ${20 * width}px;
   align-items: center;
   background-color: ${colors.bg[2]};
-  gap: 20px;
+  gap: ${20 * height};
 `;
 
 const MessageText = styled.Text`
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l}px;
   font-family: ${fonts.Regular};
-  font-weight: 600;
+  font-weight: 700;
   color: ${colors.text[3]};
   text-align: center;
 `;
