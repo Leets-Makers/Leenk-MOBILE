@@ -105,7 +105,7 @@ export default function ProfilePage() {
 
   return (
     <Container>
-      <Header isBack />
+      <Header isBack signUpBackPress={handlePrevStep} />
 
       <TitleText>프로필을 만들어보자</TitleText>
 

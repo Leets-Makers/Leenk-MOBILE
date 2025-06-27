@@ -12,11 +12,13 @@ interface HeaderProps extends ViewProps {
   LeftSection?: React.ReactNode;
   RightSection?: React.ReactNode;
   onRightPress?: () => void;
+  signUpBackPress?: () => void;
 }
 
 export default function Header({
   isBack = false,
   isBackWhite = false,
+  signUpBackPress,
   LeftSection,
   TitleSection,
   RightSection,
@@ -29,7 +31,9 @@ export default function Header({
     <Container {...props}>
       <Side>
         {isBack ? (
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity
+            onPress={signUpBackPress ? signUpBackPress : () => router.back()}
+          >
             <BackArrowIcon
               color={isBackWhite ? colors.white : colors.black}
               width={18}
