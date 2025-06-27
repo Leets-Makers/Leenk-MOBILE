@@ -3,6 +3,7 @@ import { Modal, Animated, Dimensions, Pressable } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
+import { TouchableWithoutFeedback } from '@gorhom/bottom-sheet';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -33,9 +34,9 @@ export default function BottomModal({ visible, onClose, children }: Props) {
 
   return (
     <Modal transparent visible={visible} animationType="none">
-      <Overlay onPress={onClose}>
-        <TouchableArea />
-      </Overlay>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <Overlay />
+      </TouchableWithoutFeedback>
       <AnimatedContainer style={{ transform: [{ translateY }] }}>
         {children}
       </AnimatedContainer>
@@ -51,10 +52,6 @@ const Overlay = styled.Pressable`
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 1;
-`;
-
-const TouchableArea = styled.Pressable`
-  flex: 1;
 `;
 
 const AnimatedContainer = styled(Animated.View)`

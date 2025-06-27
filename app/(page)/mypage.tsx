@@ -1,15 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import {
-  fontSize,
-  lineHeight,
-  fonts,
-  width,
-  height,
-} from '@/theme/globalStyles';
+import { width, height } from '@/theme/globalStyles';
 import { Header } from '@/components';
-import { Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SettingIcon } from '@/assets';
 import ProfileCard from '@/components/mypage/ProfileCard';
