@@ -5,6 +5,7 @@ import {
   fontSize,
   height,
   lineHeight,
+  SCREEN_WIDTH,
   width,
 } from '@/theme/globalStyles';
 import { Image } from 'expo-image';
@@ -12,7 +13,7 @@ import React, { useRef } from 'react';
 import { FlatList, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import { ExpandingDot } from 'react-native-animated-pagination-dots';
-import CustomButton from './common/Button/CustomButton';
+import CustomButton from '@/components/common/Button/CustomButton';
 
 export default function OnBoarding({ onClose }: { onClose: () => void }) {
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -43,15 +44,15 @@ export default function OnBoarding({ onClose }: { onClose: () => void }) {
         expandingDotWidth={8}
         inActiveDotOpacity={1}
         dotStyle={{
-          width: 8,
-          height: 8,
+          width: 8 * width,
+          height: 8 * height,
           borderRadius: 99,
-          marginHorizontal: 8,
+          marginHorizontal: 8 * width,
         }}
         containerStyle={{
           alignSelf: 'center',
           position: 'absolute',
-          bottom: 104,
+          bottom: 90 * height,
         }}
         inActiveDotColor={'#0000004D'}
         activeDotColor={colors.black}
@@ -64,7 +65,6 @@ export default function OnBoarding({ onClose }: { onClose: () => void }) {
 }
 
 const Container = styled.View`
-  flex: 1;
   background-color: ${colors.white};
 `;
 
@@ -91,7 +91,7 @@ const SubText = styled.Text`
 `;
 
 const SlideImage = styled(Image)`
-  width: ${324 * width}px;
+  width: ${324 * (SCREEN_WIDTH / 375)}px;
   height: ${430 * height}px;
-  margin: ${24 * height}px 0 ${64 * height}px 0;
+  margin: ${16 * height}px 0 ${64 * height}px 0;
 `;

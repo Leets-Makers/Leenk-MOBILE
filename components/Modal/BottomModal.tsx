@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { Modal, Animated, Dimensions, Pressable, Text } from 'react-native';
+import { Modal, Animated, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import { height, width } from '@/theme/globalStyles';
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+import { height, SCREEN_HEIGHT, width } from '@/theme/globalStyles';
+import OnBoarding from '../OnBoarding';
 
 interface Props {
   visible: boolean;
@@ -32,7 +32,7 @@ export default function BottomModal({ visible, onClose, children }: Props) {
 
   return (
     <Modal transparent visible={visible} animationType="none">
-      <Overlay onPress={onClose} />
+      <Overlay />
       <AnimatedContainer style={{ transform: [{ translateY }] }}>
         {children}
       </AnimatedContainer>
