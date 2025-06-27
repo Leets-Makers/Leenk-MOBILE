@@ -11,7 +11,7 @@ import {
   height,
 } from '@/theme/globalStyles';
 import { SafeAreaView } from 'react-native';
-import HeartButton from '@/components/HeartButton';
+import HeartButton from '@/components/feed/HeartButton';
 import { useRouter } from 'expo-router';
 
 export default function PrivatePage() {

@@ -12,6 +12,8 @@ import {
 import { generateMockFeedDetail } from '@/__mocks__/mockFeed';
 import { StyledText } from '@/app/(post)/feed/write';
 import { KebabIcon } from '@/assets';
+import HeartButton from '@/components/feed/HeartButton';
+import styled from 'styled-components/native';
 
 export default function FeedDetailPage() {
   const feed = generateMockFeedDetail();
@@ -41,31 +43,34 @@ export default function FeedDetailPage() {
         }}
       >
         {/* 작성자 정보 + 배지 */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 16,
-          }}
-        >
-          <Image
-            source={{ uri: feed.author.profileImage }}
+        <RowWrapper>
+          <View
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              marginRight: 8,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 16,
             }}
-          />
-          <StyledText>{feed.author.name}</StyledText>
-
-          {feed.linkedUserCount > 1 && (
-            <Badge
-              variant="gray"
-              label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
+          >
+            <Image
+              source={{ uri: feed.author.profileImage }}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                marginRight: 8,
+              }}
             />
-          )}
-        </View>
+            <StyledText>{feed.author.name}</StyledText>
+
+            {feed.linkedUserCount > 1 && (
+              <Badge
+                variant="gray"
+                label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
+              />
+            )}
+          </View>
+          <HeartButton />
+        </RowWrapper>
 
         {/* 게시물 내용 */}
         <View
@@ -105,3 +110,10 @@ export default function FeedDetailPage() {
     </View>
   );
 }
+
+const RowWrapper = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${18 * height}px;
+`;
