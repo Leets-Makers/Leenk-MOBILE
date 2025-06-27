@@ -15,6 +15,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
+import { useImageStore } from '@/stores/feedImageStore';
 
 const mockFeed = generateMockFeeds();
 const { userId, name, profileImage } = mockFeed[0].author;
@@ -28,6 +29,7 @@ const mockProfile: Author = {
 export default function FeedWritePage() {
   const [content, setContent] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const selectedImages = useImageStore((state) => state.selectedImages);
 
   const handleUpload = () => {
     if (content.trim()) {
@@ -50,7 +52,7 @@ export default function FeedWritePage() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={{ flex: 1 }}>
-          <BackgroundImageSlider />
+          <BackgroundImageSlider mediaUrls={selectedImages} />
           <Header
             isBack
             isBackWhite

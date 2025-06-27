@@ -21,7 +21,7 @@ export const generateMockFeeds = (count: number = 30): FeedItem[] => {
 export const generateMockFeedDetail = (): FeedDetail => {
   const feedId = faker.number.int({ min: 1, max: 999 });
   const authorSeed = faker.string.uuid();
-  const authorName = faker.person.fullName();
+  const authorName = faker.person.firstName();
   const linkedUserCount = faker.number.int({ min: 1, max: 5 });
 
   return {
@@ -31,7 +31,8 @@ export const generateMockFeedDetail = (): FeedDetail => {
       name: authorName,
       profileImage: `https://picsum.photos/seed/author-${authorSeed}/100/100`,
     },
-    description: faker.lorem.sentence(),
+    description:
+      '맛있는거 먹었지롱ㅇㅇㅇㅇ ㅇ ㅇ ㅇ ㅇㅇㅇㅇㅇㅇ부럽지 부러우면 하트눌르삼',
     totalReactionCount: faker.number.int({ min: 1, max: 5000 }),
     createdAt: faker.date.recent().toISOString(),
     media: Array.from({ length: 2 }, (_, idx) => ({
