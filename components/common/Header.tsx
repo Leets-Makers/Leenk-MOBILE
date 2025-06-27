@@ -46,11 +46,14 @@ export default function Header({
       </TitleWrapper>
 
       <Side>
-        {RightSection && (
-          <TouchableOpacity onPress={onRightPress}>
-            {RightSection}
-          </TouchableOpacity>
-        )}
+        {RightSection &&
+          (onRightPress ? (
+            <TouchableOpacity onPress={onRightPress}>
+              {RightSection}
+            </TouchableOpacity>
+          ) : (
+            RightSection
+          ))}
       </Side>
     </Container>
   );
