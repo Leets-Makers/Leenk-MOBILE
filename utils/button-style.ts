@@ -78,7 +78,7 @@ type BadgeVariant = 'primary' | 'gray' | 'white';
 export const getBadgeBackgroundColor = (variant: BadgeVariant) => {
   switch (variant) {
     case 'primary':
-      return colors.primary;
+      return colors.primaryLight;
     case 'gray':
       return 'rgba(0,0,0,0.4)';
     case 'white':
