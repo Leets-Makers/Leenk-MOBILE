@@ -6,7 +6,7 @@ const DESIGN_HEIGHT = 812;
 
 // 실제 기기 사이즈
 export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } =
-  Dimensions.get('window');
+  Dimensions.get('screen');
 
 // 웹에서는 비율 고정, 모바일은 사이즈 스케일링
 export const width = Platform.OS === 'web' ? 1 : SCREEN_WIDTH / DESIGN_WIDTH;

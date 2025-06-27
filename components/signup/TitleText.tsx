@@ -19,7 +19,6 @@ export default function TitleText({ children }: TitleTextProps) {
 
 const StyledTitleText = styled.Text`
   font-size: ${fontSize.xl}px;
-  font-weight: 700;
   color: ${colors.text[1]};
   line-height: ${lineHeight.m}px;
   margin-bottom: ${20 * height}px;
