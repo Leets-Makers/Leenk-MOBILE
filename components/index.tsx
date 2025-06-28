@@ -4,7 +4,7 @@ import Textarea from '@/components/common/Textarea';
 import Badge from '@/components/common/Badge';
 import CheckBox from '@/components/common/CheckBox';
 import Toggle from '@/components/common/Toggle';
-import Header from '@/components/common/Header';
+import Header from '@/components/common/Header/Header';
 import ImagePicker from '@/components/common/ImagePicker';
 import BackgroundImageSlider from '@/components/feed/BackgroundImageSlider';
 import FeedCard from '@/components/feed/FeedCard';
