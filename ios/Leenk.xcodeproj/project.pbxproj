@@ -7,26 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00770C6A4B757D999BCA3C9D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2FFB11E1CD093FD8FC46EC2 /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		70924FEAE74ABEF528BB2439 /* libPods-Leenk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C96579DA6FED625098303CA7 /* libPods-Leenk.a */; };
+		81D7300B125E629A793E5027 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 12552B9D409D2B2DF62BBDF0 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		DC09AE3ED16EAD22C559C7CD /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EC86817397FAE64DD5F0F3 /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		FA66EB83CE7B6C53696C36C0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9555201CA53303EC43EC49C3 /* PrivacyInfo.xcprivacy */; };
+		F3B5A97148F3D9C76CE78B18 /* libPods-Leenk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D55DB0383A63956723B180B9 /* libPods-Leenk.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01EC86817397FAE64DD5F0F3 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Leenk/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		12552B9D409D2B2DF62BBDF0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Leenk/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Leenk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Leenk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Leenk/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Leenk/Info.plist; sourceTree = "<group>"; };
-		344132E34357BE77B5258392 /* Pods-Leenk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leenk.debug.xcconfig"; path = "Target Support Files/Pods-Leenk/Pods-Leenk.debug.xcconfig"; sourceTree = "<group>"; };
-		9555201CA53303EC43EC49C3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Leenk/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		3C0DB43AC27EC8302E0F10C2 /* Pods-Leenk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leenk.release.xcconfig"; path = "Target Support Files/Pods-Leenk/Pods-Leenk.release.xcconfig"; sourceTree = "<group>"; };
+		953C2F558211F887AA1313C4 /* Pods-Leenk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leenk.debug.xcconfig"; path = "Target Support Files/Pods-Leenk/Pods-Leenk.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Leenk/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C96579DA6FED625098303CA7 /* libPods-Leenk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leenk.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D2FFB11E1CD093FD8FC46EC2 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Leenk/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		E02229B2294CF4562333012E /* Pods-Leenk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leenk.release.xcconfig"; path = "Target Support Files/Pods-Leenk/Pods-Leenk.release.xcconfig"; sourceTree = "<group>"; };
+		D55DB0383A63956723B180B9 /* libPods-Leenk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leenk.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Leenk/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Leenk-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Leenk-Bridging-Header.h"; path = "Leenk/Leenk-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70924FEAE74ABEF528BB2439 /* libPods-Leenk.a in Frameworks */,
+				F3B5A97148F3D9C76CE78B18 /* libPods-Leenk.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				9555201CA53303EC43EC49C3 /* PrivacyInfo.xcprivacy */,
+				12552B9D409D2B2DF62BBDF0 /* PrivacyInfo.xcprivacy */,
 			);
 			name = Leenk;
 			sourceTree = "<group>";
@@ -62,19 +62,9 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				C96579DA6FED625098303CA7 /* libPods-Leenk.a */,
+				D55DB0383A63956723B180B9 /* libPods-Leenk.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		65896EE1A20C68CD21750011 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				344132E34357BE77B5258392 /* Pods-Leenk.debug.xcconfig */,
-				E02229B2294CF4562333012E /* Pods-Leenk.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -91,8 +81,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				65896EE1A20C68CD21750011 /* Pods */,
-				E2C04EFDB0BB4DB1DEE7BEC7 /* ExpoModulesProviders */,
+				B1328CE6A10D2DD6001B5539 /* Pods */,
+				C71E40E75999BF3756C88E05 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -107,12 +97,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		ABA007B0E5F9A70E17FFF3F3 /* Leenk */ = {
+		B1328CE6A10D2DD6001B5539 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D2FFB11E1CD093FD8FC46EC2 /* ExpoModulesProvider.swift */,
+				953C2F558211F887AA1313C4 /* Pods-Leenk.debug.xcconfig */,
+				3C0DB43AC27EC8302E0F10C2 /* Pods-Leenk.release.xcconfig */,
 			);
-			name = Leenk;
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -124,12 +116,20 @@
 			path = Leenk/Supporting;
 			sourceTree = "<group>";
 		};
-		E2C04EFDB0BB4DB1DEE7BEC7 /* ExpoModulesProviders */ = {
+		C71E40E75999BF3756C88E05 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				ABA007B0E5F9A70E17FFF3F3 /* Leenk */,
+				F88073AC41EF91B6ACFB1B4D /* Leenk */,
 			);
 			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		F88073AC41EF91B6ACFB1B4D /* Leenk */ = {
+			isa = PBXGroup;
+			children = (
+				01EC86817397FAE64DD5F0F3 /* ExpoModulesProvider.swift */,
+			);
+			name = Leenk;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Leenk" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				0B11B6389C00FCEEFB685086 /* [Expo] Configure project */,
+				3702A9ABF851BDDE2E2FD0A7 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				FA065B93776BF5397B34F9E0 /* [CP] Embed Pods Frameworks */,
+				BC20CAE37AF76E4229D2E334 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				FA66EB83CE7B6C53696C36C0 /* PrivacyInfo.xcprivacy in Resources */,
+				81D7300B125E629A793E5027 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +240,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		0B11B6389C00FCEEFB685086 /* [Expo] Configure project */ = {
+		3702A9ABF851BDDE2E2FD0A7 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -301,7 +301,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leenk/Pods-Leenk-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FA065B93776BF5397B34F9E0 /* [CP] Embed Pods Frameworks */ = {
+		BC20CAE37AF76E4229D2E334 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -327,7 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				00770C6A4B757D999BCA3C9D /* ExpoModulesProvider.swift in Sources */,
+				DC09AE3ED16EAD22C559C7CD /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,7 +336,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 344132E34357BE77B5258392 /* Pods-Leenk.debug.xcconfig */;
+			baseConfigurationReference = 953C2F558211F887AA1313C4 /* Pods-Leenk.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -372,7 +372,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E02229B2294CF4562333012E /* Pods-Leenk.release.xcconfig */;
+			baseConfigurationReference = 3C0DB43AC27EC8302E0F10C2 /* Pods-Leenk.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
