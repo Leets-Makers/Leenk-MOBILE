@@ -17,7 +17,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "사진을 선택하려면 접근 권한이 필요합니다."
-      }
+      },
+      "bundleIdentifier": "com.example.leenk"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,7 +39,9 @@
       "output": "static",
       "favicon": "./assets/images/ic_logo.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
     }
