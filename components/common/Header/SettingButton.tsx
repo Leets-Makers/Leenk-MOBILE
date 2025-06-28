@@ -1,19 +1,17 @@
 import { SettingIcon } from '@/assets';
 import { useRouter } from 'expo-router';
-import styled from 'styled-components/native';
-
-const ImgButton = styled.Image`
-  cursor: pointer;
-`;
+import { TouchableOpacity } from 'react-native';
 
 export default function SettingButton() {
   const router = useRouter();
+
   return (
-    <ImgButton
-      src={SettingIcon}
-      onClick={() => {
+    <TouchableOpacity
+      onPress={() => {
         router.push('/account/setting');
       }}
-    />
+    >
+      <SettingIcon />
+    </TouchableOpacity>
   );
 }

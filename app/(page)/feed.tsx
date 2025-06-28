@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Header, FeedCard } from '@/components';
 import colors from '@/theme/color';
 import { View, FlatList, Text } from 'react-native';
-import { LogoText, BellIcon } from '@/assets';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { FeedItem } from '@/types/feed';
 import { width, height } from '@/theme/globalStyles';
@@ -27,10 +26,7 @@ export default function FeedPage() {
         paddingHorizontal: 20 * width,
       }}
     >
-      <Header
-        LeftSection={<LogoText width={65} height={24} />}
-        RightSection={<BellIcon />}
-      />
+      <Header LeftSection="LOGO" RightSection="BELL" />
       <FlatList
         data={mockFeeds}
         numColumns={2}
@@ -44,10 +40,7 @@ export default function FeedPage() {
         showsVerticalScrollIndicator={true}
       />
 
-      <BottomSheetModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-      >
+      <BottomSheetModal visible={modalVisible}>
         <OnBoarding onClose={() => setModalVisible(false)} />
       </BottomSheetModal>
     </View>

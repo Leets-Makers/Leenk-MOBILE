@@ -8,8 +8,8 @@ import BellButton from '@/components/common/Header/BellButton';
 import SettingButton from '@/components/common/Header/SettingButton';
 
 interface HeaderProps extends ViewProps {
-  LeftSection?: 'LOGO' | 'BACK';
-  RightSection: 'BELL' | 'SETTING';
+  LeftSection?: 'LOGO' | 'BACK' | 'NONE';
+  RightSection: 'BELL' | 'SETTING' | 'NONE';
   isBackWhite?: boolean; // 하얀색 뒤로가기
   children?: React.ReactNode;
   signUpBackPress?: () => void;
@@ -33,6 +33,7 @@ export default function Header({
             signUpBackPress={signUpBackPress}
           />
         )}
+        {LeftSection === 'NONE' && <None />}
       </Side>
 
       <TitleWrapper>
@@ -42,6 +43,7 @@ export default function Header({
       <Side>
         {RightSection === 'BELL' && <BellButton />}
         {RightSection === 'SETTING' && <SettingButton />}
+        {RightSection === 'NONE' && <None />}
       </Side>
     </Container>
   );
@@ -70,4 +72,8 @@ const TitleText = styled.Text`
   font-family: ${fonts.Bold};
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l};
+`;
+
+const None = styled.View`
+  width: 24px;
 `;

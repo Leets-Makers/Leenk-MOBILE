@@ -12,16 +12,12 @@ import {
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import { Header } from '@/components';
-import { BellIcon, LogoText } from '@/assets';
 
 export default function PrivatePage() {
   const router = useRouter();
   return (
     <Container>
-      <Header
-        LeftSection={<LogoText width={65} height={24} />}
-        RightSection={<BellIcon />}
-      />
+      <Header LeftSection="LOGO" RightSection="BELL" />
       <LockIcon
         width={120 * width}
         height={120 * width}

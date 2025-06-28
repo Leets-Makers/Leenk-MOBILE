@@ -10,15 +10,10 @@ import {
   height,
 } from '@/theme/globalStyles';
 import { Header } from '@/components';
-import { BellIcon, LogoText } from '@/assets';
-
 export default function LeenkPage() {
   return (
     <Container>
-      <Header
-        LeftSection={<LogoText width={65} height={24} />}
-        RightSection={<BellIcon />}
-      />
+      <Header LeftSection="LOGO" RightSection="BELL" />
       <LockIcon
         width={120 * width}
         height={120 * width}

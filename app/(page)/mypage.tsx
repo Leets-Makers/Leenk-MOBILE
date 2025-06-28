@@ -4,7 +4,6 @@ import colors from '@/theme/color';
 import { width, height } from '@/theme/globalStyles';
 import { Header } from '@/components';
 import { useRouter } from 'expo-router';
-import { SettingIcon } from '@/assets';
 import ProfileCard from '@/components/mypage/ProfileCard';
 import MyPageButton from '@/components/mypage/MypageButton';
 import { mockUserData } from '@/constants/mockUserData';
@@ -14,11 +13,9 @@ export default function MyPage() {
 
   return (
     <Container>
-      <Header
-        TitleSection="마이페이지"
-        RightSection={<SettingIcon />}
-        onRightPress={() => router.push('/account/setting')}
-      />
+      <Header LeftSection="NONE" RightSection="SETTING">
+        마이페이지
+      </Header>
       <ProfileCard
         cardinal={mockUserData.cardinal}
         name={mockUserData.name}
