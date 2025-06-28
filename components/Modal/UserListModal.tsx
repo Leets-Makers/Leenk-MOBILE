@@ -67,12 +67,14 @@ const Wrapper = styled.View`
 
 const BlurSheet = styled(BlurView)`
   background-color: rgba(255, 255, 255, 0.6);
-  border-top-left-radius: ${radius.md}px;
-  border-top-right-radius: ${radius.md}px;
-  margin-horizontal: ${12 * width}px;
+  border-radius: ${radius.md}px;
+  margin-horizontal: ${10 * width}px;
   padding-horizontal: ${12 * width}px;
   padding-vertical: ${12 * height}px;
   max-height: 80%;
+  width: ${355 * width}px;
+  height: ${425 * height}px;
+  margin-bottom: ${30 * height}px;
 `;
 
 // 핸들바
