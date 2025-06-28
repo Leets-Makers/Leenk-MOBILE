@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Pressable } from 'react-native';
 import FloatingHeart from './FloatingHeart';
-import HeartIcon from './HeartIcon';
+import { HeartIcon } from '@/assets';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { radius, width, height } from '@/theme/globalStyles';
@@ -102,12 +102,12 @@ export default function HeartButton() {
         <HeartWithBadge>
           <Circle>
             <OutlineWrapper style={outlineAnimatedStyle}>
-              <HeartIcon width={28} height={28} fill="#E4387E" />
+              <HeartIcon width={28} height={28} color="#E4387E" />
             </OutlineWrapper>
 
             {/* 기본 하트 */}
             <Animated.View style={heartStyle}>
-              <HeartIcon width={28} height={28} fill="#E4387E" />
+              <HeartIcon width={28} height={28} color="#E4387E" />
             </Animated.View>
           </Circle>
           <BadgeWrapper>

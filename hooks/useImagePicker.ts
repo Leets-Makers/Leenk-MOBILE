@@ -25,6 +25,7 @@ export default function useImagePicker({
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const granted = status === 'granted';
     setHasPermission(granted);
+    console.log('권한요청: ', granted);
     return granted;
   };
 
@@ -43,7 +44,11 @@ export default function useImagePicker({
         mediaType: MediaLibrary.MediaType.photo,
       });
 
-    setPhotos((prev) => [...prev, ...assets]);
+    setPhotos((prev) => {
+      const existingIds = new Set(prev.map((p) => p.id));
+      const newAssets = assets.filter((asset) => !existingIds.has(asset.id));
+      return [...prev, ...newAssets];
+    });
     setPageInfo({ endCursor, hasNextPage });
     console.log('📸 가져온 사진 개수:', assets.length);
   }, [pageInfo]);

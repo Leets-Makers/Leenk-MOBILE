@@ -1,6 +1,6 @@
 import 'react-native-reanimated';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { FontAwesome } from '@expo/vector-icons';
+
 import {
   DarkTheme,
   DefaultTheme,

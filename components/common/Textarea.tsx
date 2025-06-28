@@ -77,6 +77,7 @@ const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
   width: 100%;
   min-height: ${({ minHeight }) =>
     minHeight ? `${minHeight * height}px` : `${74 * height}px`};
+  max-height: ${85 * height}px;
   font-size: ${fontSize.md}px;
   font-family: ${fonts.Bold};
   color: ${({ isDark }) => (isDark ? colors.white : colors.black)};

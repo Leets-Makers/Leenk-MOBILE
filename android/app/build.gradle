@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.Leenk'
+    namespace 'com.example.leenk'
     defaultConfig {
-        applicationId 'com.anonymous.Leenk'
+        applicationId 'com.example.leenk'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

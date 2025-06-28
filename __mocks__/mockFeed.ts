@@ -22,7 +22,7 @@ export const generateMockFeedDetail = (): FeedDetail => {
   const feedId = faker.number.int({ min: 1, max: 999 });
   const authorSeed = faker.string.uuid();
   const authorName = faker.person.firstName();
-  const linkedUserCount = faker.number.int({ min: 1, max: 5 });
+  const linkedUserCount = faker.number.int({ min: 1, max: 20 });
 
   return {
     feedId,

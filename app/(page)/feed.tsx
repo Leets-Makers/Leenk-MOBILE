@@ -21,6 +21,8 @@ export default function FeedPage() {
   // }, []);
 
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  // 처음 접속한 사람만 모달 뜨게 하는 훅인데 일단 확인하려고 주석 처리 했어요!
   const firstLaunch = useFirstLaunch();
   useEffect(() => {
     // 페이지 진입 시 모달 자동 표시

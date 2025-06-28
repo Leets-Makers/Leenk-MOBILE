@@ -50,7 +50,8 @@ export const Wrapper = styled.View`
 
 export const Title = styled.Text`
   font-size: ${fontSize.md}px;
-  color: ${colors.black};
+  color: ${colors.text[2]};
+  font-family: ${fonts.Bold};
 `;
 
 export const InputBox = styled.View<{ focused: boolean }>`
@@ -60,7 +61,7 @@ export const InputBox = styled.View<{ focused: boolean }>`
   padding-horizontal: ${12 * width}px;
   border-width: 1px;
   border-color: ${({ focused }) =>
-    focused ? colors.primary : colors.gray[300]};
+    focused ? colors.primaryLight : colors.gray[300]};
   border-style: solid;
   background-color: transparent;
   &:focus {
@@ -79,4 +80,5 @@ export const SubMessage = styled.Text`
   font-size: ${fontSize.sm}px;
   color: ${colors.text[3]};
   margin-left: ${12 * width}px;
+  font-family: ${fonts.Regular};
 `;

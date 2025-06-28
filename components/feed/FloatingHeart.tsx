@@ -6,10 +6,10 @@ import Animated, {
   withSequence,
   withRepeat,
   runOnJS,
+  Easing,
 } from 'react-native-reanimated';
 import styled from 'styled-components/native';
-import HeartIcon from './HeartIcon';
-import { Easing } from 'react-native-reanimated';
+import { HeartIcon } from '@/assets';
 
 interface Props {
   onComplete: () => void;
@@ -67,7 +67,7 @@ export default function FloatingHeart({ onComplete, color }: Props) {
 
   return (
     <AnimatedContainer style={animatedStyle}>
-      <HeartIcon width={28} height={28} fill={color} />
+      <HeartIcon width={28} height={28} color={color} />
     </AnimatedContainer>
   );
 }

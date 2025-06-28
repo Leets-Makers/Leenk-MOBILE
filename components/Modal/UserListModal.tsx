@@ -1,9 +1,23 @@
-import colors from '@/theme/color';
-import { fonts, fontSize, lineHeight, radius } from '@/theme/globalStyles';
-import { FeedReactedUser, FeedConnectedUser } from '@/types/feed';
-import { BlurView } from 'expo-blur';
-import { Modal, Pressable, FlatList } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  FlatList,
+  Platform,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+} from 'react-native';
 import styled from 'styled-components/native';
+import { BlurView } from 'expo-blur';
+import colors from '@/theme/color';
+import {
+  fonts,
+  fontSize,
+  lineHeight,
+  radius,
+  height,
+  width,
+} from '@/theme/globalStyles';
+import { FeedReactedUser, FeedConnectedUser } from '@/types/feed';
 
 interface Props {
   visible: boolean;
@@ -19,72 +33,89 @@ export default function UserListModal({
   onClose,
 }: Props) {
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}
-    >
-      <Wrapper>
-        <BlurSheet intensity={10} tint="light">
-          <HandleBar />
-          <Title>{title}</Title>
-          <FlatList
-            data={list}
-            keyExtractor={(item) => item.userId.toString()}
-            contentContainerStyle={{ paddingBottom: 32 }}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <UserRow>
-                <Avatar source={{ uri: item.profileImage || '' }} />
-                <NameRow>
-                  <UserName>{item.name}</UserName>
-                  {'reactionCount' in item &&
-                    item.reactionCount !== undefined && (
-                      <Count>{item.reactionCount.toLocaleString()}</Count>
-                    )}
-                </NameRow>
-              </UserRow>
-            )}
-          />
-        </BlurSheet>
-      </Wrapper>
+    <Modal visible={visible} transparent animationType="slide">
+      <Backdrop>
+        <Pressable style={{ flex: 1 }} onPress={onClose} />
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={{ flex: 1, justifyContent: 'flex-end' }}
+        >
+          <SheetContainer>
+            <SheetBox>
+              <BlurBackground intensity={20} tint="light">
+                <HandleBar />
+                <Title>{title}</Title>
+                <FlatList
+                  data={list}
+                  keyExtractor={(item) => item.userId.toString()}
+                  contentContainerStyle={{ paddingBottom: 32 }}
+                  showsVerticalScrollIndicator={false}
+                  renderItem={({ item }) => (
+                    <UserRow>
+                      <Avatar source={{ uri: item.profileImage || '' }} />
+                      <NameRow>
+                        <UserName>{item.name}</UserName>
+                        {'reactionCount' in item &&
+                          item.reactionCount !== undefined && (
+                            <Count>{item.reactionCount.toLocaleString()}</Count>
+                          )}
+                      </NameRow>
+                    </UserRow>
+                  )}
+                />
+              </BlurBackground>
+            </SheetBox>
+          </SheetContainer>
+        </KeyboardAvoidingView>
+      </Backdrop>
     </Modal>
   );
 }
 
-const Wrapper = styled.View`
+const Backdrop = styled.Pressable`
   flex: 1;
   justify-content: flex-end;
 `;
 
-const BlurSheet = styled(BlurView)`
-  background-color: rgba(255, 255, 255, 0.6);
-  border-top-left-radius: ${radius.md}px;
-  border-top-right-radius: ${radius.md}px;
-  padding: 16px 20px 0 20px;
-  max-height: 80%;
+const SheetContainer = styled.View`
+  padding-horizontal: ${16 * width}px;
+  margin-bottom: ${30 * height}px;
 `;
 
-// 핸들바
+const SheetBox = styled.View`
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: ${radius.md}px;
+  overflow: hidden;
+`;
+
+const BlurBackground = styled(BlurView)`
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: ${8 * height}px ${16 * width}px;
+  min-height: ${425 * height}px;
+  max-height: ${425 * height}px;
+`;
+const BackdropTouchable = styled.Pressable`
+  flex: 1;
+`;
+
 const HandleBar = styled.View`
-  width: 40px;
-  height: 4px;
+  width: ${40 * width}px;
+  height: ${4 * height}px;
   background-color: ${colors.gray[300]};
   border-radius: ${radius.xs}px;
   align-self: center;
   margin-bottom: 12px;
 `;
 
-// 제목
 const Title = styled.Text`
   font-size: ${fontSize.xl};
   font-family: ${fonts.ExtraBold};
   color: ${colors.text[1]};
-  margin-bottom: 16px;
+  margin-bottom: ${16 * height}px;
+  padding-top: ${10 * height}px;
 `;
 
-// 리스트 아이템
 const UserRow = styled.View`
   flex-direction: row;
   align-items: center;
@@ -92,10 +123,10 @@ const UserRow = styled.View`
 `;
 
 const Avatar = styled.Image`
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: #e5e5ea;
+  width: ${40 * width}px;
+  height: ${40 * height}px;
+  border-radius: ${radius.full}px;
+  background-color: ${colors.gray[1]};
 `;
 
 const NameRow = styled.View`

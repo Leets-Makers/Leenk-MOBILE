@@ -30,10 +30,8 @@ export default function FeedDetailPage() {
       <BackgroundImageSlider mediaUrls={feed.media.map((m) => m.mediaUrl)} />
 
       <Header
-        isBack
         isBackWhite
-        RightSection={<KebabIcon color={colors.white} width={18} height={18} />}
-        onRightPress={() => console.log('pressed')}
+        RightSection="BELL"
         style={{
           position: 'absolute',
           top: 0,
