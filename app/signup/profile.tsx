@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import { MBTI_LIST } from '@/constants/MbtiList';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
+import { Platform } from 'react-native';
 
 export default function ProfilePage() {
   const {
@@ -232,7 +233,7 @@ const ButtonContainer = styled.View`
   bottom: ${44 * height}px;
   align-self: center;
   width: 100%;
-  padding-horizontal: ${20 * width}px;
+  ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
 `;
 
 const ImagePreview = styled.View`
