@@ -73,7 +73,7 @@ const SlideContainer = styled.View`
   align-items: start;
 `;
 
-const TitleText = styled.Text`
+export const TitleText = styled.Text`
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l}px;
   font-family: ${fonts.Bold};
@@ -81,7 +81,7 @@ const TitleText = styled.Text`
   text-align: start;
 `;
 
-const SubText = styled.Text`
+export const SubText = styled.Text`
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
   font-family: ${fonts.Regular};
