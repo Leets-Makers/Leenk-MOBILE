@@ -1,26 +1,13 @@
 import { CustomButton, Header, Input, Textarea } from '@/components';
 import { mockUserData } from '@/constants/mockUserData';
 import colors from '@/theme/color';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { height, width } from '@/theme/globalStyles';
+import { useLocalSearchParams } from 'expo-router';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import styled from 'styled-components/native';
-import { BackArrowIcon } from '@/assets';
 
 export default function AccountEdit() {
   const { type } = useLocalSearchParams();
-  const router = useRouter();
 
   const headerText =
     type === 'kakaoTalkId'
@@ -39,7 +26,7 @@ export default function AccountEdit() {
     >
       <Wrapper>
         <Container>
-          <Header isBack TitleSection={headerText} />
+          <Header>{headerText}</Header>
           <MarginContainer>
             {type === 'kakaoTalkId' && (
               <Input

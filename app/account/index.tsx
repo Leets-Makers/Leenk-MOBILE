@@ -26,12 +26,7 @@ export default function ProfileEdit() {
 
   return (
     <Container>
-      <Header
-        isBack
-        TitleSection="프로필 편집"
-        RightSection={<SettingIcon />}
-        onRightPress={() => router.push('/account/setting')}
-      />
+      <Header RightSection="SETTING">프로필 편집</Header>
       <ProfileImageWrapper>
         <DefaultProfileImage width={80 * width} height={80 * height} />
       </ProfileImageWrapper>

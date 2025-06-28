@@ -1,7 +1,6 @@
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';
-import TitleText from '@/components/signup/TitleText';
 import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,6 +9,8 @@ import { DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
+import { MBTI_LIST } from '@/constants/MbtiList';
+import ProfileTitleText from '@/components/signup/ProfileTitleText';
 
 export default function ProfilePage() {
   const {
@@ -73,25 +74,6 @@ export default function ProfilePage() {
     }
   };
 
-  const MBTI_LIST = [
-    'ENFP',
-    'INFJ',
-    'ISTP',
-    'ESFJ',
-    'ENTP',
-    'ISFP',
-    'INTJ',
-    'ESTJ',
-    'INFP',
-    'ESFP',
-    'ISFJ',
-    'ENTJ',
-    'ISTJ',
-    'ENFJ',
-    'ESTP',
-    'INTP',
-  ];
-
   const [randomMbti, setRandomMbti] = useState('ENFP');
 
   useEffect(() => {
@@ -105,9 +87,9 @@ export default function ProfilePage() {
 
   return (
     <Container>
-      <Header isBack signUpBackPress={handlePrevStep} />
+      <Header signUpBackPress={handlePrevStep} />
 
-      <TitleText>프로필을 만들어보자</TitleText>
+      <ProfileTitleText>프로필을 만들어보자</ProfileTitleText>
 
       {step === 'id' && (
         <>
@@ -250,6 +232,7 @@ const ButtonContainer = styled.View`
   bottom: ${44 * height}px;
   align-self: center;
   width: 100%;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const ImagePreview = styled.View`

@@ -40,7 +40,7 @@ export default function AccountStatusPage() {
 
   return (
     <Container>
-      <Header isBack TitleSection="계정 관리" />
+      <Header>계정관리</Header>
       <MarginContainer>
         <MyPageButton text="로그아웃" onPress={handleLogout} type="none" />
         <MyPageButton text="회원탈퇴" onPress={handleDelete} type="none" />

@@ -9,7 +9,7 @@ import SettingButton from '@/components/common/Header/SettingButton';
 
 interface HeaderProps extends ViewProps {
   LeftSection?: 'LOGO' | 'BACK' | 'NONE';
-  RightSection: 'BELL' | 'SETTING' | 'NONE';
+  RightSection?: 'BELL' | 'SETTING' | 'NONE';
   isBackWhite?: boolean; // 하얀색 뒤로가기
   children?: React.ReactNode;
   signUpBackPress?: () => void;
@@ -20,7 +20,7 @@ export default function Header({
   isBackWhite = false,
   signUpBackPress,
   children,
-  RightSection,
+  RightSection = 'NONE',
   ...props
 }: HeaderProps) {
   return (

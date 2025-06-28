@@ -40,7 +40,7 @@ export default function NotificationsPage() {
 
   return (
     <Container>
-      <Header isBack TitleSection="계정 관리" />
+      <Header>알림 설정</Header>
       <MarginContainer>
         {toggleKeys.map(({ key, label }) => (
           <MyPageButton

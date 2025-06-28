@@ -28,7 +28,7 @@ export default function HelpPage() {
     >
       <Wrapper>
         <Container>
-          <Header isBack TitleSection="의견 남기기" />
+          <Header>의견 남기기</Header>
           <MarginContainer>
             <Textarea
               title="LEENK에 대한 의견을 입력해줘"
