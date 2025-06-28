@@ -10,7 +10,6 @@ import {
   fontSize,
   fonts,
   lineHeight,
-  letterSpacing,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { getBadgeBackgroundColor } from '@/utils';
@@ -20,6 +19,7 @@ interface BadgeProps {
   variant?: 'primary' | 'gray' | 'white';
   iconType?: 'plus' | 'x'; // plus면 왼쪽에 + , x 면 오른쪽에 표시
   onRemove?: () => void;
+  onPress?: () => void;
 }
 
 export default function Badge({
@@ -27,8 +27,9 @@ export default function Badge({
   variant = 'primary',
   iconType,
   onRemove,
+  onPress,
 }: BadgeProps) {
-  return (
+  const BadgeContent = (
     <Container
       variant={variant}
       backgroundColor={getBadgeBackgroundColor(variant)}
@@ -50,9 +51,20 @@ export default function Badge({
       )}
     </Container>
   );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress}>{BadgeContent}</TouchableOpacity>
+    );
+  }
+
+  return BadgeContent;
 }
 
-const Container = styled.View<{ backgroundColor: string }>`
+const Container = styled.View<{
+  backgroundColor: string;
+  variant: 'primary' | 'gray' | 'white';
+}>`
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -60,6 +72,12 @@ const Container = styled.View<{ backgroundColor: string }>`
   padding-horizontal: ${8 * width}px;
   border-radius: ${radius.full}px;
   background-color: ${({ backgroundColor }) => backgroundColor};
+
+  ${({ variant }) =>
+    variant === 'white' &&
+    `
+      min-width: ${49 * width}px;
+  `}
 `;
 
 const Text = styled.Text<{ variant: string }>`

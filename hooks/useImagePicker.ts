@@ -1,4 +1,3 @@
-// hooks/useImagePicker.ts
 import { useEffect, useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 
@@ -17,27 +16,41 @@ export default function useImagePicker({
     hasNextPage: boolean;
   }>({ endCursor: null, hasNextPage: false });
 
-  const fetchPhotos = useCallback(async () => {
-    const { status } = await MediaLibrary.requestPermissionsAsync();
-    if (status !== 'granted') {
-      setHasPermission(false);
-      return;
-    }
+  // const requestPermission = useCallback(async () => {
+  //   const { status } = await MediaLibrary.requestPermissionsAsync();
+  //   setHasPermission(status === 'granted');
+  // }, []);
 
-    setHasPermission(true);
-    const album = await MediaLibrary.getAlbumAsync('Camera');
+  const requestPermission = async (): Promise<boolean> => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    const granted = status === 'granted';
+    setHasPermission(granted);
+    console.log('권한요청: ', granted);
+    return granted;
+  };
+
+  const fetchPhotos = useCallback(async () => {
+    const perm = await MediaLibrary.getPermissionsAsync();
+    console.log('📸 fetchPhotos 내부 권한 상태:', perm.status);
+
+    // if (!hasPermission) return;
+    if (perm.status !== 'granted') return;
 
     const { assets, endCursor, hasNextPage } =
       await MediaLibrary.getAssetsAsync({
-        album: album ?? undefined,
-        mediaType: 'photo',
-        sortBy: [['creationTime', false]],
+        // sortBy: [['creationTime', false]],
         first: 50,
         after: pageInfo?.endCursor ?? undefined,
+        mediaType: MediaLibrary.MediaType.photo,
       });
 
-    setPhotos((prev) => [...prev, ...assets]);
+    setPhotos((prev) => {
+      const existingIds = new Set(prev.map((p) => p.id));
+      const newAssets = assets.filter((asset) => !existingIds.has(asset.id));
+      return [...prev, ...newAssets];
+    });
     setPageInfo({ endCursor, hasNextPage });
+    console.log('📸 가져온 사진 개수:', assets.length);
   }, [pageInfo]);
 
   const toggleSelect = async (photo: MediaLibrary.Asset) => {
@@ -63,7 +76,7 @@ export default function useImagePicker({
         }
       }
 
-      onChange(uris); // 이제 string[]이 넘어감
+      onChange(uris);
     }
   };
 
@@ -76,6 +89,7 @@ export default function useImagePicker({
     photos,
     selected,
     hasPermission,
+    requestPermission,
     toggleSelect,
     getSelectionNumber,
     fetchPhotos,

@@ -16,6 +16,7 @@ import LogoSymbol from '@/assets/images/Logo_symbol.svg';
 import LogoText from '@/assets/images/Logo_text.svg';
 import WhiteLockIcon from '@/assets/images/ic_lock.svg';
 import XIcon from '@/assets/images/ic_close.svg';
+import HeartIcon from '@/assets/images/ic_heart.svg';
 import FEIcon from '@/assets/images/ic_char_FE.svg';
 import DEIcon from '@/assets/images/ic_char_DE.svg';
 import BEIcon from '@/assets/images/ic_char_BE.svg';
@@ -23,6 +24,7 @@ import PMIcon from '@/assets/images/ic_char_PM.svg';
 import DefaultProfileImage from '@/assets/images/ic_default_profile.svg';
 import SettingIcon from '@/assets/images/ic_setting.svg';
 import RightArrowIcon from '@/assets/images/ic_right_arrow.svg';
+
 export {
   FeedIcon,
   LeenkIcon,
@@ -46,6 +48,7 @@ export {
   LogoText,
   WhiteLockIcon,
   XIcon,
+  HeartIcon,
   DefaultProfileImage,
   SettingIcon,
   RightArrowIcon,

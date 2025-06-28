@@ -8,11 +8,16 @@ import { width as WIDTH, height as HEIGHT } from '@/theme/globalStyles';
 
 const { width, height } = Dimensions.get('window');
 
-export default function BackgroundImageSlider() {
-  const selectedImages = useImageStore((state) => state.selectedImages);
+interface BackgroundImageSliderProps {
+  mediaUrls: string[];
+}
+
+export default function BackgroundImageSlider({
+  mediaUrls,
+}: BackgroundImageSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (selectedImages.length === 0) return null;
+  if (mediaUrls.length === 0) return null;
 
   return (
     <Wrapper>
@@ -21,7 +26,7 @@ export default function BackgroundImageSlider() {
           loop
           width={width}
           height={height}
-          data={selectedImages}
+          data={mediaUrls}
           onSnapToItem={(index) => setCurrentIndex(index)}
           renderItem={({ item }) => (
             <StyledBackground source={{ uri: item }} resizeMode="cover" />
@@ -33,7 +38,7 @@ export default function BackgroundImageSlider() {
       </CarouselWrapper>
 
       <IndicatorContainer>
-        {selectedImages.map((_, index) => (
+        {mediaUrls.map((_, index) => (
           <Dot key={index} isActive={index === currentIndex} />
         ))}
       </IndicatorContainer>

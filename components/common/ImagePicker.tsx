@@ -23,15 +23,26 @@ export default function ImagePicker({
     selected,
     toggleSelect,
     getSelectionNumber,
+    requestPermission,
     hasPermission,
     fetchPhotos,
     hasNextPage,
   } = useImagePicker({ maxSelect });
 
-  // 사진 불러오기
   useEffect(() => {
-    fetchPhotos();
+    requestPermission(); // 권한 먼저 요청
   }, []);
+
+  useEffect(() => {
+    if (hasPermission) {
+      fetchPhotos(); // 권한이 허용됐을 때만 사진을 불러옴
+      console.log('권한 허용됨');
+    }
+  }, [hasPermission]);
+
+  // useEffect(() => {
+  //   fetchPhotos();
+  // }, []);
 
   // Zustand에 URI 저장
   useEffect(() => {
@@ -56,7 +67,7 @@ export default function ImagePicker({
       <FlatList
         data={photos}
         numColumns={NUM_COLUMNS}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => `${item.id}_${index}`}
         columnWrapperStyle={{
           justifyContent: 'space-between',
         }}
