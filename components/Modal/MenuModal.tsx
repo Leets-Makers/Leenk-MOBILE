@@ -11,8 +11,7 @@ import {
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 
-import LeenkIcon from '@/assets/images/ic_menu_leenk.svg';
-import FeedIcon from '@/assets/images/ic_menu_feed.svg';
+import { LeenkIcon, FeedIcon } from '@/assets';
 
 interface MenuModalProps {
   visible: boolean;
@@ -38,35 +37,31 @@ export default function MenuModal({
     >
       <Overlay onPress={onClose}>
         <MenuContainer $isWrite={isWrite}>
-          <MenuItemWrapper onPress={onPressFirst}>
-            {({ pressed }) => (
-              <MenuItem pressed={pressed} $isWrite={isWrite}>
-                {isWrite ? (
-                  <>
+          {isWrite ? (
+            <>
+              <MenuItemWrapper onPress={onPressFirst}>
+                {({ pressed }) => (
+                  <MenuItem pressed={pressed} $isWrite={isWrite}>
                     <LeenkIcon width={20 * width} height={20 * width} />
                     <MenuText $isWrite={isWrite}>링크 글 쓰기</MenuText>
-                  </>
-                ) : (
-                  <MenuText $isWrite={isWrite}>수정하기</MenuText>
+                  </MenuItem>
                 )}
-              </MenuItem>
-            )}
-          </MenuItemWrapper>
+              </MenuItemWrapper>
 
-          <MenuItemWrapper onPress={onPressSecond}>
-            {({ pressed }) => (
-              <MenuItem pressed={pressed} $isWrite={isWrite}>
-                {isWrite ? (
-                  <>
+              <MenuItemWrapper onPress={onPressSecond}>
+                {({ pressed }) => (
+                  <MenuItem pressed={pressed} $isWrite={isWrite}>
                     <FeedIcon width={20 * width} height={20 * width} />
                     <MenuText $isWrite={isWrite}>피드 글 쓰기</MenuText>
-                  </>
-                ) : (
-                  <MenuText $isWrite={isWrite}>삭제하기</MenuText>
+                  </MenuItem>
                 )}
-              </MenuItem>
-            )}
-          </MenuItemWrapper>
+              </MenuItemWrapper>
+            </>
+          ) : (
+            <MenuItemWrapper onPress={onPressSecond}>
+              <MenuText $isWrite={isWrite}>삭제하기</MenuText>
+            </MenuItemWrapper>
+          )}
         </MenuContainer>
       </Overlay>
     </Modal>
@@ -84,8 +79,7 @@ const MenuContainer = styled.View<{ $isWrite: boolean }>`
   ${({ $isWrite }) =>
     $isWrite
       ? `bottom: ${70 * height}px; left: 50%; transform: translateX(-${(134 * width) / 2}px);`
-      : ''}
-  ${({ $isWrite }) => (!$isWrite ? `top: 88px; right: 20px;` : '')}
+      : `top: 88px; right: 20px; align-items: center;`}
   width: ${({ $isWrite }) => ($isWrite ? 134 * width : 100 * width)}px;
   padding: ${8 * height}px ${10 * width}px;
   background-color: ${colors.white};

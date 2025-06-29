@@ -3,10 +3,12 @@ import { ViewProps } from 'react-native';
 import { fonts, fontSize, height, lineHeight } from '@/theme/globalStyles';
 
 import { LogoText } from '@/assets';
-import BackButton from '@/components/common/Header/BackButton';
-import BellButton from '@/components/common/Header/BellButton';
-import SettingButton from '@/components/common/Header/SettingButton';
-import KebabButton from './KebabButton';
+import {
+  BackButton,
+  BellButton,
+  SettingButton,
+  KebabButton,
+} from '@/components';
 
 interface HeaderProps extends ViewProps {
   LeftSection?: 'LOGO' | 'BACK' | 'NONE';

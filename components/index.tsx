@@ -11,7 +11,10 @@ import FeedCard from '@/components/feed/FeedCard';
 import ThumbnailItem from '@/components/common/ThumbnailItem';
 import { ProfileEditButton } from '@/components/common/Button/ProfileEditButton';
 import UserListModal from '@/components/Modal/UserListModal';
-
+import BackButton from '@/components/common/Header/BackButton';
+import BellButton from '@/components/common/Header/BellButton';
+import SettingButton from '@/components/common/Header/SettingButton';
+import KebabButton from '@/components/common/Header/KebabButton';
 export {
   CustomButton,
   Input,
@@ -26,4 +29,8 @@ export {
   ThumbnailItem,
   ProfileEditButton,
   UserListModal,
+  BackButton,
+  BellButton,
+  SettingButton,
+  KebabButton,
 };
