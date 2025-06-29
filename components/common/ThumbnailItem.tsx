@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import * as MediaLibrary from 'expo-media-library';
-import { TouchableOpacity } from 'react-native';
+import { Image, Platform, TouchableOpacity } from 'react-native';
+import * as FileSystem from 'expo-file-system';
 import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { ToastCheckIcon } from '@/assets';
@@ -13,7 +14,7 @@ interface ThumbnailItemProps {
   onToggle: (photo: MediaLibrary.Asset) => void;
   getSelectionNumber: (id: string) => number | null;
   aspectRatio?: '1:1' | '9:16';
-  mode?: 'profile' | 'feed'; // 프로필 선택인지 피드 이미지 선택 페이지인지 구분
+  mode?: 'profile' | 'feed';
 }
 
 export default function ThumbnailItem({
@@ -24,41 +25,52 @@ export default function ThumbnailItem({
   aspectRatio = '1:1',
   mode = 'profile',
 }: ThumbnailItemProps) {
+  const number = getSelectionNumber(asset.id);
+  const isSelected = selected.some((item) => item.id === asset.id);
   const [uri, setUri] = useState<string | null>(null);
+
+  const imageHeight =
+    aspectRatio === '9:16' ? (IMAGE_SIZE * 16) / 9 : IMAGE_SIZE;
 
   useEffect(() => {
     let cancelled = false;
+
     const load = async () => {
-      const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+      const realUri = asset.uri; // 바로 asset.uri 사용
+
       if (!cancelled) {
-        setUri(info.localUri ?? asset.uri);
+        console.log('🖼️ 최종 썸네일 uri:', realUri);
+        setUri(realUri);
       }
     };
+
     load();
+
+    console.log('📸 썸네일 렌더링됨:', asset.filename);
 
     return () => {
       cancelled = true;
     };
   }, [asset]);
 
-  const number = getSelectionNumber(asset.id);
-  const isSelected = selected.some((item) => item.id === asset.id);
-
-  const aspectHeight =
-    aspectRatio === '1:1'
-      ? IMAGE_SIZE
-      : aspectRatio === '9:16'
-        ? (IMAGE_SIZE * 16) / 9
-        : IMAGE_SIZE;
-
-  const imageHeight = aspectHeight;
-
-  if (!uri) return null;
+  useEffect(() => {
+    console.log('📸 ThumbnailItem mounted:', asset.filename);
+  }, []);
 
   return (
     <TouchableOpacity onPress={() => onToggle(asset)}>
       <ImageWrapper $height={imageHeight}>
-        <StyledImage source={{ uri }} $height={imageHeight} />
+        {uri && (
+          <Image
+            source={{ uri }}
+            resizeMode="cover"
+            style={{
+              width: IMAGE_SIZE,
+              height: imageHeight,
+            }}
+          />
+        )}
+
         {isSelected && <Overlay />}
         {isSelected && (
           <CheckBadge>
@@ -88,13 +100,6 @@ const ImageWrapper = styled.View<{ $height: number }>`
   width: ${IMAGE_SIZE}px;
   height: ${({ $height }) => $height}px;
   margin-bottom: ${ITEM_MARGIN * height}px;
-`;
-
-const StyledImage = styled.Image<{ $height: number }>`
-  width: ${IMAGE_SIZE}px;
-  height: ${({ $height }) => $height}px;
-  margin-right: ${ITEM_MARGIN * width}px;
-  z-index: 1;
 `;
 
 const CheckBadge = styled.View`

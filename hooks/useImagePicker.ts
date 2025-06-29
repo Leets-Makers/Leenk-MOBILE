@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
+import { Platform } from 'react-native';
 
 export default function useImagePicker({
   maxSelect = 3,
@@ -31,6 +32,7 @@ export default function useImagePicker({
 
   const fetchPhotos = useCallback(async () => {
     const perm = await MediaLibrary.getPermissionsAsync();
+
     console.log('📸 fetchPhotos 내부 권한 상태:', perm.status);
 
     // if (!hasPermission) return;
@@ -43,12 +45,33 @@ export default function useImagePicker({
         after: pageInfo?.endCursor ?? undefined,
         mediaType: MediaLibrary.MediaType.photo,
       });
+    console.log('📸 getAssetsAsync 호출 직후 asset 수:', assets.length);
+    const assetsWithLocalUri: MediaLibrary.Asset[] = [];
+    console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
+
+    for (const asset of assets) {
+      let uri = asset.uri;
+
+      if (Platform.OS === 'ios') {
+        const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+        uri = info.localUri ?? asset.uri;
+      }
+
+      assetsWithLocalUri.push({
+        ...asset,
+        uri,
+      });
+    }
+    console.log('assets with local uri : ', assetsWithLocalUri);
 
     setPhotos((prev) => {
       const existingIds = new Set(prev.map((p) => p.id));
-      const newAssets = assets.filter((asset) => !existingIds.has(asset.id));
+      const newAssets = assetsWithLocalUri.filter(
+        (asset) => !existingIds.has(asset.id),
+      );
       return [...prev, ...newAssets];
     });
+
     setPageInfo({ endCursor, hasNextPage });
     console.log('📸 가져온 사진 개수:', assets.length);
   }, [pageInfo]);

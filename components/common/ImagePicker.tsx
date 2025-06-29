@@ -29,20 +29,25 @@ export default function ImagePicker({
     hasNextPage,
   } = useImagePicker({ maxSelect });
 
-  useEffect(() => {
-    requestPermission(); // 권한 먼저 요청
-  }, []);
-
-  useEffect(() => {
-    if (hasPermission) {
-      fetchPhotos(); // 권한이 허용됐을 때만 사진을 불러옴
-      console.log('권한 허용됨');
-    }
-  }, [hasPermission]);
+  // useEffect(() => {
+  //   requestPermission(); // 권한 먼저 요청
+  // }, []);
 
   // useEffect(() => {
-  //   fetchPhotos();
-  // }, []);
+  //   if (hasPermission === true) {
+  //     console.log('✅ hasPermission === true, fetchPhotos 실행');
+  //     fetchPhotos();
+  //   }
+  // }, [hasPermission]);
+
+  useEffect(() => {
+    (async () => {
+      const granted = await requestPermission();
+      if (granted) {
+        fetchPhotos();
+      }
+    })();
+  }, []);
 
   // Zustand에 URI 저장
   useEffect(() => {
@@ -63,7 +68,7 @@ export default function ImagePicker({
   if (hasPermission === false) return null;
 
   return (
-    <View style={{ maxHeight: 600 }}>
+    <View style={{ flex: 1, maxHeight: 600 }}>
       <FlatList
         data={photos}
         numColumns={NUM_COLUMNS}
@@ -71,6 +76,8 @@ export default function ImagePicker({
         columnWrapperStyle={{
           justifyContent: 'space-between',
         }}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        style={{ flexGrow: 1 }}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
           if (hasNextPage) fetchPhotos();
