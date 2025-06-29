@@ -16,7 +16,7 @@ import {
 } from '@/utils/button-style';
 import styled from 'styled-components/native';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'text';
+export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'kakao';
 export type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'full';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -30,7 +30,7 @@ type CustomButtonProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   fullWidth?: boolean;
-  textColor?: 'primary' | 'black' | 'text[2]';
+  textColor?: 'primary' | 'black' | 'text[2]' | 'text[3]';
 };
 
 export default function CustomButton({

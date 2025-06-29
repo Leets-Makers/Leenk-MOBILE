@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWriteMenuStore } from '@/stores/writeMenuStore';
-import WriteMenuModal from '@/components/Modal/WriteMenuModal';
+import MenuModal from '@/components/Modal/MenuModal';
 import { FeedIcon, LeenkIcon, LockIcon, MypageIcon, PlusIcon } from '@/assets';
 import { fontSize, radius, width, height, fonts } from '@/theme/globalStyles';
 
@@ -107,14 +107,14 @@ export default function TabLayout() {
             </TabContainer>
           </StyledSafeArea>
 
-          <WriteMenuModal
+          <MenuModal
             visible={isWriteMenuOpen}
             onClose={closeWriteMenu}
-            onPressLink={() => {
+            onPressFirst={() => {
               closeWriteMenu();
               router.push('/(post)/leenk');
             }}
-            onPressFeed={() => {
+            onPressSecond={() => {
               closeWriteMenu();
               router.push('/(post)/feed');
             }}
@@ -133,8 +133,8 @@ const TabContainer = styled.View`
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  height: ${85 * height}px;
-  padding-bottom: ${34 * height}px;
+  height: ${51 * height}px;
+  padding-vertical: ${4 * height}px;
   background-color: ${colors.white};
   border-top-left-radius: ${radius.lg}px;
   border-top-right-radius: ${radius.lg}px;

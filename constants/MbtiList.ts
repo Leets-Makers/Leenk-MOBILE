@@ -1,0 +1,18 @@
+export const MBTI_LIST = [
+  'ENFP',
+  'INFJ',
+  'ISTP',
+  'ESFJ',
+  'ENTP',
+  'ISFP',
+  'INTJ',
+  'ESTJ',
+  'INFP',
+  'ESFP',
+  'ISFJ',
+  'ENTJ',
+  'ISTJ',
+  'ENFJ',
+  'ESTP',
+  'INTP',
+];

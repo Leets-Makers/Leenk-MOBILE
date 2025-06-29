@@ -91,9 +91,8 @@ const Overlay = styled.View`
 const Container = styled.View`
   background-color: ${colors.white};
   align-items: center;
-  padding: 0 ${16 * width}px;
+  padding: ${28 * height}px ${16 * width}px ${16 * height}px ${16 * width}px;
   width: ${335 * width}px;
-  height: ${158 * height}px;
   border-radius: ${radius.lg}px;
   overflow: hidden;
   shadow-color: #7c7c7c;
@@ -106,9 +105,7 @@ const TitleText = styled.Text`
   font-family: ${fonts.ExtraBold};
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l}px;
-  margin-top: ${26 * height}px;
   color: ${colors.black};
-  font-weight: 500;
 `;
 
 const SubText = styled.Text<{ $isWarning: boolean }>`
@@ -118,7 +115,6 @@ const SubText = styled.Text<{ $isWarning: boolean }>`
   margin-top: ${4 * height}px;
   color: ${({ $isWarning }) =>
     $isWarning ? colors.secondary : colors.text[1]};
-  font-weight: 400;
 `;
 
 const ButtonRow = styled.View`

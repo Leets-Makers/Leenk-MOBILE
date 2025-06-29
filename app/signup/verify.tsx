@@ -1,11 +1,9 @@
-import { BackArrowIcon } from '@/assets';
 import { CustomButton, Header } from '@/components';
-import TitleText from '@/components/signup/TitleText';
+import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import UserCard from '@/components/signup/UserCard';
 import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
-import { TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
 export default function VerifyPage() {
@@ -26,8 +24,8 @@ export default function VerifyPage() {
 
   return (
     <Container>
-      <Header isBack />
-      <TitleText>너의 계정이 맞는지 확인해 줘</TitleText>
+      <Header />
+      <ProfileTitleText>너의 계정이 맞는지 확인해 줘</ProfileTitleText>
 
       <UserCard
         cardinal={mockUserData.cardinal}
@@ -70,7 +68,7 @@ const Container = styled.View`
   background-color: ${colors.bg[2]};
   align-items: center;
   position: relative;
-  padding: ${29 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const ButtonContainer = styled.View`

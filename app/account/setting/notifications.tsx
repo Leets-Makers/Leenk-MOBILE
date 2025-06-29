@@ -40,7 +40,7 @@ export default function NotificationsPage() {
 
   return (
     <Container>
-      <Header isBack TitleSection="계정 관리" />
+      <Header>알림 설정</Header>
       <MarginContainer>
         {toggleKeys.map(({ key, label }) => (
           <MyPageButton
@@ -59,7 +59,7 @@ export default function NotificationsPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding: ${28 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const MarginContainer = styled.View`

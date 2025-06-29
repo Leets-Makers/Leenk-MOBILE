@@ -28,7 +28,7 @@ export default function HelpPage() {
     >
       <Wrapper>
         <Container>
-          <Header isBack TitleSection="의견 남기기" />
+          <Header>의견 남기기</Header>
           <MarginContainer>
             <Textarea
               title="LEENK에 대한 의견을 입력해줘"
@@ -66,7 +66,7 @@ const Container = styled.ScrollView.attrs({
   keyboardShouldPersistTaps: 'handled',
 })`
   flex: 1;
-  padding: ${28 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const MarginContainer = styled.View`

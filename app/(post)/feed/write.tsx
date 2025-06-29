@@ -54,7 +54,6 @@ export default function FeedWritePage() {
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider mediaUrls={selectedImages} />
           <Header
-            isBack
             isBackWhite
             style={{
               position: 'absolute',
