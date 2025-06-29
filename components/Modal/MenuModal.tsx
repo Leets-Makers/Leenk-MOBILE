@@ -59,7 +59,11 @@ export default function MenuModal({
             </>
           ) : (
             <MenuItemWrapper onPress={onPressSecond}>
-              <MenuText $isWrite={isWrite}>삭제하기</MenuText>
+              {({ pressed }) => (
+                <MenuItem pressed={pressed} $isWrite={isWrite}>
+                  <MenuText $isWrite={isWrite}>삭제하기</MenuText>
+                </MenuItem>
+              )}
             </MenuItemWrapper>
           )}
         </MenuContainer>

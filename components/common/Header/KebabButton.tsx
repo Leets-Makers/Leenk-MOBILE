@@ -7,7 +7,7 @@ export default function KebabButton({
   handleKebab?: () => void;
 }) {
   return (
-    <TouchableOpacity onPress={handleKebab}>
+    <TouchableOpacity onPress={handleKebab || (() => {})}>
       <KebabIcon />
     </TouchableOpacity>
   );
