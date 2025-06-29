@@ -1,7 +1,6 @@
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';
-import TitleText from '@/components/signup/TitleText';
 import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,6 +9,9 @@ import { DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
+import { MBTI_LIST } from '@/constants/MbtiList';
+import ProfileTitleText from '@/components/signup/ProfileTitleText';
+import { Platform } from 'react-native';
 
 export default function ProfilePage() {
   const {
@@ -73,25 +75,6 @@ export default function ProfilePage() {
     }
   };
 
-  const MBTI_LIST = [
-    'ENFP',
-    'INFJ',
-    'ISTP',
-    'ESFJ',
-    'ENTP',
-    'ISFP',
-    'INTJ',
-    'ESTJ',
-    'INFP',
-    'ESFP',
-    'ISFJ',
-    'ENTJ',
-    'ISTJ',
-    'ENFJ',
-    'ESTP',
-    'INTP',
-  ];
-
   const [randomMbti, setRandomMbti] = useState('ENFP');
 
   useEffect(() => {
@@ -105,9 +88,9 @@ export default function ProfilePage() {
 
   return (
     <Container>
-      <Header isBack />
+      <Header signUpBackPress={handlePrevStep} />
 
-      <TitleText>프로필을 만들어보자</TitleText>
+      <ProfileTitleText>프로필을 만들어보자</ProfileTitleText>
 
       {step === 'id' && (
         <>
@@ -177,6 +160,7 @@ export default function ProfilePage() {
             variant="text"
             rounded="md"
             textColor="primary"
+            fullWidth
           >
             프로필 사진 선택하기
           </CustomButton>
@@ -192,9 +176,8 @@ export default function ProfilePage() {
               onPress={() => setSkipModalVisible(true)}
               rounded="md"
               size="lg"
+              fullWidth
               style={{
-                width: 335 * width,
-                height: 48 * height,
                 marginBottom: 10 * height,
               }}
             >
@@ -216,6 +199,7 @@ export default function ProfilePage() {
         <CustomButton
           variant="primary"
           onPress={handleNext}
+          fullWidth
           rounded="md"
           size="lg"
           disabled={
@@ -223,10 +207,6 @@ export default function ProfilePage() {
             (step === 'introduction' && introduction.trim() === '') ||
             (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
           }
-          style={{
-            width: 335 * width,
-            height: 48 * height,
-          }}
         >
           {step === 'mbti' ? '시작하자' : '다음으로'}
         </CustomButton>
@@ -238,13 +218,12 @@ export default function ProfilePage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding: ${29 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const StyledText = styled.Text`
   font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
-  font-weight: 500;
   font-family: ${fonts.Regular};
   margin-bottom: ${12 * height}px;
 `;
@@ -253,6 +232,8 @@ const ButtonContainer = styled.View`
   position: absolute;
   bottom: ${44 * height}px;
   align-self: center;
+  width: 100%;
+  ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
 `;
 
 const ImagePreview = styled.View`

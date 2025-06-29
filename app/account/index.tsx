@@ -1,15 +1,8 @@
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
-import { Text, TouchableOpacity } from 'react-native';
 import { Header, CustomButton, ProfileEditButton } from '@/components';
-import { BackArrowIcon, DefaultProfileImage, SettingIcon } from '@/assets';
-import {
-  fontSize,
-  fonts,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { DefaultProfileImage, SettingIcon } from '@/assets';
+import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { mockUserData } from '@/constants/mockUserData';
 
@@ -33,12 +26,7 @@ export default function ProfileEdit() {
 
   return (
     <Container>
-      <Header
-        isBack
-        TitleSection="프로필 편집"
-        RightSection={<SettingIcon />}
-        onRightPress={() => router.push('/account/setting')}
-      />
+      <Header RightSection="SETTING">프로필 편집</Header>
       <ProfileImageWrapper>
         <DefaultProfileImage width={80 * width} height={80 * height} />
       </ProfileImageWrapper>
@@ -70,7 +58,7 @@ export default function ProfileEdit() {
 const Container = styled.ScrollView`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding: ${28 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const ProfileImageWrapper = styled.View`

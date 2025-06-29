@@ -12,6 +12,7 @@ import {
 import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
 import { useRouter } from 'expo-router';
+import { CustomButton } from '@/components';
 export default function LandingPage() {
   const router = useRouter();
 
@@ -33,13 +34,26 @@ export default function LandingPage() {
         />
       </LogoWrapper>
       <BottomArea>
-        <KakaoBtn onPress={handleKakaoLogin}>
-          <KakaoLogo />
-          <KakaoBtnText>카카오로 로그인</KakaoBtnText>
-        </KakaoBtn>
-        <SignUpBtn onPress={handleSignUp}>
-          <SignUpBtnText>새로 가입하기</SignUpBtnText>
-        </SignUpBtn>
+        <CustomButton
+          variant="kakao"
+          size="md"
+          fullWidth
+          onPress={handleKakaoLogin}
+        >
+          <KakaoContainer>
+            <KakaoLogo />
+            <KakaoBtnText>카카오로 로그인</KakaoBtnText>
+          </KakaoContainer>
+        </CustomButton>
+        <CustomButton
+          variant="text"
+          textColor="text[3]"
+          size="md"
+          fullWidth
+          onPress={handleSignUp}
+        >
+          새로 가입하기
+        </CustomButton>
       </BottomArea>
     </Container>
   );
@@ -66,39 +80,20 @@ const BottomArea = styled.View`
   bottom: ${108 * height}px;
   align-items: center;
   width: 100%;
+  padding-horizontal: ${20 * width}px;
 `;
 
-const KakaoBtn = styled.Pressable`
+const KakaoContainer = styled.View`
   flex-direction: row;
-  width: ${335 * width}px;
   justify-content: center;
   align-items: center;
-  background-color: ${colors.kakao};
-  border-radius: ${radius.md}px;
-  padding: ${13 * width}px 0;
 `;
 
 const KakaoBtnText = styled.Text`
   color: ${colors.text[2]};
-  font-family: ${fonts.Regular};
+  font-family: ${fonts.Bold};
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
   margin-left: ${8 * width}px;
-  font-weight: 500;
-`;
-
-const SignUpBtn = styled.Pressable`
-  margin-top: ${12 * height}px;
-  width: ${335 * width}px;
-  height: ${40 * height}px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const SignUpBtnText = styled.Text`
-  color: ${colors.text[3]};
-  font-family: ${fonts.Regular};
-  font-size: ${fontSize.md}px;
-  line-height: ${lineHeight.m}px;
-  font-weight: 500;
+  text-align: center;
 `;

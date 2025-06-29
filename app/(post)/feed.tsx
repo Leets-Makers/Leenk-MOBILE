@@ -1,11 +1,10 @@
 // 모달 -> 피드 글 쓰기 -> 피드 이미지 선택 페이지
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
 import colors from '@/theme/color';
 import { CustomButton, Header, ImagePicker } from '@/components';
-import { BackArrowIcon } from '@/assets';
 import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
 import PopupModal from '@/components/Modal/PopupModal';
 import { useImageStore } from '@/stores/feedImageStore';
@@ -19,10 +18,6 @@ export default function PostFeedPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-  const handleBackPress = () => {
-    setIsModalOpen(true);
-  };
-
   const handleConfirmExit = () => {
     setIsModalOpen(false);
     router.replace('/(page)/feed');
@@ -31,14 +26,7 @@ export default function PostFeedPage() {
   return (
     <Container>
       <ContentWrapper>
-        <Header
-          LeftSection={
-            <TouchableOpacity onPress={handleBackPress}>
-              <BackArrowIcon />
-            </TouchableOpacity>
-          }
-          TitleSection="게시물 사진 선택"
-        />
+        <Header>게시물 사진 선택</Header>
         <SubText>최대 3장까지 선택 가능해</SubText>
         <View style={{ flex: 1 }}>
           <ImagePicker

@@ -1,17 +1,9 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import {
-  fontSize,
-  lineHeight,
-  fonts,
-  width,
-  height,
-} from '@/theme/globalStyles';
+import { width, height } from '@/theme/globalStyles';
 import { Header } from '@/components';
-import { Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SettingIcon } from '@/assets';
 import ProfileCard from '@/components/mypage/ProfileCard';
 import MyPageButton from '@/components/mypage/MypageButton';
 import { mockUserData } from '@/constants/mockUserData';
@@ -21,11 +13,9 @@ export default function MyPage() {
 
   return (
     <Container>
-      <Header
-        TitleSection="마이페이지"
-        RightSection={<SettingIcon />}
-        onRightPress={() => router.push('/account/setting')}
-      />
+      <Header LeftSection="NONE" RightSection="SETTING">
+        마이페이지
+      </Header>
       <ProfileCard
         cardinal={mockUserData.cardinal}
         name={mockUserData.name}
@@ -51,6 +41,5 @@ const Container = styled.View`
   align-items: center;
   background-color: ${colors.bg[2]};
   gap: ${13 * height}px;
-  padding-top: ${28 * height}px;
   padding-horizontal: ${20 * width}px;
 `;

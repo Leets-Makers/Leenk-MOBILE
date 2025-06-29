@@ -1,16 +1,8 @@
-import { BackArrowIcon } from '@/assets';
 import { Header } from '@/components';
 import MyPageButton from '@/components/mypage/MypageButton';
 import colors from '@/theme/color';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
-import { Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
 const settingItems = [
@@ -24,7 +16,7 @@ export default function SettingPage() {
 
   return (
     <Container>
-      <Header isBack TitleSection="환경설정" />
+      <Header>환경설정</Header>
       <MarginContainer>
         {settingItems.map((item) => (
           <MyPageButton
@@ -41,7 +33,7 @@ export default function SettingPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding: ${28 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const MarginContainer = styled.View`

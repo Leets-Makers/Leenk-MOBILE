@@ -1,18 +1,10 @@
-import { BackArrowIcon } from '@/assets';
 import { Header } from '@/components';
 import PopupModal from '@/components/Modal/PopupModal';
 import MyPageButton from '@/components/mypage/MypageButton';
 import colors from '@/theme/color';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 import styled from 'styled-components/native';
 
 export default function AccountStatusPage() {
@@ -48,7 +40,7 @@ export default function AccountStatusPage() {
 
   return (
     <Container>
-      <Header isBack TitleSection="계정 관리" />
+      <Header>계정관리</Header>
       <MarginContainer>
         <MyPageButton text="로그아웃" onPress={handleLogout} type="none" />
         <MyPageButton text="회원탈퇴" onPress={handleDelete} type="none" />
@@ -57,11 +49,11 @@ export default function AccountStatusPage() {
       {logoutModalVisible && (
         <PopupModal
           isOpen={logoutModalVisible}
-          onClose={() => setLogoutModalVisible(false)}
-          onConfirm={handleLogoutConfirm}
+          onClose={handleLogoutConfirm}
+          onConfirm={() => setLogoutModalVisible(false)}
           mainText="로그아웃 할까?"
-          leftBtnText="취소"
-          rightBtnText="확인"
+          leftBtnText="확인"
+          rightBtnText="취소"
           isCancel
         />
       )}
@@ -69,12 +61,12 @@ export default function AccountStatusPage() {
       {deleteModalVisible && (
         <PopupModal
           isOpen={deleteModalVisible}
-          onClose={() => setDeleteModalVisible(false)}
-          onConfirm={handleDeleteConfirm}
           mainText="회원탈퇴 할까?"
           subText="탈퇴한 계정은 복구할 수 없어."
-          leftBtnText="취소"
-          rightBtnText="확인"
+          onClose={handleDeleteConfirm}
+          onConfirm={() => setDeleteModalVisible(false)}
+          leftBtnText="확인"
+          rightBtnText="취소"
           isCancel
           isWarning
         />
@@ -86,7 +78,7 @@ export default function AccountStatusPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding: ${28 * height}px ${20 * width}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const MarginContainer = styled.View`

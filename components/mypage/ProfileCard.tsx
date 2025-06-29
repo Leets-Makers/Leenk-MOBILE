@@ -53,10 +53,9 @@ export default function ProfileCard({
         variant="text"
         textColor="text[2]"
         size="sm"
+        fullWidth
         onPress={() => router.push('/account' as const)}
         style={{
-          width: 304 * width,
-          height: 32 * height,
           marginTop: 12 * height,
         }}
       >

@@ -16,7 +16,7 @@ type Props = {
   variant: ButtonVariant;
   disabled?: boolean;
   pressed?: boolean;
-  textColor?: 'primary' | 'black' | 'text[2]';
+  textColor?: 'primary' | 'black' | 'text[2]' | 'text[3]';
 };
 
 export const getButtonBackgroundColor = ({
@@ -36,6 +36,8 @@ export const getButtonBackgroundColor = ({
     return colors.divider[2];
   }
 
+  if (variant === 'kakao') return colors.kakao;
+
   return 'transparent';
 };
 
@@ -53,7 +55,9 @@ export const getButtonTextColor = ({
       ? colors.black
       : textColor === 'primary'
         ? colors.primary
-        : colors.text[2];
+        : textColor === 'text[3]'
+          ? colors.text[3]
+          : colors.text[2];
   }
 
   return colors.white;
