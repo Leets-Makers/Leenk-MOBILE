@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { Dimensions, ImageBackground } from 'react-native';
+import { ImageBackground } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import styled from 'styled-components/native';
-import { useImageStore } from '@/stores/feedImageStore';
-import { radius } from '@/theme/globalStyles';
+import { radius, SCREEN_HEIGHT, SCREEN_WIDTH } from '@/theme/globalStyles';
 import { width as WIDTH, height as HEIGHT } from '@/theme/globalStyles';
-
-const { width, height } = Dimensions.get('window');
 
 interface BackgroundImageSliderProps {
   mediaUrls: string[];
@@ -24,8 +21,8 @@ export default function BackgroundImageSlider({
       <CarouselWrapper>
         <Carousel
           loop
-          width={width}
-          height={height}
+          width={SCREEN_WIDTH}
+          height={SCREEN_HEIGHT}
           data={mediaUrls}
           onSnapToItem={(index) => setCurrentIndex(index)}
           renderItem={({ item }) => (

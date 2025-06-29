@@ -49,8 +49,7 @@ const Container = styled.View`
 const MessageText = styled.Text`
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l}px;
-  font-family: ${fonts.Regular};
-  font-weight: 700;
+  font-family: ${fonts.Bold};
   color: ${colors.text[3]};
   text-align: center;
 `;

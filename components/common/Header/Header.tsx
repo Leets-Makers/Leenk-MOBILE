@@ -6,13 +6,15 @@ import { LogoText } from '@/assets';
 import BackButton from '@/components/common/Header/BackButton';
 import BellButton from '@/components/common/Header/BellButton';
 import SettingButton from '@/components/common/Header/SettingButton';
+import KebabButton from './KebabButton';
 
 interface HeaderProps extends ViewProps {
   LeftSection?: 'LOGO' | 'BACK' | 'NONE';
-  RightSection?: 'BELL' | 'SETTING' | 'NONE';
+  RightSection?: 'BELL' | 'SETTING' | 'KEBAB' | 'NONE';
   isBackWhite?: boolean; // 하얀색 뒤로가기
   children?: React.ReactNode;
   signUpBackPress?: () => void;
+  kebabPress?: () => void;
 }
 
 export default function Header({
@@ -21,6 +23,7 @@ export default function Header({
   signUpBackPress,
   children,
   RightSection = 'NONE',
+  kebabPress,
   ...props
 }: HeaderProps) {
   return (
@@ -43,6 +46,7 @@ export default function Header({
       <Side>
         {RightSection === 'BELL' && <BellButton />}
         {RightSection === 'SETTING' && <SettingButton />}
+        {RightSection === 'KEBAB' && <KebabButton handleKebab={kebabPress} />}
         {RightSection === 'NONE' && <None />}
       </Side>
     </Container>

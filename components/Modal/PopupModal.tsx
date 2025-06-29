@@ -91,7 +91,7 @@ const Overlay = styled.View`
 const Container = styled.View`
   background-color: ${colors.white};
   align-items: center;
-  padding: ${28 * width}px ${16 * height}px ${16 * width}px;
+  padding: ${28 * height}px ${16 * width}px ${16 * height}px ${16 * width}px;
   width: ${335 * width}px;
   border-radius: ${radius.lg}px;
   overflow: hidden;

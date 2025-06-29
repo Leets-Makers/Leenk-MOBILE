@@ -29,7 +29,7 @@ export default function OnBoarding({ onClose }: { onClose: () => void }) {
             <SlideImage source={item.image} contentFit="contain" />
           </SlideContainer>
         )}
-        keyExtractor={(_, index) => index.toString()}
+        keyExtractor={(item) => item.key}
         horizontal
         showsHorizontalScrollIndicator={false}
         pagingEnabled

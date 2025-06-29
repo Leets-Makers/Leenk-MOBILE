@@ -76,7 +76,7 @@ export default function MenuModal({
 const Overlay = styled.Pressable<{ $isWrite: boolean }>`
   flex: 1;
   background-color: rgba(0, 0, 0, 0.3);
-  align-items: 'center';
+  align-items: center;
 `;
 
 const MenuContainer = styled.View<{ $isWrite: boolean }>`
