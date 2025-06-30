@@ -6,7 +6,7 @@ import {
   Badge,
 } from '@/components';
 import colors from '@/theme/color';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { Text, View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { Author } from '@/types/feed';
@@ -38,7 +38,12 @@ export default function FeedWritePage() {
   };
 
   const handleConfirmExit = () => {
-    console.log('추가할래');
+    setIsModalOpen(false);
+    onClickToAddMember();
+  };
+
+  const onClickToAddMember = () => {
+    router.push('/feed/link-members');
   };
 
   return (
@@ -84,7 +89,8 @@ export default function FeedWritePage() {
               <Badge
                 variant="gray"
                 iconType="plus"
-                label={'함께한 사람 추가'} // TODO : 함께한 사람 추가 페이지 구현하기
+                label={'함께한 사람 추가'}
+                onPress={onClickToAddMember}
               />
             </View>
             <Textarea
@@ -106,8 +112,8 @@ export default function FeedWritePage() {
 
           <PopupModal
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onConfirm={handleConfirmExit}
+            onConfirm={() => setIsModalOpen(false)}
+            onClose={handleConfirmExit}
             mainText="이 내용으로 피드에 업로드할까?"
             subText="함께한 사람이 추가되지 않았어."
             isCancel={true}

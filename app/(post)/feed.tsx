@@ -10,7 +10,7 @@ import PopupModal from '@/components/Modal/PopupModal';
 import { useImageStore } from '@/stores/feedImageStore';
 import { AspectRatio } from '@/types/aspect-ratio';
 
-const SIDE_PADDING = 16;
+export const SIDE_PADDING = 16;
 
 export default function PostFeedPage() {
   const selectedUris = useImageStore((state) => state.selectedImages);
@@ -65,8 +65,8 @@ export default function PostFeedPage() {
 
       <PopupModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmExit}
+        onConfirm={() => setIsModalOpen(false)}
+        onClose={handleConfirmExit}
         mainText="글 작성을 그만둘래?"
         subText="작성하던 내용은 저장되지 않아."
         isCancel={true}
@@ -77,14 +77,14 @@ export default function PostFeedPage() {
   );
 }
 
-const Container = styled.View`
+export const Container = styled.View`
   flex: 1;
   background-color: ${colors.white};
 `;
 
-const ContentWrapper = styled.View`
+export const ContentWrapper = styled.View`
   flex: 1;
-  padding: 0 ${SIDE_PADDING}px;
+  padding: 0 ${SIDE_PADDING * width}px;
 `;
 
 const SubText = styled.Text`

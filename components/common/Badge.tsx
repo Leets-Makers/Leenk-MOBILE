@@ -46,7 +46,7 @@ export default function Badge({
       {/* 오른쪽 아이콘: x */}
       {iconType === 'x' && onRemove && (
         <RemoveButton onPress={onRemove}>
-          <XIcon width={10} height={10} />
+          <XIcon width={10} height={10} color={colors.white} />
         </RemoveButton>
       )}
     </Container>
