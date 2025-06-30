@@ -18,6 +18,10 @@ export default function PostFeedPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
+  const handleBackPress = () => {
+    setIsModalOpen(true);
+  };
+
   const handleConfirmExit = () => {
     setIsModalOpen(false);
     router.replace('/(page)/feed');
@@ -26,7 +30,7 @@ export default function PostFeedPage() {
   return (
     <Container>
       <ContentWrapper>
-        <Header>게시물 사진 선택</Header>
+        <Header signUpBackPress={handleBackPress}>게시물 사진 선택</Header>
         <SubText>최대 3장까지 선택 가능해</SubText>
         <View style={{ flex: 1 }}>
           <ImagePicker
@@ -66,6 +70,7 @@ export default function PostFeedPage() {
         mainText="글 작성을 그만둘래?"
         subText="작성하던 내용은 저장되지 않아."
         isCancel={true}
+        leftBtnText="확인"
         rightBtnText="취소"
       />
     </Container>
