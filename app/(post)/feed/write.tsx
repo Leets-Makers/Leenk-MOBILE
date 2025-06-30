@@ -84,7 +84,7 @@ export default function FeedWritePage() {
               <Badge
                 variant="gray"
                 iconType="plus"
-                label={'함께한 사람 추가'}
+                label={'함께한 사람 추가'} // TODO : 함께한 사람 추가 페이지 구현하기
               />
             </View>
             <Textarea
