@@ -48,7 +48,7 @@ export default function LinkMembersPage() {
             <ButtonText>{selectedUsers.length}</ButtonText>
           </CircleBadge>
         )}
-        다음
+        완료
       </CustomButton>
     </ContentWrapper>
   );

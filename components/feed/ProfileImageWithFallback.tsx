@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import DefaultProfileImage from '@/assets/images/ic_default_profile.svg';
+import { DefaultProfileImage } from '@/assets';
 
 interface Props {
   uri?: string | null;
@@ -8,12 +8,31 @@ interface Props {
 }
 
 export default function ProfileImageWithFallback({ uri, size = 40 }: Props) {
-  if (!uri) {
-    return <StyledFallback width={size} height={size} />;
-  }
+  const [error, setError] = useState(false);
 
-  return <StyledImage source={{ uri }} width={size} height={size} />;
+  const showFallback = !uri || error;
+  return (
+    <ImageContainer width={size}>
+      {showFallback ? (
+        <StyledFallback width={size} height={size} />
+      ) : (
+        <StyledImage
+          source={{ uri }}
+          width={size}
+          height={size}
+          onError={() => setError(true)}
+        />
+      )}
+    </ImageContainer>
+  );
 }
+
+const ImageContainer = styled.View<{ width: number }>`
+  width: ${({ width }) => width}px;
+  height: ${({ width }) => width}px;
+  border-radius: ${({ width }) => width / 2}px;
+  overflow: hidden;
+`;
 
 const StyledFallback = styled(DefaultProfileImage)<{
   width: number;
