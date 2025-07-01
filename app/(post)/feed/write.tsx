@@ -16,9 +16,11 @@ import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
 import { useImageStore } from '@/stores/feedImageStore';
+import { useConnectedUserStore } from '@/stores/connectedUserStore';
 
 const mockFeed = generateMockFeeds();
 const { userId, name, profileImage } = mockFeed[0].author;
+const connectedUsers = useConnectedUserStore((state) => state.users);
 
 const mockProfile: Author = {
   userId,
@@ -89,7 +91,11 @@ export default function FeedWritePage() {
               <Badge
                 variant="gray"
                 iconType="plus"
-                label={'함께한 사람 추가'}
+                label={
+                  connectedUsers.length > 0
+                    ? `+ ${connectedUsers[0].name} 외 ${connectedUsers.length - 1}명`
+                    : '함께한 사람 추가'
+                }
                 onPress={onClickToAddMember}
               />
             </View>

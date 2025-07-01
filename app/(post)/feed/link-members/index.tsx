@@ -8,10 +8,12 @@ import UserList from '@/components/feed/UserList';
 import { useRouter } from 'expo-router';
 import { FeedConnectedUser } from '@/types/feed';
 import MemberBadgeList from '@/components/feed/MemberBadgeList';
+import { useConnectedUserStore } from '@/stores/connectedUserStore';
 
 export default function LinkMembersPage() {
   const router = useRouter();
   const mockUsers = generateMockUsers(20);
+  const { setUsers } = useConnectedUserStore();
   const [selectedUsers, setSelectedUsers] = useState<FeedConnectedUser[]>([]);
 
   const handleToggleUser = (user: FeedConnectedUser) => {
@@ -24,6 +26,11 @@ export default function LinkMembersPage() {
 
   const handleRemoveUser = (userId: number) => {
     setSelectedUsers((prev) => prev.filter((u) => u.userId !== userId));
+  };
+
+  const handleComplete = () => {
+    setUsers(selectedUsers); // 전역 상태에 저장
+    router.push('/(post)/feed/write'); // 글쓰기 페이지로 이동
   };
 
   return (
@@ -41,7 +48,7 @@ export default function LinkMembersPage() {
         variant="primary"
         size="lg"
         disabled={selectedUsers.length === 0}
-        onPress={() => router.push('/(post)/feed/write')}
+        onPress={handleComplete}
       >
         {selectedUsers.length > 0 && (
           <CircleBadge>
