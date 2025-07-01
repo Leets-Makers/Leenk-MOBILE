@@ -101,7 +101,7 @@ const ButtonContent = styled.View`
   justify-content: center;
 `;
 
-const CircleBadge = styled.View`
+export const CircleBadge = styled.View`
   background-color: ${colors.primaryDark};
   border-radius: ${radius.full}px;
   width: 22px;
@@ -111,7 +111,7 @@ const CircleBadge = styled.View`
   margin-right: 8px;
 `;
 
-const ButtonText = styled.Text<{ disabled?: boolean }>`
+export const ButtonText = styled.Text<{ disabled?: boolean }>`
   font-family: ${fonts.Bold};
   font-size: ${fontSize.sm}px;
   color: ${({ disabled }) => (disabled ? colors.gray[100] : colors.white)};
