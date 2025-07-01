@@ -89,6 +89,9 @@ android {
 
     namespace 'com.example.leenk'
     defaultConfig {
+    manifestPlaceholders += [
+        KAKAO_NATIVE_APP_KEY: project.hasProperty("KAKAO_NATIVE_APP_KEY") ? project.KAKAO_NATIVE_APP_KEY : ""
+    ]
         applicationId 'com.example.leenk'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion

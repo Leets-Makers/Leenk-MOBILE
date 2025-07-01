@@ -40,7 +40,8 @@
       "favicon": "./assets/images/ic_logo.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true
