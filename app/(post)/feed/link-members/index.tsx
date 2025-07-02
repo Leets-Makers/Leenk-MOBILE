@@ -30,6 +30,7 @@ export default function LinkMembersPage() {
 
   const handleComplete = () => {
     setUsers(selectedUsers); // 전역 상태에 저장
+    console.log('추가된 사람: ', selectedUsers);
     router.push('/(post)/feed/write'); // 글쓰기 페이지로 이동
   };
 

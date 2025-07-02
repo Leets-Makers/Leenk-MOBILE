@@ -20,7 +20,6 @@ import { useConnectedUserStore } from '@/stores/connectedUserStore';
 
 const mockFeed = generateMockFeeds();
 const { userId, name, profileImage } = mockFeed[0].author;
-const connectedUsers = useConnectedUserStore((state) => state.users);
 
 const mockProfile: Author = {
   userId,
@@ -32,10 +31,15 @@ export default function FeedWritePage() {
   const [content, setContent] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const selectedImages = useImageStore((state) => state.selectedImages);
+  const connectedUsers = useConnectedUserStore((state) => state.users);
 
   const handleUpload = () => {
-    if (content.trim()) {
-      setIsModalOpen(true); // 추후 조건: 함께한 사람 없을 때만 띄우도록 변경
+    if (!content.trim()) return;
+
+    if (connectedUsers.length === 0) {
+      setIsModalOpen(true); // 함께한 사람이 없을 때만 모달 표시
+    } else {
+      console.log('업로드 진행!');
     }
   };
 
@@ -93,7 +97,7 @@ export default function FeedWritePage() {
                 iconType="plus"
                 label={
                   connectedUsers.length > 0
-                    ? `+ ${connectedUsers[0].name} 외 ${connectedUsers.length - 1}명`
+                    ? `${mockProfile.name} 외 ${connectedUsers.length - 1}명`
                     : '함께한 사람 추가'
                 }
                 onPress={onClickToAddMember}
