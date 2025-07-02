@@ -3,7 +3,7 @@ import axios from 'axios';
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export type KakaoLoginResult =
-  | { success: true; data: any }
+  | { success: true; data: any; code: string; message: string }
   | { success: false; code: string; message: string };
 
 export const kakaoLogin = async (
@@ -20,9 +20,13 @@ export const kakaoLogin = async (
       },
     );
 
+    const { code, message, ...data } = response.data;
+
     return {
       success: true,
-      data: response.data,
+      code,
+      message,
+      data,
     };
   } catch (error: any) {
     if (axios.isAxiosError(error) && error.response?.data) {
