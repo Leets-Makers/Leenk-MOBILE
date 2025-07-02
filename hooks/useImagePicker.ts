@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
+import { Platform } from 'react-native';
+import { useImageStore } from '@/stores/feedImageStore';
 
 export default function useImagePicker({
   maxSelect = 3,
@@ -16,11 +18,7 @@ export default function useImagePicker({
     hasNextPage: boolean;
   }>({ endCursor: null, hasNextPage: false });
 
-  // const requestPermission = useCallback(async () => {
-  //   const { status } = await MediaLibrary.requestPermissionsAsync();
-  //   setHasPermission(status === 'granted');
-  // }, []);
-
+  // 권한 요청
   const requestPermission = async (): Promise<boolean> => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const granted = status === 'granted';
@@ -29,31 +27,57 @@ export default function useImagePicker({
     return granted;
   };
 
+  // 사진 로딩
   const fetchPhotos = useCallback(async () => {
     const perm = await MediaLibrary.getPermissionsAsync();
+
     console.log('📸 fetchPhotos 내부 권한 상태:', perm.status);
 
-    // if (!hasPermission) return;
     if (perm.status !== 'granted') return;
 
     const { assets, endCursor, hasNextPage } =
       await MediaLibrary.getAssetsAsync({
-        // sortBy: [['creationTime', false]],
         first: 50,
         after: pageInfo?.endCursor ?? undefined,
         mediaType: MediaLibrary.MediaType.photo,
       });
+    console.log('📸 getAssetsAsync 호출 직후 asset 수:', assets.length);
+    let assetsWithLocalUri: MediaLibrary.Asset[] = [];
+    console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
+
+    if (Platform.OS === 'ios') {
+      const assetInfoPromises = assets.map(async (asset) => {
+        try {
+          const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+          return {
+            ...asset,
+            uri: info.localUri ?? asset.uri,
+          };
+        } catch (e) {
+          console.warn('asset info error', e);
+          return asset; // fallback
+        }
+      });
+      assetsWithLocalUri = await Promise.all(assetInfoPromises);
+    } else {
+      assetsWithLocalUri = assets;
+    }
 
     setPhotos((prev) => {
       const existingIds = new Set(prev.map((p) => p.id));
-      const newAssets = assets.filter((asset) => !existingIds.has(asset.id));
+      const newAssets = assetsWithLocalUri.filter(
+        (asset) => !existingIds.has(asset.id),
+      );
       return [...prev, ...newAssets];
     });
+
     setPageInfo({ endCursor, hasNextPage });
     console.log('📸 가져온 사진 개수:', assets.length);
   }, [pageInfo]);
 
+  // 선택 상태 변경
   const toggleSelect = async (photo: MediaLibrary.Asset) => {
+    console.log('[🖱 toggleSelect 호출됨]', photo.filename);
     const isSelected = selected.find((item) => item.id === photo.id);
     let updated;
     if (isSelected) {
@@ -65,19 +89,10 @@ export default function useImagePicker({
     }
 
     setSelected(updated);
-    if (onChange) {
-      // Asset[] → localUri[] 변환
-      const uris: string[] = [];
 
-      for (const asset of updated) {
-        const info = await MediaLibrary.getAssetInfoAsync(asset.id);
-        if (info.localUri) {
-          uris.push(info.localUri);
-        }
-      }
+    const uris = updated.map((asset) => asset.uri).filter(Boolean) as string[];
 
-      onChange(uris);
-    }
+    useImageStore.getState().setSelectedImages(uris);
   };
 
   const getSelectionNumber = (photoId: string) => {

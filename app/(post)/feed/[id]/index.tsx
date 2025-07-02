@@ -31,7 +31,7 @@ export default function FeedDetailPage() {
 
       <Header
         isBackWhite
-        RightSection="BELL"
+        RightSection="KEBAB"
         style={{
           position: 'absolute',
           top: 0,
