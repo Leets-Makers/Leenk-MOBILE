@@ -70,6 +70,7 @@ export default function useImagePicker({
   }, [pageInfo]);
 
   const toggleSelect = async (photo: MediaLibrary.Asset) => {
+    console.log('[🖱 toggleSelect 호출됨]', photo.filename);
     const isSelected = selected.find((item) => item.id === photo.id);
     let updated;
     if (isSelected) {
@@ -80,15 +81,24 @@ export default function useImagePicker({
       return;
     }
 
+    console.log(
+      '[📌 업데이트될 selected]',
+      updated.map((a) => a.filename),
+    );
     setSelected(updated);
     if (onChange) {
       // Asset[] → localUri[] 변환
       const uris: string[] = [];
 
       for (const asset of updated) {
-        const info = await MediaLibrary.getAssetInfoAsync(asset.id);
-        if (info.localUri) {
-          uris.push(info.localUri);
+        const uri =
+          Platform.OS === 'ios'
+            ? ((await MediaLibrary.getAssetInfoAsync(asset.id)).localUri ??
+              asset.uri)
+            : asset.uri;
+
+        if (uri) {
+          uris.push(uri);
         }
       }
 

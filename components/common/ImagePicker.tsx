@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Platform, View } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 import { ThumbnailItem } from '@/components';
 import useImagePicker from '@/hooks/useImagePicker';
@@ -40,15 +40,41 @@ export default function ImagePicker({
 
   // Zustand에 URI 저장
   useEffect(() => {
+    console.log(
+      '[🔁 useEffect triggered] selected:',
+      selected.map((s) => s.filename),
+    );
+
     const saveUris = async () => {
       const uris: string[] = [];
 
       for (const asset of selected) {
-        const info = await MediaLibrary.getAssetInfoAsync(asset.id);
-        if (info.localUri) uris.push(info.localUri);
+        try {
+          let uri = asset.uri;
+
+          if (Platform.OS === 'ios') {
+            const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+            console.log('📷 [iOS] asset info:', info);
+            uri = info.localUri ?? asset.uri;
+          }
+
+          if (uri) {
+            console.log('✅ uri pushed:', uri);
+            uris.push(uri);
+          } else {
+            console.log('❌ uri not found for', asset.filename);
+          }
+        } catch (error) {
+          console.log('🚨 getAssetInfoAsync 오류 발생:', error);
+        }
       }
 
+      console.log('🔥 최종 uris:', uris);
+
       useImageStore.getState().setSelectedImages(uris);
+
+      const stateUris = useImageStore.getState().selectedImages;
+      console.log('[🧠 store selectedImages]:', stateUris);
     };
 
     saveUris();

@@ -13,7 +13,11 @@ import { AspectRatio } from '@/types/aspect-ratio';
 export const SIDE_PADDING = 16;
 
 export default function PostFeedPage() {
-  const selectedUris = useImageStore((state) => state.selectedImages);
+  const selectedUrisLength = useImageStore(
+    (state) => state.selectedImages.length,
+  );
+
+  console.log('[🔁 selectedUrisLength]:', selectedUrisLength);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
@@ -51,12 +55,12 @@ export default function PostFeedPage() {
         <CustomButton
           variant="primary"
           size="lg"
-          disabled={selectedUris.length === 0}
+          disabled={selectedUrisLength === 0}
           onPress={() => router.push('/(post)/feed/write')}
         >
-          {selectedUris.length > 0 && (
+          {selectedUrisLength > 0 && (
             <CircleBadge>
-              <ButtonText>{selectedUris.length}</ButtonText>
+              <ButtonText>{selectedUrisLength}</ButtonText>
             </CircleBadge>
           )}
           다음
