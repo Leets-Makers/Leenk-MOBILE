@@ -143,7 +143,7 @@ export default function ProfilePage() {
 
       {step === 'photo' && (
         <>
-          <StyledText>프로필 사진을 설정해줘</StyledText>
+          <StyledSubText>프로필 사진을 설정해줘</StyledSubText>
           <ImagePreview>
             {profileImage ? (
               <Image
@@ -221,7 +221,7 @@ const Container = styled.View`
   padding-horizontal: ${20 * width}px;
 `;
 
-const StyledText = styled.Text`
+export const StyledSubText = styled.Text`
   font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
   font-family: ${fonts.Regular};

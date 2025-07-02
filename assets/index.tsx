@@ -25,6 +25,7 @@ import DefaultProfileImage from '@/assets/images/ic_default_profile.svg';
 import SettingIcon from '@/assets/images/ic_setting.svg';
 import RightArrowIcon from '@/assets/images/ic_right_arrow.svg';
 import CongratsIcon from '@/assets/images/ic_congratsLogo.svg';
+import CheckIcon from '@/assets/images/ic_check.svg';
 export {
   FeedIcon,
   LeenkIcon,
@@ -53,4 +54,5 @@ export {
   SettingIcon,
   RightArrowIcon,
   CongratsIcon,
+  CheckIcon,
 };

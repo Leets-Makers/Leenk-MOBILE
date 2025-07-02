@@ -13,13 +13,12 @@ import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
 import { useRouter } from 'expo-router';
 import { CustomButton } from '@/components';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
-import axios from 'axios';
 import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
+import { kakaoLogin } from '@/api/login/kakao.api';
 export default function LandingPage() {
   const kakaoNativeAppKey = process.env.EXPO_PUBLIC_NATIVE_APP_KEY || '';
-  const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
   const router = useRouter();
   const [notRegisterModal, setNotRegisterModal] = useState(false);
   const [waitModal, setWaitModal] = useState(false);
@@ -30,50 +29,33 @@ export default function LandingPage() {
 
   const handleKakaoLogin = async () => {
     try {
-      // 1. 카카오 로그인 시도
       const token = await login();
       const accessToken = token?.accessToken;
 
       console.log('✅ Kakao Access Token:', accessToken);
 
-      // 2. 서버에 토큰 전송
-      const response = await axios.post(
-        `${BASE_URL}kakao/login`,
-        {},
-        {
-          headers: {
-            'Kakao-Access-Token': accessToken,
-          },
-        },
-      );
+      const result = await kakaoLogin(accessToken);
 
-      console.log('로그인 성공: ', response.data);
-
-      // 3. 다음 화면으로 이동
-      router.push('/signup/verify');
-    } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response?.data) {
-        const { code, message } = error.response.data;
-
-        switch (code) {
+      if (result.success) {
+        console.log('로그인 성공:', result.data);
+        router.push('/signup/verify');
+      } else {
+        switch (result.code) {
           case '2000':
-            // 가입 승인 대기
             setWaitModal(true);
             break;
           case '2001':
-            // 인증 서버 예외 메시지 → 콘솔 출력
-            console.error('서버 인증 에러:', message);
+            console.error('서버 인증 에러:', result.message);
             break;
           case '2002':
-            // 미가입 사용자
             setNotRegisterModal(true);
             break;
           default:
-            console.error('알 수 없는 예외:', code, message);
+            console.error('알 수 없는 예외:', result.code, result.message);
         }
-      } else {
-        console.error('카카오 로그인 실패:', error);
       }
+    } catch (e) {
+      console.error('카카오 로그인 실패:', e);
     }
   };
 
