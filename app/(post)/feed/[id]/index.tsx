@@ -16,11 +16,12 @@ import {
 } from '@/theme/globalStyles';
 import { generateMockFeedDetail } from '@/__mocks__/mockFeed';
 import { StyledText } from '@/app/(post)/feed/write';
-import { KebabIcon } from '@/assets';
 import HeartButton from '@/components/feed/HeartButton';
 import styled from 'styled-components/native';
 import { useState } from 'react';
 import MenuModal from '@/components/Modal/MenuModal';
+import { CONTAINER_PADDING } from '@/constants';
+import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
 
 export default function FeedDetailPage() {
   const feed = generateMockFeedDetail();
@@ -46,14 +47,14 @@ export default function FeedDetailPage() {
           top: 0,
           width: '100%',
           zIndex: 20,
-          paddingHorizontal: 16 * width,
+          paddingHorizontal: CONTAINER_PADDING * width,
         }}
       />
 
       {/* 본문 */}
       <View
         style={{
-          paddingHorizontal: 16 * width,
+          paddingHorizontal: CONTAINER_PADDING * width,
           marginBottom: 24 * width,
           minHeight: 220 * height,
         }}
@@ -67,15 +68,12 @@ export default function FeedDetailPage() {
               marginBottom: 16,
             }}
           >
-            <Image
-              source={{ uri: feed.author.profileImage }}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                marginRight: 8,
-              }}
-            />
+            <View style={{ marginRight: 8 * width }}>
+              <ProfileImageWithFallback
+                uri={feed.author.profileImage}
+                size={36}
+              />
+            </View>
             <StyledText>{feed.author.name}</StyledText>
 
             {feed.linkedUserCount > 1 && (
@@ -135,7 +133,7 @@ export default function FeedDetailPage() {
         visible={isMenuVisible}
         isWrite={false}
         onClose={() => setMenuVisible(false)}
-        onPressFirst={() => {}} // isWrite=false일 땐 사용 안함
+        onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
         onPressSecond={handleDelete}
       />
     </View>
@@ -146,5 +144,5 @@ const RowWrapper = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${18 * height}px;
+  margin-bottom: ${10 * height}px;
 `;
