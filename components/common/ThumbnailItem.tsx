@@ -13,7 +13,7 @@ interface ThumbnailItemProps {
   onToggle: (photo: MediaLibrary.Asset) => void;
   getSelectionNumber: (id: string) => number | null;
   aspectRatio?: '1:1' | '9:16';
-  mode?: 'profile' | 'feed';
+  mode?: 'profile' | 'feed'; // 프로필 선택인지 피드 이미지 선택 페이지인지 구분
 }
 
 export default function ThumbnailItem({
