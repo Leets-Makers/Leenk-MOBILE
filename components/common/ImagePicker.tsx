@@ -6,6 +6,7 @@ import useImagePicker from '@/hooks/useImagePicker';
 import { NUM_COLUMNS } from '@/constants';
 import { useImageStore } from '@/stores/feedImageStore';
 import { AspectRatio } from '@/types/aspect-ratio';
+import { width } from '@/theme/globalStyles';
 
 interface ImagePickerProps {
   maxSelect: number;
@@ -32,9 +33,13 @@ export default function ImagePicker({
   // 권한 요청 및 초기 사진 로딩
   useEffect(() => {
     (async () => {
-      const granted = await requestPermission();
-      if (granted) {
-        fetchPhotos();
+      try {
+        const granted = await requestPermission();
+        if (granted) {
+          await fetchPhotos();
+        }
+      } catch (error) {
+        console.error('이미지 권한 요청 또는 사진 가져오기 실패:', error);
       }
     })();
   }, []);
@@ -49,6 +54,7 @@ export default function ImagePicker({
         keyExtractor={(item, index) => `${item.id}_${index}`}
         columnWrapperStyle={{
           justifyContent: 'flex-start',
+          gap: 4 * width,
         }}
         contentContainerStyle={{ paddingBottom: 100 }}
         style={{ flexGrow: 1 }}

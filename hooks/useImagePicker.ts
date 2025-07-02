@@ -18,6 +18,7 @@ export default function useImagePicker({
     hasNextPage: boolean;
   }>({ endCursor: null, hasNextPage: false });
 
+  // 권한 요청
   const requestPermission = async (): Promise<boolean> => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const granted = status === 'granted';
@@ -26,6 +27,7 @@ export default function useImagePicker({
     return granted;
   };
 
+  // 사진 로딩
   const fetchPhotos = useCallback(async () => {
     const perm = await MediaLibrary.getPermissionsAsync();
 
@@ -40,23 +42,26 @@ export default function useImagePicker({
         mediaType: MediaLibrary.MediaType.photo,
       });
     console.log('📸 getAssetsAsync 호출 직후 asset 수:', assets.length);
-    const assetsWithLocalUri: MediaLibrary.Asset[] = [];
+    let assetsWithLocalUri: MediaLibrary.Asset[] = [];
     console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
 
-    for (const asset of assets) {
-      let uri = asset.uri;
-
-      if (Platform.OS === 'ios') {
-        const info = await MediaLibrary.getAssetInfoAsync(asset.id);
-        uri = info.localUri ?? asset.uri;
-      }
-
-      assetsWithLocalUri.push({
-        ...asset,
-        uri,
+    if (Platform.OS === 'ios') {
+      const assetInfoPromises = assets.map(async (asset) => {
+        try {
+          const info = await MediaLibrary.getAssetInfoAsync(asset.id);
+          return {
+            ...asset,
+            uri: info.localUri ?? asset.uri,
+          };
+        } catch (e) {
+          console.warn('asset info error', e);
+          return asset; // fallback
+        }
       });
+      assetsWithLocalUri = await Promise.all(assetInfoPromises);
+    } else {
+      assetsWithLocalUri = assets;
     }
-    console.log('assets with local uri : ', assetsWithLocalUri);
 
     setPhotos((prev) => {
       const existingIds = new Set(prev.map((p) => p.id));
@@ -70,6 +75,7 @@ export default function useImagePicker({
     console.log('📸 가져온 사진 개수:', assets.length);
   }, [pageInfo]);
 
+  // 선택 상태 변경
   const toggleSelect = async (photo: MediaLibrary.Asset) => {
     console.log('[🖱 toggleSelect 호출됨]', photo.filename);
     const isSelected = selected.find((item) => item.id === photo.id);
@@ -82,21 +88,10 @@ export default function useImagePicker({
       return;
     }
 
-    console.log(
-      '[📌 업데이트될 selected]',
-      updated.map((a) => a.filename),
-    );
     setSelected(updated);
 
-    const uris: string[] = [];
-    for (const asset of updated) {
-      const uri =
-        Platform.OS === 'ios'
-          ? ((await MediaLibrary.getAssetInfoAsync(asset.id)).localUri ??
-            asset.uri)
-          : asset.uri;
-      if (uri) uris.push(uri);
-    }
+    const uris = updated.map((asset) => asset.uri).filter(Boolean) as string[];
+
     useImageStore.getState().setSelectedImages(uris);
   };
 

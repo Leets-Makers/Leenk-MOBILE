@@ -20,7 +20,13 @@ export default function ProfileImageWithFallback({ uri, size = 40 }: Props) {
           source={{ uri }}
           width={size}
           height={size}
-          onError={() => setError(true)}
+          onError={(error) => {
+            console.warn('이미지 로딩 실패', error.nativeEvent.error);
+            setError(true);
+          }}
+          accessible={true}
+          accessibilityLabel="프로필이미지"
+          accessibilityRole="image"
         />
       )}
     </ImageContainer>

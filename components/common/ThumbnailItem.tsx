@@ -26,35 +26,16 @@ export default function ThumbnailItem({
 }: ThumbnailItemProps) {
   const number = getSelectionNumber(asset.id);
   const isSelected = selected.some((item) => item.id === asset.id);
+
   const [uri, setUri] = useState<string | null>(null);
 
   const imageHeight =
     aspectRatio === '9:16' ? (IMAGE_SIZE * 16) / 9 : IMAGE_SIZE;
 
   useEffect(() => {
-    let cancelled = false;
-
-    const load = async () => {
-      const realUri = asset.uri; // 바로 asset.uri 사용
-
-      if (!cancelled) {
-        console.log('🖼️ 최종 썸네일 uri:', realUri);
-        setUri(realUri);
-      }
-    };
-
-    load();
-
+    setUri(asset.uri);
     console.log('📸 썸네일 렌더링됨:', asset.filename);
-
-    return () => {
-      cancelled = true;
-    };
   }, [asset]);
-
-  useEffect(() => {
-    console.log('📸 ThumbnailItem mounted:', asset.filename);
-  }, []);
 
   return (
     <TouchableOpacity onPress={() => onToggle(asset)}>

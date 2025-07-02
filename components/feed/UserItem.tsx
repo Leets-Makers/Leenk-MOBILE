@@ -15,7 +15,12 @@ interface UserItemProps {
 
 export default function UserItem({ user, checked, onToggle }: UserItemProps) {
   return (
-    <Wrapper onPress={onToggle}>
+    <Wrapper
+      onPress={onToggle}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`${user.name} ${checked ? '선택됨' : '선택 안됨'}`}
+    >
       <ProfileImageWithFallback uri={user.profileImage} />
       <UserName>{user.name}</UserName>
       <CheckBox checked={checked} />

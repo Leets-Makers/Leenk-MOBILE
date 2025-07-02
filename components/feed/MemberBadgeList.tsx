@@ -19,6 +19,8 @@ export default function MemberBadgeList({
       horizontal
       showsHorizontalScrollIndicator={false}
       hasMembers={members.length > 0}
+      accessible={members.length > 0}
+      accessibilityLabel={`선택된 멤버 ${members.length}명`}
     >
       {members.map((member) => (
         <BadgeWrapper key={member.userId}>
