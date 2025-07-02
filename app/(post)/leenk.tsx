@@ -1,5 +1,3 @@
-import { ImagePicker } from '@/components';
-import { AspectRatio } from '@/types/aspect-ratio';
 import { View, Text } from 'react-native';
 
 export default function PostLeenkPage() {

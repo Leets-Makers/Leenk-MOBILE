@@ -29,17 +29,6 @@ export default function ImagePicker({
     hasNextPage,
   } = useImagePicker({ maxSelect });
 
-  // useEffect(() => {
-  //   requestPermission(); // 권한 먼저 요청
-  // }, []);
-
-  // useEffect(() => {
-  //   if (hasPermission === true) {
-  //     console.log('✅ hasPermission === true, fetchPhotos 실행');
-  //     fetchPhotos();
-  //   }
-  // }, [hasPermission]);
-
   useEffect(() => {
     (async () => {
       const granted = await requestPermission();

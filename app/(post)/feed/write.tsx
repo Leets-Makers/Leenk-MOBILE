@@ -97,7 +97,7 @@ export default function FeedWritePage() {
                 iconType="plus"
                 label={
                   connectedUsers.length > 0
-                    ? `${mockProfile.name} 외 ${connectedUsers.length - 1}명`
+                    ? `${mockProfile.name} 외 ${connectedUsers.length}명`
                     : '함께한 사람 추가'
                 }
                 onPress={onClickToAddMember}

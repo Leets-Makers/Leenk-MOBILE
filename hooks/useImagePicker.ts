@@ -17,11 +17,6 @@ export default function useImagePicker({
     hasNextPage: boolean;
   }>({ endCursor: null, hasNextPage: false });
 
-  // const requestPermission = useCallback(async () => {
-  //   const { status } = await MediaLibrary.requestPermissionsAsync();
-  //   setHasPermission(status === 'granted');
-  // }, []);
-
   const requestPermission = async (): Promise<boolean> => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const granted = status === 'granted';
@@ -35,12 +30,10 @@ export default function useImagePicker({
 
     console.log('📸 fetchPhotos 내부 권한 상태:', perm.status);
 
-    // if (!hasPermission) return;
     if (perm.status !== 'granted') return;
 
     const { assets, endCursor, hasNextPage } =
       await MediaLibrary.getAssetsAsync({
-        // sortBy: [['creationTime', false]],
         first: 50,
         after: pageInfo?.endCursor ?? undefined,
         mediaType: MediaLibrary.MediaType.photo,
