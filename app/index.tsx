@@ -29,40 +29,45 @@ export default function LandingPage() {
   }, []);
 
   const handleKakaoLogin = async () => {
-    try {
-      const token = await login();
-      const accessToken = token?.accessToken;
-
-      console.log('✅ Kakao Access Token:', accessToken);
-
-      const result = await kakaoLogin(accessToken);
-
-      if (result.success) {
-        console.log('로그인 성공:', result.data);
-
-        const serverToken = result.data.accessToken;
-
-        await saveAccessToken(serverToken);
-
-        router.push('/signup/verify');
-      } else {
-        switch (result.code) {
-          case '2000':
-            setWaitModal(true);
-            break;
-          case '2001':
-            console.error('서버 인증 에러:', result.message);
-            break;
-          case '2002':
-            setNotRegisterModal(true);
-            break;
-          default:
-            console.error('알 수 없는 예외:', result.code, result.message);
-        }
-      }
-    } catch (e) {
-      console.error('카카오 로그인 실패:', e);
+    const serverToken = process.env.EXPO_PUBLIC_TOKEN;
+    if (serverToken) {
+      await saveAccessToken(serverToken);
     }
+    router.push('/signup/verify');
+    // try {
+    //   const token = await login();
+    //   const accessToken = token?.accessToken;
+
+    //   console.log('✅ Kakao Access Token:', accessToken);
+
+    //   const result = await kakaoLogin(accessToken);
+
+    //   if (result.success) {
+    //     console.log('로그인 성공:', result.data);
+
+    //     const serverToken = result.data.accessToken;
+
+    //     await saveAccessToken(serverToken);
+
+    //     router.push('/signup/verify');
+    //   } else {
+    //     switch (result.code) {
+    //       case '2000':
+    //         setWaitModal(true);
+    //         break;
+    //       case '2001':
+    //         console.error('서버 인증 에러:', result.message);
+    //         break;
+    //       case '2002':
+    //         setNotRegisterModal(true);
+    //         break;
+    //       default:
+    //         console.error('알 수 없는 예외:', result.code, result.message);
+    //     }
+    //   }
+    // } catch (e) {
+    //   console.error('카카오 로그인 실패:', e);
+    // }
   };
 
   const handleSignUp = () => {

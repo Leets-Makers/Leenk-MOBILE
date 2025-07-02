@@ -12,6 +12,11 @@ import PopupModal from '@/components/Modal/PopupModal';
 import { MBTI_LIST } from '@/constants/MbtiList';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { Platform } from 'react-native';
+import {
+  UpdateProfilePayload,
+  updateUserProfile,
+} from '@/api/login/patchUsersInfo.api';
+import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 
 export default function ProfilePage() {
   const {
@@ -41,15 +46,37 @@ export default function ProfilePage() {
 
   const router = useRouter();
 
-  const handleNext = () => {
-    if (step === 'id') setKakaoModalVisible(true);
-    else if (step === 'photo') setStep('introduction');
-    else if (step === 'introduction') setStep('mbti');
-    else {
-      console.log('제출: ', { kakaoTalkId, introduction, mbti, profileImage });
-      router.push('/(page)/feed');
+  const handleNext = async () => {
+    if (step === 'id') {
+      setKakaoModalVisible(true);
+    } else if (step === 'photo') {
+      setStep('introduction');
+    } else if (step === 'introduction') {
+      setStep('mbti');
+    } else {
+      const payload: UpdateProfilePayload = {};
+
+      try {
+        if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
+        if (introduction) payload.introduction = introduction;
+        if (mbti) payload.mbti = mbti;
+
+        if (profileImage) {
+          const fileName = `profile_${Date.now()}.jpg`;
+          const presignedUrl = await getPresignedUrl(fileName);
+          await uploadImageToS3(presignedUrl, profileImage);
+          payload.profileImage = presignedUrl.split('?')[0];
+        }
+
+        console.log('제출:', payload);
+        await updateUserProfile(payload);
+        router.push('/(page)/feed');
+      } catch (e) {
+        console.error('프로필 업데이트 실패:', e);
+      }
     }
   };
+
   const handlePrevStep = () => {
     if (step === 'photo') setStep('id');
     else if (step === 'introduction') setStep('photo');
