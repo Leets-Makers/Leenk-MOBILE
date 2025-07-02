@@ -20,10 +20,18 @@ import { KebabIcon } from '@/assets';
 import HeartButton from '@/components/feed/HeartButton';
 import styled from 'styled-components/native';
 import { useState } from 'react';
+import MenuModal from '@/components/Modal/MenuModal';
 
 export default function FeedDetailPage() {
   const feed = generateMockFeedDetail();
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false); // 유저리스트 모달
+  const [isMenuVisible, setMenuVisible] = useState(false); // 케밥 메뉴 모달
+
+  const handleDelete = () => {
+    // TODO: 삭제 로직 추가
+    console.log('🗑 삭제하기 클릭됨');
+    setMenuVisible(false);
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -32,6 +40,7 @@ export default function FeedDetailPage() {
       <Header
         isBackWhite
         RightSection="KEBAB"
+        kebabPress={() => setMenuVisible(true)}
         style={{
           position: 'absolute',
           top: 0,
@@ -114,11 +123,20 @@ export default function FeedDetailPage() {
           </Text>
         </View>
       </View>
+      {/* 유저리스트 모달 */}
       <UserListModal
         visible={isModalVisible}
         title="함께 연결된 Leets"
         list={feed.linkedUser}
         onClose={() => setModalVisible(false)}
+      />
+      {/* 삭제 메뉴 모달 */}
+      <MenuModal
+        visible={isMenuVisible}
+        isWrite={false}
+        onClose={() => setMenuVisible(false)}
+        onPressFirst={() => {}} // isWrite=false일 땐 사용 안함
+        onPressSecond={handleDelete}
       />
     </View>
   );

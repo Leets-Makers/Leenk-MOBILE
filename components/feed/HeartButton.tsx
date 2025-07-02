@@ -15,22 +15,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 
-// const COLORS = [
-//   '#f472b6', // pink
-//   '#fbbf24', // yellow
-//   '#34d399', //  green
-//   '#38bdf8', // blue
-//   '#a78bfa', // purple
-//   '#fb7185', // rose
-//   '#60a5fa', // sky blue
-//   '#f87171', // red
-// ];
-
-// const getRandomColor = () => {
-//   const index = Math.floor(Math.random() * COLORS.length);
-//   return COLORS[index];
-// };
-
 type HeartData = {
   id: number;
   color?: string;
@@ -72,7 +56,6 @@ export default function HeartButton() {
     //하트 생성
     const newHeart: HeartData = {
       id: Date.now(),
-      // color: getRandomColor(),
     };
     setHearts((prev) => [...prev, newHeart]);
     setCount((prev) => prev + 1);
@@ -102,12 +85,12 @@ export default function HeartButton() {
         <HeartWithBadge>
           <Circle>
             <OutlineWrapper style={outlineAnimatedStyle}>
-              <HeartIcon width={28} height={28} color="#E4387E" />
+              <HeartIcon width={28} height={28} />
             </OutlineWrapper>
 
             {/* 기본 하트 */}
             <Animated.View style={heartStyle}>
-              <HeartIcon width={28} height={28} color="#E4387E" />
+              <HeartIcon width={28} height={28} />
             </Animated.View>
           </Circle>
           <BadgeWrapper>
