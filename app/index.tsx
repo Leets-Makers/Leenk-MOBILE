@@ -17,6 +17,7 @@ import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
 import { kakaoLogin } from '@/api/login/kakao.api';
+import { saveAccessToken } from '@/utils/tokenStorage';
 export default function LandingPage() {
   const kakaoNativeAppKey = process.env.EXPO_PUBLIC_NATIVE_APP_KEY || '';
   const router = useRouter();
@@ -38,6 +39,11 @@ export default function LandingPage() {
 
       if (result.success) {
         console.log('로그인 성공:', result.data);
+
+        const serverToken = result.data.accessToken;
+
+        await saveAccessToken(serverToken);
+
         router.push('/signup/verify');
       } else {
         switch (result.code) {
