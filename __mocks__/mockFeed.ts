@@ -1,6 +1,6 @@
 // utils/mock/feed.ts
 import { faker } from '@faker-js/faker';
-import { FeedDetail, FeedItem } from '@/types/feed';
+import { FeedConnectedUser, FeedDetail, FeedItem } from '@/types/feed';
 
 export const generateMockFeeds = (count: number = 30): FeedItem[] => {
   return Array.from({ length: count }, (_, i) => {
@@ -53,4 +53,12 @@ export const generateMockFeedDetail = (): FeedDetail => {
       };
     }),
   };
+};
+
+export const generateMockUsers = (count: number = 10): FeedConnectedUser[] => {
+  return Array.from({ length: count }, (_, i) => ({
+    userId: i + 1,
+    name: faker.person.firstName(),
+    profileImage: `https://picsum.photos/seed/user-${faker.string.uuid()}/100/100`,
+  }));
 };

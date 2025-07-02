@@ -59,7 +59,7 @@ export const InputBox = styled.View<{ focused: boolean }>`
   border-radius: ${radius.sm}px;
   padding-vertical: ${12 * height}px;
   padding-horizontal: ${12 * width}px;
-  border-width: 1px;
+  border-width: 2px;
   border-color: ${({ focused }) =>
     focused ? colors.primaryLight : colors.gray[300]};
   border-style: solid;

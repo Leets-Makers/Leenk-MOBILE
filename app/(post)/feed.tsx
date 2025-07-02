@@ -9,14 +9,21 @@ import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
 import PopupModal from '@/components/Modal/PopupModal';
 import { useImageStore } from '@/stores/feedImageStore';
 import { AspectRatio } from '@/types/aspect-ratio';
-
-const SIDE_PADDING = 16;
+import { CONTAINER_PADDING } from '@/constants';
 
 export default function PostFeedPage() {
-  const selectedUris = useImageStore((state) => state.selectedImages);
+  const selectedUrisLength = useImageStore(
+    (state) => state.selectedImages.length,
+  );
+
+  console.log('[🔁 selectedUrisLength]:', selectedUrisLength);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+
+  const handleBackPress = () => {
+    setIsModalOpen(true);
+  };
 
   const handleConfirmExit = () => {
     setIsModalOpen(false);
@@ -26,7 +33,7 @@ export default function PostFeedPage() {
   return (
     <Container>
       <ContentWrapper>
-        <Header>게시물 사진 선택</Header>
+        <Header signUpBackPress={handleBackPress}>게시물 사진 선택</Header>
         <SubText>최대 3장까지 선택 가능해</SubText>
         <View style={{ flex: 1 }}>
           <ImagePicker
@@ -47,12 +54,12 @@ export default function PostFeedPage() {
         <CustomButton
           variant="primary"
           size="lg"
-          disabled={selectedUris.length === 0}
+          disabled={selectedUrisLength === 0}
           onPress={() => router.push('/(post)/feed/write')}
         >
-          {selectedUris.length > 0 && (
+          {selectedUrisLength > 0 && (
             <CircleBadge>
-              <ButtonText>{selectedUris.length}</ButtonText>
+              <ButtonText>{selectedUrisLength}</ButtonText>
             </CircleBadge>
           )}
           다음
@@ -61,25 +68,26 @@ export default function PostFeedPage() {
 
       <PopupModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmExit}
+        onConfirm={() => setIsModalOpen(false)}
+        onClose={handleConfirmExit}
         mainText="글 작성을 그만둘래?"
         subText="작성하던 내용은 저장되지 않아."
         isCancel={true}
+        leftBtnText="확인"
         rightBtnText="취소"
       />
     </Container>
   );
 }
 
-const Container = styled.View`
+export const Container = styled.View`
   flex: 1;
   background-color: ${colors.white};
 `;
 
-const ContentWrapper = styled.View`
+export const ContentWrapper = styled.View`
   flex: 1;
-  padding: 0 ${SIDE_PADDING}px;
+  padding: 0 ${CONTAINER_PADDING * width}px;
 `;
 
 const SubText = styled.Text`
@@ -96,7 +104,7 @@ const ButtonContent = styled.View`
   justify-content: center;
 `;
 
-const CircleBadge = styled.View`
+export const CircleBadge = styled.View`
   background-color: ${colors.primaryDark};
   border-radius: ${radius.full}px;
   width: 22px;
@@ -106,7 +114,7 @@ const CircleBadge = styled.View`
   margin-right: 8px;
 `;
 
-const ButtonText = styled.Text<{ disabled?: boolean }>`
+export const ButtonText = styled.Text<{ disabled?: boolean }>`
   font-family: ${fonts.Bold};
   font-size: ${fontSize.sm}px;
   color: ${({ disabled }) => (disabled ? colors.gray[100] : colors.white)};

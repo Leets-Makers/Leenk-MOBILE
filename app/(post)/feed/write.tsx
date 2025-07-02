@@ -6,7 +6,7 @@ import {
   Badge,
 } from '@/components';
 import colors from '@/theme/color';
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { Text, View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { Author } from '@/types/feed';
@@ -16,6 +16,7 @@ import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
 import { useImageStore } from '@/stores/feedImageStore';
+import { useConnectedUserStore } from '@/stores/connectedUserStore';
 
 const mockFeed = generateMockFeeds();
 const { userId, name, profileImage } = mockFeed[0].author;
@@ -30,15 +31,25 @@ export default function FeedWritePage() {
   const [content, setContent] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const selectedImages = useImageStore((state) => state.selectedImages);
+  const connectedUsers = useConnectedUserStore((state) => state.users);
 
   const handleUpload = () => {
-    if (content.trim()) {
-      setIsModalOpen(true); // 추후 조건: 함께한 사람 없을 때만 띄우도록 변경
+    if (!content.trim()) return;
+
+    if (connectedUsers.length === 0) {
+      setIsModalOpen(true); // 함께한 사람이 없을 때만 모달 표시
+    } else {
+      console.log('업로드 진행!');
     }
   };
 
   const handleConfirmExit = () => {
-    console.log('추가할래');
+    setIsModalOpen(false);
+    onClickToAddMember();
+  };
+
+  const onClickToAddMember = () => {
+    router.push('/feed/link-members');
   };
 
   return (
@@ -84,7 +95,12 @@ export default function FeedWritePage() {
               <Badge
                 variant="gray"
                 iconType="plus"
-                label={'함께한 사람 추가'}
+                label={
+                  connectedUsers.length > 0
+                    ? `${mockProfile.name} 외 ${connectedUsers.length}명`
+                    : '함께한 사람 추가'
+                }
+                onPress={onClickToAddMember}
               />
             </View>
             <Textarea
@@ -106,8 +122,8 @@ export default function FeedWritePage() {
 
           <PopupModal
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onConfirm={handleConfirmExit}
+            onConfirm={() => setIsModalOpen(false)}
+            onClose={handleConfirmExit}
             mainText="이 내용으로 피드에 업로드할까?"
             subText="함께한 사람이 추가되지 않았어."
             isCancel={true}

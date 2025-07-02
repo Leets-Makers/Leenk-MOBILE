@@ -46,7 +46,7 @@ export default function Badge({
       {/* 오른쪽 아이콘: x */}
       {iconType === 'x' && onRemove && (
         <RemoveButton onPress={onRemove}>
-          <XIcon width={10} height={10} />
+          <XIcon width={10} height={10} color={colors.white} />
         </RemoveButton>
       )}
     </Container>
@@ -65,11 +65,11 @@ const Container = styled.View<{
   backgroundColor: string;
   variant: 'primary' | 'gray' | 'white';
 }>`
+  min-height: ${24 * height}px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding-vertical: ${4.5 * height}px;
-  padding-horizontal: ${8 * width}px;
+  padding: ${4.5 * height}px ${8 * width}px;
   border-radius: ${radius.full}px;
   background-color: ${({ backgroundColor }) => backgroundColor};
 
