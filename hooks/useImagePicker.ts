@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Platform } from 'react-native';
+import { useImageStore } from '@/stores/feedImageStore';
 
 export default function useImagePicker({
   maxSelect = 3,
@@ -86,24 +87,17 @@ export default function useImagePicker({
       updated.map((a) => a.filename),
     );
     setSelected(updated);
-    if (onChange) {
-      // Asset[] → localUri[] 변환
-      const uris: string[] = [];
 
-      for (const asset of updated) {
-        const uri =
-          Platform.OS === 'ios'
-            ? ((await MediaLibrary.getAssetInfoAsync(asset.id)).localUri ??
-              asset.uri)
-            : asset.uri;
-
-        if (uri) {
-          uris.push(uri);
-        }
-      }
-
-      onChange(uris);
+    const uris: string[] = [];
+    for (const asset of updated) {
+      const uri =
+        Platform.OS === 'ios'
+          ? ((await MediaLibrary.getAssetInfoAsync(asset.id)).localUri ??
+            asset.uri)
+          : asset.uri;
+      if (uri) uris.push(uri);
     }
+    useImageStore.getState().setSelectedImages(uris);
   };
 
   const getSelectionNumber = (photoId: string) => {
