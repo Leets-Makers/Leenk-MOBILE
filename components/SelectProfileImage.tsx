@@ -22,9 +22,14 @@ export default function SelectProfileImage({
 
   const handleSelectComplete = async () => {
     if (!selectedUri) return;
-
-    setProfileImage(selectedUri);
-    router.back();
+    if (mode === 'profile') {
+      setProfileImage(selectedUri);
+      router.back();
+    } else if (mode === 'edit') {
+      setProfileImage(selectedUri);
+      // await updateUserProfile({ profileImage: selectedUri });
+      router.back();
+    }
   };
 
   return (

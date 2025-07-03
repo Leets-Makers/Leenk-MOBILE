@@ -4,24 +4,23 @@ import { Header, CustomButton, ProfileEditButton } from '@/components';
 import { DefaultProfileImage, SettingIcon } from '@/assets';
 import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { mockUserData } from '@/constants/mockUserData';
-import { useProfileStore } from '@/stores/profileStore';
 import { Image } from 'expo-image';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 export default function ProfileEdit() {
-  const { profileImage } = useProfileStore();
   const router = useRouter();
+  const { userInfo } = useUserInfo();
 
   const editFields = [
     {
       title: '카톡 아이디',
-      content: mockUserData.kakaoTalkId,
+      content: userInfo?.kakaoTalkId,
       type: 'kakaoTalkId',
     },
-    { title: 'MBTI', content: mockUserData.mbti, type: 'mbti' },
+    { title: 'MBTI', content: userInfo?.mbti, type: 'mbti' },
     {
       title: '자기소개',
-      content: mockUserData.introduction,
+      content: userInfo?.introduction,
       type: 'introduction',
       isTextarea: true,
     },
@@ -31,9 +30,9 @@ export default function ProfileEdit() {
     <Container>
       <Header RightSection="SETTING">프로필 편집</Header>
       <ProfileImageWrapper>
-        {profileImage ? (
+        {userInfo?.profileImage ? (
           <Image
-            source={profileImage}
+            source={userInfo?.profileImage}
             style={{ width: 80, height: 80, borderRadius: 50 }}
           />
         ) : (
@@ -59,7 +58,7 @@ export default function ProfileEdit() {
         <ProfileEditButton
           key={type}
           title={title}
-          content={content}
+          content={content ?? ''}
           isTextarea={isTextarea}
           onPress={() =>
             router.push({ pathname: '/account/edit', params: { type } })

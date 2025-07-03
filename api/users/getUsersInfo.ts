@@ -1,14 +1,7 @@
-import { getAccessToken } from '@react-native-kakao/user';
-import axios from 'axios';
+import api from '@/api/api';
 
 export const getUsersInfo = async () => {
-  const token = await getAccessToken();
-
-  const res = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/users/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await api.get(`/users/me`);
 
   return res.data.data;
 };

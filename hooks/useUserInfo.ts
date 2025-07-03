@@ -2,9 +2,14 @@ import { getUsersInfo } from '@/api/users/getUsersInfo';
 import { useEffect, useState } from 'react';
 
 export interface UserInfo {
+  id: number;
   cardinal: number;
   name: string;
   position: 'FE' | 'BE' | 'D' | 'PM';
+  profileImage: string;
+  kakaoTalkId: string;
+  introduction: string;
+  mbti: string;
 }
 
 export const useUserInfo = () => {
