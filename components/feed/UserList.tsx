@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// 피드 - 함께하는 사람 추가 페이지의 유저리스트
+
+import React from 'react';
 import { FlatList } from 'react-native';
 import UserItem from '@/components/feed/UserItem';
 import { FeedConnectedUser } from '@/types/feed';
