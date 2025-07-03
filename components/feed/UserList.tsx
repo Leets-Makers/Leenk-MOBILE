@@ -14,9 +14,17 @@ export default function UserList({
   selectedUsers,
   onToggleUser,
 }: UserListProps) {
+  const sortedUsers = [
+    ...selectedUsers,
+    ...users.filter(
+      (user) =>
+        !selectedUsers.some((selected) => selected.userId === user.userId),
+    ),
+  ];
+
   return (
     <FlatList
-      data={users}
+      data={sortedUsers}
       keyExtractor={(item) => item.userId.toString()}
       renderItem={({ item }) => (
         <UserItem

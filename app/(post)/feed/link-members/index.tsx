@@ -1,7 +1,13 @@
-import { CustomButton, Header } from '@/components';
+import { Header } from '@/components';
 import { useState } from 'react';
-import { View, Text } from 'react-native';
-import { ButtonText, CircleBadge, ContentWrapper } from '@/app/(post)/feed';
+import { View } from 'react-native';
+import {
+  BadgeText,
+  CircleBadge,
+  SubmitButton,
+  SubmitText,
+  Container,
+} from '@/app/(post)/feed';
 import SearchBar from '@/components/feed/SearchBar';
 import { generateMockUsers } from '@/__mocks__/mockFeed';
 import UserList from '@/components/feed/UserList';
@@ -9,6 +15,7 @@ import { useRouter } from 'expo-router';
 import { FeedConnectedUser } from '@/types/feed';
 import MemberBadgeList from '@/components/feed/MemberBadgeList';
 import { useConnectedUserStore } from '@/stores/connectedUserStore';
+import { height, width } from '@/theme/globalStyles';
 
 export default function LinkMembersPage() {
   const router = useRouter();
@@ -35,7 +42,7 @@ export default function LinkMembersPage() {
   };
 
   return (
-    <ContentWrapper>
+    <Container>
       <Header>함께 한 사람 추가</Header>
       <SearchBar />
       <MemberBadgeList members={selectedUsers} onRemove={handleRemoveUser} />
@@ -45,19 +52,26 @@ export default function LinkMembersPage() {
         selectedUsers={selectedUsers}
         onToggleUser={handleToggleUser}
       />
-      <CustomButton
-        variant="primary"
-        size="lg"
-        disabled={selectedUsers.length === 0}
-        onPress={handleComplete}
+
+      {/* 버튼 */}
+      <View
+        style={{
+          paddingBottom: 32 * height,
+          paddingTop: 16 * height,
+        }}
       >
-        {selectedUsers.length > 0 && (
-          <CircleBadge>
-            <ButtonText>{selectedUsers.length}</ButtonText>
-          </CircleBadge>
-        )}
-        완료
-      </CustomButton>
-    </ContentWrapper>
+        <SubmitButton
+          disabled={selectedUsers.length === 0}
+          onPress={() => router.push('/(post)/feed/write')}
+        >
+          {selectedUsers.length > 0 && (
+            <CircleBadge>
+              <BadgeText>{selectedUsers.length}</BadgeText>
+            </CircleBadge>
+          )}
+          <SubmitText>완료</SubmitText>
+        </SubmitButton>
+      </View>
+    </Container>
   );
 }
