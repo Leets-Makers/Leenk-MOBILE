@@ -18,6 +18,7 @@ import KebabButton from '@/components/common/Header/KebabButton';
 import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
 import HeartButton from '@/components/feed/HeartButton';
 import MenuModal from '@/components/Modal/MenuModal';
+import PopupModal from '@/components/Modal/PopupModal';
 export {
   CustomButton,
   Input,
@@ -39,4 +40,5 @@ export {
   ProfileImageWithFallback,
   HeartButton,
   MenuModal,
+  PopupModal,
 };

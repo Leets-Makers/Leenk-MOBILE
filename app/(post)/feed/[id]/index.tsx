@@ -20,18 +20,28 @@ import {
   ProfileImageWithFallback,
   HeartButton,
   MenuModal,
+  PopupModal,
 } from '@/components';
 import { useModalStore } from '@/stores/modalStore';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function FeedDetailPage() {
   const feed = generateMockFeedDetail();
-
   const { modalType, openModal, closeModal } = useModalStore();
+  const { showToast } = useToastStore();
 
   const handleDelete = () => {
     // TODO: 삭제 로직 추가
-    console.log('🗑 삭제하기 클릭됨');
+    closeModal();
     openModal('deleteConfirm');
+  };
+
+  const handleConfirmDelete = () => {
+    closeModal();
+
+    // TODO: 삭제 API 호출
+
+    showToast('삭제 완료!', 'success');
   };
 
   return (
@@ -136,6 +146,19 @@ export default function FeedDetailPage() {
         onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
         onPressSecond={handleDelete}
       />
+      {modalType === 'deleteConfirm' && (
+        <PopupModal
+          isOpen={modalType === 'deleteConfirm'}
+          onConfirm={handleConfirmDelete}
+          onClose={closeModal}
+          isWarning
+          mainText="피드를 삭제할거야?"
+          subText="삭제하면 복구할 수 없어."
+          isCancel={true}
+          leftBtnText="취소"
+          rightBtnText="삭제할래"
+        />
+      )}
     </View>
   );
 }
@@ -146,11 +169,3 @@ const RowWrapper = styled.View`
   align-items: center;
   margin-bottom: ${10 * height}px;
 `;
-
-// 내일 할일
-// 모달이 너무많음 -> 모달 전역상태 관리 하도록 수정 , 삭제하기 클릭 시 나오는 모달 추가 , 토스트 추가
-// 유저리스트모달 : 블러뷰 - 안드로이드 적용 안됨, 내부 스크롤 안됨  o
-// 버튼 정렬 : 그냥 커스텀 버튼 쓰지말자 o
-// 함께하는 사람 추가 페이지: 이름 검색 , 내부 패딩 및 스크롤 길이 조정 (버튼 잘림), 멤버 체크 시 위로 정렬되도록  o
-// 피드 글 작성: textarea, connectedUser 함께 전역상태관리 , 업로드 할래 클릭 시 로딩 팝업 모달 o
-// 피드 api 연결
