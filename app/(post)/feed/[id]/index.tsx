@@ -1,12 +1,11 @@
-import {
-  Header,
-  BackgroundImageSlider,
-  Badge,
-  UserListModal,
-} from '@/components';
 import colors from '@/theme/color';
+import styled from 'styled-components/native';
+import { useState } from 'react';
 import { formatDate } from '@/utils/format-date';
-import { Text, View, Image } from 'react-native';
+import { Text, View } from 'react-native';
+import { generateMockFeedDetail } from '@/__mocks__/mockFeed';
+import { StyledText } from '@/app/(post)/feed/write';
+import { CONTAINER_PADDING } from '@/constants';
 import {
   fonts,
   fontSize,
@@ -14,14 +13,15 @@ import {
   lineHeight,
   width,
 } from '@/theme/globalStyles';
-import { generateMockFeedDetail } from '@/__mocks__/mockFeed';
-import { StyledText } from '@/app/(post)/feed/write';
-import HeartButton from '@/components/feed/HeartButton';
-import styled from 'styled-components/native';
-import { useState } from 'react';
-import MenuModal from '@/components/Modal/MenuModal';
-import { CONTAINER_PADDING } from '@/constants';
-import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
+import {
+  Header,
+  BackgroundImageSlider,
+  Badge,
+  UserListModal,
+  ProfileImageWithFallback,
+  HeartButton,
+  MenuModal,
+} from '@/components';
 
 export default function FeedDetailPage() {
   const feed = generateMockFeedDetail();
@@ -146,3 +146,11 @@ const RowWrapper = styled.View`
   align-items: center;
   margin-bottom: ${10 * height}px;
 `;
+
+// 내일 할일
+// 모달이 너무많음 -> 모달 전역상태 관리 하도록 수정 , 삭제하기 클릭 시 나오는 모달 추가 , 토스트 추가
+// 유저리스트모달 : 블러뷰 - 안드로이드 적용 안됨, 내부 스크롤 안됨
+// 버튼 정렬 : 그냥 커스텀 버튼 쓰지말자
+// 함께하는 사람 추가 페이지: 이름 검색 , 내부 패딩 및 스크롤 길이 조정 (버튼 잘림), 멤버 체크 시 위로 정렬되도록
+// 피드 글 작성: textarea, connectedUser 함께 전역상태관리 , 업로드 할래 클릭 시 로딩 팝업 모달
+// 피드 api 연결
