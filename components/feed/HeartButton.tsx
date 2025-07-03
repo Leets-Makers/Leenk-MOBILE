@@ -6,7 +6,9 @@ import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { radius, width, height } from '@/theme/globalStyles';
 import { getNumberWithComma } from '@/utils';
-import { Badge } from '@/components';
+import { Badge, UserListModal } from '@/components';
+import { FeedReactedUser } from '@/types/feed';
+import { generateMockReactedUsers } from '@/__mocks__/mockFeed';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -23,6 +25,10 @@ type HeartData = {
 export default function HeartButton() {
   const [hearts, setHearts] = useState<HeartData[]>([]);
   const [count, setCount] = useState<number>(0);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>(
+    generateMockReactedUsers(15),
+  );
 
   const heartScale = useSharedValue(1);
   const outlineScale = useSharedValue(0.8);
@@ -65,6 +71,10 @@ export default function HeartButton() {
     setHearts((prev) => prev.filter((heart) => heart.id !== id));
   };
 
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
   return (
     <View>
       {hearts.map((heart) => (
@@ -75,14 +85,15 @@ export default function HeartButton() {
           />
         </FloatingHeartWrapper>
       ))}
-      <Pressable
-        onPress={handlePress}
-        style={{
-          bottom: 16,
-          alignSelf: 'center',
-        }}
-      >
-        <HeartWithBadge>
+      <HeartWithBadge>
+        {/* 하트 버튼 */}
+        <Pressable
+          onPress={handlePress}
+          style={{
+            bottom: 16,
+            alignSelf: 'center',
+          }}
+        >
           <Circle>
             <OutlineWrapper style={outlineAnimatedStyle}>
               <HeartIcon width={28} height={28} />
@@ -93,11 +104,22 @@ export default function HeartButton() {
               <HeartIcon width={28} height={28} />
             </Animated.View>
           </Circle>
+        </Pressable>
+
+        {/* 뱃지 버튼 */}
+        <Pressable onPress={handleOpenModal}>
           <BadgeWrapper>
             <Badge label={getNumberWithComma(count)} variant="white" />
           </BadgeWrapper>
-        </HeartWithBadge>
-      </Pressable>
+        </Pressable>
+      </HeartWithBadge>
+
+      <UserListModal
+        visible={isModalVisible}
+        title="공감한 Leets"
+        list={reactedUsers}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }
@@ -117,7 +139,7 @@ const Circle = styled.View`
 `;
 
 const BadgeWrapper = styled.View`
-  margin-top: ${8 * height}px;
+  margin-top: ${-7 * height}px;
 `;
 
 const FloatingHeartWrapper = styled.View`

@@ -56,6 +56,6 @@ export const UserName = styled.Text`
 
 export const Count = styled.Text`
   color: ${colors.text[1]};
-  font-size: ${fontSize.xl};
+  font-size: ${fontSize.lg};
   font-family: ${fonts.ExtraBold};
 `;

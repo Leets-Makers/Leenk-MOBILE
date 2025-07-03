@@ -1,4 +1,4 @@
-// 함께한 사람 추가 페이지 - 유저 아이템
+// 피드 - 함께한 사람 추가 페이지의  유저 아이템
 
 import { FeedConnectedUser } from '@/types/feed';
 import colors from '@/theme/color';
