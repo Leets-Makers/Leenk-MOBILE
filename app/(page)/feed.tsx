@@ -78,7 +78,6 @@ export default function FeedPage() {
 
           <CustomButton
             fullWidth
-            size="lg"
             onPress={() => {
               setShowWelcomeModal(false);
             }}
