@@ -5,8 +5,11 @@ import { DefaultProfileImage, SettingIcon } from '@/assets';
 import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { mockUserData } from '@/constants/mockUserData';
+import { useProfileStore } from '@/stores/profileStore';
+import { Image } from 'expo-image';
 
 export default function ProfileEdit() {
+  const { profileImage } = useProfileStore();
   const router = useRouter();
 
   const editFields = [
@@ -28,11 +31,23 @@ export default function ProfileEdit() {
     <Container>
       <Header RightSection="SETTING">프로필 편집</Header>
       <ProfileImageWrapper>
-        <DefaultProfileImage width={80 * width} height={80 * height} />
+        {profileImage ? (
+          <Image
+            source={profileImage}
+            style={{ width: 80, height: 80, borderRadius: 50 }}
+          />
+        ) : (
+          <DefaultProfileImage width={80 * width} height={80 * height} />
+        )}
       </ProfileImageWrapper>
 
       <CustomButton
-        onPress={() => console.log('사진 변경')}
+        onPress={() =>
+          router.push({
+            pathname: '/account/select-image',
+            params: { mode: 'edit' },
+          })
+        }
         variant="text"
         rounded="md"
         textColor="primary"

@@ -3,21 +3,33 @@ import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { AspectRatio } from '@/types/aspect-ratio';
 import styled from 'styled-components/native';
+
 import { useRouter } from 'expo-router';
 import { useProfileStore } from '@/stores/profileStore';
+
 import { useState } from 'react';
 import { Platform } from 'react-native';
 
-export default function SelectProfileImage() {
+export default function SelectProfileImage({
+  mode,
+}: {
+  mode: 'profile' | 'edit';
+}) {
   const router = useRouter();
   const { setProfileImage } = useProfileStore();
 
   const [selectedUri, setSelectedUri] = useState<string | null>(null);
 
+  const handleSelectComplete = async () => {
+    if (!selectedUri) return;
+
+    setProfileImage(selectedUri);
+    router.back();
+  };
+
   return (
     <Container>
       <Header>프로필 사진 선택</Header>
-
       <ImagePicker
         maxSelect={1}
         aspectRatio={AspectRatio.SQUARE}
@@ -26,20 +38,14 @@ export default function SelectProfileImage() {
           setSelectedUri(uris[0]);
         }}
       />
-
       <ButtonContainer>
         <CustomButton
           variant="primary"
           size="lg"
           disabled={!selectedUri}
-          onPress={() => {
-            if (selectedUri) {
-              setProfileImage(selectedUri);
-              router.back();
-            }
-          }}
+          onPress={handleSelectComplete}
         >
-          선택완료
+          {mode === 'profile' ? '선택완료' : '다음'}
         </CustomButton>
       </ButtonContainer>
     </Container>

@@ -29,7 +29,6 @@ export default function ProfilePage() {
     mbti,
     setMbti,
     profileImage,
-    setProfileImage,
   } = useProfileStore();
   const [kakaoModalVisible, setKakaoModalVisible] = useState(false);
   const [skipModalVisible, setSkipModalVisible] = useState(false);
@@ -114,7 +113,7 @@ export default function ProfilePage() {
     }, 200);
   };
   const handleImagePick = async () => {
-    router.push('/signup/profile/select-image');
+    router.push('/signup/select-image');
   };
 
   const [randomMbti, setRandomMbti] = useState('ENFP');
