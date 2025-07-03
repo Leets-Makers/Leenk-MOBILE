@@ -29,11 +29,6 @@ export default function LandingPage() {
   }, []);
 
   const handleKakaoLogin = async () => {
-    const serverToken = process.env.EXPO_PUBLIC_TOKEN;
-    if (serverToken) {
-      await saveAccessToken(serverToken);
-    }
-    router.push('/signup/verify');
     try {
       const token = await login();
       const accessToken = token?.accessToken;
