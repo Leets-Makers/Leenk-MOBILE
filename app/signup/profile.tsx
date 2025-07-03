@@ -63,16 +63,38 @@ export default function ProfilePage() {
 
         if (profileImage) {
           const fileName = `profile_${Date.now()}.jpg`;
-          const presignedUrl = await getPresignedUrl(fileName);
-          await uploadImageToS3(presignedUrl, profileImage);
-          payload.profileImage = presignedUrl.split('?')[0];
+
+          // 1. 프리사인드 URL 발급
+          let presignedUrl;
+          try {
+            presignedUrl = await getPresignedUrl(fileName);
+          } catch (error) {
+            console.error('[getPresignedUrl] 실패:', error);
+            throw error;
+          }
+
+          // 2. S3 업로드
+          try {
+            await uploadImageToS3(presignedUrl, profileImage);
+            payload.profileImage = presignedUrl.split('?')[0];
+          } catch (error) {
+            console.error('[uploadImageToS3] 실패:', error);
+            throw error;
+          }
         }
 
-        console.log('제출:', payload);
-        await updateUserProfile(payload);
-        router.push('/(page)/feed');
+        console.log('최종 제출 payload:', payload);
+
+        // 3. 프로필 업데이트
+        try {
+          await updateUserProfile(payload);
+          router.push('/(page)/feed');
+        } catch (error) {
+          console.error('[updateUserProfile] 실패:', error);
+          throw error;
+        }
       } catch (e) {
-        console.error('프로필 업데이트 실패:', e);
+        console.error('[ProfilePage] 전체 실패:', e);
       }
     }
   };
