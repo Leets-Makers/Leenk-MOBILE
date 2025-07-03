@@ -10,7 +10,7 @@ import PopupModal from '@/components/Modal/PopupModal';
 import { AspectRatio } from '@/types/aspect-ratio';
 import { CONTAINER_PADDING } from '@/constants';
 import { sizeStyles } from '@/components/common/Button/CustomButton.styled';
-import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 export default function PostFeedPage() {
   const selectedUrisLength = useFeedWriteStore(

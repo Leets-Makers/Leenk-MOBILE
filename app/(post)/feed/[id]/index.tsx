@@ -1,6 +1,5 @@
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
-import { useState } from 'react';
 import { formatDate } from '@/utils/format-date';
 import { Text, View } from 'react-native';
 import { generateMockFeedDetail } from '@/__mocks__/mockFeed';
@@ -22,16 +21,17 @@ import {
   HeartButton,
   MenuModal,
 } from '@/components';
+import { useModalStore } from '@/stores/modalStore';
 
 export default function FeedDetailPage() {
   const feed = generateMockFeedDetail();
-  const [isModalVisible, setModalVisible] = useState(false); // 유저리스트 모달
-  const [isMenuVisible, setMenuVisible] = useState(false); // 케밥 메뉴 모달
+
+  const { modalType, openModal, closeModal } = useModalStore();
 
   const handleDelete = () => {
     // TODO: 삭제 로직 추가
     console.log('🗑 삭제하기 클릭됨');
-    setMenuVisible(false);
+    openModal('deleteConfirm');
   };
 
   return (
@@ -41,7 +41,7 @@ export default function FeedDetailPage() {
       <Header
         isBackWhite
         RightSection="KEBAB"
-        kebabPress={() => setMenuVisible(true)}
+        kebabPress={() => openModal('menu')}
         style={{
           position: 'absolute',
           top: 0,
@@ -80,7 +80,7 @@ export default function FeedDetailPage() {
               <Badge
                 variant="gray"
                 label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
-                onPress={() => setModalVisible(true)}
+                onPress={() => openModal('userList')}
               />
             )}
           </View>
@@ -123,16 +123,16 @@ export default function FeedDetailPage() {
       </View>
       {/* 유저리스트 모달 */}
       <UserListModal
-        visible={isModalVisible}
+        visible={modalType === 'userList'}
         title="함께 연결된 Leets"
         list={feed.linkedUser}
-        onClose={() => setModalVisible(false)}
+        onClose={closeModal}
       />
       {/* 삭제 메뉴 모달 */}
       <MenuModal
-        visible={isMenuVisible}
+        visible={modalType === 'menu'}
         isWrite={false}
-        onClose={() => setMenuVisible(false)}
+        onClose={closeModal}
         onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
         onPressSecond={handleDelete}
       />
@@ -149,8 +149,8 @@ const RowWrapper = styled.View`
 
 // 내일 할일
 // 모달이 너무많음 -> 모달 전역상태 관리 하도록 수정 , 삭제하기 클릭 시 나오는 모달 추가 , 토스트 추가
-// 유저리스트모달 : 블러뷰 - 안드로이드 적용 안됨, 내부 스크롤 안됨
-// 버튼 정렬 : 그냥 커스텀 버튼 쓰지말자
-// 함께하는 사람 추가 페이지: 이름 검색 , 내부 패딩 및 스크롤 길이 조정 (버튼 잘림), 멤버 체크 시 위로 정렬되도록
-// 피드 글 작성: textarea, connectedUser 함께 전역상태관리 , 업로드 할래 클릭 시 로딩 팝업 모달
+// 유저리스트모달 : 블러뷰 - 안드로이드 적용 안됨, 내부 스크롤 안됨  o
+// 버튼 정렬 : 그냥 커스텀 버튼 쓰지말자 o
+// 함께하는 사람 추가 페이지: 이름 검색 , 내부 패딩 및 스크롤 길이 조정 (버튼 잘림), 멤버 체크 시 위로 정렬되도록  o
+// 피드 글 작성: textarea, connectedUser 함께 전역상태관리 , 업로드 할래 클릭 시 로딩 팝업 모달 o
 // 피드 api 연결

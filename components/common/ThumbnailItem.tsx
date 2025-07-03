@@ -6,7 +6,7 @@ import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { ToastCheckIcon } from '@/assets';
 import { width, height, radius, fontSize } from '@/theme/globalStyles';
-import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 interface ThumbnailItemProps {
   asset: MediaLibrary.Asset;

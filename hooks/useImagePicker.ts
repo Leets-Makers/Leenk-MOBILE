@@ -1,8 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Platform } from 'react-native';
-import { useImageStore } from '@/stores/feedImageStore';
-import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 export default function useImagePicker({
   maxSelect = 3,

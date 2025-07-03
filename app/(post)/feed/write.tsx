@@ -15,7 +15,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
-import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 
 const mockFeed = generateMockFeeds();

@@ -14,9 +14,8 @@ import UserList from '@/components/feed/UserList';
 import { useRouter } from 'expo-router';
 import { FeedConnectedUser } from '@/types/feed';
 import MemberBadgeList from '@/components/feed/MemberBadgeList';
-import { useConnectedUserStore } from '@/stores/connectedUserStore';
-import { height, width } from '@/theme/globalStyles';
-import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
+import { height } from '@/theme/globalStyles';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 export default function LinkMembersPage() {
   const router = useRouter();
