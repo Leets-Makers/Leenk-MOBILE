@@ -11,11 +11,14 @@ import {
 import styled from 'styled-components/native';
 import { useState } from 'react';
 
-export default function SearchBar() {
-  const [value, setValue] = useState('');
+interface SearchBarProps {
+  value: string;
+  onChange: (text: string) => void;
+}
 
+export default function SearchBar({ value, onChange }: SearchBarProps) {
   const handleClear = () => {
-    setValue('');
+    onChange('');
   };
 
   return (
@@ -23,7 +26,7 @@ export default function SearchBar() {
       <SearchIcon style={{ marginRight: 8 * width, marginLeft: 6 * width }} />
       <StyledInput
         value={value}
-        onChangeText={setValue}
+        onChangeText={onChange}
         placeholder="이름 검색"
         placeholderTextColor={colors.text[4]}
       />
