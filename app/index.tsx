@@ -16,14 +16,17 @@ import { initializeKakaoSDK } from '@react-native-kakao/core';
 import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
-import { kakaoLogin } from '@/api/login/kakao.api';
+import { getKakaoUserInfo, kakaoLogin } from '@/api/login/kakao.api';
 import { saveAccessToken } from '@/utils/tokenStorage';
+
 export default function LandingPage() {
   const kakaoNativeAppKey = process.env.EXPO_PUBLIC_NATIVE_APP_KEY || '';
   const router = useRouter();
   const [notRegisterModal, setNotRegisterModal] = useState(false);
   const [waitModal, setWaitModal] = useState(false);
   const weethSiteURL = 'https://www.weeth.site/';
+  console.log('카카오 앱 키:', kakaoNativeAppKey);
+
   useEffect(() => {
     initializeKakaoSDK(kakaoNativeAppKey);
   }, []);
@@ -31,10 +34,13 @@ export default function LandingPage() {
   const handleKakaoLogin = async () => {
     try {
       const token = await login();
+
       const accessToken = token?.accessToken;
 
       console.log('Kakao Access Token:', accessToken);
-
+      // 이메일 정보 조회
+      const userInfo = await getKakaoUserInfo(accessToken);
+      console.log('사용자 이메일:', userInfo.kakao_account.email);
       const result = await kakaoLogin(accessToken);
 
       if (result.success) {
@@ -43,7 +49,7 @@ export default function LandingPage() {
         const serverToken = result.data.accessToken;
         await saveAccessToken(serverToken);
 
-        if (result.code === '1002') {
+        if (result.code === 1002) {
           // 최초 로그인: verify 페이지로 유저 정보 전달
           router.push({
             pathname: '/signup/verify',
@@ -53,19 +59,19 @@ export default function LandingPage() {
               position: result.data.position,
             },
           });
-        } else if (result.code === '1003') {
+        } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
           router.push('/(page)/feed');
         }
       } else {
         switch (result.code) {
-          case '2000':
+          case 2000:
             setWaitModal(true);
             break;
-          case '2001':
+          case 2001:
             console.error('서버 인증 에러:', result.message);
             break;
-          case '2002':
+          case 2002:
             setNotRegisterModal(true);
             break;
           default:

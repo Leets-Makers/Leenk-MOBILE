@@ -47,7 +47,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       '@react-native-kakao/core',
       {
-        nativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
+        nativeAppKey: process.env.EXPO_PUBLIC_NATIVE_APP_KEY,
         android: {
           authCodeHandlerActivity: true,
         },
@@ -63,6 +63,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           extraMavenRepos: [
             'https://devrepo.kakao.com/nexus/content/groups/public/',
           ],
+          manifestPlaceholders: {
+            EXPO_PUBLIC_NATIVE_APP_KEY: process.env.EXPO_PUBLIC_NATIVE_APP_KEY,
+          },
         },
       },
     ],
