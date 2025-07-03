@@ -9,6 +9,7 @@ import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import OnBoarding, { SubText, TitleText } from '@/components/OnBoarding';
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 import { CongratsIcon } from '@/assets';
+import { getFeedList } from '@/api/feed/feed.api';
 
 const mockFeeds: FeedItem[] = generateMockFeeds(20);
 
@@ -37,6 +38,22 @@ export default function FeedPage() {
     // }
   };
 
+  const [feeds, setFeeds] = useState<FeedItem[]>([]);
+
+  useEffect(() => {
+    const fetchFeeds = async () => {
+      try {
+        const data = await getFeedList(0, 1);
+        console.log('피드 조회 응답 : ', data);
+        setFeeds(data);
+      } catch (error) {
+        console.error('피드 목록 조회 실패:', error);
+      }
+    };
+
+    fetchFeeds();
+  }, []);
+
   return (
     <View
       style={{
@@ -47,7 +64,7 @@ export default function FeedPage() {
     >
       <Header LeftSection="LOGO" RightSection="BELL" />
       <FlatList
-        data={mockFeeds}
+        data={feeds}
         numColumns={2}
         keyExtractor={(item) => item.feedId.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
