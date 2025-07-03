@@ -8,15 +8,6 @@ export interface UpdateProfilePayload {
   mbti?: string;
 }
 
-// api 인스턴스 import
-
-export interface UpdateProfilePayload {
-  kakaoTalkId?: string;
-  introduction?: string;
-  profileImage?: string;
-  mbti?: string;
-}
-
 export const updateUserProfile = async (payload: UpdateProfilePayload) => {
   console.log('보낼 데이터:', payload);
 

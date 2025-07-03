@@ -65,18 +65,19 @@ export default function ProfilePage() {
           const fileName = `profile_${Date.now()}.jpg`;
 
           // 1. 프리사인드 URL 발급
-          let presignedUrl;
+          let presignedUrls;
           try {
-            presignedUrl = await getPresignedUrl(fileName);
+            presignedUrls = await getPresignedUrl(fileName);
           } catch (error) {
             console.error('[getPresignedUrl] 실패:', error);
             throw error;
           }
+          const mediaUrl = presignedUrls[0].mediaUrl;
 
           // 2. S3 업로드
           try {
-            await uploadImageToS3(presignedUrl, profileImage);
-            payload.profileImage = presignedUrl.split('?')[0];
+            await uploadImageToS3(mediaUrl, profileImage);
+            payload.profileImage = mediaUrl.split('?')[0];
           } catch (error) {
             console.error('[uploadImageToS3] 실패:', error);
             throw error;
