@@ -114,15 +114,7 @@ export default function ProfilePage() {
     }, 200);
   };
   const handleImagePick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
-    }
+    router.push('/signup/profile/select-image');
   };
 
   const [randomMbti, setRandomMbti] = useState('ENFP');
