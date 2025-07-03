@@ -7,23 +7,27 @@ import { useRouter } from 'expo-router';
 import ProfileCard from '@/components/mypage/ProfileCard';
 import MyPageButton from '@/components/mypage/MypageButton';
 import { mockUserData } from '@/constants/mockUserData';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 export default function MyPage() {
   const router = useRouter();
+  const { userInfo } = useUserInfo();
 
   return (
     <Container>
       <Header LeftSection="NONE" RightSection="SETTING">
         마이페이지
       </Header>
-      <ProfileCard
-        cardinal={mockUserData.cardinal}
-        name={mockUserData.name}
-        imageUrl={mockUserData.profileImage}
-        kakaoTalkId={mockUserData.kakaoTalkId}
-        introduction={mockUserData.introduction}
-        mbti={mockUserData.mbti}
-      />
+      {userInfo && (
+        <ProfileCard
+          cardinal={userInfo?.cardinal}
+          name={userInfo?.name}
+          imageUrl={userInfo?.profileImage}
+          kakaoTalkId={userInfo?.kakaoTalkId}
+          introduction={userInfo?.introduction}
+          mbti={userInfo?.mbti}
+        />
+      )}
       <MyPageButton
         text="피드 보기"
         onPress={() => router.push('/account/my-feed')}
