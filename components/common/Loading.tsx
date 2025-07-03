@@ -6,7 +6,7 @@ export default function Loading() {
       source={require('@/assets/lotties/Loading.json')}
       autoPlay
       loop
-      style={{ width: 100, height: 100 }}
+      style={{ width: 54, height: 20 }}
     />
   );
 }

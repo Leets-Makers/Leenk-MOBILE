@@ -12,10 +12,11 @@ import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { Author } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
 import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
+import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 
 const mockFeed = generateMockFeeds();
 const { userId, profileImage } = mockFeed[0].author;
@@ -33,14 +34,38 @@ export default function FeedWritePage() {
   const setDescription = useFeedWriteStore((state) => state.setDescription);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!description.trim()) return;
 
     if (connectedUsers.length === 0) {
-      setIsModalOpen(true); // 함께한 사람이 없을 때만 모달 표시
+      setIsModalOpen(true);
     } else {
-      console.log('업로드 진행!');
+      uploadFeed(); // 함께한 사람이 있는 경우 바로 업로드
+    }
+  };
+
+  const handleConfirmUpload = async () => {
+    setIsModalOpen(false);
+    uploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
+  };
+
+  // 업로드 로직 분리
+  const uploadFeed = async () => {
+    setIsUploading(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // TODO: 피드 업로드 api 요청
+
+      resetFeedWrite();
+      router.push('/(page)/feed');
+    } catch (error) {
+      console.error('업로드 실패:', error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -123,7 +148,7 @@ export default function FeedWritePage() {
 
           <PopupModal
             isOpen={isModalOpen}
-            onConfirm={() => setIsModalOpen(false)}
+            onConfirm={handleConfirmUpload}
             onClose={handleConfirmExit}
             mainText="이 내용으로 피드에 업로드할까?"
             subText="함께한 사람이 추가되지 않았어."
@@ -132,6 +157,8 @@ export default function FeedWritePage() {
             rightBtnText="그냥 업로드할래"
           />
         </View>
+
+        <FeedUploadModal isOpen={isUploading} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

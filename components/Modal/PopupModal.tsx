@@ -81,14 +81,14 @@ export default function PopupModal({
   );
 }
 
-const Overlay = styled.View`
+export const Overlay = styled.View`
   flex: 1;
   background-color: rgba(0, 0, 0, 0.7);
   justify-content: center;
   align-items: center;
 `;
 
-const Container = styled.View`
+export const Container = styled.View`
   background-color: ${colors.white};
   align-items: center;
   padding: ${28 * height}px ${16 * width}px ${16 * height}px ${16 * width}px;
@@ -101,14 +101,14 @@ const Container = styled.View`
   shadow-radius: 4px;
 `;
 
-const TitleText = styled.Text`
+export const TitleText = styled.Text`
   font-family: ${fonts.ExtraBold};
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l}px;
   color: ${colors.black};
 `;
 
-const SubText = styled.Text<{ $isWarning: boolean }>`
+export const SubText = styled.Text<{ $isWarning: boolean }>`
   font-family: ${fonts.Regular};
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
