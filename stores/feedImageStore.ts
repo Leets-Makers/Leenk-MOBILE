@@ -8,7 +8,6 @@ interface ImageStore {
 export const useImageStore = create<ImageStore>((set) => ({
   selectedImages: [],
   setSelectedImages: (images) => {
-    console.log('[🔁 setSelectedImages 호출됨]', images);
     set({ selectedImages: images });
   },
 }));

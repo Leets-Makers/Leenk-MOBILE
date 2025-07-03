@@ -15,11 +15,10 @@ import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
-import { useImageStore } from '@/stores/feedImageStore';
-import { useConnectedUserStore } from '@/stores/connectedUserStore';
+import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
 
 const mockFeed = generateMockFeeds();
-const { userId, name, profileImage } = mockFeed[0].author;
+const { userId, profileImage } = mockFeed[0].author;
 
 const mockProfile: Author = {
   userId,
@@ -28,13 +27,15 @@ const mockProfile: Author = {
 };
 
 export default function FeedWritePage() {
-  const [content, setContent] = useState('');
+  const selectedImages = useFeedWriteStore((state) => state.selectedImages);
+  const connectedUsers = useFeedWriteStore((state) => state.users);
+  const description = useFeedWriteStore((state) => state.description);
+  const setDescription = useFeedWriteStore((state) => state.setDescription);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const selectedImages = useImageStore((state) => state.selectedImages);
-  const connectedUsers = useConnectedUserStore((state) => state.users);
 
   const handleUpload = () => {
-    if (!content.trim()) return;
+    if (!description.trim()) return;
 
     if (connectedUsers.length === 0) {
       setIsModalOpen(true); // 함께한 사람이 없을 때만 모달 표시
@@ -107,14 +108,14 @@ export default function FeedWritePage() {
               variant="dark"
               placeholder="텍스트를 입력해주세요"
               maxLength={100}
-              value={content}
-              onChangeText={setContent}
+              value={description}
+              onChangeText={setDescription}
             />
             <CustomButton
               size="lg"
               onPress={handleUpload}
               style={{ marginTop: 16 * height, marginBottom: 8 * height }}
-              disabled={content.trim().length === 0}
+              disabled={description.trim().length === 0}
             >
               업로드할래
             </CustomButton>

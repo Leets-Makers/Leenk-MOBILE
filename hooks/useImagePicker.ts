@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Platform } from 'react-native';
 import { useImageStore } from '@/stores/feedImageStore';
+import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
 
 export default function useImagePicker({
   maxSelect = 3,
@@ -11,12 +12,16 @@ export default function useImagePicker({
   onChange?: (selected: string[]) => void;
 }) {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
-  const [selected, setSelected] = useState<MediaLibrary.Asset[]>([]);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [pageInfo, setPageInfo] = useState<{
     endCursor: string | null;
     hasNextPage: boolean;
   }>({ endCursor: null, hasNextPage: false });
+
+  const selectedUris = useFeedWriteStore((state) => state.selectedImages);
+  const setSelectedImages = useFeedWriteStore(
+    (state) => state.setSelectedImages,
+  );
 
   // 권한 요청
   const requestPermission = async (): Promise<boolean> => {
@@ -76,33 +81,30 @@ export default function useImagePicker({
   }, [pageInfo]);
 
   // 선택 상태 변경
-  const toggleSelect = async (photo: MediaLibrary.Asset) => {
-    console.log('[🖱 toggleSelect 호출됨]', photo.filename);
-    const isSelected = selected.find((item) => item.id === photo.id);
-    let updated;
+  const toggleSelect = (photo: MediaLibrary.Asset) => {
+    const isSelected = selectedUris.includes(photo.uri);
+    let updatedUris: string[];
+
     if (isSelected) {
-      updated = selected.filter((item) => item.id !== photo.id);
-    } else if (selected.length < maxSelect) {
-      updated = [...selected, photo];
+      updatedUris = selectedUris.filter((uri) => uri !== photo.uri);
+    } else if (selectedUris.length < maxSelect) {
+      updatedUris = [...selectedUris, photo.uri];
     } else {
       return;
     }
 
-    setSelected(updated);
-
-    const uris = updated.map((asset) => asset.uri).filter(Boolean) as string[];
-
-    useImageStore.getState().setSelectedImages(uris);
+    setSelectedImages(updatedUris);
   };
 
   const getSelectionNumber = (photoId: string) => {
-    const index = selected.findIndex((item) => item.id === photoId);
+    const photoUri = photos.find((photo) => photo.id === photoId)?.uri;
+    const index = photoUri ? selectedUris.indexOf(photoUri) : -1;
     return index >= 0 ? index + 1 : null;
   };
 
   return {
     photos,
-    selected,
+    selected: photos.filter((photo) => selectedUris.includes(photo.uri)),
     hasPermission,
     requestPermission,
     toggleSelect,

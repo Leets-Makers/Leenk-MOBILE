@@ -7,13 +7,13 @@ import colors from '@/theme/color';
 import { Header, ImagePicker } from '@/components';
 import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
 import PopupModal from '@/components/Modal/PopupModal';
-import { useImageStore } from '@/stores/feedImageStore';
 import { AspectRatio } from '@/types/aspect-ratio';
 import { CONTAINER_PADDING } from '@/constants';
 import { sizeStyles } from '@/components/common/Button/CustomButton.styled';
+import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
 
 export default function PostFeedPage() {
-  const selectedUrisLength = useImageStore(
+  const selectedUrisLength = useFeedWriteStore(
     (state) => state.selectedImages.length,
   );
 

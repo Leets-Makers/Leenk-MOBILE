@@ -16,16 +16,19 @@ import { FeedConnectedUser } from '@/types/feed';
 import MemberBadgeList from '@/components/feed/MemberBadgeList';
 import { useConnectedUserStore } from '@/stores/connectedUserStore';
 import { height, width } from '@/theme/globalStyles';
+import { useFeedWriteStore } from '@/stores/\bfeedWriteStore';
 
 export default function LinkMembersPage() {
   const router = useRouter();
   const mockUsers = generateMockUsers(20);
-  const { setUsers } = useConnectedUserStore();
-  const [selectedUsers, setSelectedUsers] = useState<FeedConnectedUser[]>([]);
+  const selectedUsers = useFeedWriteStore((state) => state.users);
+  const setUsers = useFeedWriteStore((state) => state.setUsers);
   const [searchUser, setSearchUser] = useState('');
+  const [tempSelectedUsers, setTempSelectedUsers] =
+    useState<FeedConnectedUser[]>(selectedUsers); //  이 페이지 안에서만 쓰이는 상태값(완료 누르기전까지 저장 x)
 
   const handleToggleUser = (user: FeedConnectedUser) => {
-    setSelectedUsers((prev) =>
+    setTempSelectedUsers((prev) =>
       prev.some((u) => u.userId === user.userId)
         ? prev.filter((u) => u.userId !== user.userId)
         : [...prev, user],
@@ -33,27 +36,27 @@ export default function LinkMembersPage() {
   };
 
   const handleRemoveUser = (userId: number) => {
-    setSelectedUsers((prev) => prev.filter((u) => u.userId !== userId));
+    setTempSelectedUsers((prev) => prev.filter((u) => u.userId !== userId));
   };
 
   const handleComplete = () => {
-    setUsers(selectedUsers); // 전역 상태에 저장
+    setUsers(tempSelectedUsers); // 전역 상태에 저장
     console.log('추가된 사람: ', selectedUsers);
     router.push('/(post)/feed/write'); // 글쓰기 페이지로 이동
   };
 
   const isSearching = searchUser.trim().length > 0;
   const filteredUsers = isSearching
-    ? // 검색 중이면 검색 결과만
-      mockUsers.filter((user) =>
+    ? mockUsers.filter((user) =>
         user.name.toLowerCase().includes(searchUser.toLowerCase()),
       )
-    : // 검색 안 하면 선택된 멤버 + 나머지
-      [
-        ...selectedUsers,
+    : [
+        ...tempSelectedUsers,
         ...mockUsers.filter(
           (user) =>
-            !selectedUsers.some((selected) => selected.userId === user.userId),
+            !tempSelectedUsers.some(
+              (selected) => selected.userId === user.userId,
+            ),
         ),
       ];
 
@@ -61,11 +64,14 @@ export default function LinkMembersPage() {
     <Container>
       <Header>함께 한 사람 추가</Header>
       <SearchBar value={searchUser} onChange={setSearchUser} />
-      <MemberBadgeList members={selectedUsers} onRemove={handleRemoveUser} />
+      <MemberBadgeList
+        members={tempSelectedUsers}
+        onRemove={handleRemoveUser}
+      />
 
       <UserList
         users={filteredUsers}
-        selectedUsers={selectedUsers}
+        selectedUsers={tempSelectedUsers}
         onToggleUser={handleToggleUser}
       />
 
@@ -77,12 +83,12 @@ export default function LinkMembersPage() {
         }}
       >
         <SubmitButton
-          disabled={selectedUsers.length === 0}
+          disabled={tempSelectedUsers.length === 0}
           onPress={handleComplete}
         >
-          {selectedUsers.length > 0 && (
+          {tempSelectedUsers.length > 0 && (
             <CircleBadge>
-              <BadgeText>{selectedUsers.length}</BadgeText>
+              <BadgeText>{tempSelectedUsers.length}</BadgeText>
             </CircleBadge>
           )}
           <SubmitText>완료</SubmitText>
