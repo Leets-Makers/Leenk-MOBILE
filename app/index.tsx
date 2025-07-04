@@ -154,7 +154,7 @@ export default function LandingPage() {
   );
 }
 
-const Container = styled.View`
+const Container = styled.SafeAreaView`
   flex: 1;
   background-color: ${colors.bg[2]};
   align-items: center;
@@ -162,7 +162,7 @@ const Container = styled.View`
 `;
 
 const LogoWrapper = styled.View`
-  margin-top: ${247 * height}px;
+  margin-top: ${190 * height}px;
 `;
 
 const LogoGif = styled(Image)`
@@ -172,7 +172,7 @@ const LogoGif = styled(Image)`
 
 const BottomArea = styled.View`
   position: absolute;
-  bottom: ${108 * height}px;
+  bottom: ${120 * height}px;
   align-items: center;
   width: 100%;
   padding-horizontal: ${20 * width}px;
