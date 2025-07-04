@@ -84,7 +84,10 @@ export default function AccountEdit() {
               <Input
                 title="MBTI를 입력해줘"
                 placeholder={mbti}
-                onChangeText={setEdituserInfo}
+                onChangeText={(text) => {
+                  const filtered = text.replace(/[^a-zA-Z]/g, '');
+                  setEdituserInfo(filtered);
+                }}
               />
             )}
 

@@ -35,15 +35,6 @@ export default function LandingPage() {
   }, []);
 
   const handleKakaoLogin = async () => {
-    // router.push('/(page)/mypage');
-    // router.push({
-    //   pathname: '/signup/verify',
-    //   params: {
-    //     name: mockUserData.name,
-    //     cardinal: mockUserData.cardinal,
-    //     position: mockUserData.position,
-    //   },
-    // });
     //카카오 로그인 로직
     try {
       const token = await login();
@@ -65,11 +56,11 @@ export default function LandingPage() {
           router.push('/signup/terms');
         } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
-          // router.push('/(page)/feed');
-          setName('마스터');
-          setPosition('BE');
-          setCardinal(4);
-          router.push('/signup/terms');
+          router.push('/(page)/feed');
+          // setName('마스터');
+          // setPosition('BE');
+          // setCardinal(4);
+          // router.push('/signup/terms');
         }
       } else {
         switch (result.code) {

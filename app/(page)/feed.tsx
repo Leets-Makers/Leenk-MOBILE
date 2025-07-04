@@ -6,36 +6,22 @@ import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { FeedItem } from '@/types/feed';
 import { width, height } from '@/theme/globalStyles';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
-import OnBoarding, { SubText, TitleText } from '@/components/OnBoarding';
+import { SubText, TitleText } from '@/components/OnBoarding';
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 import { CongratsIcon } from '@/assets';
 
 const mockFeeds: FeedItem[] = generateMockFeeds(20);
 
 export default function FeedPage() {
-  // const [modalVisible, setModalVisible] = useState(false);
-
-  // useEffect(() => {
-  //   // 페이지 진입 시 모달 자동 표시
-  //   setModalVisible(true);
-  // }, []);
-
+  const firstLaunch = useFirstLaunch();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
-  // 처음 접속한 사람만 모달 뜨게 하는 훅인데 일단 확인하려고 주석 처리 했어요!
-  const firstLaunch = useFirstLaunch();
   useEffect(() => {
-    // 페이지 진입 시 모달 자동 표시
-    setShowWelcomeModal(true);
-  }, []);
-  const goToFeed = () => {
-    // if (firstLaunch === null) return;
-    // if (firstLaunch === true) {
-    //   setShowWelcomeModal(true);
-    // } else {
-    //   router.push('/(page)/feed');
-    // }
-  };
+    if (firstLaunch === true) {
+      // 처음 방문이면 모달 표시
+      setShowWelcomeModal(true);
+    }
+  }, [firstLaunch]);
 
   return (
     <View
@@ -59,9 +45,6 @@ export default function FeedPage() {
         showsVerticalScrollIndicator={true}
       />
 
-      {/* <BottomSheetModal visible={modalVisible}>
-        <OnBoarding onClose={() => setModalVisible(false)} />
-      </BottomSheetModal> */}
       {showWelcomeModal && (
         <BottomSheetModal visible={true}>
           <TitleText>Leenk에 온 걸 환영해!</TitleText>
@@ -75,7 +58,6 @@ export default function FeedPage() {
               marginBottom: 40 * height,
             }}
           />
-
           <CustomButton
             fullWidth
             onPress={() => {
