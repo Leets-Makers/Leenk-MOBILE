@@ -27,7 +27,7 @@ import RightArrowIcon from '@/assets/images/ic_right_arrow.svg';
 import CongratsIcon from '@/assets/images/ic_congratsLogo.svg';
 import CheckIcon from '@/assets/images/ic_check.svg';
 import SearchIcon from '@/assets/images/ic_search.svg';
-
+import NoCheckIcon from '@/assets/images/ic_no_check.svg';
 export {
   FeedIcon,
   LeenkIcon,
@@ -58,4 +58,5 @@ export {
   CongratsIcon,
   SearchIcon,
   CheckIcon,
+  NoCheckIcon,
 };
