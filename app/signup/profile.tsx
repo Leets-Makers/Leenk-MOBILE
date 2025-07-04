@@ -1,11 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Animated,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  View,
-} from 'react-native';
+import { Animated, Keyboard, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';
@@ -22,6 +16,8 @@ import {
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 import useRandomMbti from '@/hooks/useRandomMbti';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 
 export default function ProfilePage() {
   const {
@@ -40,37 +36,9 @@ export default function ProfilePage() {
   const [skipModalVisible, setSkipModalVisible] = useState(false);
   const router = useRouter();
   const randomMbti = useRandomMbti(2000);
+  const insets = useSafeAreaInsets();
 
-  const buttonTranslateY = useState(new Animated.Value(0))[0]; // 버튼 이동 값
-
-  // 키보드 이벤트 등록
-  useEffect(() => {
-    const keyboardShowEvent =
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const keyboardHideEvent =
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-
-    const showSubscription = Keyboard.addListener(keyboardShowEvent, (e) => {
-      Animated.timing(buttonTranslateY, {
-        toValue: -e.endCoordinates.height - 20, // 키보드 높이만큼 이동 + 여유
-        duration: Platform.OS === 'ios' ? e.duration : 250,
-        useNativeDriver: true,
-      }).start();
-    });
-
-    const hideSubscription = Keyboard.addListener(keyboardHideEvent, (e) => {
-      Animated.timing(buttonTranslateY, {
-        toValue: 0,
-        duration: Platform.OS === 'ios' ? e.duration : 250,
-        useNativeDriver: true,
-      }).start();
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, [buttonTranslateY]);
+  const buttonTranslateY = useKeyboardAnimation(10);
 
   // 프로필 저장 함수
   const saveProfile = async () => {
@@ -228,9 +196,8 @@ export default function ProfilePage() {
         )}
       </ContentArea>
 
-      {/* 버튼만 키보드에 따라 이동 */}
       <Animated.View style={{ transform: [{ translateY: buttonTranslateY }] }}>
-        <ButtonContainer>
+        <ButtonContainer $paddingBottom={insets.bottom}>
           {step !== 'id' && (
             <>
               <CustomButton
@@ -296,10 +263,10 @@ export const StyledSubText = styled.Text`
   margin-bottom: ${12 * height}px;
 `;
 
-const ButtonContainer = styled.View`
+const ButtonContainer = styled.View<{ $paddingBottom: string }>`
   align-self: center;
   width: 100%;
-  margin-bottom: ${48 * height}px;
+  padding-bottom: ${(props) => props.$paddingBottom}px;
   ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
 `;
 
