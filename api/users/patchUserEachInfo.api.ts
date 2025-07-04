@@ -52,7 +52,7 @@ export const updateProfileImage = async ({
   profileImage: string;
 }) => {
   try {
-    const response = await api.patch('/users/me/profileImage', {
+    const response = await api.patch('/users/me/profile-image', {
       profileImage,
     });
     console.log('updateProfileImage: ', response.data);

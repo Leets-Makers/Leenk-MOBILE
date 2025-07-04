@@ -9,6 +9,8 @@ import { useProfileStore } from '@/stores/profileStore';
 
 import { useState } from 'react';
 import { Platform } from 'react-native';
+import { updateProfileImage } from '@/api/users/patchUserEachInfo.api';
+import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 
 export default function SelectProfileImage({
   mode,
@@ -22,14 +24,29 @@ export default function SelectProfileImage({
 
   const handleSelectComplete = async () => {
     if (!selectedUri) return;
-    if (mode === 'profile') {
-      setProfileImage(selectedUri);
-      router.back();
-    } else if (mode === 'edit') {
-      setProfileImage(selectedUri);
-      // await updateUserProfile({ profileImage: selectedUri });
-      router.back();
+
+    setProfileImage(selectedUri);
+
+    if (mode === 'edit') {
+      try {
+        // 1. presigned URL 요청
+        const fileName = `profile_${Date.now()}.jpg`;
+        const presignedUrls = await getPresignedUrl(fileName);
+        const mediaUrl = presignedUrls[0].mediaUrl;
+
+        // 2. S3에 업로드
+        await uploadImageToS3(mediaUrl, selectedUri);
+
+        console.log('업로드 전 url', mediaUrl);
+
+        // 3. 서버에 profileImage URL 전달
+        await updateProfileImage({ profileImage: mediaUrl.split('?')[0] });
+      } catch (error) {
+        console.error('[SelectProfileImage] 이미지 업로드 실패:', error);
+      }
     }
+
+    router.back();
   };
 
   return (
@@ -62,6 +79,7 @@ const Container = styled.View`
   background-color: ${colors.bg[2]};
   padding-horizontal: ${20 * width}px;
 `;
+
 const ButtonContainer = styled.View`
   position: absolute;
   bottom: ${44 * height}px;
