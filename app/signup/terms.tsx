@@ -21,8 +21,7 @@ export default function TermsPage() {
     <Container>
       <Header />
       <ProfileTitleText>
-        어서와 Leenk는 처음이지? <br />
-        즐기기 전에 약속 하나만 하자
+        어서와 Leenk는 처음이지? 즐기기 전에 약속 하나만 하자
       </ProfileTitleText>
       <StyledSubText>
         모든 항목에 동의하면 링크를 신나게 이용할 수 있어.

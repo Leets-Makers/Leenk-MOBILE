@@ -5,13 +5,13 @@ import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
-import { useLocalSearchParams } from 'expo-router';
+import { useProfileStore } from '@/stores/profileStore';
 
 type PositionType = 'FE' | 'BE' | 'D' | 'PM';
 
 export default function VerifyPage() {
   const router = useRouter();
-  const { name, cardinal, position } = useLocalSearchParams();
+  const { name, cardinal, position } = useProfileStore();
 
   const handleCancel = () => {
     router.back();
