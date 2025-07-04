@@ -15,9 +15,10 @@ import { useState } from 'react';
 import styled from 'styled-components/native';
 import { RightArrowIcon } from '@/assets';
 import { useRouter } from 'expo-router';
-import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { infoTerm, serviceTerm } from '@/constants/termsText';
+import LinearGradient from 'react-native-linear-gradient';
+import { he } from '@faker-js/faker';
 
 export default function TermsPage() {
   const [allCheck, setAllCheck] = useState(false);
@@ -30,7 +31,6 @@ export default function TermsPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  // 전체 동의 클릭 시 모두 체크
   const toggleAllCheck = () => {
     const next = !allCheck;
     setAllCheck(next);
@@ -38,7 +38,6 @@ export default function TermsPage() {
     setInfoCheck(next);
   };
 
-  // 개별 체크 박스 동작 시 전체 동의 체크 여부 변경
   const toggleServiceCheck = () => {
     const next = !serviceCheck;
     setServiceCheck(next);
@@ -85,7 +84,8 @@ export default function TermsPage() {
         </CheckLeft>
         <RightArrowIcon />
       </CheckItem>
-      <ButtonContainer $paddingBottom={insets.bottom}>
+
+      <BottomButtonContainer $paddingBottom={insets.bottom}>
         <CustomButton
           variant="primary"
           onPress={handleNext}
@@ -97,20 +97,22 @@ export default function TermsPage() {
         >
           다음으로
         </CustomButton>
-      </ButtonContainer>
+      </BottomButtonContainer>
 
       <BottomSheetModal visible={visibleModal !== null}>
-        <TermsContent>
-          {visibleModal === 'service' ? (
-            <TermsTitle>서비스 이용약관 (필수)</TermsTitle>
-          ) : (
-            <TermsTitle>개인정보 수집/이용 동의 (필수)</TermsTitle>
-          )}
-          {visibleModal === 'service' ? (
-            <TermsText>{serviceTerm}</TermsText>
-          ) : (
-            <TermsText>{infoTerm}</TermsText>
-          )}
+        <ModalContainer>
+          <TermsTitle>
+            {visibleModal === 'service'
+              ? '서비스 이용약관 (필수)'
+              : '개인정보 수집/이용 동의 (필수)'}
+          </TermsTitle>
+          <TermsContent>
+            <TermsText>
+              {visibleModal === 'service' ? serviceTerm : infoTerm}
+            </TermsText>
+          </TermsContent>
+
+          {/* <GradientOverlay colors={['rgba(255,255,255,0)', colors.white]} /> */}
 
           <CustomButton
             variant="primary"
@@ -126,7 +128,7 @@ export default function TermsPage() {
           >
             동의할게
           </CustomButton>
-        </TermsContent>
+        </ModalContainer>
       </BottomSheetModal>
     </Container>
   );
@@ -171,28 +173,39 @@ const CheckText = styled.Text`
   color: ${colors.text[1]};
   margin-left: ${8 * width}px;
 `;
-const ButtonContainer = styled.View<{ $paddingBottom: string }>`
-  position: absolute;
-  align-self: center;
-  width: 100%;
-  bottom: ${(props) => props.$paddingBottom}px;
-  ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
+
+const BottomButtonContainer = styled.View<{ $paddingBottom: number }>`
+  padding: 0 ${20 * width}px;
+  margin-top: auto;
+  padding-bottom: ${(props) => props.$paddingBottom}px;
 `;
 
-// 모달 내부
-const TermsContent = styled.ScrollView.attrs(() => ({
-  contentContainerStyle: { paddingBottom: 50 * height },
-}))``;
+const ModalContainer = styled.View`
+  flex: 1;
+  position: relative;
+  max-height: ${525 * height}px;
+`;
 
 const TermsTitle = styled.Text`
   font-size: ${fontSize.lg};
-  font-family: ${fonts.Bold};
+  font-family: ${fonts.ExtraBold};
   color: ${colors.text[1]};
-  margin-bottom: ${12 * height}px;
+  line-height: ${lineHeight.l};
 `;
+const TermsContent = styled.ScrollView``;
 
 const TermsText = styled.Text`
-  font-size: ${fontSize.sm};
+  font-size: ${fontSize.md};
   color: ${colors.text[2]};
   line-height: ${lineHeight.m};
+  font-family: ${fonts.Regular};
 `;
+
+// const GradientOverlay = styled(LinearGradient)`
+//   position: absolute;
+//   bottom: ${80 * height}px;
+//   left: 0;
+//   right: 0;
+//   height: ${80 * height}px;
+//   z-index: 1;
+// `;
