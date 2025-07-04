@@ -106,12 +106,26 @@ export default function ProfilePage() {
     else router.back();
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     setSkipModalVisible(false);
+
+    const payload: UpdateProfilePayload = {};
+
+    if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
+    if (introduction) payload.introduction = introduction;
+    if (mbti) payload.mbti = mbti;
+
+    try {
+      await updateUserProfile(payload);
+    } catch (error) {
+      console.error('[handleSkip] 프로필 저장 실패:', error);
+    }
+
     setTimeout(() => {
       router.push('/(page)/feed');
     }, 200);
   };
+
   const handleImagePick = async () => {
     router.push('/signup/select-image');
   };
