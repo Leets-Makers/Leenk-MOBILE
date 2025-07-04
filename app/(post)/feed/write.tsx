@@ -17,6 +17,7 @@ import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
+import { uploadFeed } from '@/api/feed/feed.api';
 
 const mockFeed = generateMockFeeds();
 const { userId, profileImage } = mockFeed[0].author;
@@ -32,6 +33,7 @@ export default function FeedWritePage() {
   const connectedUsers = useFeedWriteStore((state) => state.users);
   const description = useFeedWriteStore((state) => state.description);
   const setDescription = useFeedWriteStore((state) => state.setDescription);
+  const mediaUrls = useFeedWriteStore((state) => state.mediaUrls);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -39,28 +41,34 @@ export default function FeedWritePage() {
 
   const imageUris = selectedImages.map((img) => img.uri);
 
+  const requestBody = {
+    description,
+    media: mediaUrls,
+    userId: connectedUsers.map((user) => user.userId),
+  };
+
   const handleUpload = async () => {
     if (!description.trim()) return;
 
     if (connectedUsers.length === 0) {
       setIsModalOpen(true);
     } else {
-      uploadFeed(); // 함께한 사람이 있는 경우 바로 업로드
+      handleUploadFeed(); // 함께한 사람이 있는 경우 바로 업로드
     }
   };
 
   const handleConfirmUpload = async () => {
     setIsModalOpen(false);
-    uploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
+    handleUploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
   };
 
   // 업로드 로직 분리
-  const uploadFeed = async () => {
+  const handleUploadFeed = async () => {
     setIsUploading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      // TODO: 피드 업로드 api 요청
+      const res = await uploadFeed(requestBody);
+      console.log('[피드 업로드 성공]:', res);
 
       resetFeedWrite();
       router.push('/(page)/feed');

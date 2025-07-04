@@ -23,7 +23,7 @@ export const getFeedList = async (pageNumber: number, pageSize: number) => {
       pageSize,
     },
   });
-  return res.data;
+  return res.data.data;
 };
 
 // 피드 상세 조회
