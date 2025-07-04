@@ -17,6 +17,7 @@ import { RightArrowIcon } from '@/assets';
 import { useRouter } from 'expo-router';
 import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { infoTerm, serviceTerm } from '@/constants/termsText';
 
 export default function TermsPage() {
   const [allCheck, setAllCheck] = useState(false);
@@ -105,9 +106,11 @@ export default function TermsPage() {
           ) : (
             <TermsTitle>개인정보 수집/이용 동의 (필수)</TermsTitle>
           )}
-          <TermsText>
-            여기에 상세 약관 내용을 적어주세요. 스크롤 가능해야 합니다.
-          </TermsText>
+          {visibleModal === 'service' ? (
+            <TermsText>{serviceTerm}</TermsText>
+          ) : (
+            <TermsText>{infoTerm}</TermsText>
+          )}
 
           <CustomButton
             variant="primary"
