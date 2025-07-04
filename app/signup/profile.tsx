@@ -1,3 +1,11 @@
+import { useEffect, useState } from 'react';
+import {
+  Animated,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';
@@ -6,16 +14,14 @@ import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 import { Image } from 'expo-image';
 import { DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
-import ProfileTitleText from '@/components/signup/ProfileTitleText';
-import { Platform, View } from 'react-native';
 import {
   UpdateProfilePayload,
   updateUserProfile,
 } from '@/api/login/patchUsersInfo.api';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 import useRandomMbti from '@/hooks/useRandomMbti';
+import ProfileTitleText from '@/components/signup/ProfileTitleText';
 
 export default function ProfilePage() {
   const {
@@ -29,21 +35,44 @@ export default function ProfilePage() {
     setMbti,
     profileImage,
   } = useProfileStore();
+
   const [kakaoModalVisible, setKakaoModalVisible] = useState(false);
   const [skipModalVisible, setSkipModalVisible] = useState(false);
   const router = useRouter();
   const randomMbti = useRandomMbti(2000);
 
-  const handleModalClose = () => {
-    setKakaoModalVisible(false);
-  };
-  const handleConfirm = () => {
-    setKakaoModalVisible(false);
-    setTimeout(() => {
-      setStep('photo');
-    }, 100);
-  };
+  const buttonTranslateY = useState(new Animated.Value(0))[0]; // 버튼 이동 값
 
+  // 키보드 이벤트 등록
+  useEffect(() => {
+    const keyboardShowEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const keyboardHideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(keyboardShowEvent, (e) => {
+      Animated.timing(buttonTranslateY, {
+        toValue: -e.endCoordinates.height - 20, // 키보드 높이만큼 이동 + 여유
+        duration: Platform.OS === 'ios' ? e.duration : 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    const hideSubscription = Keyboard.addListener(keyboardHideEvent, (e) => {
+      Animated.timing(buttonTranslateY, {
+        toValue: 0,
+        duration: Platform.OS === 'ios' ? e.duration : 250,
+        useNativeDriver: true,
+      }).start();
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [buttonTranslateY]);
+
+  // 프로필 저장 함수
   const saveProfile = async () => {
     const payload: UpdateProfilePayload = {};
 
@@ -53,11 +82,9 @@ export default function ProfilePage() {
 
     if (profileImage) {
       const fileName = `profile_${Date.now()}.jpg`;
-
       try {
         const presignedUrls = await getPresignedUrl(fileName);
         const mediaUrl = presignedUrls[0].mediaUrl;
-
         await uploadImageToS3(mediaUrl, profileImage);
         payload.profileImage = mediaUrl.split('?')[0];
       } catch (error) {
@@ -67,7 +94,6 @@ export default function ProfilePage() {
     }
 
     try {
-      console.log('최종 제출 payload:', payload);
       await updateUserProfile(payload);
     } catch (error) {
       console.error('[saveProfile] 프로필 저장 실패:', error);
@@ -75,6 +101,7 @@ export default function ProfilePage() {
     }
   };
 
+  // 다음 단계
   const handleNext = async () => {
     if (step === 'id') {
       setKakaoModalVisible(true);
@@ -109,7 +136,7 @@ export default function ProfilePage() {
     router.push('/(page)/feed');
   };
 
-  const handleImagePick = async () => {
+  const handleImagePick = () => {
     router.push('/signup/select-image');
   };
 
@@ -133,8 +160,13 @@ export default function ProfilePage() {
             />
             <PopupModal
               isOpen={kakaoModalVisible}
-              onClose={handleModalClose}
-              onConfirm={handleConfirm}
+              onClose={() => setKakaoModalVisible(false)}
+              onConfirm={() => {
+                setKakaoModalVisible(false);
+                setTimeout(() => {
+                  setStep('photo');
+                }, 100);
+              }}
               mainText={kakaoTalkId}
               subText="카톡 아이디가 맞는지 확인해 줘."
               leftBtnText="아니야"
@@ -196,56 +228,55 @@ export default function ProfilePage() {
         )}
       </ContentArea>
 
-      <ButtonContainer>
-        {step !== 'id' && (
-          <>
-            <CustomButton
-              variant="text"
-              textColor="text[2]"
-              onPress={() => setSkipModalVisible(true)}
-              rounded="md"
-              size="lg"
-              fullWidth
-              style={{
-                marginBottom: 10 * height,
-              }}
-            >
-              지금은 넘어갈래
-            </CustomButton>
-            <PopupModal
-              isOpen={skipModalVisible}
-              onClose={() => setSkipModalVisible(false)}
-              onConfirm={handleSkip}
-              mainText="프로필을 나중에 만들래?"
-              subText="마이페이지에서 마저 설정할 수 있어."
-              leftBtnText="취소"
-              rightBtnText="나중에 할래"
-              isCancel={false}
-            />
-          </>
-        )}
+      {/* 버튼만 키보드에 따라 이동 */}
+      <Animated.View style={{ transform: [{ translateY: buttonTranslateY }] }}>
+        <ButtonContainer>
+          {step !== 'id' && (
+            <>
+              <CustomButton
+                variant="text"
+                textColor="text[2]"
+                onPress={() => setSkipModalVisible(true)}
+                rounded="md"
+                size="lg"
+                fullWidth
+                style={{ marginBottom: 10 * height }}
+              >
+                지금은 넘어갈래
+              </CustomButton>
+              <PopupModal
+                isOpen={skipModalVisible}
+                onClose={() => setSkipModalVisible(false)}
+                onConfirm={handleSkip}
+                mainText="프로필을 나중에 만들래?"
+                subText="마이페이지에서 마저 설정할 수 있어."
+                leftBtnText="취소"
+                rightBtnText="나중에 할래"
+                isCancel={false}
+              />
+            </>
+          )}
 
-        <CustomButton
-          variant="primary"
-          onPress={handleNext}
-          fullWidth
-          rounded="md"
-          size="lg"
-          style={{
-            marginBottom: 10 * height,
-          }}
-          disabled={
-            (step === 'id' &&
-              (kakaoTalkId.trim() === '' ||
-                kakaoTalkId.length < 4 ||
-                kakaoTalkId.length > 20)) ||
-            (step === 'introduction' && introduction.trim() === '') ||
-            (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
-          }
-        >
-          {step === 'mbti' ? '시작하자' : '다음으로'}
-        </CustomButton>
-      </ButtonContainer>
+          <CustomButton
+            variant="primary"
+            onPress={handleNext}
+            fullWidth
+            rounded="md"
+            size="lg"
+            style={{ marginBottom: 10 * height }}
+            disabled={
+              (step === 'id' &&
+                (kakaoTalkId.trim() === '' ||
+                  kakaoTalkId.length < 4 ||
+                  kakaoTalkId.length > 20)) ||
+              (step === 'introduction' && introduction.trim() === '') ||
+              (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
+            }
+          >
+            {step === 'mbti' ? '시작하자' : '다음으로'}
+          </CustomButton>
+        </ButtonContainer>
+      </Animated.View>
     </Container>
   );
 }
@@ -266,9 +297,9 @@ export const StyledSubText = styled.Text`
 `;
 
 const ButtonContainer = styled.View`
-  bottom: ${48 * height}px;
   align-self: center;
   width: 100%;
+  margin-bottom: ${48 * height}px;
   ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
 `;
 
