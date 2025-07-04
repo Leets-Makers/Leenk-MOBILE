@@ -33,31 +33,28 @@ export default function LandingPage() {
   }, []);
 
   const handleKakaoLogin = async () => {
-    router.push({
-      pathname: '/signup/verify',
-      params: {
-        name: mockUserData.name,
-        cardinal: mockUserData.cardinal,
-        position: mockUserData.position,
-      },
-    });
+    router.push('/(page)/mypage');
+    // router.push({
+    //   pathname: '/signup/verify',
+    //   params: {
+    //     name: mockUserData.name,
+    //     cardinal: mockUserData.cardinal,
+    //     position: mockUserData.position,
+    //   },
+    // });
+    // 카카오 로그인 로직
     // try {
     //   const token = await login();
-
     //   const accessToken = token?.accessToken;
-
     //   console.log('Kakao Access Token:', accessToken);
     //   // 이메일 정보 조회
     //   const userInfo = await getKakaoUserInfo(accessToken);
     //   console.log('사용자 이메일:', userInfo.kakao_account.email);
     //   const result = await kakaoLogin(accessToken);
-
     //   if (result.success) {
     //     console.log('로그인 성공:', result.data);
-
     //     const serverToken = result.data.accessToken;
     //     await saveAccessToken(serverToken);
-
     //     if (result.code === 1002) {
     //       // 최초 로그인: verify 페이지로 유저 정보 전달
     //       router.push({
