@@ -1,4 +1,4 @@
-import { CheckBox, Header } from '@/components';
+import { CheckBox, CustomButton, Header } from '@/components';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { StyledSubText } from './profile';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
@@ -13,7 +13,10 @@ import {
 } from '@/theme/globalStyles';
 import { useState } from 'react';
 import styled from 'styled-components/native';
-import { CheckIcon, RightArrowIcon } from '@/assets';
+import { RightArrowIcon } from '@/assets';
+import { useRouter } from 'expo-router';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TermsPage() {
   const [allCheck, setAllCheck] = useState(false);
@@ -22,6 +25,9 @@ export default function TermsPage() {
   const [visibleModal, setVisibleModal] = useState<'service' | 'info' | null>(
     null,
   );
+
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   // 전체 동의 클릭 시 모두 체크
   const toggleAllCheck = () => {
@@ -44,6 +50,10 @@ export default function TermsPage() {
     setAllCheck(serviceCheck && next);
   };
 
+  const handleNext = () => {
+    router.push('/signup/verify');
+  };
+
   return (
     <Container>
       <Header />
@@ -60,23 +70,34 @@ export default function TermsPage() {
       </AllAgreeButton>
 
       <CheckItem onPress={() => setVisibleModal('service')}>
-        <CheckBox checked={serviceCheck} noBox />
-        <CheckText>서비스 이용약관 (필수)</CheckText>
+        <CheckLeft>
+          <CheckBox checked={serviceCheck} noBox />
+          <CheckText>서비스 이용약관 (필수)</CheckText>
+        </CheckLeft>
         <RightArrowIcon />
       </CheckItem>
 
       <CheckItem onPress={() => setVisibleModal('info')}>
-        <CheckBox checked={infoCheck} noBox />
-        <CheckText>개인정보 수집/이용 동의 (필수)</CheckText>
+        <CheckLeft>
+          <CheckBox checked={infoCheck} noBox />
+          <CheckText>개인정보 수집/이용 동의 (필수)</CheckText>
+        </CheckLeft>
         <RightArrowIcon />
       </CheckItem>
+      <ButtonContainer $paddingBottom={insets.bottom}>
+        <CustomButton
+          variant="primary"
+          onPress={handleNext}
+          fullWidth
+          rounded="md"
+          size="lg"
+          style={{ marginBottom: 10 * height }}
+          disabled={!serviceCheck || !infoCheck}
+        >
+          다음으로
+        </CustomButton>
+      </ButtonContainer>
 
-      {/* 다음으로 버튼 */}
-      <NextButton disabled={!serviceCheck || !infoCheck}>
-        <NextText>다음으로</NextText>
-      </NextButton>
-
-      {/* 바텀 시트 모달 */}
       <BottomSheetModal visible={visibleModal !== null}>
         <TermsContent>
           {visibleModal === 'service' ? (
@@ -87,15 +108,21 @@ export default function TermsPage() {
           <TermsText>
             여기에 상세 약관 내용을 적어주세요. 스크롤 가능해야 합니다.
           </TermsText>
-          <AgreeButton
+
+          <CustomButton
+            variant="primary"
             onPress={() => {
               if (visibleModal === 'service') toggleServiceCheck();
               if (visibleModal === 'info') toggleInfoCheck();
               setVisibleModal(null);
             }}
+            fullWidth
+            rounded="md"
+            size="lg"
+            style={{ marginBottom: 10 * height }}
           >
-            <AgreeText>동의할게</AgreeText>
-          </AgreeButton>
+            동의할게
+          </CustomButton>
         </TermsContent>
       </BottomSheetModal>
     </Container>
@@ -127,7 +154,13 @@ const ButtonText = styled.Text`
 const CheckItem = styled.Pressable`
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   margin-top: ${20 * height}px;
+`;
+
+const CheckLeft = styled.View`
+  flex-direction: row;
+  align-items: center;
 `;
 
 const CheckText = styled.Text`
@@ -135,22 +168,12 @@ const CheckText = styled.Text`
   color: ${colors.text[1]};
   margin-left: ${8 * width}px;
 `;
-
-const NextButton = styled.TouchableOpacity<{ disabled: boolean }>`
+const ButtonContainer = styled.View<{ $paddingBottom: string }>`
+  position: absolute;
+  align-self: center;
   width: 100%;
-  background-color: ${({ disabled }) =>
-    disabled ? colors.gray[300] : colors.primary};
-  border-radius: ${radius.md}px;
-  padding: ${12 * height}px 0;
-  align-items: center;
-  justify-content: center;
-  margin-top: auto;
-`;
-
-const NextText = styled.Text`
-  font-size: ${fontSize.md};
-  font-family: ${fonts.Bold};
-  color: ${colors.white};
+  bottom: ${(props) => props.$paddingBottom}px;
+  ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
 `;
 
 // 모달 내부
@@ -169,18 +192,4 @@ const TermsText = styled.Text`
   font-size: ${fontSize.sm};
   color: ${colors.text[2]};
   line-height: ${lineHeight.m};
-`;
-
-const AgreeButton = styled.Pressable`
-  margin-top: ${24 * height}px;
-  padding: ${12 * height}px;
-  background-color: ${colors.primary};
-  border-radius: ${radius.md}px;
-  align-items: center;
-`;
-
-const AgreeText = styled.Text`
-  color: ${colors.white};
-  font-size: ${fontSize.md};
-  font-family: ${fonts.Bold};
 `;
