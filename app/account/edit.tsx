@@ -2,7 +2,7 @@ import { CustomButton, Header, Input, Textarea } from '@/components';
 import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import { useState } from 'react';
 import {
@@ -11,12 +11,16 @@ import {
   updateIntroduction,
 } from '@/api/users/patchUserEachInfo.api';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 
 export default function AccountEdit() {
   const { type } = useLocalSearchParams();
   const [edituserInfo, setEdituserInfo] = useState('');
   const router = useRouter();
   const { userInfo } = useUserInfo();
+  const insets = useSafeAreaInsets();
+  const buttonTranslateY = useKeyboardAnimation(10);
 
   const headerText =
     type === 'kakaoTalkId'
@@ -81,16 +85,21 @@ export default function AccountEdit() {
             )}
           </MarginContainer>
         </Container>
-        <BottomArea>
-          <CustomButton
-            style={{ marginBottom: 10 * height }}
-            variant="primary"
-            fullWidth
-            onPress={handleSubmit}
-          >
-            완료할래
-          </CustomButton>
-        </BottomArea>
+
+        <Animated.View
+          style={{ transform: [{ translateY: buttonTranslateY }] }}
+        >
+          <BottomArea $bottomInset={insets.bottom}>
+            <CustomButton
+              style={{ marginBottom: 10 * height }}
+              variant="primary"
+              fullWidth
+              onPress={handleSubmit}
+            >
+              완료할래
+            </CustomButton>
+          </BottomArea>
+        </Animated.View>
       </Wrapper>
     </KeyboardAvoidingView>
   );
@@ -113,9 +122,9 @@ const MarginContainer = styled.View`
   margin-top: ${28 * height}px;
 `;
 
-const BottomArea = styled.View`
+const BottomArea = styled.View<{ $bottomInset: number }>`
   position: absolute;
-  bottom: ${44 * height}px;
+  bottom: ${(props) => props.$bottomInset}px;
   width: 100%;
   padding: 0 ${20 * width}px;
 `;
