@@ -13,10 +13,14 @@ import {
 import colors from '@/theme/color';
 import SuccessIcon from '@/assets/images/ic_toast_check.svg';
 import ErrorIcon from '@/assets/images/ic_toast_alert.svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { he } from '@faker-js/faker';
+import { BlurView } from 'expo-blur';
 
 const Toast = () => {
   const { visible, message, type, hideToast } = useToastStore();
   const opacity = useRef(new Animated.Value(0)).current;
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (visible) {
@@ -48,7 +52,7 @@ const Toast = () => {
   const IconComponent = type === 'success' ? SuccessIcon : ErrorIcon;
 
   return (
-    <Wrapper style={{ opacity }}>
+    <Wrapper style={{ opacity }} $paddingBottom={insets.bottom}>
       <ToastBox $backgroundColor={backgroundColor}>
         <IconComponent width={20 * width} height={20 * height} />
         <ToastText>{message}</ToastText>
@@ -59,16 +63,19 @@ const Toast = () => {
 
 export default Toast;
 
-const Wrapper = styled(Animated.View)`
+const Wrapper = styled(Animated.View)<{ $paddingBottom: string }>`
   position: absolute;
-  bottom: ${84 * height}px;
+  bottom: ${(props) => props.$paddingBottom + 80 * height}px;
   left: 0;
   right: 0;
   align-items: center;
   z-index: 9999;
 `;
 
-const ToastBox = styled.View<{ $backgroundColor: string }>`
+const ToastBox = styled(BlurView).attrs({
+  intensity: 30,
+  tint: 'light',
+})<{ $backgroundColor: string }>`
   flex-direction: row;
   align-items: center;
   gap: ${12 * width}px;
