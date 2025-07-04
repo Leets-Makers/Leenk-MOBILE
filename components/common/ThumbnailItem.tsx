@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import * as MediaLibrary from 'expo-media-library';
-import { Image, Platform, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { ToastCheckIcon } from '@/assets';
@@ -26,20 +26,21 @@ export default function ThumbnailItem({
     (state) => state.setSelectedImages,
   );
 
-  const isSelected = selectedImages.includes(asset.uri);
+  const isSelected = selectedImages.some((item) => item.uri === asset.uri);
+
   const imageHeight =
     aspectRatio === '9:16' ? (IMAGE_SIZE * 16) / 9 : IMAGE_SIZE;
 
   const getSelectionNumber = (photoUri: string) => {
-    const index = selectedImages.findIndex((uri) => uri === photoUri);
+    const index = selectedImages.findIndex((item) => item.uri === photoUri);
     return index >= 0 ? index + 1 : null;
   };
 
   const handleToggle = () => {
     const updated = isSelected
-      ? selectedImages.filter((uri) => uri !== asset.uri)
+      ? selectedImages.filter((item) => item.uri !== asset.uri)
       : selectedImages.length < 3
-        ? [...selectedImages, asset.uri]
+        ? [...selectedImages, { uri: asset.uri, filename: asset.filename }]
         : selectedImages;
 
     setSelectedImages(updated);

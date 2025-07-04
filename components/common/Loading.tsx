@@ -1,22 +1,9 @@
-import { Platform } from 'react-native';
-import LottieAnimationNative from 'lottie-react-native';
-import LottieAnimationWeb from 'lottie-react';
+import LottieAnimation from 'lottie-react-native';
 import loadingAnimation from '@/assets/lotties/Loading.json';
 
 export default function Loading() {
-  if (Platform.OS === 'web') {
-    return (
-      <LottieAnimationWeb
-        animationData={loadingAnimation}
-        loop
-        autoplay
-        style={{ width: 54, height: 20 }}
-      />
-    );
-  }
-
   return (
-    <LottieAnimationNative
+    <LottieAnimation
       source={loadingAnimation}
       autoPlay
       loop

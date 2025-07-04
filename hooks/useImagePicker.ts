@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Platform } from 'react-native';
-import { useFeedWriteStore } from '@/stores/feedWriteStore';
+import { SelectedImage, useFeedWriteStore } from '@/stores/feedWriteStore';
 
 export default function useImagePicker({
   maxSelect = 3,
@@ -81,13 +81,16 @@ export default function useImagePicker({
 
   // 선택 상태 변경
   const toggleSelect = (photo: MediaLibrary.Asset) => {
-    const isSelected = selectedUris.includes(photo.uri);
-    let updatedUris: string[];
+    const isSelected = selectedUris.some((item) => item.uri === photo.uri);
+    let updatedUris: SelectedImage[];
 
     if (isSelected) {
-      updatedUris = selectedUris.filter((uri) => uri !== photo.uri);
+      updatedUris = selectedUris.filter((item) => item.uri !== photo.uri);
     } else if (selectedUris.length < maxSelect) {
-      updatedUris = [...selectedUris, photo.uri];
+      updatedUris = [
+        ...selectedUris,
+        { uri: photo.uri, filename: photo.filename },
+      ];
     } else {
       return;
     }
@@ -97,13 +100,15 @@ export default function useImagePicker({
 
   const getSelectionNumber = (photoId: string) => {
     const photoUri = photos.find((photo) => photo.id === photoId)?.uri;
-    const index = photoUri ? selectedUris.indexOf(photoUri) : -1;
+    const index = selectedUris.findIndex((item) => item.uri === photoUri);
     return index >= 0 ? index + 1 : null;
   };
 
   return {
     photos,
-    selected: photos.filter((photo) => selectedUris.includes(photo.uri)),
+    selected: photos.filter((photo) =>
+      selectedUris.some((item) => item.uri === photo.uri),
+    ),
     hasPermission,
     requestPermission,
     toggleSelect,

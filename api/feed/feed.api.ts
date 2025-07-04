@@ -1,6 +1,6 @@
 import api from '@/api/api';
 import { Author, FeedItem, FeedReactedUser } from '@/types/feed';
-import { FeedDetail } from '@/types/feed';
+import { FeedDetail, UploadFeedPayload } from '@/types/feed';
 import { ApiResponse } from '@/api/api-type';
 
 export interface FeedListData {
@@ -17,17 +17,13 @@ export interface FeedListData {
 // GET
 // 피드 전체 조회
 export const getFeedList = async (pageNumber: number, pageSize: number) => {
-  console.log('[API 호출] getFeedList 실행');
   const res = await api.get<ApiResponse<FeedListData>>('/feeds', {
     params: {
       pageNumber,
       pageSize,
     },
-    headers: {
-      Authorization: `Bearer ${process.env.EXPO_PUBLIC_TOKEN}`,
-    },
   });
-  return res.data.data.feeds;
+  return res.data;
 };
 
 // 피드 상세 조회
@@ -55,7 +51,10 @@ export const getFeedReactions = async (feedId: number) => {
 
 // POST
 // 피드 업로드
-
+export const uploadFeed = async (payload: UploadFeedPayload) => {
+  const res = await api.post<ApiResponse<FeedDetail>>('/feeds', payload);
+  return res.data.data;
+};
 // 피드 공감하기
 
 // DELETE

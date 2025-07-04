@@ -37,6 +37,8 @@ export default function FeedWritePage() {
   const [isUploading, setIsUploading] = useState(false);
   const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
+  const imageUris = selectedImages.map((img) => img.uri);
+
   const handleUpload = async () => {
     if (!description.trim()) return;
 
@@ -89,7 +91,7 @@ export default function FeedWritePage() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={{ flex: 1 }}>
-          <BackgroundImageSlider mediaUrls={selectedImages} />
+          <BackgroundImageSlider mediaUrls={imageUris} />
           <Header
             isBackWhite
             style={{

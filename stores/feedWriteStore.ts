@@ -1,18 +1,28 @@
 import { create } from 'zustand';
-import { FeedConnectedUser } from '@/types/feed';
+import { FeedConnectedUser, Media } from '@/types/feed';
+
+export interface SelectedImage {
+  uri: string;
+  filename: string;
+}
 
 interface FeedWriteStore {
-  selectedImages: string[];
+  selectedImages: SelectedImage[];
   users: FeedConnectedUser[];
+  mediaUrls: Media[];
   description: string;
 
-  setSelectedImages: (images: string[]) => void;
-  addSelectedImage: (uri: string) => void;
+  setSelectedImages: (images: SelectedImage[]) => void;
+  addSelectedImage: (uri: SelectedImage) => void;
   removeSelectedImage: (uri: string) => void;
 
   setUsers: (users: FeedConnectedUser[]) => void;
   addUser: (user: FeedConnectedUser) => void;
   removeUser: (userId: number) => void;
+
+  setMediaUrls: (urls: Media[]) => void;
+  addMediaUrl: (media: Media) => void;
+  removeMediaUrl: (mediaUrl: string) => void;
 
   setDescription: (text: string) => void;
 
@@ -22,6 +32,7 @@ interface FeedWriteStore {
 export const useFeedWriteStore = create<FeedWriteStore>((set) => ({
   selectedImages: [],
   users: [],
+  mediaUrls: [],
   description: '',
 
   setSelectedImages: (images) => set({ selectedImages: images }),
@@ -31,7 +42,7 @@ export const useFeedWriteStore = create<FeedWriteStore>((set) => ({
     })),
   removeSelectedImage: (uri) =>
     set((state) => ({
-      selectedImages: state.selectedImages.filter((item) => item !== uri),
+      selectedImages: state.selectedImages.filter((item) => item.uri !== uri),
     })),
 
   setUsers: (users) => set({ users }),
@@ -44,7 +55,18 @@ export const useFeedWriteStore = create<FeedWriteStore>((set) => ({
       users: state.users.filter((user) => user.userId !== userId),
     })),
 
+  setMediaUrls: (urls) => set({ mediaUrls: urls }),
+  addMediaUrl: (media) =>
+    set((state) => ({
+      mediaUrls: [...state.mediaUrls, media],
+    })),
+  removeMediaUrl: (mediaUrl) =>
+    set((state) => ({
+      mediaUrls: state.mediaUrls.filter((item) => item.mediaUrl !== mediaUrl),
+    })),
+
   setDescription: (text) => set({ description: text }),
 
-  reset: () => set({ selectedImages: [], users: [], description: '' }),
+  reset: () =>
+    set({ selectedImages: [], users: [], mediaUrls: [], description: '' }),
 }));

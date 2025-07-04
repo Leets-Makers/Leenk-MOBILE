@@ -1,18 +1,30 @@
-import axios from 'axios';
+import qs from 'qs';
+import api from '@/api/api';
 
-export const getPresignedUrl = async (fileName: string) => {
-  const token = process.env.EXPO_PUBLIC_TOKEN;
+export interface PresignedUrlData {
+  fileName: string;
+  mediaUrl: string;
+}
 
-  const res = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/medias`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: {
-      fileName,
-    },
-  });
+// 여러장의 이미지 Url를 요청할 경우 getPresignedUrl(['profile_1.jpg', 'profile_2.jpg']); 이렇게 보내주시면 됩니다!
+export const getPresignedUrl = async (fileNames: string | string[]) => {
+  const fileNameParams = Array.isArray(fileNames) ? fileNames : [fileNames];
 
-  return res.data.data.mediaUrl;
+  console.log('[getPresignedUrl] 요청 fileNames:', fileNameParams);
+
+  try {
+    const res = await api.get('/medias', {
+      params: { fileName: fileNameParams },
+      paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: 'repeat' }),
+    });
+
+    console.log('[getPresignedUrl] 응답 데이터:', res.data.data);
+    return res.data.data;
+  } catch (error: any) {
+    console.error('[getPresignedUrl] 에러 발생:', error.message);
+    throw error;
+  }
 };
 
 export const uploadImageToS3 = async (uploadUrl: string, localUri: string) => {

@@ -43,7 +43,7 @@ export default function FeedPage() {
   useEffect(() => {
     const fetchFeeds = async () => {
       try {
-        const data = await getFeedList(0, 1);
+        const data = await getFeedList(0, 10);
         console.log('피드 조회 응답 : ', data);
         setFeeds(data);
       } catch (error) {
