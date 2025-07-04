@@ -1,24 +1,27 @@
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
-import { BackArrowIcon } from '@/assets';
-import { CustomButton, Header, Textarea } from '@/components';
+import { Header, CustomButton, Textarea } from '@/components';
 import colors from '@/theme/color';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { width, height } from '@/theme/globalStyles';
+import { postUserFeedback } from '@/api/users/postFeedback.api';
+import { useState } from 'react';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function HelpPage() {
   const router = useRouter();
+  const [feedback, setFeedback] = useState('');
+  const { showToast } = useToastStore();
+  const handleConfirm = async () => {
+    try {
+      await postUserFeedback({ feedback });
+      showToast('의견이 성공적으로 제출됐어!', 'success');
+
+      router.back();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -36,18 +39,14 @@ export default function HelpPage() {
               maxLength={200}
               subMessage="불편한 점, 좋은 점 등 자유로운 의견을 적어줘"
               minHeight={1}
+              value={feedback}
+              onChangeText={setFeedback}
             />
           </MarginContainer>
         </Container>
 
         <BottomArea>
-          <CustomButton
-            variant="primary"
-            fullWidth
-            onPress={() => {
-              console.log('제출');
-            }}
-          >
+          <CustomButton variant="primary" fullWidth onPress={handleConfirm}>
             제출하기
           </CustomButton>
         </BottomArea>
