@@ -1,5 +1,4 @@
 import { CustomButton, Header, Input, Textarea } from '@/components';
-import { mockUserData } from '@/constants/mockUserData';
 import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -11,11 +10,13 @@ import {
   updateMbti,
   updateIntroduction,
 } from '@/api/users/patchUserEachInfo.api';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 export default function AccountEdit() {
   const { type } = useLocalSearchParams();
-  const [userInfo, setuserInfo] = useState('');
+  const [edituserInfo, setEdituserInfo] = useState('');
   const router = useRouter();
+  const { userInfo } = useUserInfo();
 
   const headerText =
     type === 'kakaoTalkId'
@@ -29,11 +30,11 @@ export default function AccountEdit() {
   const handleSubmit = async () => {
     try {
       if (type === 'kakaoTalkId') {
-        await updateKakaoTalkId({ info: userInfo });
+        await updateKakaoTalkId({ kakaoTalkId: edituserInfo });
       } else if (type === 'mbti') {
-        await updateMbti({ info: userInfo });
+        await updateMbti({ mbti: edituserInfo });
       } else if (type === 'introduction') {
-        await updateIntroduction({ info: userInfo });
+        await updateIntroduction({ introduction: edituserInfo });
       } else {
         console.warn('알 수 없는 수정 타입입니다:', type);
       }
@@ -54,34 +55,39 @@ export default function AccountEdit() {
         <Container>
           <Header>{headerText}</Header>
           <MarginContainer>
-            {type === 'kakaoTalkId' && (
+            {userInfo && type === 'kakaoTalkId' && (
               <Input
                 title="카카오톡 ID를 입력해줘"
                 subMessage="모임원들과의 연락을 위해 필요해."
-                placeholder={mockUserData.kakaoTalkId}
-                onChangeText={setuserInfo}
+                placeholder={userInfo.kakaoTalkId}
+                onChangeText={setEdituserInfo}
               />
             )}
 
-            {type === 'mbti' && (
+            {userInfo && type === 'mbti' && (
               <Input
                 title="MBTI를 입력해줘"
-                placeholder={mockUserData.mbti}
-                onChangeText={setuserInfo}
+                placeholder={userInfo.mbti}
+                onChangeText={setEdituserInfo}
               />
             )}
 
-            {type === 'introduction' && (
+            {userInfo && type === 'introduction' && (
               <Textarea
                 title="자기소개를 입력해줘"
-                placeholder={mockUserData.introduction}
-                onChangeText={setuserInfo}
+                placeholder={userInfo.introduction}
+                onChangeText={setEdituserInfo}
               />
             )}
           </MarginContainer>
         </Container>
         <BottomArea>
-          <CustomButton variant="primary" fullWidth onPress={handleSubmit}>
+          <CustomButton
+            style={{ marginBottom: 10 * height }}
+            variant="primary"
+            fullWidth
+            onPress={handleSubmit}
+          >
             완료할래
           </CustomButton>
         </BottomArea>

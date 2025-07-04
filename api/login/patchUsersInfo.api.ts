@@ -13,6 +13,7 @@ export const updateUserProfile = async (payload: UpdateProfilePayload) => {
 
   try {
     const response = await api.patch('/users/me/profile', payload);
+
     return response.data;
   } catch (error: any) {
     console.error('updateUserProfile 오류:', error.message);
