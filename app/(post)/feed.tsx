@@ -13,6 +13,8 @@ import { sizeStyles } from '@/components/common/Button/CustomButton.styled';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 import { Media } from '@/types/feed';
+import Loading from '@/components/common/Loading';
+import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 
 export default function PostFeedPage() {
   const selectedUrisLength = useFeedWriteStore(
@@ -20,6 +22,7 @@ export default function PostFeedPage() {
   );
   const selectedImages = useFeedWriteStore((state) => state.selectedImages);
   const setMediaUrls = useFeedWriteStore.getState().setMediaUrls;
+  const [isUploading, setIsUploading] = useState(false);
 
   console.log('[🔁 selectedUrisLength]:', selectedUrisLength);
 
@@ -36,6 +39,8 @@ export default function PostFeedPage() {
   };
 
   const handleNext = async () => {
+    setIsUploading(true);
+
     try {
       // 1. 파일명 추출
       const fileNames = selectedImages.map((img) => img.filename);
@@ -77,6 +82,8 @@ export default function PostFeedPage() {
       router.push('/(post)/feed/write');
     } catch (error) {
       console.error('이미지 업로드 중 에러 발생:', error);
+    } finally {
+      setIsUploading(false);
     }
   };
 

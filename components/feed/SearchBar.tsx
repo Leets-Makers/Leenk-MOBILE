@@ -9,7 +9,6 @@ import {
   width,
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
-import { useState } from 'react';
 
 interface SearchBarProps {
   value: string;
@@ -43,7 +42,7 @@ const SearchBarWrapper = styled.View`
   flex-direction: row;
   align-items: center;
   width: ${335 * width}px;
-  height: ${32 * height}px;
+  height: ${38 * height}px;
   background-color: ${colors.gray[100]};
   border-radius: ${radius.xs}px;
 `;

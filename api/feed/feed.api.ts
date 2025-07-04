@@ -34,7 +34,8 @@ export const getFeedDetail = async (feedId: number) => {
 
 // 함께하는 사람 추가를 위한 사용자 전체 조회
 export const getAllUsers = async () => {
-  const res = await api.get<ApiResponse<Author[]>>('/feeds/user/all');
+  const res = await api.get<ApiResponse<Author[]>>('/feeds/users/all');
+  console.log('함께하는 사람 목록 조회 : ', res.data);
   return res.data.data;
 };
 

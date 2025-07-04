@@ -1,25 +1,28 @@
 import { Header } from '@/components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import {
   BadgeText,
   CircleBadge,
   SubmitButton,
   SubmitText,
-  Container,
 } from '@/app/(post)/feed';
 import SearchBar from '@/components/feed/SearchBar';
-import { generateMockUsers } from '@/__mocks__/mockFeed';
 import UserList from '@/components/feed/UserList';
 import { useRouter } from 'expo-router';
 import { FeedConnectedUser } from '@/types/feed';
 import MemberBadgeList from '@/components/feed/MemberBadgeList';
-import { height } from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
+import { getAllUsers } from '@/api/feed/feed.api';
+import { CONTAINER_PADDING } from '@/constants';
+import colors from '@/theme/color';
+import styled from 'styled-components/native';
 
 export default function LinkMembersPage() {
   const router = useRouter();
-  const mockUsers = generateMockUsers(20);
+
+  const [allUsers, setAllUsers] = useState<FeedConnectedUser[]>([]);
   const selectedUsers = useFeedWriteStore((state) => state.users);
   const setUsers = useFeedWriteStore((state) => state.setUsers);
   const [searchUser, setSearchUser] = useState('');
@@ -46,12 +49,12 @@ export default function LinkMembersPage() {
 
   const isSearching = searchUser.trim().length > 0;
   const filteredUsers = isSearching
-    ? mockUsers.filter((user) =>
+    ? allUsers.filter((user) =>
         user.name.toLowerCase().includes(searchUser.toLowerCase()),
       )
     : [
         ...tempSelectedUsers,
-        ...mockUsers.filter(
+        ...allUsers.filter(
           (user) =>
             !tempSelectedUsers.some(
               (selected) => selected.userId === user.userId,
@@ -59,6 +62,19 @@ export default function LinkMembersPage() {
         ),
       ];
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await getAllUsers();
+        console.log('getAllUsers 응답:', response);
+        setAllUsers(response);
+      } catch (error) {
+        console.error('함께한 사람 추가를 위한 사용자 목록 조회 실패:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
   return (
     <Container>
       <Header>함께 한 사람 추가</Header>
@@ -96,3 +112,8 @@ export default function LinkMembersPage() {
     </Container>
   );
 }
+
+const Container = styled.View`
+  padding: 0 ${CONTAINER_PADDING * width}px;
+  background-color: ${colors.gray[50]};
+`;
