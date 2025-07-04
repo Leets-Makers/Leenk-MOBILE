@@ -160,9 +160,10 @@ export default function ProfilePage() {
           title="MBTI를 입력해줘"
           value={mbti}
           onChangeText={(text) => {
-            const filtered = text.replace(/[^a-zA-Z]/g, '').toUpperCase();
+            const filtered = text.replace(/[^a-zA-Z]/g, '');
             setMbti(filtered);
           }}
+          autoCapitalize="characters"
           placeholder={randomMbti}
           maxLength={4}
         />
@@ -233,7 +234,10 @@ export default function ProfilePage() {
             marginBottom: 10 * height,
           }}
           disabled={
-            (step === 'id' && kakaoTalkId.trim() === '') ||
+            (step === 'id' &&
+              (kakaoTalkId.trim() === '' ||
+                kakaoTalkId.length < 4 ||
+                kakaoTalkId.length > 20)) ||
             (step === 'introduction' && introduction.trim() === '') ||
             (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
           }
