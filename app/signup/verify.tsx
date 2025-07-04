@@ -55,6 +55,7 @@ export default function VerifyPage() {
           style={{
             width: 162.5 * width,
             height: 48 * height,
+            marginBottom: 10 * height,
           }}
         >
           맞아

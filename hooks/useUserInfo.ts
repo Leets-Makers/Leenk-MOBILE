@@ -1,4 +1,4 @@
-import { getUsersInfo } from '@/api/users/getUsersInfo';
+import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useEffect, useState } from 'react';
 
 export interface UserInfo {

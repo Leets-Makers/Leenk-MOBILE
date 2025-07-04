@@ -3,13 +3,11 @@ import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';
 import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
-import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
-import { MBTI_LIST } from '@/constants/MbtiList';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { Platform } from 'react-native';
 import {
@@ -17,6 +15,7 @@ import {
   updateUserProfile,
 } from '@/api/login/patchUsersInfo.api';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
+import useRandomMbti from '@/hooks/useRandomMbti';
 
 export default function ProfilePage() {
   const {
@@ -32,6 +31,8 @@ export default function ProfilePage() {
   } = useProfileStore();
   const [kakaoModalVisible, setKakaoModalVisible] = useState(false);
   const [skipModalVisible, setSkipModalVisible] = useState(false);
+  const router = useRouter();
+  const randomMbti = useRandomMbti(2000);
 
   const handleModalClose = () => {
     setKakaoModalVisible(false);
@@ -43,7 +44,36 @@ export default function ProfilePage() {
     }, 100);
   };
 
-  const router = useRouter();
+  const saveProfile = async () => {
+    const payload: UpdateProfilePayload = {};
+
+    if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
+    if (introduction) payload.introduction = introduction;
+    if (mbti) payload.mbti = mbti;
+
+    if (profileImage) {
+      const fileName = `profile_${Date.now()}.jpg`;
+
+      try {
+        const presignedUrls = await getPresignedUrl(fileName);
+        const mediaUrl = presignedUrls[0].mediaUrl;
+
+        await uploadImageToS3(mediaUrl, profileImage);
+        payload.profileImage = mediaUrl.split('?')[0];
+      } catch (error) {
+        console.error('[saveProfile] 프로필 이미지 업로드 실패:', error);
+        throw error;
+      }
+    }
+
+    try {
+      console.log('최종 제출 payload:', payload);
+      await updateUserProfile(payload);
+    } catch (error) {
+      console.error('[saveProfile] 프로필 저장 실패:', error);
+      throw error;
+    }
+  };
 
   const handleNext = async () => {
     if (step === 'id') {
@@ -53,48 +83,11 @@ export default function ProfilePage() {
     } else if (step === 'introduction') {
       setStep('mbti');
     } else {
-      const payload: UpdateProfilePayload = {};
-
       try {
-        if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
-        if (introduction) payload.introduction = introduction;
-        if (mbti) payload.mbti = mbti;
-
-        if (profileImage) {
-          const fileName = `profile_${Date.now()}.jpg`;
-
-          // 1. 프리사인드 URL 발급
-          let presignedUrls;
-          try {
-            presignedUrls = await getPresignedUrl(fileName);
-          } catch (error) {
-            console.error('[getPresignedUrl] 실패:', error);
-            throw error;
-          }
-          const mediaUrl = presignedUrls[0].mediaUrl;
-
-          // 2. S3 업로드
-          try {
-            await uploadImageToS3(mediaUrl, profileImage);
-            payload.profileImage = mediaUrl.split('?')[0];
-          } catch (error) {
-            console.error('[uploadImageToS3] 실패:', error);
-            throw error;
-          }
-        }
-
-        console.log('최종 제출 payload:', payload);
-
-        // 3. 프로필 업데이트
-        try {
-          await updateUserProfile(payload);
-          router.push('/(page)/feed');
-        } catch (error) {
-          console.error('[updateUserProfile] 실패:', error);
-          throw error;
-        }
+        await saveProfile();
+        router.push('/(page)/feed');
       } catch (e) {
-        console.error('[ProfilePage] 전체 실패:', e);
+        console.error('[handleNext] 실패:', e);
       }
     }
   };
@@ -108,38 +101,17 @@ export default function ProfilePage() {
 
   const handleSkip = async () => {
     setSkipModalVisible(false);
-
-    const payload: UpdateProfilePayload = {};
-
-    if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
-    if (introduction) payload.introduction = introduction;
-    if (mbti) payload.mbti = mbti;
-
     try {
-      await updateUserProfile(payload);
+      await saveProfile();
     } catch (error) {
-      console.error('[handleSkip] 프로필 저장 실패:', error);
+      console.error('[handleSkip] 실패:', error);
     }
-
-    setTimeout(() => {
-      router.push('/(page)/feed');
-    }, 200);
+    router.push('/(page)/feed');
   };
 
   const handleImagePick = async () => {
     router.push('/signup/select-image');
   };
-
-  const [randomMbti, setRandomMbti] = useState('ENFP');
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const random = MBTI_LIST[Math.floor(Math.random() * MBTI_LIST.length)];
-      setRandomMbti(random);
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <Container>
@@ -257,6 +229,9 @@ export default function ProfilePage() {
           fullWidth
           rounded="md"
           size="lg"
+          style={{
+            marginBottom: 10 * height,
+          }}
           disabled={
             (step === 'id' && kakaoTalkId.trim() === '') ||
             (step === 'introduction' && introduction.trim() === '') ||
