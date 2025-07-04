@@ -6,21 +6,23 @@ import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { Image } from 'expo-image';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default function ProfileEdit() {
   const router = useRouter();
-  const { userInfo } = useUserInfo();
+
+  const { kakaoTalkId, introduction, mbti, profileImage } = useProfileStore();
 
   const editFields = [
     {
       title: '카톡 아이디',
-      content: userInfo?.kakaoTalkId,
+      content: kakaoTalkId,
       type: 'kakaoTalkId',
     },
-    { title: 'MBTI', content: userInfo?.mbti, type: 'mbti' },
+    { title: 'MBTI', content: mbti, type: 'mbti' },
     {
       title: '자기소개',
-      content: userInfo?.introduction,
+      content: introduction,
       type: 'introduction',
       isTextarea: true,
     },
@@ -30,9 +32,9 @@ export default function ProfileEdit() {
     <Container>
       <Header RightSection="SETTING">프로필 편집</Header>
       <ProfileImageWrapper>
-        {userInfo?.profileImage ? (
+        {profileImage ? (
           <Image
-            source={userInfo?.profileImage}
+            source={profileImage}
             style={{ width: 80, height: 80, borderRadius: 50 }}
           />
         ) : (

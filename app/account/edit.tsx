@@ -13,14 +13,23 @@ import {
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default function AccountEdit() {
   const { type } = useLocalSearchParams();
   const [edituserInfo, setEdituserInfo] = useState('');
   const router = useRouter();
-  const { userInfo } = useUserInfo();
   const insets = useSafeAreaInsets();
   const buttonTranslateY = useKeyboardAnimation(10);
+
+  const {
+    kakaoTalkId,
+    setkakaoTalkId,
+    introduction,
+    setintroduction,
+    mbti,
+    setMbti,
+  } = useProfileStore();
 
   const headerText =
     type === 'kakaoTalkId'
@@ -34,10 +43,13 @@ export default function AccountEdit() {
   const handleSubmit = async () => {
     try {
       if (type === 'kakaoTalkId') {
+        setkakaoTalkId(edituserInfo);
         await updateKakaoTalkId({ kakaoTalkId: edituserInfo });
       } else if (type === 'mbti') {
+        setMbti(edituserInfo);
         await updateMbti({ mbti: edituserInfo });
       } else if (type === 'introduction') {
+        setintroduction(edituserInfo);
         await updateIntroduction({ introduction: edituserInfo });
       } else {
         console.warn('알 수 없는 수정 타입입니다:', type);
@@ -59,27 +71,27 @@ export default function AccountEdit() {
         <Container>
           <Header>{headerText}</Header>
           <MarginContainer>
-            {userInfo && type === 'kakaoTalkId' && (
+            {type === 'kakaoTalkId' && (
               <Input
                 title="카카오톡 ID를 입력해줘"
                 subMessage="모임원들과의 연락을 위해 필요해."
-                placeholder={userInfo.kakaoTalkId}
+                placeholder={kakaoTalkId}
                 onChangeText={setEdituserInfo}
               />
             )}
 
-            {userInfo && type === 'mbti' && (
+            {type === 'mbti' && (
               <Input
                 title="MBTI를 입력해줘"
-                placeholder={userInfo.mbti}
+                placeholder={mbti}
                 onChangeText={setEdituserInfo}
               />
             )}
 
-            {userInfo && type === 'introduction' && (
+            {type === 'introduction' && (
               <Textarea
                 title="자기소개를 입력해줘"
-                placeholder={userInfo.introduction}
+                placeholder={introduction}
                 onChangeText={setEdituserInfo}
               />
             )}

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Animated, Keyboard, Platform } from 'react-native';
+import { useState } from 'react';
+import { Animated, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';

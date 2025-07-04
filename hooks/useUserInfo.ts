@@ -17,21 +17,22 @@ export const useUserInfo = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const data = await getUsersInfo();
-        setUserInfo(data);
-      } catch (err: any) {
-        setError(err);
-        console.error('유저 정보 불러오기 실패:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchUserInfo = async () => {
+    try {
+      setLoading(true);
+      const data = await getUsersInfo();
+      setUserInfo(data);
+    } catch (err: any) {
+      setError(err);
+      console.error('유저 정보 불러오기 실패:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUserInfo();
   }, []);
 
-  return { userInfo, loading, error };
+  return { userInfo, loading, error, refetch: fetchUserInfo };
 };
