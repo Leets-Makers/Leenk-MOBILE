@@ -112,7 +112,7 @@ export default function TermsPage() {
             </TermsText>
           </TermsContent>
 
-          {/* <GradientOverlay colors={['rgba(255,255,255,0)', colors.white]} /> */}
+          <GradientOverlay colors={['rgba(255,255,255,0)', colors.white]} />
 
           <CustomButton
             variant="primary"
@@ -191,8 +191,12 @@ const TermsTitle = styled.Text`
   font-family: ${fonts.ExtraBold};
   color: ${colors.text[1]};
   line-height: ${lineHeight.l};
+  margin-bottom: ${4 * height};
 `;
-const TermsContent = styled.ScrollView``;
+const TermsContent = styled.ScrollView.attrs(() => ({
+  showsVerticalScrollIndicator: false,
+  contentContainerStyle: {},
+}))``;
 
 const TermsText = styled.Text`
   font-size: ${fontSize.md};
@@ -201,11 +205,11 @@ const TermsText = styled.Text`
   font-family: ${fonts.Regular};
 `;
 
-// const GradientOverlay = styled(LinearGradient)`
-//   position: absolute;
-//   bottom: ${80 * height}px;
-//   left: 0;
-//   right: 0;
-//   height: ${80 * height}px;
-//   z-index: 1;
-// `;
+const GradientOverlay = styled(LinearGradient)`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: ${60 * height}px;
+  height: ${80 * height}px;
+  z-index: 1;
+`;
