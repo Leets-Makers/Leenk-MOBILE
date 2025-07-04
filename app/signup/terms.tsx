@@ -146,7 +146,9 @@ const AllAgreeButton = styled.Pressable`
   border-radius: ${radius.md}px;
   padding: ${8 * height}px ${12 * width}px;
   flex-direction: row;
-  gap: ${4 * width}px;
+  align-items: center;
+  gap: ${10 * width}px;
+  margin-bottom: ${8 * height}px;
 `;
 
 const ButtonText = styled.Text`
@@ -160,7 +162,8 @@ const CheckItem = styled.Pressable`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-top: ${20 * height}px;
+  margin-top: ${12 * height}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const CheckLeft = styled.View`
@@ -175,7 +178,6 @@ const CheckText = styled.Text`
 `;
 
 const BottomButtonContainer = styled.View<{ $paddingBottom: number }>`
-  padding: 0 ${20 * width}px;
   margin-top: auto;
   padding-bottom: ${(props) => props.$paddingBottom}px;
 `;
