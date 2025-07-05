@@ -99,7 +99,7 @@ const api = axios.create({
 // 요청 전에 토큰 추가 (interceptor 사용)
 api.interceptors.request.use(
   async (config) => {
-    const token = process.env.EXPO_PUBLIC_TOKEN;
+    const token = getAccessToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

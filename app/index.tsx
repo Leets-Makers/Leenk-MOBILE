@@ -12,27 +12,20 @@ import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
 import { useRouter } from 'expo-router';
 import { CustomButton } from '@/components';
-import { initializeKakaoSDK } from '@react-native-kakao/core';
 import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
 import { getKakaoUserInfo, kakaoLogin } from '@/api/login/kakao.api';
 import { saveAccessToken } from '@/utils/tokenStorage';
-import { mockUserData } from '@/constants/mockUserData';
 import { useProfileStore } from '@/stores/profileStore';
 
 export default function LandingPage() {
-  const kakaoNativeAppKey = process.env.EXPO_PUBLIC_NATIVE_APP_KEY || '';
   const router = useRouter();
   const [notRegisterModal, setNotRegisterModal] = useState(false);
   const [waitModal, setWaitModal] = useState(false);
   const weethSiteURL = 'https://www.weeth.site/';
-  console.log('카카오 앱 키:', kakaoNativeAppKey);
-  const { setName, setPosition, setCardinal } = useProfileStore();
 
-  useEffect(() => {
-    initializeKakaoSDK(kakaoNativeAppKey);
-  }, []);
+  const { setName, setPosition, setCardinal } = useProfileStore();
 
   const handleKakaoLogin = async () => {
     //카카오 로그인 로직

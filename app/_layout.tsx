@@ -14,6 +14,7 @@ import { useColorScheme, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from '@/components/Toast';
+import { initializeKakaoSDK } from '@react-native-kakao/core';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -36,6 +37,11 @@ export default function RootLayout() {
     'NanumSquareNeo-ExtraBold': require('../assets/fonts/NanumSquareNeo-dEb.ttf'),
     ...FontAwesome.font,
   });
+
+  const kakaoNativeAppKey = process.env.EXPO_PUBLIC_NATIVE_APP_KEY || '';
+  useEffect(() => {
+    initializeKakaoSDK(kakaoNativeAppKey);
+  }, []);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {

@@ -8,13 +8,15 @@ import { useState } from 'react';
 import styled from 'styled-components/native';
 import { useToastStore } from '@/stores/toastStore';
 import { deleteUser } from '@/api/users/deleteUser.api';
+import { deleteAccessToken } from '@/utils/tokenStorage';
+import { useProfileStore } from '@/stores/profileStore';
 
 export default function AccountStatusPage() {
   const router = useRouter();
   const { showToast } = useToastStore();
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-
+  const { reset } = useProfileStore();
   const handleLogout = () => {
     setLogoutModalVisible(true);
   };
@@ -23,13 +25,21 @@ export default function AccountStatusPage() {
     setDeleteModalVisible(true);
   };
 
-  const handleLogoutConfirm = () => {
-    // TODO: 로그아웃 로직 추가
-    console.log('로그아웃 실행');
-    setLogoutModalVisible(false);
-    setTimeout(() => {
-      router.push('/');
-    }, 200);
+  const handleLogoutConfirm = async () => {
+    try {
+      await deleteAccessToken();
+      reset();
+
+      console.log('로그아웃 완료');
+      setLogoutModalVisible(false);
+
+      setTimeout(() => {
+        router.replace('/');
+      }, 200);
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      showToast('로그아웃에 실패했어. 다시 시도해줘.', 'error');
+    }
   };
 
   const handleDeleteConfirm = async () => {
