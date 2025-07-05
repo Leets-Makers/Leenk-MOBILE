@@ -80,7 +80,7 @@ export default function ProfilePage() {
     } else {
       try {
         await saveProfile();
-        router.push('/(page)/feed');
+        router.replace('/(page)/feed');
       } catch (e) {
         console.error('[handleNext] 실패:', e);
       }
@@ -101,7 +101,7 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('[handleSkip] 실패:', error);
     }
-    router.push('/(page)/feed');
+    router.replace('/(page)/feed');
   };
 
   const handleImagePick = () => {

@@ -12,7 +12,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   splash: {
-    image: './assets/images/ic_splash.png',
+    image: './assets/images/ic_logo.png',
     resizeMode: 'cover',
     backgroundColor: '#F7F7FA',
   },
