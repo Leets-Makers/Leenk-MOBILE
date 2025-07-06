@@ -23,12 +23,13 @@ export const getFeedList = async (pageNumber: number, pageSize: number) => {
       pageSize,
     },
   });
-  return res.data.data;
+  return res.data.data.feeds;
 };
 
 // 피드 상세 조회
 export const getFeedDetail = async (feedId: number) => {
   const res = await api.get<ApiResponse<FeedDetail>>(`/feeds/${feedId}`);
+  console.log('피드 상세 조회 : ', res.data);
   return res.data.data;
 };
 

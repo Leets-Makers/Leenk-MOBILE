@@ -24,9 +24,17 @@ import {
 } from '@/components';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
+import { useLocalSearchParams } from 'expo-router';
+import { getFeedDetail } from '@/api/feed/feed.api';
+import { FeedDetail } from '@/types/feed';
+import { useEffect, useState } from 'react';
+import Loading from '@/components/common/Loading';
 
 export default function FeedDetailPage() {
-  const feed = generateMockFeedDetail();
+  const { id } = useLocalSearchParams();
+  const [feed, setFeed] = useState<FeedDetail | null>(null);
+
+  // const feed = generateMockFeedDetail();
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
 
@@ -43,6 +51,29 @@ export default function FeedDetailPage() {
 
     showToast('삭제 완료!', 'success');
   };
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchFeedDetail = async () => {
+      try {
+        const res = await getFeedDetail(Number(id));
+        setFeed(res);
+      } catch (err: any) {
+        console.error('피드 상세 조회 오류:', err);
+      }
+    };
+
+    fetchFeedDetail();
+  }, [id]);
+
+  if (!feed) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Loading />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
