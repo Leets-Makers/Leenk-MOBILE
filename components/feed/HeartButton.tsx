@@ -85,7 +85,7 @@ export default function HeartButton({ feedId }: HeartButtonProps) {
         console.log('[getFeedReactions] 응답:', res);
         setReactedUsers(res);
       } catch (error) {
-        console.error('[⚠️ getFeedReactions] 실패:', error);
+        console.error('공감한 사람 목록 조회 실패:', error);
       }
     };
 

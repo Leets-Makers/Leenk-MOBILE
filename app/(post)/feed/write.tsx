@@ -9,7 +9,7 @@ import colors from '@/theme/color';
 import { router, useRouter } from 'expo-router';
 import { Text, View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
-import { Author } from '@/types/feed';
+import { Author, Media } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
 import { useEffect, useState } from 'react';
@@ -39,7 +39,13 @@ export default function FeedWritePage() {
   const [isUploading, setIsUploading] = useState(false);
   const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
-  const imageUris = selectedImages.map((img) => img.uri);
+  // const imageUris = selectedImages.map((img) => img.uri);
+
+  const media: Media[] = selectedImages.map((img, index) => ({
+    position: index + 1,
+    mediaUrl: img.uri,
+    mediaType: 'IMAGE' as const,
+  }));
 
   const requestBody = {
     description,
@@ -99,7 +105,7 @@ export default function FeedWritePage() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={{ flex: 1 }}>
-          <BackgroundImageSlider mediaUrls={imageUris} />
+          <BackgroundImageSlider mediaUrls={media} />
           <Header
             isBackWhite
             style={{

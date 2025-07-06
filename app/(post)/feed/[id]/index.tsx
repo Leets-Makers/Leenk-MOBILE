@@ -75,7 +75,7 @@ export default function FeedDetailPage() {
 
   return (
     <View style={{ flex: 1 }}>
-      <BackgroundImageSlider mediaUrls={feed.media.map((m) => m.mediaUrl)} />
+      <BackgroundImageSlider mediaUrls={feed.media} />
 
       <Header
         isBackWhite
