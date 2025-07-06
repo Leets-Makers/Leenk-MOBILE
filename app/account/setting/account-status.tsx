@@ -46,10 +46,14 @@ export default function AccountStatusPage() {
   const handleDeleteConfirm = async () => {
     try {
       await deleteUser();
+      await deleteAccessToken();
+      reset();
+
       showToast('탈퇴 완료! 이용해주셔서 고마웠어요 :)', 'success');
       setDeleteModalVisible(false);
+
       setTimeout(() => {
-        router.push('/');
+        router.replace('/');
       }, 200);
     } catch (error) {
       console.error('회원탈퇴 실패:', error);

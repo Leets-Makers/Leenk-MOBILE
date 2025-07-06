@@ -2,7 +2,7 @@ import api from '@/api/api';
 
 export const deleteUser = async () => {
   try {
-    const response = await api.delete('/users');
+    const response = await api.delete('/users/me');
     console.log('deleteUser: ', response.data);
   } catch (error: any) {
     console.error('deleteUser 오류:', error.message);
