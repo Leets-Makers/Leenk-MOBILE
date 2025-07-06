@@ -13,8 +13,6 @@ import { sizeStyles } from '@/components/common/Button/CustomButton.styled';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 import { Media } from '@/types/feed';
-import Loading from '@/components/common/Loading';
-import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 
 export default function PostFeedPage() {
   const selectedUrisLength = useFeedWriteStore(

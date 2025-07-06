@@ -19,6 +19,7 @@ import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback
 import HeartButton from '@/components/feed/HeartButton';
 import MenuModal from '@/components/Modal/MenuModal';
 import PopupModal from '@/components/Modal/PopupModal';
+import Loading from '@/components/common/Loading';
 export {
   CustomButton,
   Input,
@@ -41,4 +42,5 @@ export {
   HeartButton,
   MenuModal,
   PopupModal,
+  Loading,
 };

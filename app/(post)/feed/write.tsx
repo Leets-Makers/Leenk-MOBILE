@@ -6,13 +6,13 @@ import {
   Badge,
 } from '@/components';
 import colors from '@/theme/color';
-import { router, useRouter } from 'expo-router';
-import { Text, View, Image, ScrollView, Platform } from 'react-native';
+import { router } from 'expo-router';
+import { View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
 import { Author, Media } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
@@ -38,8 +38,6 @@ export default function FeedWritePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const resetFeedWrite = useFeedWriteStore((state) => state.reset);
-
-  // const imageUris = selectedImages.map((img) => img.uri);
 
   const media: Media[] = selectedImages.map((img, index) => ({
     position: index + 1,

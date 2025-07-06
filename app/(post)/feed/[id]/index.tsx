@@ -1,9 +1,3 @@
-import colors from '@/theme/color';
-import styled from 'styled-components/native';
-import { formatDate } from '@/utils/format-date';
-import { Text, View } from 'react-native';
-import { StyledText } from '@/app/(post)/feed/write';
-import { CONTAINER_PADDING } from '@/constants';
 import {
   fonts,
   fontSize,
@@ -20,14 +14,20 @@ import {
   HeartButton,
   MenuModal,
   PopupModal,
+  Loading,
 } from '@/components';
+import colors from '@/theme/color';
+import styled from 'styled-components/native';
+import { formatDate } from '@/utils/format-date';
+import { Text, View } from 'react-native';
+import { StyledText } from '@/app/(post)/feed/write';
+import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
-import { useLocalSearchParams } from 'expo-router';
-import { getFeedDetail } from '@/api/feed/feed.api';
+import { router, useLocalSearchParams } from 'expo-router';
+import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
 import { useEffect, useState } from 'react';
-import Loading from '@/components/common/Loading';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -37,17 +37,24 @@ export default function FeedDetailPage() {
   const { showToast } = useToastStore();
 
   const handleDelete = () => {
-    // TODO: 삭제 로직 추가
     closeModal();
     openModal('deleteConfirm');
   };
 
-  const handleConfirmDelete = () => {
-    closeModal();
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteFeed(Number(id));
+      showToast('삭제 완료!', 'success');
 
-    // TODO: 삭제 API 호출
-
-    showToast('삭제 완료!', 'success');
+      setTimeout(() => {
+        router.replace('/(page)/feed');
+      }, 1500);
+    } catch (err: any) {
+      console.error('피드 삭제 오류:', err);
+      showToast('삭제 실패!', 'error');
+    } finally {
+      closeModal();
+    }
   };
 
   useEffect(() => {

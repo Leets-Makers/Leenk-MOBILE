@@ -49,16 +49,22 @@ export const getFeedReactions = async (feedId: number) => {
   return res.data.data;
 };
 
-// ----------------------------------
-// 마이페이지
-
 // POST
 // 피드 업로드
 export const uploadFeed = async (payload: UploadFeedPayload) => {
   const res = await api.post<ApiResponse<FeedDetail>>('/feeds', payload);
   return res.data.data;
 };
+
 // 피드 공감하기
 
 // DELETE
 // 피드 삭제
+export const deleteFeed = async (feedId: number) => {
+  const res = await api.delete<ApiResponse<string>>(`/feeds/${feedId}`);
+  console.log('피드 삭제 조회 : ', res.data);
+  return res.data.data;
+};
+
+// ----------------------------------
+// 마이페이지
