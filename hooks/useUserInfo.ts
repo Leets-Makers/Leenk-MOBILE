@@ -1,5 +1,5 @@
 import { getUsersInfo } from '@/api/users/getUsersInfo.api';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export interface UserInfo {
   id: number;
@@ -14,12 +14,14 @@ export interface UserInfo {
 
 export const useUserInfo = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = useCallback(async () => {
+    if (loading) return;
     try {
       setLoading(true);
+      setError(null);
       const data = await getUsersInfo();
       setUserInfo(data);
     } catch (err: any) {
@@ -28,11 +30,7 @@ export const useUserInfo = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchUserInfo();
-  }, []);
+  }, [loading]);
 
   return { userInfo, loading, error, refetch: fetchUserInfo };
 };

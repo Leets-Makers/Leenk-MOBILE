@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { getAccessToken } from '@react-native-kakao/user';
+import { getAccessToken } from '@/utils/tokenStorage';
 import Splash from '@/components/Splash';
 import LandingPage from '@/components/LandingPage';
 

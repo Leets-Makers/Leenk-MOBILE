@@ -11,16 +11,21 @@ import { useProfileStore } from '@/stores/profileStore';
 
 export default function MyPage() {
   const router = useRouter();
-  const { userInfo, refetch } = useUserInfo();
+  const { userInfo, error, refetch } = useUserInfo();
   const { setkakaoTalkId, setintroduction, setMbti, setProfileImage } =
     useProfileStore();
 
+  // 마이페이지 진입/포커스될 때마다 refetch 실행
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch]),
+      // error가 없을 때만 요청
+      if (!error) {
+        refetch();
+      }
+    }, [error, refetch]),
   );
 
+  // userInfo 값이 변경될 때만 store 업데이트
   useEffect(() => {
     if (userInfo) {
       setkakaoTalkId(userInfo.kakaoTalkId);
@@ -28,7 +33,7 @@ export default function MyPage() {
       setMbti(userInfo.mbti);
       setProfileImage(userInfo.profileImage);
     }
-  }, [userInfo]);
+  }, [userInfo, setkakaoTalkId, setintroduction, setMbti, setProfileImage]);
 
   return (
     <Container>
