@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
 import { Header, CustomButton, Textarea } from '@/components';
@@ -7,11 +7,16 @@ import { width, height } from '@/theme/globalStyles';
 import { postUserFeedback } from '@/api/users/postFeedback.api';
 import { useState } from 'react';
 import { useToastStore } from '@/stores/toastStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 
 export default function HelpPage() {
   const router = useRouter();
   const [feedback, setFeedback] = useState('');
   const { showToast } = useToastStore();
+  const insets = useSafeAreaInsets();
+  const buttonTranslateY = useKeyboardAnimation(10);
+
   const handleConfirm = async () => {
     try {
       await postUserFeedback({ feedback });
@@ -45,11 +50,20 @@ export default function HelpPage() {
           </MarginContainer>
         </Container>
 
-        <BottomArea>
-          <CustomButton variant="primary" fullWidth onPress={handleConfirm}>
-            제출하기
-          </CustomButton>
-        </BottomArea>
+        <Animated.View
+          style={{ transform: [{ translateY: buttonTranslateY }] }}
+        >
+          <BottomArea $bottomInset={insets.bottom}>
+            <CustomButton
+              variant="primary"
+              fullWidth
+              onPress={handleConfirm}
+              disabled={feedback.trim() === ''}
+            >
+              제출하기
+            </CustomButton>
+          </BottomArea>
+        </Animated.View>
       </Wrapper>
     </KeyboardAvoidingView>
   );
@@ -73,9 +87,9 @@ const MarginContainer = styled.View`
   gap: ${8 * height}px;
 `;
 
-const BottomArea = styled.View`
+const BottomArea = styled.View<{ $bottomInset: number }>`
   position: absolute;
-  bottom: ${44 * height}px;
+  bottom: ${(props) => props.$bottomInset}px;
   width: 100%;
   padding: 0 ${20 * width}px;
 `;

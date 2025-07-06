@@ -17,6 +17,7 @@ export default function AccountStatusPage() {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const { reset } = useProfileStore();
+
   const handleLogout = () => {
     setLogoutModalVisible(true);
   };
