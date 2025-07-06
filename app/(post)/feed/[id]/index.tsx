@@ -130,7 +130,10 @@ export default function FeedDetailPage() {
               />
             )}
           </View>
-          <HeartButton feedId={Number(feed.feedId)} />
+          <HeartButton
+            feedId={Number(feed.feedId)}
+            totalReactionCount={feed.totalReactionCount}
+          />
         </RowWrapper>
 
         {/* 게시물 내용 */}

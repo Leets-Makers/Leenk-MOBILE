@@ -8,7 +8,6 @@ import { radius, width, height } from '@/theme/globalStyles';
 import { getNumberWithComma } from '@/utils';
 import { Badge, UserListModal } from '@/components';
 import { FeedReactedUser } from '@/types/feed';
-import { generateMockReactedUsers } from '@/__mocks__/mockFeed';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -25,11 +24,15 @@ type HeartData = {
 
 interface HeartButtonProps {
   feedId: number;
+  totalReactionCount: number;
 }
 
-export default function HeartButton({ feedId }: HeartButtonProps) {
+export default function HeartButton({
+  feedId,
+  totalReactionCount,
+}: HeartButtonProps) {
   const [hearts, setHearts] = useState<HeartData[]>([]);
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState<number>(totalReactionCount);
   const [isModalVisible, setModalVisible] = useState(false);
   const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
 
