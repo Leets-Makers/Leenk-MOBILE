@@ -74,6 +74,7 @@ export default function AccountEdit() {
               <Input
                 title="카카오톡 ID를 입력해줘"
                 subMessage="모임원들과의 연락을 위해 필요해."
+                value={edituserInfo}
                 placeholder={kakaoTalkId}
                 onChangeText={(text) => {
                   const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
@@ -88,6 +89,10 @@ export default function AccountEdit() {
                 title="MBTI를 입력해줘"
                 placeholder={mbti}
                 maxLength={4}
+                value={edituserInfo}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                textContentType="none"
                 onChangeText={(text) => {
                   const filtered = text.replace(/[^a-zA-Z]/g, '').toUpperCase();
                   setEdituserInfo(filtered);
@@ -116,7 +121,7 @@ export default function AccountEdit() {
               fullWidth
               onPress={handleSubmit}
               disabled={
-                (type === 'id' &&
+                (type === 'kakaoTalkId' &&
                   (edituserInfo.trim() === '' ||
                     edituserInfo.length < 4 ||
                     edituserInfo.length > 20)) ||

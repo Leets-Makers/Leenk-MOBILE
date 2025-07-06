@@ -154,16 +154,17 @@ export default function ProfilePage() {
             minHeight={1}
           />
         )}
-
         {step === 'mbti' && (
           <Input
             title="MBTI를 입력해줘"
             value={mbti}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            textContentType="none"
             onChangeText={(text) => {
               const filtered = text.replace(/[^a-zA-Z]/g, '');
               setMbti(filtered);
             }}
-            autoCapitalize="characters"
             placeholder={randomMbti}
             maxLength={4}
           />
