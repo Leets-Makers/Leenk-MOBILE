@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Pressable } from 'react-native';
 import FloatingHeart from './FloatingHeart';
 import { HeartIcon } from '@/assets';
@@ -16,19 +16,22 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
+import { getFeedReactions } from '@/api/feed/feed.api';
 
 type HeartData = {
   id: number;
   color?: string;
 };
 
-export default function HeartButton() {
+interface HeartButtonProps {
+  feedId: number;
+}
+
+export default function HeartButton({ feedId }: HeartButtonProps) {
   const [hearts, setHearts] = useState<HeartData[]>([]);
   const [count, setCount] = useState<number>(0);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>(
-    generateMockReactedUsers(15),
-  );
+  const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
 
   const heartScale = useSharedValue(1);
   const outlineScale = useSharedValue(0.8);
@@ -74,6 +77,22 @@ export default function HeartButton() {
   const handleOpenModal = () => {
     setModalVisible(true);
   };
+
+  useEffect(() => {
+    const fetchReactedUsers = async () => {
+      try {
+        const res = await getFeedReactions(feedId);
+        console.log('[getFeedReactions] 응답:', res);
+        setReactedUsers(res);
+      } catch (error) {
+        console.error('[⚠️ getFeedReactions] 실패:', error);
+      }
+    };
+
+    if (feedId) {
+      fetchReactedUsers();
+    }
+  }, [feedId]);
 
   return (
     <View>

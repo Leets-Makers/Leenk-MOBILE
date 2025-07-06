@@ -2,7 +2,6 @@ import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
 import { Text, View } from 'react-native';
-import { generateMockFeedDetail } from '@/__mocks__/mockFeed';
 import { StyledText } from '@/app/(post)/feed/write';
 import { CONTAINER_PADDING } from '@/constants';
 import {
@@ -34,7 +33,6 @@ export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
   const [feed, setFeed] = useState<FeedDetail | null>(null);
 
-  // const feed = generateMockFeedDetail();
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
 
@@ -125,7 +123,7 @@ export default function FeedDetailPage() {
               />
             )}
           </View>
-          <HeartButton />
+          <HeartButton feedId={Number(feed.feedId)} />
         </RowWrapper>
 
         {/* 게시물 내용 */}

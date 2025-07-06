@@ -45,6 +45,7 @@ export const getFeedReactions = async (feedId: number) => {
   const res = await api.get<ApiResponse<FeedReactedUser[]>>(
     `/feeds/${feedId}/reactions`,
   );
+  console.log('공감한 유저 목록 조회: ', res.data);
   return res.data.data;
 };
 
