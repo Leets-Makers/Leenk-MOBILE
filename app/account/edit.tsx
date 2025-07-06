@@ -10,7 +10,6 @@ import {
   updateMbti,
   updateIntroduction,
 } from '@/api/users/patchUserEachInfo.api';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useProfileStore } from '@/stores/profileStore';
@@ -76,7 +75,11 @@ export default function AccountEdit() {
                 title="카카오톡 ID를 입력해줘"
                 subMessage="모임원들과의 연락을 위해 필요해."
                 placeholder={kakaoTalkId}
-                onChangeText={setEdituserInfo}
+                onChangeText={(text) => {
+                  const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
+                  setEdituserInfo(filtered);
+                }}
+                maxLength={20}
               />
             )}
 
@@ -84,8 +87,9 @@ export default function AccountEdit() {
               <Input
                 title="MBTI를 입력해줘"
                 placeholder={mbti}
+                maxLength={4}
                 onChangeText={(text) => {
-                  const filtered = text.replace(/[^a-zA-Z]/g, '');
+                  const filtered = text.replace(/[^a-zA-Z]/g, '').toUpperCase();
                   setEdituserInfo(filtered);
                 }}
               />
@@ -96,6 +100,7 @@ export default function AccountEdit() {
                 title="자기소개를 입력해줘"
                 placeholder={introduction}
                 onChangeText={setEdituserInfo}
+                maxLength={200}
               />
             )}
           </MarginContainer>
@@ -110,6 +115,14 @@ export default function AccountEdit() {
               variant="primary"
               fullWidth
               onPress={handleSubmit}
+              disabled={
+                (type === 'id' &&
+                  (edituserInfo.trim() === '' ||
+                    edituserInfo.length < 4 ||
+                    edituserInfo.length > 20)) ||
+                (type === 'mbti' &&
+                  (edituserInfo.trim() === '' || edituserInfo.length !== 4))
+              }
             >
               완료할래
             </CustomButton>
