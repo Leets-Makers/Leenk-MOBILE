@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Header, FeedCard, CustomButton } from '@/components';
+import { Header, FeedCard, CustomButton, Loading } from '@/components';
 import colors from '@/theme/color';
 import { View, FlatList } from 'react-native';
-import { generateMockFeeds } from '@/__mocks__/mockFeed';
-import { FeedItem } from '@/types/feed';
 import { width, height } from '@/theme/globalStyles';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import OnBoarding, { SubText, TitleText } from '@/components/OnBoarding';
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 import { CongratsIcon } from '@/assets';
-import { getFeedList } from '@/api/feed/feed.api';
-
-const mockFeeds: FeedItem[] = generateMockFeeds(20);
+import useFeedList from '@/hooks/useFeedList';
 
 export default function FeedPage() {
   // const [modalVisible, setModalVisible] = useState(false);
@@ -38,21 +34,10 @@ export default function FeedPage() {
     // }
   };
 
-  const [feeds, setFeeds] = useState<FeedItem[]>([]);
+  const { feeds, isLoading } = useFeedList(0, 10);
 
-  useEffect(() => {
-    const fetchFeeds = async () => {
-      try {
-        const data = await getFeedList(0, 10);
-        console.log('피드 조회 응답 : ', data);
-        setFeeds(data);
-      } catch (error) {
-        console.error('피드 목록 조회 실패:', error);
-      }
-    };
-
-    fetchFeeds();
-  }, []);
+  if (isLoading) return <Loading />;
+  if (!feeds) return null;
 
   return (
     <View

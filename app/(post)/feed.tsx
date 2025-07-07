@@ -19,6 +19,8 @@ export default function PostFeedPage() {
     (state) => state.selectedImages.length,
   );
   const selectedImages = useFeedWriteStore((state) => state.selectedImages);
+  const resetSelectedImages = useFeedWriteStore.getState().reset;
+
   const setMediaUrls = useFeedWriteStore.getState().setMediaUrls;
   const [isUploading, setIsUploading] = useState(false);
 
@@ -33,6 +35,7 @@ export default function PostFeedPage() {
 
   const handleConfirmExit = () => {
     setIsModalOpen(false);
+    resetSelectedImages();
     router.replace('/(page)/feed');
   };
 
