@@ -55,6 +55,7 @@ module.exports = {
         ],
       },
     ],
+    'unused-imports/no-unused-imports': 'error',
   },
   env: {
     browser: true,

@@ -14,6 +14,7 @@ import { useColorScheme, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from '@/components/Toast';
+import { initializeKakaoSDK } from '@react-native-kakao/core';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -29,28 +30,34 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // 폰트 설정
-  const [loaded, error] = useFonts({
+  const [fontsLoaded, error] = useFonts({
     'NanumSquareNeo-Regular': require('../assets/fonts/NanumSquareNeo-bRg.ttf'),
     'NanumSquareNeo-Bold': require('../assets/fonts/NanumSquareNeo-cBd.ttf'),
     'NanumSquareNeo-ExtraBold': require('../assets/fonts/NanumSquareNeo-dEb.ttf'),
     ...FontAwesome.font,
   });
+  const kakaoNativeAppKey = process.env.EXPO_PUBLIC_NATIVE_APP_KEY || '';
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+  if (!kakaoNativeAppKey) {
+    console.error('EXPO_PUBLIC_NATIVE_APP_KEY가 설정되지 않았습니다.');
+  }
+  useEffect(() => {
+    if (kakaoNativeAppKey) {
+      initializeKakaoSDK(kakaoNativeAppKey);
+    }
+  }, []);
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!fontsLoaded) return null;
 
   return <RootLayoutNav />;
 }
@@ -76,9 +83,7 @@ function RootLayoutNav() {
           screenOptions={{
             headerShown: false,
           }}
-        >
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
+        ></Stack>
         <Toast />
       </ThemeProvider>
     </SafeAreaProvider>

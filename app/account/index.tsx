@@ -1,24 +1,25 @@
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { Header, CustomButton, ProfileEditButton } from '@/components';
-import { DefaultProfileImage, SettingIcon } from '@/assets';
 import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { mockUserData } from '@/constants/mockUserData';
-
+import { useProfileStore } from '@/stores/profileStore';
+import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
 export default function ProfileEdit() {
   const router = useRouter();
+
+  const { kakaoTalkId, introduction, mbti, profileImage } = useProfileStore();
 
   const editFields = [
     {
       title: '카톡 아이디',
-      content: mockUserData.kakaoTalkId,
+      content: kakaoTalkId,
       type: 'kakaoTalkId',
     },
-    { title: 'MBTI', content: mockUserData.mbti, type: 'mbti' },
+    { title: 'MBTI', content: mbti, type: 'mbti' },
     {
       title: '자기소개',
-      content: mockUserData.introduction,
+      content: introduction,
       type: 'introduction',
       isTextarea: true,
     },
@@ -28,11 +29,16 @@ export default function ProfileEdit() {
     <Container>
       <Header RightSection="SETTING">프로필 편집</Header>
       <ProfileImageWrapper>
-        <DefaultProfileImage width={80 * width} height={80 * height} />
+        <ProfileImageWithFallback uri={profileImage} size={80} />
       </ProfileImageWrapper>
 
       <CustomButton
-        onPress={() => console.log('사진 변경')}
+        onPress={() =>
+          router.push({
+            pathname: '/account/select-image',
+            params: { mode: 'edit' },
+          })
+        }
         variant="text"
         rounded="md"
         textColor="primary"
@@ -44,7 +50,7 @@ export default function ProfileEdit() {
         <ProfileEditButton
           key={type}
           title={title}
-          content={content}
+          content={content ?? ''}
           isTextarea={isTextarea}
           onPress={() =>
             router.push({ pathname: '/account/edit', params: { type } })

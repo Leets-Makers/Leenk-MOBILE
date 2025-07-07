@@ -1,99 +1,38 @@
-import React from 'react';
-import styled from 'styled-components/native';
-import { Image } from 'expo-image';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  radius,
-  width,
-} from '@/theme/globalStyles';
-import colors from '@/theme/color';
-import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { CustomButton } from '@/components';
-export default function LandingPage() {
+import { getAccessToken } from '@/utils/tokenStorage';
+import Splash from '@/components/Splash';
+import LandingPage from '@/components/LandingPage';
+
+export default function IndexPage() {
   const router = useRouter();
+  const [isSplashVisible, setIsSplashVisible] = useState(true);
 
-  const handleKakaoLogin = () => {
-    console.log('카카오 로그인');
-    router.push('/signup/verify');
-  };
-  const handleSignUp = () => {
-    console.log('새로 가입하기');
-  };
+  useEffect(() => {
+    const checkLogin = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  return (
-    <Container>
-      <LogoWrapper>
-        <LogoGif
-          source={require('@/assets/images/gif/ic_logo.gif')}
-          contentFit="cover"
-          transition={300}
-        />
-      </LogoWrapper>
-      <BottomArea>
-        <CustomButton
-          variant="kakao"
-          size="md"
-          fullWidth
-          onPress={handleKakaoLogin}
-        >
-          <KakaoContainer>
-            <KakaoLogo />
-            <KakaoBtnText>카카오로 로그인</KakaoBtnText>
-          </KakaoContainer>
-        </CustomButton>
-        <CustomButton
-          variant="text"
-          textColor="text[3]"
-          size="md"
-          fullWidth
-          onPress={handleSignUp}
-        >
-          새로 가입하기
-        </CustomButton>
-      </BottomArea>
-    </Container>
-  );
+      try {
+        const token = await getAccessToken();
+        if (token) {
+          router.replace('/(page)/feed');
+          return;
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.error('자동 로그인 실패:', error);
+        }
+      }
+
+      setIsSplashVisible(false);
+    };
+
+    checkLogin();
+  }, []);
+
+  if (isSplashVisible) {
+    return <Splash />;
+  }
+
+  return <LandingPage />;
 }
-
-const Container = styled.View`
-  flex: 1;
-  background-color: ${colors.bg[2]};
-  align-items: center;
-  position: relative;
-`;
-
-const LogoWrapper = styled.View`
-  margin-top: ${247 * height}px;
-`;
-
-const LogoGif = styled(Image)`
-  width: ${300 * width}px;
-  height: ${171 * height}px;
-`;
-
-const BottomArea = styled.View`
-  position: absolute;
-  bottom: ${108 * height}px;
-  align-items: center;
-  width: 100%;
-  padding-horizontal: ${20 * width}px;
-`;
-
-const KakaoContainer = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-
-const KakaoBtnText = styled.Text`
-  color: ${colors.text[2]};
-  font-family: ${fonts.Bold};
-  font-size: ${fontSize.md}px;
-  line-height: ${lineHeight.m}px;
-  margin-left: ${8 * width}px;
-  text-align: center;
-`;

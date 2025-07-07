@@ -89,6 +89,9 @@ android {
 
     namespace 'com.example.leenk'
     defaultConfig {
+    manifestPlaceholders += [
+        EXPO_PUBLIC_NATIVE_APP_KEY: project.hasProperty("EXPO_PUBLIC_NATIVE_APP_KEY") ? project.EXPO_PUBLIC_NATIVE_APP_KEY : ""
+    ]
         applicationId 'com.example.leenk'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
