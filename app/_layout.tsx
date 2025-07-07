@@ -38,8 +38,13 @@ export default function RootLayout() {
   });
   const kakaoNativeAppKey = process.env.EXPO_PUBLIC_NATIVE_APP_KEY || '';
 
+  if (!kakaoNativeAppKey) {
+    console.error('EXPO_PUBLIC_NATIVE_APP_KEY가 설정되지 않았습니다.');
+  }
   useEffect(() => {
-    initializeKakaoSDK(kakaoNativeAppKey);
+    if (kakaoNativeAppKey) {
+      initializeKakaoSDK(kakaoNativeAppKey);
+    }
   }, []);
 
   useEffect(() => {

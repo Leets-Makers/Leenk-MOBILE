@@ -24,5 +24,6 @@ const Container = styled.View`
 
 const LogoImage = styled(Image)`
   width: ${300 * width}px;
-  height: ${171 * height}px;
+  aspect-ratio: ${300 / 171};
+  height: auto;
 `;

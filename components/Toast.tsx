@@ -14,7 +14,6 @@ import colors from '@/theme/color';
 import SuccessIcon from '@/assets/images/ic_toast_check.svg';
 import ErrorIcon from '@/assets/images/ic_toast_alert.svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { he } from '@faker-js/faker';
 import { BlurView } from 'expo-blur';
 
 const Toast = () => {
@@ -63,7 +62,7 @@ const Toast = () => {
 
 export default Toast;
 
-const Wrapper = styled(Animated.View)<{ $paddingBottom: string }>`
+const Wrapper = styled(Animated.View)<{ $paddingBottom: number }>`
   position: absolute;
   bottom: ${(props) => props.$paddingBottom + 80 * height}px;
   left: 0;

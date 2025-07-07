@@ -5,9 +5,10 @@ import {
   Platform,
   EmitterSubscription,
 } from 'react-native';
+import { useRef } from 'react';
 
 export default function useKeyboardAnimation(offset = 10) {
-  const translateY = useState(new Animated.Value(0))[0];
+  const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const showEvent =

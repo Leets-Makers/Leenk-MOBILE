@@ -15,12 +15,13 @@ export default function IndexPage() {
       try {
         const token = await getAccessToken();
         if (token) {
-          console.log('자동 로그인 성공:', token);
           router.replace('/(page)/feed');
           return;
         }
       } catch (error) {
-        console.error('자동 로그인 실패:', error);
+        if (__DEV__) {
+          console.error('자동 로그인 실패:', error);
+        }
       }
 
       setIsSplashVisible(false);

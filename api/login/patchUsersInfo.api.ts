@@ -9,8 +9,6 @@ export interface UpdateProfilePayload {
 }
 
 export const updateUserProfile = async (payload: UpdateProfilePayload) => {
-  console.log('보낼 데이터:', payload);
-
   try {
     const response = await api.patch('/users/me/profile', payload);
 

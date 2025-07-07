@@ -1,13 +1,11 @@
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { Header, CustomButton, ProfileEditButton } from '@/components';
-import { DefaultProfileImage, SettingIcon } from '@/assets';
+import { DefaultProfileImage } from '@/assets';
 import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { Image } from 'expo-image';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { useProfileStore } from '@/stores/profileStore';
-
 export default function ProfileEdit() {
   const router = useRouter();
 

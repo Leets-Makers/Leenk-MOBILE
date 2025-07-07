@@ -26,10 +26,10 @@ export default function VerifyPage() {
       <Header />
       <ProfileTitleText>너의 계정이 맞는지 확인해 줘</ProfileTitleText>
 
-      {name && cardinal && position && (
+      {name && cardinal && position && typeof cardinal === 'number' && (
         <UserCard
-          name={String(name)}
-          cardinal={Number(cardinal)}
+          name={name}
+          cardinal={cardinal}
           position={position as PositionType}
         />
       )}

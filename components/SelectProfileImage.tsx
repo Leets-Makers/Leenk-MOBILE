@@ -32,6 +32,9 @@ export default function SelectProfileImage({
         // 1. presigned URL 요청
         const fileName = `profile_${Date.now()}.jpg`;
         const presignedUrls = await getPresignedUrl(fileName);
+        if (!presignedUrls || presignedUrls.length === 0) {
+          throw new Error('Presigned URL을 받아올 수 없습니다.');
+        }
         const mediaUrl = presignedUrls[0].mediaUrl;
 
         // 2. S3에 업로드

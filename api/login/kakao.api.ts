@@ -1,6 +1,5 @@
+import api from '@/api/api';
 import axios from 'axios';
-
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export type KakaoLoginResult =
   | { success: true; data: any; code: number; message: string }
@@ -10,9 +9,8 @@ export const kakaoLogin = async (
   accessToken: string,
 ): Promise<KakaoLoginResult> => {
   try {
-    console.log('api 토큰', accessToken);
-    const response = await axios.post(
-      `${BASE_URL}/kakao/login`,
+    const response = await api.post(
+      '/kakao/login',
       {},
       {
         headers: {
@@ -30,7 +28,7 @@ export const kakaoLogin = async (
       data,
     };
   } catch (error: any) {
-    if (axios.isAxiosError(error) && error.response?.data) {
+    if (error.response?.data) {
       console.error('카카오 로그인 실패:', JSON.stringify(error.response.data));
       const { code, message } = error.response.data;
       return {
@@ -72,8 +70,6 @@ export const getKakaoUserInfo = async (
         Authorization: `Bearer ${accessToken}`,
       },
     });
-
-    console.log('카카오 유저 정보:', response.data);
 
     return response.data;
   } catch (error: any) {

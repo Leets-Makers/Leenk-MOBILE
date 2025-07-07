@@ -18,7 +18,6 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { infoTerm, serviceTerm } from '@/constants/termsText';
 import LinearGradient from 'react-native-linear-gradient';
-import { he } from '@faker-js/faker';
 
 export default function TermsPage() {
   const [allCheck, setAllCheck] = useState(false);
@@ -214,4 +213,5 @@ const GradientOverlay = styled(LinearGradient)`
   bottom: ${60 * height}px;
   height: ${80 * height}px;
   z-index: 1;
+  pointer-events: none;
 `;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { Image } from 'expo-image';
 import {
@@ -15,15 +15,17 @@ import { CustomButton } from '@/components';
 import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
-import { getKakaoUserInfo, kakaoLogin } from '@/api/login/kakao.api';
+import { kakaoLogin } from '@/api/login/kakao.api';
 import { saveAccessToken } from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function LandingPage() {
   const router = useRouter();
   const [notRegisterModal, setNotRegisterModal] = useState(false);
   const [waitModal, setWaitModal] = useState(false);
   const weethSiteURL = 'https://www.weeth.site/';
+  const { showToast } = useToastStore();
 
   const { setName, setPosition, setCardinal } = useProfileStore();
 
@@ -32,15 +34,21 @@ export default function LandingPage() {
     try {
       const token = await login();
       const accessToken = token?.accessToken;
-      console.log('Kakao Access Token:', accessToken);
+
       // 이메일 정보 조회
-      const userInfo = await getKakaoUserInfo(accessToken);
-      console.log('사용자 이메일:', userInfo.kakao_account.email);
+      // const userInfo = await getKakaoUserInfo(accessToken);
+      // console.log('사용자 이메일:', userInfo.kakao_account.email);
+
       const result = await kakaoLogin(accessToken);
       if (result.success) {
-        console.log('로그인 성공:', result.data);
         const serverToken = result.data.accessToken;
-        await saveAccessToken(serverToken);
+        try {
+          await saveAccessToken(serverToken);
+        } catch (error) {
+          console.error('토큰 저장 실패:', error);
+          showToast('에러가 발생했어. 관리자에게 문의해줘.', 'error');
+          return;
+        }
         if (result.code === 1002) {
           setName(result.data.name);
           setPosition(result.data.position);
@@ -61,17 +69,18 @@ export default function LandingPage() {
             setWaitModal(true);
             break;
           case 2001:
-            console.error('서버 인증 에러:', result.message);
+            if (__DEV__) console.error('서버 인증 에러:', result.message);
             break;
           case 2002:
             setNotRegisterModal(true);
             break;
           default:
-            console.error('알 수 없는 예외:', result.code, result.message);
+            if (__DEV__)
+              console.error('알 수 없는 예외:', result.code, result.message);
         }
       }
     } catch (e) {
-      console.error('카카오 로그인 실패:', e);
+      if (__DEV__) console.error('카카오 로그인 실패:', e);
     }
   };
 

@@ -24,13 +24,13 @@ export const useUserInfo = () => {
       setError(null);
       const data = await getUsersInfo();
       setUserInfo(data);
-    } catch (err: any) {
-      setError(err);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Unknown error'));
       console.error('유저 정보 불러오기 실패:', err);
     } finally {
       setLoading(false);
     }
-  }, [loading]);
+  }, []);
 
   return { userInfo, loading, error, refetch: fetchUserInfo };
 };

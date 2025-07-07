@@ -10,8 +10,6 @@ export interface PresignedUrlData {
 export const getPresignedUrl = async (fileNames: string | string[]) => {
   const fileNameParams = Array.isArray(fileNames) ? fileNames : [fileNames];
 
-  console.log('[getPresignedUrl] 요청 fileNames:', fileNameParams);
-
   try {
     const res = await api.get('/medias', {
       params: { fileName: fileNameParams },
@@ -19,28 +17,30 @@ export const getPresignedUrl = async (fileNames: string | string[]) => {
         qs.stringify(params, { arrayFormat: 'repeat' }),
     });
 
-    console.log('[getPresignedUrl] 응답 데이터:', res.data.data);
     return res.data.data;
-  } catch (error: any) {
-    console.error('[getPresignedUrl] 에러 발생:', error.message);
+  } catch (error) {
+    console.error(
+      '[getPresignedUrl] 에러 발생:',
+      error instanceof Error ? error.message : '알 수 없는 오류',
+    );
     throw error;
   }
 };
 
 export const uploadImageToS3 = async (uploadUrl: string, localUri: string) => {
-  const response = await fetch(localUri);
-  const blob = await response.blob();
+  try {
+    const response = await fetch(localUri);
+    const blob = await response.blob();
 
-  await fetch(uploadUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': blob.type || 'image/jpeg',
-    },
-    body: blob,
-  });
-  console.log(
-    'Presigned URL 요청:',
-    `${process.env.EXPO_PUBLIC_API_URL}/medias`,
-  );
-  console.log('로컬 파일 경로:', localUri);
+    await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': blob.type || 'image/jpeg',
+      },
+      body: blob,
+    });
+  } catch (error) {
+    console.error('[uploadImageToS3] 업로드 실패:', error);
+    throw new Error('이미지 업로드에 실패했습니다.');
+  }
 };
