@@ -1,50 +1,110 @@
 import {
-  Header,
-  BackgroundImageSlider,
-  Badge,
-  UserListModal,
-} from '@/components';
-import colors from '@/theme/color';
-import { formatDate } from '@/utils/format-date';
-import { Text, View, Image } from 'react-native';
-import {
   fonts,
   fontSize,
   height,
   lineHeight,
   width,
 } from '@/theme/globalStyles';
-import { generateMockFeedDetail } from '@/__mocks__/mockFeed';
-import { StyledText } from '@/app/(post)/feed/write';
-import { KebabIcon } from '@/assets';
-import HeartButton from '@/components/feed/HeartButton';
+import {
+  Header,
+  BackgroundImageSlider,
+  Badge,
+  UserListModal,
+  ProfileImageWithFallback,
+  HeartButton,
+  MenuModal,
+  PopupModal,
+  Loading,
+} from '@/components';
+import colors from '@/theme/color';
 import styled from 'styled-components/native';
-import { useState } from 'react';
+import { formatDate } from '@/utils/format-date';
+import { Text, View } from 'react-native';
+import { StyledText } from '@/app/(post)/feed/write';
+import { CONTAINER_PADDING } from '@/constants';
+import { useModalStore } from '@/stores/modalStore';
+import { useToastStore } from '@/stores/toastStore';
+import { router, useLocalSearchParams } from 'expo-router';
+import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
+import { FeedDetail } from '@/types/feed';
+import { useEffect, useState } from 'react';
 
 export default function FeedDetailPage() {
-  const feed = generateMockFeedDetail();
-  const [isModalVisible, setModalVisible] = useState(false);
+  const { id } = useLocalSearchParams();
+  const [feed, setFeed] = useState<FeedDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { modalType, openModal, closeModal } = useModalStore();
+  const { showToast } = useToastStore();
+
+  const handleDelete = () => {
+    closeModal();
+    openModal('deleteConfirm');
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteFeed(Number(id));
+      showToast('삭제 완료!', 'success');
+
+      setTimeout(() => {
+        router.replace('/(page)/feed');
+      }, 1500);
+    } catch (err: any) {
+      console.error('피드 삭제 오류:', err);
+      showToast('삭제 실패!', 'error');
+    } finally {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchFeedDetail = async () => {
+      try {
+        setIsLoading(true);
+        const res = await getFeedDetail(Number(id));
+        setFeed(res);
+      } catch (err: any) {
+        console.error('피드 상세 조회 오류:', err);
+        showToast('피드 조회에 실패했어!', 'error');
+        setTimeout(() => {
+          router.replace('/(page)/feed');
+        }, 1500);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeedDetail();
+  }, [id, showToast]);
+
+  if (isLoading) return <Loading />;
+
+  if (!feed) return null;
 
   return (
     <View style={{ flex: 1 }}>
-      <BackgroundImageSlider mediaUrls={feed.media.map((m) => m.mediaUrl)} />
+      <BackgroundImageSlider mediaUrls={feed.media} />
 
       <Header
         isBackWhite
         RightSection="KEBAB"
+        kebabPress={() => openModal('menu')}
         style={{
           position: 'absolute',
           top: 0,
           width: '100%',
           zIndex: 20,
-          paddingHorizontal: 16 * width,
+          paddingHorizontal: CONTAINER_PADDING * width,
         }}
       />
 
       {/* 본문 */}
       <View
         style={{
-          paddingHorizontal: 16 * width,
+          paddingHorizontal: CONTAINER_PADDING * width,
           marginBottom: 24 * width,
           minHeight: 220 * height,
         }}
@@ -58,26 +118,26 @@ export default function FeedDetailPage() {
               marginBottom: 16,
             }}
           >
-            <Image
-              source={{ uri: feed.author.profileImage }}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                marginRight: 8,
-              }}
-            />
+            <View style={{ marginRight: 8 * width }}>
+              <ProfileImageWithFallback
+                uri={feed.author.profileImage}
+                size={36}
+              />
+            </View>
             <StyledText>{feed.author.name}</StyledText>
 
             {feed.linkedUserCount > 1 && (
               <Badge
                 variant="gray"
                 label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
-                onPress={() => setModalVisible(true)}
+                onPress={() => openModal('userList')}
               />
             )}
           </View>
-          <HeartButton />
+          <HeartButton
+            feedId={Number(feed.feedId)}
+            totalReactionCount={feed.totalReactionCount}
+          />
         </RowWrapper>
 
         {/* 게시물 내용 */}
@@ -114,12 +174,34 @@ export default function FeedDetailPage() {
           </Text>
         </View>
       </View>
+      {/* 유저리스트 모달 */}
       <UserListModal
-        visible={isModalVisible}
+        visible={modalType === 'userList'}
         title="함께 연결된 Leets"
         list={feed.linkedUser}
-        onClose={() => setModalVisible(false)}
+        onClose={closeModal}
       />
+      {/* 삭제 메뉴 모달 */}
+      <MenuModal
+        visible={modalType === 'menu'}
+        isWrite={false}
+        onClose={closeModal}
+        onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
+        onPressSecond={handleDelete}
+      />
+      {modalType === 'deleteConfirm' && (
+        <PopupModal
+          isOpen={modalType === 'deleteConfirm'}
+          onConfirm={handleConfirmDelete}
+          onClose={closeModal}
+          isWarning
+          mainText="피드를 삭제할거야?"
+          subText="삭제하면 복구할 수 없어."
+          isCancel={true}
+          leftBtnText="취소"
+          rightBtnText="삭제할래"
+        />
+      )}
     </View>
   );
 }
@@ -128,5 +210,5 @@ const RowWrapper = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${18 * height}px;
+  margin-bottom: ${10 * height}px;
 `;

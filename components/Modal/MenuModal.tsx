@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, GestureResponderEvent } from 'react-native';
+import { Modal, GestureResponderEvent, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import {
   fonts,
@@ -10,7 +10,6 @@ import {
   height,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-
 import { LeenkIcon, FeedIcon } from '@/assets';
 
 interface MenuModalProps {
@@ -28,6 +27,7 @@ export default function MenuModal({
   onPressFirst,
   onPressSecond,
 }: MenuModalProps) {
+  const topPosition = Platform.OS === 'ios' ? 95 * height : 50 * height;
   return (
     <Modal
       transparent
@@ -36,7 +36,7 @@ export default function MenuModal({
       onRequestClose={onClose}
     >
       <Overlay onPress={onClose}>
-        <MenuContainer $isWrite={isWrite}>
+        <MenuContainer $isWrite={isWrite} $topPosition={topPosition}>
           {isWrite ? (
             <>
               <MenuItemWrapper onPress={onPressFirst}>
@@ -78,12 +78,12 @@ const Overlay = styled.Pressable<{ $isWrite: boolean }>`
   align-items: center;
 `;
 
-const MenuContainer = styled.View<{ $isWrite: boolean }>`
+const MenuContainer = styled.View<{ $isWrite: boolean; $topPosition: number }>`
   position: absolute;
-  ${({ $isWrite }) =>
+  ${({ $isWrite, $topPosition }) =>
     $isWrite
       ? `bottom: ${70 * height}px; left: 50%; transform: translateX(-${(134 * width) / 2}px);`
-      : `top: 88px; right: 20px; align-items: center;`}
+      : `top: ${$topPosition * height}px; right: 20px; align-items: center;`}
   width: ${({ $isWrite }) => ($isWrite ? 134 * width : 100 * width)}px;
   padding: ${8 * height}px ${10 * width}px;
   background-color: ${colors.white};

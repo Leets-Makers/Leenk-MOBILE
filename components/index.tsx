@@ -15,6 +15,11 @@ import BackButton from '@/components/common/Header/BackButton';
 import BellButton from '@/components/common/Header/BellButton';
 import SettingButton from '@/components/common/Header/SettingButton';
 import KebabButton from '@/components/common/Header/KebabButton';
+import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
+import HeartButton from '@/components/feed/HeartButton';
+import MenuModal from '@/components/Modal/MenuModal';
+import PopupModal from '@/components/Modal/PopupModal';
+import Loading from '@/components/common/Loading';
 export {
   CustomButton,
   Input,
@@ -33,4 +38,9 @@ export {
   BellButton,
   SettingButton,
   KebabButton,
+  ProfileImageWithFallback,
+  HeartButton,
+  MenuModal,
+  PopupModal,
+  Loading,
 };

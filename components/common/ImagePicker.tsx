@@ -4,7 +4,6 @@ import * as MediaLibrary from 'expo-media-library';
 import { ThumbnailItem } from '@/components';
 import useImagePicker from '@/hooks/useImagePicker';
 import { NUM_COLUMNS } from '@/constants';
-import { useImageStore } from '@/stores/feedImageStore';
 import { AspectRatio } from '@/types/aspect-ratio';
 import { width } from '@/theme/globalStyles';
 
@@ -19,16 +18,8 @@ export default function ImagePicker({
   aspectRatio = AspectRatio.SQUARE,
   mode = 'profile',
 }: ImagePickerProps) {
-  const {
-    photos,
-    selected,
-    toggleSelect,
-    getSelectionNumber,
-    requestPermission,
-    hasPermission,
-    fetchPhotos,
-    hasNextPage,
-  } = useImagePicker({ maxSelect });
+  const { photos, requestPermission, hasPermission, fetchPhotos, hasNextPage } =
+    useImagePicker({ maxSelect });
 
   // 권한 요청 및 초기 사진 로딩
   useEffect(() => {
@@ -65,11 +56,9 @@ export default function ImagePicker({
         renderItem={({ item }) => (
           <ThumbnailItem
             asset={item}
-            selected={selected}
-            onToggle={toggleSelect}
-            getSelectionNumber={getSelectionNumber}
             aspectRatio={aspectRatio}
             mode={mode}
+            maxSelect={maxSelect}
           />
         )}
       />

@@ -11,17 +11,19 @@ export interface FeedItem {
   totalReactionCount: number;
 }
 
+export interface Media {
+  position: number;
+  mediaUrl: string;
+  mediaType: 'IMAGE' | 'VIDEO';
+}
+
 export interface FeedDetail {
   feedId: number;
   author: Author;
   description: string;
   totalReactionCount: number;
   createdAt: string;
-  media: {
-    position: number;
-    mediaUrl: string;
-    mediaType: 'IMAGE' | 'VIDEO';
-  }[];
+  media: Media[];
   linkedUserCount: number;
   linkedUser: {
     userId: number;
@@ -42,4 +44,11 @@ export interface FeedConnectedUser {
   userId: number;
   name: string;
   profileImage?: string;
+}
+
+// 피드 업로드
+export interface UploadFeedPayload {
+  description: string;
+  media: Media[];
+  userId?: number[];
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Pressable } from 'react-native';
 import FloatingHeart from './FloatingHeart';
 import { HeartIcon } from '@/assets';
@@ -6,7 +6,8 @@ import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { radius, width, height } from '@/theme/globalStyles';
 import { getNumberWithComma } from '@/utils';
-import { Badge } from '@/components';
+import { Badge, UserListModal } from '@/components';
+import { FeedReactedUser } from '@/types/feed';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -14,31 +15,26 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-
-// const COLORS = [
-//   '#f472b6', // pink
-//   '#fbbf24', // yellow
-//   '#34d399', //  green
-//   '#38bdf8', // blue
-//   '#a78bfa', // purple
-//   '#fb7185', // rose
-//   '#60a5fa', // sky blue
-//   '#f87171', // red
-// ];
-
-// const getRandomColor = () => {
-//   const index = Math.floor(Math.random() * COLORS.length);
-//   return COLORS[index];
-// };
+import { getFeedReactions } from '@/api/feed/feed.api';
 
 type HeartData = {
   id: number;
   color?: string;
 };
 
-export default function HeartButton() {
+interface HeartButtonProps {
+  feedId: number;
+  totalReactionCount: number;
+}
+
+export default function HeartButton({
+  feedId,
+  totalReactionCount,
+}: HeartButtonProps) {
   const [hearts, setHearts] = useState<HeartData[]>([]);
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState<number>(totalReactionCount);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
 
   const heartScale = useSharedValue(1);
   const outlineScale = useSharedValue(0.8);
@@ -72,7 +68,6 @@ export default function HeartButton() {
     //하트 생성
     const newHeart: HeartData = {
       id: Date.now(),
-      // color: getRandomColor(),
     };
     setHearts((prev) => [...prev, newHeart]);
     setCount((prev) => prev + 1);
@@ -81,6 +76,26 @@ export default function HeartButton() {
   const handleComplete = (id: number) => {
     setHearts((prev) => prev.filter((heart) => heart.id !== id));
   };
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  useEffect(() => {
+    const fetchReactedUsers = async () => {
+      try {
+        const res = await getFeedReactions(feedId);
+        console.log('[getFeedReactions] 응답:', res);
+        setReactedUsers(res);
+      } catch (error) {
+        console.error('공감한 사람 목록 조회 실패:', error);
+      }
+    };
+
+    if (feedId) {
+      fetchReactedUsers();
+    }
+  }, [feedId]);
 
   return (
     <View>
@@ -92,29 +107,41 @@ export default function HeartButton() {
           />
         </FloatingHeartWrapper>
       ))}
-      <Pressable
-        onPress={handlePress}
-        style={{
-          bottom: 16,
-          alignSelf: 'center',
-        }}
-      >
-        <HeartWithBadge>
+      <HeartWithBadge>
+        {/* 하트 버튼 */}
+        <Pressable
+          onPress={handlePress}
+          style={{
+            bottom: 16,
+            alignSelf: 'center',
+          }}
+        >
           <Circle>
             <OutlineWrapper style={outlineAnimatedStyle}>
-              <HeartIcon width={28} height={28} color="#E4387E" />
+              <HeartIcon width={28} height={28} />
             </OutlineWrapper>
 
             {/* 기본 하트 */}
             <Animated.View style={heartStyle}>
-              <HeartIcon width={28} height={28} color="#E4387E" />
+              <HeartIcon width={28} height={28} />
             </Animated.View>
           </Circle>
+        </Pressable>
+
+        {/* 뱃지 버튼 */}
+        <Pressable onPress={handleOpenModal}>
           <BadgeWrapper>
             <Badge label={getNumberWithComma(count)} variant="white" />
           </BadgeWrapper>
-        </HeartWithBadge>
-      </Pressable>
+        </Pressable>
+      </HeartWithBadge>
+
+      <UserListModal
+        visible={isModalVisible}
+        title="공감한 Leets"
+        list={reactedUsers}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 }
@@ -134,7 +161,7 @@ const Circle = styled.View`
 `;
 
 const BadgeWrapper = styled.View`
-  margin-top: ${8 * height}px;
+  margin-top: ${-7 * height}px;
 `;
 
 const FloatingHeartWrapper = styled.View`
