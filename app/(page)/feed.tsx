@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Header, FeedCard, CustomButton } from '@/components';
+import { Header, FeedCard, CustomButton, Loading } from '@/components';
 import colors from '@/theme/color';
 import { View, FlatList } from 'react-native';
-import { generateMockFeeds } from '@/__mocks__/mockFeed';
-import { FeedItem } from '@/types/feed';
 import { width, height } from '@/theme/globalStyles';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import { SubText, TitleText } from '@/components/OnBoarding';
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 import { CongratsIcon } from '@/assets';
-
-const mockFeeds: FeedItem[] = generateMockFeeds(20);
+import useFeedList from '@/hooks/useFeedList';
 
 export default function FeedPage() {
   const firstLaunch = useFirstLaunch();
@@ -23,6 +20,11 @@ export default function FeedPage() {
     }
   }, [firstLaunch]);
 
+  const { feeds, isLoading } = useFeedList(0, 10);
+
+  if (isLoading) return <Loading />;
+  if (!feeds) return null;
+
   return (
     <View
       style={{
@@ -33,7 +35,7 @@ export default function FeedPage() {
     >
       <Header LeftSection="LOGO" RightSection="BELL" />
       <FlatList
-        data={mockFeeds}
+        data={feeds}
         numColumns={2}
         keyExtractor={(item) => item.feedId.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}

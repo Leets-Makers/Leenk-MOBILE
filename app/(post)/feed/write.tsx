@@ -6,20 +6,22 @@ import {
   Badge,
 } from '@/components';
 import colors from '@/theme/color';
-import { router, useRouter } from 'expo-router';
-import { Text, View, Image, ScrollView, Platform } from 'react-native';
+import { router } from 'expo-router';
+import { View, Image, ScrollView, Platform } from 'react-native';
 import { generateMockFeeds } from '@/__mocks__/mockFeed';
-import { Author } from '@/types/feed';
+import { Author, Media } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';
-import { useImageStore } from '@/stores/feedImageStore';
-import { useConnectedUserStore } from '@/stores/connectedUserStore';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
+import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
+import { uploadFeed } from '@/api/feed/feed.api';
+import { useToastStore } from '@/stores/toastStore';
 
 const mockFeed = generateMockFeeds();
-const { userId, name, profileImage } = mockFeed[0].author;
+const { userId, profileImage } = mockFeed[0].author;
 
 const mockProfile: Author = {
   userId,
@@ -28,18 +30,60 @@ const mockProfile: Author = {
 };
 
 export default function FeedWritePage() {
-  const [content, setContent] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const selectedImages = useImageStore((state) => state.selectedImages);
-  const connectedUsers = useConnectedUserStore((state) => state.users);
+  const selectedImages = useFeedWriteStore((state) => state.selectedImages);
+  const connectedUsers = useFeedWriteStore((state) => state.users);
+  const description = useFeedWriteStore((state) => state.description);
+  const setDescription = useFeedWriteStore((state) => state.setDescription);
+  const mediaUrls = useFeedWriteStore((state) => state.mediaUrls);
 
-  const handleUpload = () => {
-    if (!content.trim()) return;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const resetFeedWrite = useFeedWriteStore((state) => state.reset);
+
+  const { showToast } = useToastStore();
+
+  const media: Media[] = selectedImages.map((img, index) => ({
+    position: index + 1,
+    mediaUrl: img.uri,
+    mediaType: 'IMAGE' as const,
+  }));
+
+  const requestBody = {
+    description,
+    media: mediaUrls,
+    userId: connectedUsers.map((user) => user.userId),
+  };
+
+  const handleUpload = async () => {
+    if (!description.trim()) return;
 
     if (connectedUsers.length === 0) {
-      setIsModalOpen(true); // 함께한 사람이 없을 때만 모달 표시
+      setIsModalOpen(true);
     } else {
-      console.log('업로드 진행!');
+      handleUploadFeed(); // 함께한 사람이 있는 경우 바로 업로드
+    }
+  };
+
+  const handleConfirmUpload = async () => {
+    setIsModalOpen(false);
+    handleUploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
+  };
+
+  // 업로드 로직 분리
+  const handleUploadFeed = async () => {
+    setIsUploading(true);
+
+    try {
+      const res = await uploadFeed(requestBody);
+      console.log('[피드 업로드 성공]:', res);
+
+      resetFeedWrite();
+      router.push('/(page)/feed');
+    } catch (error) {
+      console.error('업로드 실패:', error);
+      showToast('피드 업로드에 실패했어!', 'error');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -63,7 +107,7 @@ export default function FeedWritePage() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={{ flex: 1 }}>
-          <BackgroundImageSlider mediaUrls={selectedImages} />
+          <BackgroundImageSlider mediaUrls={media} />
           <Header
             isBackWhite
             style={{
@@ -107,14 +151,14 @@ export default function FeedWritePage() {
               variant="dark"
               placeholder="텍스트를 입력해주세요"
               maxLength={100}
-              value={content}
-              onChangeText={setContent}
+              value={description}
+              onChangeText={setDescription}
             />
             <CustomButton
               size="lg"
               onPress={handleUpload}
               style={{ marginTop: 16 * height, marginBottom: 8 * height }}
-              disabled={content.trim().length === 0}
+              disabled={description.trim().length === 0}
             >
               업로드할래
             </CustomButton>
@@ -122,7 +166,7 @@ export default function FeedWritePage() {
 
           <PopupModal
             isOpen={isModalOpen}
-            onConfirm={() => setIsModalOpen(false)}
+            onConfirm={handleConfirmUpload}
             onClose={handleConfirmExit}
             mainText="이 내용으로 피드에 업로드할까?"
             subText="함께한 사람이 추가되지 않았어."
@@ -131,6 +175,8 @@ export default function FeedWritePage() {
             rightBtnText="그냥 업로드할래"
           />
         </View>
+
+        <FeedUploadModal isOpen={isUploading} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -1,44 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import * as MediaLibrary from 'expo-media-library';
-import { Image, Platform, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { ToastCheckIcon } from '@/assets';
 import { width, height, radius, fontSize } from '@/theme/globalStyles';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 interface ThumbnailItemProps {
   asset: MediaLibrary.Asset;
-  selected: MediaLibrary.Asset[];
-  onToggle: (photo: MediaLibrary.Asset) => void;
-  getSelectionNumber: (id: string) => number | null;
   aspectRatio?: '1:1' | '9:16';
   mode?: 'profile' | 'feed'; // 프로필 선택인지 피드 이미지 선택 페이지인지 구분
+  maxSelect: number;
 }
 
 export default function ThumbnailItem({
   asset,
-  selected,
-  onToggle,
-  getSelectionNumber,
   aspectRatio = '1:1',
   mode = 'profile',
+  maxSelect = 3,
 }: ThumbnailItemProps) {
-  const number = getSelectionNumber(asset.id);
-  const isSelected = selected.some((item) => item.id === asset.id);
-
   const [uri, setUri] = useState<string | null>(null);
+
+  const selectedImages = useFeedWriteStore((state) => state.selectedImages);
+  const setSelectedImages = useFeedWriteStore(
+    (state) => state.setSelectedImages,
+  );
+
+  const isSelected = selectedImages.some((item) => item.uri === asset.uri);
 
   const imageHeight =
     aspectRatio === '9:16' ? (IMAGE_SIZE * 16) / 9 : IMAGE_SIZE;
 
+  const getSelectionNumber = (photoUri: string) => {
+    const index = selectedImages.findIndex((item) => item.uri === photoUri);
+    return index >= 0 ? index + 1 : null;
+  };
+
+  const handleToggle = () => {
+    const updated = isSelected
+      ? selectedImages.filter((item) => item.uri !== asset.uri)
+      : selectedImages.length < maxSelect
+        ? [...selectedImages, { uri: asset.uri, filename: asset.filename }]
+        : selectedImages;
+
+    setSelectedImages(updated);
+  };
   useEffect(() => {
     setUri(asset.uri);
-    console.log('📸 썸네일 렌더링됨:', asset.filename);
   }, [asset]);
 
   return (
-    <TouchableOpacity onPress={() => onToggle(asset)}>
+    <TouchableOpacity onPress={handleToggle}>
       <ImageWrapper $height={imageHeight}>
         {uri && (
           <Image
@@ -55,7 +69,11 @@ export default function ThumbnailItem({
         {isSelected && (
           <CheckBadge>
             <BadgeText>
-              {mode === 'profile' ? <ToastCheckIcon /> : number}
+              {mode === 'profile' ? (
+                <ToastCheckIcon />
+              ) : (
+                getSelectionNumber(asset.uri)
+              )}
             </BadgeText>
           </CheckBadge>
         )}

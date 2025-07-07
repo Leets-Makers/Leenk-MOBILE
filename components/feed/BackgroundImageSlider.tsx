@@ -4,9 +4,10 @@ import Carousel from 'react-native-reanimated-carousel';
 import styled from 'styled-components/native';
 import { radius, SCREEN_HEIGHT, SCREEN_WIDTH } from '@/theme/globalStyles';
 import { width as WIDTH, height as HEIGHT } from '@/theme/globalStyles';
+import { Media } from '@/types/feed';
 
 interface BackgroundImageSliderProps {
-  mediaUrls: string[];
+  mediaUrls: Media[];
 }
 
 export default function BackgroundImageSlider({
@@ -20,25 +21,30 @@ export default function BackgroundImageSlider({
     <Wrapper>
       <CarouselWrapper>
         <Carousel
-          loop
+          loop={mediaUrls.length > 1}
           width={SCREEN_WIDTH}
           height={SCREEN_HEIGHT}
           data={mediaUrls}
           onSnapToItem={(index) => setCurrentIndex(index)}
           renderItem={({ item }) => (
-            <StyledBackground source={{ uri: item }} resizeMode="cover" />
+            <StyledBackground
+              source={{ uri: item.mediaUrl }}
+              resizeMode="cover"
+            />
           )}
           autoPlay={false}
           scrollAnimationDuration={500}
-          pagingEnabled
+          pagingEnabled={mediaUrls.length > 1}
         />
       </CarouselWrapper>
 
-      <IndicatorContainer>
-        {mediaUrls.map((_, index) => (
-          <Dot key={index} isActive={index === currentIndex} />
-        ))}
-      </IndicatorContainer>
+      {mediaUrls.length > 1 && (
+        <IndicatorContainer>
+          {mediaUrls.map((_, index) => (
+            <Dot key={index} isActive={index === currentIndex} />
+          ))}
+        </IndicatorContainer>
+      )}
     </Wrapper>
   );
 }

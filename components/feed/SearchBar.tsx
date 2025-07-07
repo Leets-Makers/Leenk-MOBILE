@@ -9,13 +9,15 @@ import {
   width,
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
-import { useState } from 'react';
 
-export default function SearchBar() {
-  const [value, setValue] = useState('');
+interface SearchBarProps {
+  value: string;
+  onChange: (text: string) => void;
+}
 
+export default function SearchBar({ value, onChange }: SearchBarProps) {
   const handleClear = () => {
-    setValue('');
+    onChange('');
   };
 
   return (
@@ -23,7 +25,7 @@ export default function SearchBar() {
       <SearchIcon style={{ marginRight: 8 * width, marginLeft: 6 * width }} />
       <StyledInput
         value={value}
-        onChangeText={setValue}
+        onChangeText={onChange}
         placeholder="이름 검색"
         placeholderTextColor={colors.text[4]}
       />
@@ -40,7 +42,7 @@ const SearchBarWrapper = styled.View`
   flex-direction: row;
   align-items: center;
   width: ${335 * width}px;
-  height: ${32 * height}px;
+  height: ${38 * height}px;
   background-color: ${colors.gray[100]};
   border-radius: ${radius.xs}px;
 `;

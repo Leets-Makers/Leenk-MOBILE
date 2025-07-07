@@ -19,16 +19,8 @@ export default function ImagePicker({
   mode = 'profile',
   onSelect,
 }: ImagePickerProps) {
-  const {
-    photos,
-    selected,
-    toggleSelect,
-    getSelectionNumber,
-    requestPermission,
-    hasPermission,
-    fetchPhotos,
-    hasNextPage,
-  } = useImagePicker({ maxSelect });
+  const { photos, requestPermission, hasPermission, fetchPhotos, hasNextPage } =
+    useImagePicker({ maxSelect });
 
   // 권한 요청 및 초기 사진 로딩
   useEffect(() => {
@@ -71,11 +63,9 @@ export default function ImagePicker({
         renderItem={({ item }) => (
           <ThumbnailItem
             asset={item}
-            selected={selected}
-            onToggle={toggleSelect}
-            getSelectionNumber={getSelectionNumber}
             aspectRatio={aspectRatio}
             mode={mode}
+            maxSelect={maxSelect}
           />
         )}
       />
