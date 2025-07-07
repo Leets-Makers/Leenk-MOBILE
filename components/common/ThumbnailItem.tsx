@@ -12,12 +12,14 @@ interface ThumbnailItemProps {
   asset: MediaLibrary.Asset;
   aspectRatio?: '1:1' | '9:16';
   mode?: 'profile' | 'feed'; // 프로필 선택인지 피드 이미지 선택 페이지인지 구분
+  maxSelect: number;
 }
 
 export default function ThumbnailItem({
   asset,
   aspectRatio = '1:1',
   mode = 'profile',
+  maxSelect = 3,
 }: ThumbnailItemProps) {
   const [uri, setUri] = useState<string | null>(null);
 
@@ -39,7 +41,7 @@ export default function ThumbnailItem({
   const handleToggle = () => {
     const updated = isSelected
       ? selectedImages.filter((item) => item.uri !== asset.uri)
-      : selectedImages.length < 3
+      : selectedImages.length < maxSelect
         ? [...selectedImages, { uri: asset.uri, filename: asset.filename }]
         : selectedImages;
 
