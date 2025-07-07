@@ -10,7 +10,7 @@ import { useProfileStore } from '@/stores/profileStore';
 import { useState } from 'react';
 import { Platform } from 'react-native';
 import { updateProfileImage } from '@/api/users/patchUserEachInfo.api';
-import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
+import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 
 export default function SelectProfileImage({
   mode,

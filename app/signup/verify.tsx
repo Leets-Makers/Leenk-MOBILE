@@ -6,8 +6,7 @@ import { height, width } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
-
-type PositionType = 'FE' | 'BE' | 'D' | 'PM';
+import { Position } from '@/constants/Position';
 
 export default function VerifyPage() {
   const router = useRouter();
@@ -30,7 +29,7 @@ export default function VerifyPage() {
         <UserCard
           name={name}
           cardinal={cardinal}
-          position={position as PositionType}
+          position={position as Position}
         />
       )}
 

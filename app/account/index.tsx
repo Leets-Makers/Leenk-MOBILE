@@ -1,11 +1,10 @@
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { Header, CustomButton, ProfileEditButton } from '@/components';
-import { DefaultProfileImage } from '@/assets';
 import { height, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { Image } from 'expo-image';
 import { useProfileStore } from '@/stores/profileStore';
+import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
 export default function ProfileEdit() {
   const router = useRouter();
 
@@ -30,14 +29,7 @@ export default function ProfileEdit() {
     <Container>
       <Header RightSection="SETTING">프로필 편집</Header>
       <ProfileImageWrapper>
-        {profileImage ? (
-          <Image
-            source={profileImage}
-            style={{ width: 80, height: 80, borderRadius: 50 }}
-          />
-        ) : (
-          <DefaultProfileImage width={80 * width} height={80 * height} />
-        )}
+        <ProfileImageWithFallback uri={profileImage} size={80} />
       </ProfileImageWrapper>
 
       <CustomButton

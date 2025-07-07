@@ -12,6 +12,7 @@ import { DefaultProfileImage } from '@/assets';
 import CustomButton from '@/components/common/Button/CustomButton';
 import { useRouter } from 'expo-router';
 import KakaoIdButton from '@/components/mypage/KakaoIdButton';
+import ProfileImageWithFallback from '../feed/ProfileImageWithFallback';
 
 type ProfileCardProps = {
   cardinal: number;
@@ -43,11 +44,7 @@ export default function ProfileCard({
           </LeftSection>
           <MbtiText>{mbti}</MbtiText>
         </TextWrapper>
-        {imageUrl ? (
-          <ProfileImage source={{ uri: imageUrl }} />
-        ) : (
-          <DefaultProfileImage width={79 * width} height={79 * height} />
-        )}
+        <ProfileImageWithFallback uri={imageUrl} size={79} />
       </RowContainer>
       <IntroContainer>{introduction}</IntroContainer>
       <KakaoIdButton kakaoTalkId={kakaoTalkId} />

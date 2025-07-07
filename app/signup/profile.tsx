@@ -13,7 +13,7 @@ import {
   UpdateProfilePayload,
   updateUserProfile,
 } from '@/api/login/patchUsersInfo.api';
-import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
+import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import useRandomMbti from '@/hooks/useRandomMbti';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
