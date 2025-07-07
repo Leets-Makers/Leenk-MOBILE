@@ -10,7 +10,7 @@ interface UseInfiniteScrollProps<T> {
   pageSize?: number; // 한 페이지에 불러올 데이터 갯수
 }
 
-export default function UseInfiniteScroll<T>({
+export default function UseInfiniteScroll<T extends { feedId: number }>({
   fetchFunction,
   initialPageNumber = 0,
   pageSize = 10,
@@ -29,7 +29,13 @@ export default function UseInfiniteScroll<T>({
       const pageNumber = pageable ? pageable.pageNumber + 1 : initialPageNumber;
       console.log('loadMore pageNumber:', pageNumber);
       const res = await fetchFunction(pageNumber, pageSize);
-      setData((prev) => [...prev, ...res.data]);
+
+      setData((prev) => {
+        const newData = res.data.filter(
+          (item) => !prev.some((prevItem) => prevItem.feedId === item.feedId),
+        );
+        return [...prev, ...newData];
+      });
       setPageable(res.pageable);
     } catch (error) {
       console.error('무한 스크롤 에러 :', error);

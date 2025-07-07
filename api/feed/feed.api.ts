@@ -52,7 +52,17 @@ export const uploadFeed = async (payload: UploadFeedPayload) => {
 };
 
 // 피드 공감하기
-
+export const uploadFeedReactions = async (
+  feedId: number,
+  reactionCount: number,
+) => {
+  const res = await api.post<ApiResponse<string>>(
+    `/feeds/${feedId}/reactions`,
+    { reactionCount },
+  );
+  console.log('피드 공감하기 : ', res.data);
+  return res.data.data;
+};
 // DELETE
 // 피드 삭제
 export const deleteFeed = async (feedId: number) => {

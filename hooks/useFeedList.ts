@@ -5,14 +5,12 @@ import { useToastStore } from '@/stores/toastStore';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 
 export default function useFeedList(pageSize = 10) {
-  const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const { showToast } = useToastStore();
 
   const fetchFeeds = async (pageNumber: number, pageSize: number) => {
     try {
       const data = await getFeedList(pageNumber, pageSize);
       console.log('피드 조회 응답 : ', data);
-      // setFeeds(data.feeds);
       return {
         data: data.feeds,
         pageable: data.pageable,

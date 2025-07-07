@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { getFeedReactions } from '@/api/feed/feed.api';
+import useReactionDebounce from '@/hooks/useReactionDebounce';
 
 type HeartData = {
   id: number;
@@ -32,9 +33,10 @@ export default function HeartButton({
   totalReactionCount,
 }: HeartButtonProps) {
   const [hearts, setHearts] = useState<HeartData[]>([]);
-  const [count, setCount] = useState<number>(totalReactionCount);
   const [isModalVisible, setModalVisible] = useState(false);
   const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
+
+  const { count: localCount, increaseReaction } = useReactionDebounce(feedId);
 
   const heartScale = useSharedValue(1);
   const outlineScale = useSharedValue(0.8);
@@ -70,7 +72,7 @@ export default function HeartButton({
       id: Date.now(),
     };
     setHearts((prev) => [...prev, newHeart]);
-    setCount((prev) => prev + 1);
+    increaseReaction();
   };
 
   const handleComplete = (id: number) => {
@@ -131,7 +133,10 @@ export default function HeartButton({
         {/* 뱃지 버튼 */}
         <Pressable onPress={handleOpenModal}>
           <BadgeWrapper>
-            <Badge label={getNumberWithComma(count)} variant="white" />
+            <Badge
+              label={getNumberWithComma(totalReactionCount + localCount)}
+              variant="white"
+            />
           </BadgeWrapper>
         </Pressable>
       </HeartWithBadge>
