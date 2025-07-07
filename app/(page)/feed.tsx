@@ -34,9 +34,16 @@ export default function FeedPage() {
     // }
   };
 
-  const { feeds, isLoading } = useFeedList(0, 10);
+  const {
+    data: feeds,
+    loadMore,
+    isLoading,
+    isRefreshing,
+    refresh,
+  } = useFeedList(10);
 
-  if (isLoading) return <Loading />;
+  if (feeds.length === 0 && isLoading) return <Loading />;
+
   if (!feeds) return null;
 
   return (
@@ -59,6 +66,11 @@ export default function FeedPage() {
         }}
         renderItem={({ item }) => <FeedCard item={item} />}
         showsVerticalScrollIndicator={true}
+        onEndReached={loadMore} // 스크롤 끝 도달 시 loadMore 실행
+        onEndReachedThreshold={0.8} // 50% 스크롤 시점부터 호출
+        refreshing={isRefreshing} // Pull to Refresh
+        onRefresh={refresh}
+        ListFooterComponent={feeds.length > 0 && isLoading ? <Loading /> : null}
       />
 
       {/* <BottomSheetModal visible={modalVisible}>

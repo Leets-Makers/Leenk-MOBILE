@@ -2,16 +2,11 @@ import api from '@/api/api';
 import { Author, FeedItem, FeedReactedUser } from '@/types/feed';
 import { FeedDetail, UploadFeedPayload } from '@/types/feed';
 import { ApiResponse } from '@/api/api-type';
+import { Pageable } from '@/types/pageable';
 
 export interface FeedListData {
   feeds: FeedItem[];
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-    numberOfElements: number;
-    hasNext: boolean;
-    empty: boolean;
-  };
+  pageable: Pageable;
 }
 
 // GET

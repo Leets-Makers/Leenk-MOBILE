@@ -2,30 +2,30 @@ import { useEffect, useState } from 'react';
 import { getFeedList } from '@/api/feed/feed.api';
 import { FeedItem } from '@/types/feed';
 import { useToastStore } from '@/stores/toastStore';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 
-export default function useFeedList(page = 0, pageSize = 10) {
+export default function useFeedList(pageSize = 10) {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToastStore();
 
-  useEffect(() => {
-    const fetchFeeds = async () => {
-      setIsLoading(true);
+  const fetchFeeds = async (pageNumber: number, pageSize: number) => {
+    try {
+      const data = await getFeedList(pageNumber, pageSize);
+      console.log('피드 조회 응답 : ', data);
+      // setFeeds(data.feeds);
+      return {
+        data: data.feeds,
+        pageable: data.pageable,
+      };
+    } catch (err: any) {
+      console.error('피드 목록 조회 실패:', err);
+      showToast('피드 목록 조회에 실패했어!', 'error');
+      throw err;
+    }
+  };
 
-      try {
-        const data = await getFeedList(page, pageSize);
-        console.log('피드 조회 응답 : ', data);
-        setFeeds(data.feeds);
-      } catch (err: any) {
-        console.error('피드 목록 조회 실패:', err);
-        showToast('피드 목록 조회에 실패했어!', 'error');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchFeeds();
-  }, [page, pageSize, showToast]);
-
-  return { feeds, isLoading };
+  return useInfiniteScroll<FeedItem>({
+    fetchFunction: fetchFeeds,
+    pageSize,
+  });
 }
