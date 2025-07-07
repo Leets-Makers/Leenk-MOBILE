@@ -18,6 +18,7 @@ import useRandomMbti from '@/hooks/useRandomMbti';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function ProfilePage() {
   const {
@@ -40,6 +41,8 @@ export default function ProfilePage() {
 
   const buttonTranslateY = useKeyboardAnimation(10);
 
+  const { showToast } = useToastStore();
+
   // 프로필 저장 함수
   const saveProfile = async () => {
     const payload: UpdateProfilePayload = {};
@@ -52,11 +55,23 @@ export default function ProfilePage() {
       const fileName = `profile_${Date.now()}.jpg`;
       try {
         const presignedUrls = await getPresignedUrl(fileName);
+        if (!presignedUrls || presignedUrls.length === 0) {
+          throw new Error('presigned URL 생성에 실패했습니다.');
+        }
         const mediaUrl = presignedUrls[0].mediaUrl;
         await uploadImageToS3(mediaUrl, profileImage);
-        payload.profileImage = mediaUrl.split('?')[0];
+
+        // URL에서 쿼리 파라미터 제거
+        try {
+          const url = new URL(mediaUrl);
+          payload.profileImage = `${url.protocol}//${url.host}${url.pathname}`;
+        } catch (urlError) {
+          // URL 파싱 실패 시 기존 방식 사용
+          payload.profileImage = mediaUrl.split('?')[0];
+        }
       } catch (error) {
         console.error('[saveProfile] 프로필 이미지 업로드 실패:', error);
+        showToast('프로필 이미지 업로드에 실패했어.', 'error');
         throw error;
       }
     }
@@ -65,6 +80,7 @@ export default function ProfilePage() {
       await updateUserProfile(payload);
     } catch (error) {
       console.error('[saveProfile] 프로필 저장 실패:', error);
+      showToast('프로필 저장에 실패했어.', 'error');
       throw error;
     }
   };
