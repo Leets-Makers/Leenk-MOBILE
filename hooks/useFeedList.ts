@@ -25,7 +25,7 @@ export default function useFeedList(page = 0, pageSize = 10) {
     };
 
     fetchFeeds();
-  }, [page, pageSize]);
+  }, [page, pageSize, showToast]);
 
   return { feeds, isLoading };
 }

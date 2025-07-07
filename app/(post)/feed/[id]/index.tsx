@@ -78,7 +78,7 @@ export default function FeedDetailPage() {
     };
 
     fetchFeedDetail();
-  }, [id]);
+  }, [id, showToast]);
 
   if (isLoading) return <Loading />;
 
