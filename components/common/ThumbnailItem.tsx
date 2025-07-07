@@ -47,7 +47,6 @@ export default function ThumbnailItem({
   };
   useEffect(() => {
     setUri(asset.uri);
-    console.log('📸 썸네일 렌더링됨:', asset.filename);
   }, [asset]);
 
   return (

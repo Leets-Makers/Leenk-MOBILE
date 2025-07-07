@@ -21,7 +21,7 @@ export default function FeedUploadModal({ isOpen }: FeedUploadModalProps) {
       <Overlay>
         <Container>
           <LoadingWrapper>
-            <Loading />
+            <Loading fullScreen={false} />
           </LoadingWrapper>
           <TitleText>게시물을 올리는 중이야</TitleText>
           <SubText>조금만 기다려줘!</SubText>

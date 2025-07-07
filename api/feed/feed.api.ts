@@ -29,14 +29,14 @@ export const getFeedList = async (pageNumber: number, pageSize: number) => {
 // 피드 상세 조회
 export const getFeedDetail = async (feedId: number) => {
   const res = await api.get<ApiResponse<FeedDetail>>(`/feeds/${feedId}`);
-  console.log('피드 상세 조회 : ', res.data);
+  if (__DEV__) console.log('피드 상세 조회 : ', res.data);
   return res.data.data;
 };
 
 // 함께하는 사람 추가를 위한 사용자 전체 조회
 export const getAllUsers = async () => {
   const res = await api.get<ApiResponse<Author[]>>('/feeds/users/all');
-  console.log('함께하는 사람 목록 조회 : ', res.data);
+  if (__DEV__) console.log('함께하는 사람 목록 조회 : ', res.data);
   return res.data.data;
 };
 
@@ -45,7 +45,7 @@ export const getFeedReactions = async (feedId: number) => {
   const res = await api.get<ApiResponse<FeedReactedUser[]>>(
     `/feeds/${feedId}/reactions`,
   );
-  console.log('공감한 유저 목록 조회: ', res.data);
+  if (__DEV__) console.log('공감한 유저 목록 조회: ', res.data);
   return res.data.data;
 };
 
@@ -62,7 +62,7 @@ export const uploadFeed = async (payload: UploadFeedPayload) => {
 // 피드 삭제
 export const deleteFeed = async (feedId: number) => {
   const res = await api.delete<ApiResponse<string>>(`/feeds/${feedId}`);
-  console.log('피드 삭제 조회 : ', res.data);
+  if (__DEV__) console.log('피드 삭제 조회 : ', res.data);
   return res.data.data;
 };
 

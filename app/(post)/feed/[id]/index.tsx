@@ -32,6 +32,7 @@ import { useEffect, useState } from 'react';
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
   const [feed, setFeed] = useState<FeedDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
@@ -62,23 +63,26 @@ export default function FeedDetailPage() {
 
     const fetchFeedDetail = async () => {
       try {
+        setIsLoading(true);
         const res = await getFeedDetail(Number(id));
         setFeed(res);
       } catch (err: any) {
         console.error('피드 상세 조회 오류:', err);
+        showToast('피드 조회에 실패했어!', 'error');
+        setTimeout(() => {
+          router.replace('/(page)/feed');
+        }, 1500);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchFeedDetail();
   }, [id]);
 
-  if (!feed) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Loading />
-      </View>
-    );
-  }
+  if (isLoading) return <Loading />;
+
+  if (!feed) return null;
 
   return (
     <View style={{ flex: 1 }}>

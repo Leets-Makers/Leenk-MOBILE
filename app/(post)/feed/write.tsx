@@ -18,6 +18,7 @@ import styled from 'styled-components/native';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 import { uploadFeed } from '@/api/feed/feed.api';
+import { useToastStore } from '@/stores/toastStore';
 
 const mockFeed = generateMockFeeds();
 const { userId, profileImage } = mockFeed[0].author;
@@ -38,6 +39,8 @@ export default function FeedWritePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const resetFeedWrite = useFeedWriteStore((state) => state.reset);
+
+  const { showToast } = useToastStore();
 
   const media: Media[] = selectedImages.map((img, index) => ({
     position: index + 1,
@@ -78,6 +81,7 @@ export default function FeedWritePage() {
       router.push('/(page)/feed');
     } catch (error) {
       console.error('업로드 실패:', error);
+      showToast('피드 업로드에 실패했어!', 'error');
     } finally {
       setIsUploading(false);
     }

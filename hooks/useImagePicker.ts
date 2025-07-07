@@ -27,15 +27,12 @@ export default function useImagePicker({
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const granted = status === 'granted';
     setHasPermission(granted);
-    console.log('권한요청: ', granted);
     return granted;
   };
 
   // 사진 로딩
   const fetchPhotos = useCallback(async () => {
     const perm = await MediaLibrary.getPermissionsAsync();
-
-    console.log('📸 fetchPhotos 내부 권한 상태:', perm.status);
 
     if (perm.status !== 'granted') return;
 
@@ -45,7 +42,6 @@ export default function useImagePicker({
         after: pageInfo?.endCursor ?? undefined,
         mediaType: MediaLibrary.MediaType.photo,
       });
-    console.log('📸 getAssetsAsync 호출 직후 asset 수:', assets.length);
     let assetsWithLocalUri: MediaLibrary.Asset[] = [];
     console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
 

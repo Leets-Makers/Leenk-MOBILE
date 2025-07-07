@@ -13,7 +13,7 @@ interface FeedWriteStore {
   description: string;
 
   setSelectedImages: (images: SelectedImage[]) => void;
-  addSelectedImage: (uri: SelectedImage) => void;
+  addSelectedImage: (image: SelectedImage) => void;
   removeSelectedImage: (uri: string) => void;
 
   setUsers: (users: FeedConnectedUser[]) => void;
@@ -36,9 +36,9 @@ export const useFeedWriteStore = create<FeedWriteStore>((set) => ({
   description: '',
 
   setSelectedImages: (images) => set({ selectedImages: images }),
-  addSelectedImage: (uri) =>
+  addSelectedImage: (image) =>
     set((state) => ({
-      selectedImages: [...state.selectedImages, uri],
+      selectedImages: [...state.selectedImages, image],
     })),
   removeSelectedImage: (uri) =>
     set((state) => ({

@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
 import colors from '@/theme/color';
-import { Header, ImagePicker } from '@/components';
+import { Header, ImagePicker, Loading } from '@/components';
 import { fontSize, fonts, height, width, radius } from '@/theme/globalStyles';
 import PopupModal from '@/components/Modal/PopupModal';
 import { AspectRatio } from '@/types/aspect-ratio';
@@ -125,6 +125,8 @@ export default function PostFeedPage() {
         leftBtnText="확인"
         rightBtnText="취소"
       />
+
+      {isUploading && <Loading />}
     </Container>
   );
 }
