@@ -69,6 +69,7 @@ export default function FeedDetailPage() {
       try {
         setIsLoading(true);
         const res = await getFeedDetail(Number(id));
+        console.log('res: ', res.linkedUser);
         setFeed(res);
       } catch (err: any) {
         console.error('피드 상세 조회 오류:', err);
@@ -134,7 +135,7 @@ export default function FeedDetailPage() {
               <Badge
                 variant="gray"
                 label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
-                onPress={() => openModal('userList')}
+                onPress={() => openModal('feedLinked')}
               />
             )}
           </View>
@@ -182,7 +183,7 @@ export default function FeedDetailPage() {
       </View>
       {/* 유저리스트 모달 */}
       <UserListModal
-        visible={modalType === 'userList'}
+        visible={modalType === 'feedLinked'}
         title="함께 연결된 Leets"
         list={feed.linkedUser}
         onClose={closeModal}

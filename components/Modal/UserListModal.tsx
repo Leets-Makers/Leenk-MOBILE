@@ -21,22 +21,6 @@ export default function UserListModal({
   list,
   onClose,
 }: Props) {
-  // useEffect(() => {
-  //   const fetchReactedUsers = async () => {
-  //     try {
-  //       const res = await getFeedReactions(feedId);
-  //       console.log('[getFeedReactions] 응답:', res);
-  //       setList(res);
-  //     } catch (error) {
-  //       console.error('공감한 사람 목록 조회 실패:', error);
-  //     }
-  //   };
-
-  //   if (feedId) {
-  //     fetchReactedUsers();
-  //   }
-  // }, [feedId]);
-
   return (
     <Modal visible={visible} transparent animationType="slide">
       <Backdrop>
