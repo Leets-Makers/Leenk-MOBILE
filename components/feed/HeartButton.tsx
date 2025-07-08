@@ -66,10 +66,8 @@ export default function HeartButton({
   }));
 
   const handlePress = () => {
-    console.log('authorId:', authorId, 'currentUserId:', currentUserId);
-
     if (authorId === currentUserId) {
-      showToast('내 피드에는 공감할 수 없어!');
+      showToast('내 피드에는 공감할 수 없어!', 'error');
       return;
     }
 

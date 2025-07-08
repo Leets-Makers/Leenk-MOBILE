@@ -94,7 +94,7 @@ export default function FeedDetailPage() {
 
       <Header
         isBackWhite
-        RightSection="KEBAB"
+        RightSection={feed.author.userId === userInfo?.id ? 'KEBAB' : undefined}
         kebabPress={() => openModal('menu')}
         style={{
           position: 'absolute',
