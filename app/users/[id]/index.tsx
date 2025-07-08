@@ -57,7 +57,12 @@ export default function MyPage() {
           mbti={profile?.mbti}
         />
       )}
-      <MyPageButton text="피드 보기" onPress={() => {}} />
+      <MyPageButton
+        text="피드 보기"
+        onPress={() => {
+          router.push('/users/feed');
+        }}
+      />
       {/* <MyPageButton
         text="참여한 모임"
         onPress={() => router.push('/account/my-leenk')}
