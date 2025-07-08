@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { FlatList, Platform, View } from 'react-native';
-import * as MediaLibrary from 'expo-media-library';
 import { ThumbnailItem } from '@/components';
 import useImagePicker from '@/hooks/useImagePicker';
 import { NUM_COLUMNS } from '@/constants';
@@ -11,12 +10,14 @@ interface ImagePickerProps {
   maxSelect: number;
   aspectRatio: AspectRatio; // 1:1(SQUARE) or 9:16(PORTRAIT)
   mode?: 'profile' | 'feed'; // 프로필 이미지 선택인지 피드 이미지 선택인지 구분
+  onSelect?: (uris: string[]) => void; // 선택된 사진이 1장일 경우 외부로 사진 바로 전달
 }
 
 export default function ImagePicker({
   maxSelect,
   aspectRatio = AspectRatio.SQUARE,
   mode = 'profile',
+  onSelect,
 }: ImagePickerProps) {
   const { photos, requestPermission, hasPermission, fetchPhotos, hasNextPage } =
     useImagePicker({ maxSelect });
@@ -34,6 +35,12 @@ export default function ImagePicker({
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!onSelect) return;
+    const uris = photos.map((item) => item.uri);
+    onSelect(uris);
+  }, [photos, onSelect]);
 
   if (hasPermission === false) return null;
 

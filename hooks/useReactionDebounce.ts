@@ -15,6 +15,7 @@ export default function useReactionDebounce(
   const sendReactions = useCallback(
     debounce(async (reactionCount: number) => {
       if (reactionCount === 0) return;
+
       try {
         console.log('Reaction Count 서버로 전송:', reactionCount);
         await uploadFeedReactions(feedId, reactionCount);

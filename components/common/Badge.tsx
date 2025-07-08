@@ -20,6 +20,7 @@ interface BadgeProps {
   iconType?: 'plus' | 'x'; // plus면 왼쪽에 + , x 면 오른쪽에 표시
   onRemove?: () => void;
   onPress?: () => void;
+  profile?: boolean;
 }
 
 export default function Badge({
@@ -28,11 +29,13 @@ export default function Badge({
   iconType,
   onRemove,
   onPress,
+  profile = false,
 }: BadgeProps) {
   const BadgeContent = (
     <Container
-      variant={variant}
-      backgroundColor={getBadgeBackgroundColor(variant)}
+      $variant={variant}
+      $backgroundColor={getBadgeBackgroundColor(variant)}
+      $profile={profile}
     >
       {/* 왼쪽 아이콘: plus */}
       {iconType === 'plus' && (
@@ -62,19 +65,27 @@ export default function Badge({
 }
 
 const Container = styled.View<{
-  backgroundColor: string;
-  variant: 'primary' | 'gray' | 'white';
+  $backgroundColor: string;
+  $variant: 'primary' | 'gray' | 'white';
+  $profile: boolean;
 }>`
-  min-height: ${24 * height}px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: ${4.5 * height}px ${8 * width}px;
   border-radius: ${radius.full}px;
-  background-color: ${({ backgroundColor }) => backgroundColor};
-
-  ${({ variant }) =>
-    variant === 'white' &&
+  background-color: ${({ $backgroundColor }) => $backgroundColor};
+  ${({ $profile }) =>
+    $profile
+      ? `
+    padding: ${4 * height}px ${12 * width}px;
+    min-height: ${24 * height}px;
+  `
+      : `
+    padding: ${4.5 * height}px ${8 * width}px;
+    min-height: ${24 * height}px;
+  `}
+  ${({ $variant }) =>
+    $variant === 'white' &&
     `
       min-width: ${49 * width}px;
   `}

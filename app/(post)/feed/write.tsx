@@ -4,6 +4,8 @@ import {
   CustomButton,
   Textarea,
   Badge,
+  ProfileImageWithFallback,
+  Loading,
 } from '@/components';
 import colors from '@/theme/color';
 import { router } from 'expo-router';
@@ -19,15 +21,8 @@ import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 import { uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
-
-const mockFeed = generateMockFeeds();
-const { userId, profileImage } = mockFeed[0].author;
-
-const mockProfile: Author = {
-  userId,
-  name: '계다현',
-  profileImage,
-};
+import { useUserInfo } from '@/hooks/useUserInfo';
+import { useUserStore } from '@/stores/userStore';
 
 export default function FeedWritePage() {
   const selectedImages = useFeedWriteStore((state) => state.selectedImages);
@@ -41,6 +36,7 @@ export default function FeedWritePage() {
   const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
   const { showToast } = useToastStore();
+  const { userInfo } = useUserStore();
 
   const media: Media[] = selectedImages.map((img, index) => ({
     position: index + 1,
@@ -126,22 +122,17 @@ export default function FeedWritePage() {
                 marginBottom: 16,
               }}
             >
-              <Image
-                source={{ uri: mockProfile.profileImage }}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  marginRight: 8,
-                }}
+              <ProfileImageWithFallback
+                uri={userInfo?.profileImage}
+                size={36}
               />
-              <StyledText>{mockProfile.name}</StyledText>
+              <StyledText>{userInfo?.name}</StyledText>
               <Badge
                 variant="gray"
                 iconType="plus"
                 label={
                   connectedUsers.length > 0
-                    ? `${mockProfile.name} 외 ${connectedUsers.length}명`
+                    ? `${userInfo?.name} 외 ${connectedUsers.length}명`
                     : '함께한 사람 추가'
                 }
                 onPress={onClickToAddMember}
@@ -187,4 +178,5 @@ export const StyledText = styled.Text`
   font-family: ${fonts.ExtraBold};
   font-size: ${fontSize.lg};
   margin-right: ${12 * width}px;
+  margin-left: ${8 * width}px;
 `;

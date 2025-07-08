@@ -6,4 +6,5 @@ export const mockUserData = {
   mbti: 'ENTJ',
   profileImage: '@/assets/images/ic_logo.png',
   cardinal: 5,
+  position: 'D',
 };

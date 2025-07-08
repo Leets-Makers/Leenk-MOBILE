@@ -28,7 +28,7 @@ interface HeartButtonProps {
   feedId: number;
   totalReactionCount: number;
   authorId: number;
-  currentUserId: number;
+  currentUserId: number | undefined;
 }
 
 export default function HeartButton({
@@ -66,11 +66,18 @@ export default function HeartButton({
   }));
 
   const handlePress = () => {
+    console.log('authorId:', authorId, 'currentUserId:', currentUserId);
+
     if (authorId === currentUserId) {
       showToast('내 피드에는 공감할 수 없어!');
       return;
     }
 
+    triggerHeartAnimation();
+    increaseReaction();
+  };
+
+  const triggerHeartAnimation = () => {
     //햅틱 추가
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
@@ -86,12 +93,10 @@ export default function HeartButton({
       withTiming(1, { duration: 100 }),
     );
 
-    //하트 생성
     const newHeart: HeartData = {
       id: Date.now(),
     };
     setHearts((prev) => [...prev, newHeart]);
-    increaseReaction();
   };
 
   const handleComplete = (id: number) => {

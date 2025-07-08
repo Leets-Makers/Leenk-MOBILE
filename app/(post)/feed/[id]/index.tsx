@@ -28,6 +28,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
 import { useEffect, useState } from 'react';
+import { useUserInfo } from '@/hooks/useUserInfo';
+import { useUserStore } from '@/stores/userStore';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -36,6 +38,8 @@ export default function FeedDetailPage() {
 
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
+
+  const { userInfo } = useUserStore();
 
   const handleDelete = () => {
     closeModal();
@@ -137,6 +141,8 @@ export default function FeedDetailPage() {
           <HeartButton
             feedId={Number(feed.feedId)}
             totalReactionCount={feed.totalReactionCount}
+            authorId={feed.author.userId}
+            currentUserId={userInfo?.id}
           />
         </RowWrapper>
 

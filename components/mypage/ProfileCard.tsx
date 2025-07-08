@@ -12,6 +12,7 @@ import { DefaultProfileImage } from '@/assets';
 import CustomButton from '@/components/common/Button/CustomButton';
 import { useRouter } from 'expo-router';
 import KakaoIdButton from '@/components/mypage/KakaoIdButton';
+import ProfileImageWithFallback from '../feed/ProfileImageWithFallback';
 
 type ProfileCardProps = {
   cardinal: number;
@@ -37,15 +38,13 @@ export default function ProfileCard({
         <TextWrapper>
           <LeftSection>
             <NameText>{name}</NameText>
-            <Badge>{cardinal}기</Badge>
+            <BadgeWrapper>
+              <Badge>{cardinal}기</Badge>
+            </BadgeWrapper>
           </LeftSection>
           <MbtiText>{mbti}</MbtiText>
         </TextWrapper>
-        {imageUrl ? (
-          <ProfileImage source={{ uri: imageUrl }} />
-        ) : (
-          <DefaultProfileImage width={79 * width} height={79 * height} />
-        )}
+        <ProfileImageWithFallback uri={imageUrl} size={79} />
       </RowContainer>
       <IntroContainer>{introduction}</IntroContainer>
       <KakaoIdButton kakaoTalkId={kakaoTalkId} />
@@ -92,9 +91,13 @@ const LeftSection = styled.View`
 
 const NameText = styled.Text`
   font-size: ${fontSize['2xl']}px;
-  font-weight: 700;
   color: ${colors.text[1]};
   font-family: ${fonts.Bold};
+`;
+
+const BadgeWrapper = styled.View`
+  margin-left: ${8 * width}px;
+  justify-content: center;
 `;
 
 const Badge = styled.Text`
@@ -103,15 +106,15 @@ const Badge = styled.Text`
   font-size: ${fontSize.sm}px;
   padding: ${4 * height}px ${12 * width}px;
   border-radius: ${radius.sm}px;
-  margin-left: ${8 * width}px;
+  font-family: ${fonts.Bold};
+  line-height: ${lineHeight.s};
 `;
 
 const MbtiText = styled.Text`
   font-size: ${fontSize.md}px;
   color: ${colors.primary};
-  font-family: ${fonts.Regular};
+  font-family: ${fonts.Bold};
   margin-top: ${8 * height}px;
-  font-weight: 700;
 `;
 
 const IntroContainer = styled.Text`
@@ -119,9 +122,8 @@ const IntroContainer = styled.Text`
   margin: ${20 * height}px 0 ${24 * height}px 0;
   font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
-  font-family: ${fonts.Regular};
+  font-family: ${fonts.Bold};
   line-height: ${lineHeight.m}px;
-  font-weight: 700;
   text-align: justify;
 `;
 
