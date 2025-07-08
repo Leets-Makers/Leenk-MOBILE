@@ -1,0 +1,10 @@
+{
+  "build": {
+    "development": {
+      "distribution": "internal",
+      "android": {
+        "googleServicesFile": "./google-services.json"
+      }
+    }
+  }
+}
