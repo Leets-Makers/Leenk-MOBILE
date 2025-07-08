@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { uploadFeedReactions } from '@/api/feed/feed.api';
+import { useToastStore } from '@/stores/toastStore';
+import { AxiosError } from 'axios';
 
 export default function useReactionDebounce(
   feedId: number,
   debounceTime = 1000,
+  onSuccess?: (reactionCount: number) => void,
 ) {
   const [count, setCount] = useState(0);
+  const { showToast } = useToastStore();
 
   const sendReactions = useCallback(
     debounce(async (reactionCount: number) => {
@@ -14,23 +18,34 @@ export default function useReactionDebounce(
       try {
         console.log('Reaction Count 서버로 전송:', reactionCount);
         await uploadFeedReactions(feedId, reactionCount);
-        console.log('피드 공감하기 응답 : ');
+
+        onSuccess?.(reactionCount);
       } catch (error) {
-        console.error('Reaction Count 서버 전송 실패:', error);
+        const err = error as AxiosError;
+
+        if (err.response?.status === 403) {
+          showToast('내 피드에는 공감할 수 없어!', 'error');
+        } else {
+          showToast('공감하기에 실패했어!', 'error');
+        }
       } finally {
         setCount(0);
       }
     }, debounceTime),
-    [feedId, debounceTime],
+    [feedId, debounceTime, onSuccess],
   );
+
+  useEffect(() => {
+    if (count === 0) return;
+    sendReactions(count);
+  }, [count, sendReactions]);
 
   const increaseReaction = useCallback(() => {
     setCount((prev) => {
       const newCount = prev + 1;
-      sendReactions(newCount); // debounce로 서버 요청
       return newCount;
     });
-  }, [sendReactions]);
+  }, []);
 
   useEffect(() => {
     return () => {

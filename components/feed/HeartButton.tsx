@@ -17,6 +17,7 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { getFeedReactions } from '@/api/feed/feed.api';
 import useReactionDebounce from '@/hooks/useReactionDebounce';
+import { useToastStore } from '@/stores/toastStore';
 
 type HeartData = {
   id: number;
@@ -26,17 +27,30 @@ type HeartData = {
 interface HeartButtonProps {
   feedId: number;
   totalReactionCount: number;
+  authorId: number;
+  currentUserId: number;
 }
 
 export default function HeartButton({
   feedId,
   totalReactionCount,
+  authorId,
+  currentUserId,
 }: HeartButtonProps) {
   const [hearts, setHearts] = useState<HeartData[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
+  const [totalReaction, setTotalReaction] = useState(totalReactionCount);
 
-  const { count: localCount, increaseReaction } = useReactionDebounce(feedId);
+  const { showToast } = useToastStore();
+
+  const { count: localCount, increaseReaction } = useReactionDebounce(
+    feedId,
+    1000,
+    (reactionCount) => {
+      setTotalReaction((prev) => prev + reactionCount);
+    },
+  );
 
   const heartScale = useSharedValue(1);
   const outlineScale = useSharedValue(0.8);
@@ -52,6 +66,11 @@ export default function HeartButton({
   }));
 
   const handlePress = () => {
+    if (authorId === currentUserId) {
+      showToast('내 피드에는 공감할 수 없어!');
+      return;
+    }
+
     //햅틱 추가
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
@@ -134,7 +153,7 @@ export default function HeartButton({
         <Pressable onPress={handleOpenModal}>
           <BadgeWrapper>
             <Badge
-              label={getNumberWithComma(totalReactionCount + localCount)}
+              label={getNumberWithComma(totalReaction + localCount)}
               variant="white"
             />
           </BadgeWrapper>
