@@ -18,6 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { getFeedReactions } from '@/api/feed/feed.api';
 import useReactionDebounce from '@/hooks/useReactionDebounce';
 import { useToastStore } from '@/stores/toastStore';
+import { useModalStore } from '@/stores/modalStore';
 
 type HeartData = {
   id: number;
@@ -38,10 +39,9 @@ export default function HeartButton({
   currentUserId,
 }: HeartButtonProps) {
   const [hearts, setHearts] = useState<HeartData[]>([]);
-  const [isModalVisible, setModalVisible] = useState(false);
   const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
   const [totalReaction, setTotalReaction] = useState(totalReactionCount);
-
+  const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
 
   const { count: localCount, increaseReaction } = useReactionDebounce(
@@ -65,6 +65,7 @@ export default function HeartButton({
     opacity: outlineOpacity.value,
   }));
 
+  // 하트 클릭 시 실행함수
   const handlePress = () => {
     if (authorId === currentUserId) {
       showToast('내 피드에는 공감할 수 없어!', 'error');
@@ -101,25 +102,16 @@ export default function HeartButton({
     setHearts((prev) => prev.filter((heart) => heart.id !== id));
   };
 
-  const handleOpenModal = () => {
-    setModalVisible(true);
-  };
-
-  useEffect(() => {
-    const fetchReactedUsers = async () => {
-      try {
-        const res = await getFeedReactions(feedId);
-        console.log('[getFeedReactions] 응답:', res);
-        setReactedUsers(res);
-      } catch (error) {
-        console.error('공감한 사람 목록 조회 실패:', error);
-      }
-    };
-
-    if (feedId) {
-      fetchReactedUsers();
+  const handleOpenReactionModal = async () => {
+    try {
+      const res = await getFeedReactions(feedId);
+      setReactedUsers(res);
+      openModal('feedReaction');
+    } catch (error) {
+      console.error('공감한 사람 목록 조회 실패:', error);
+      showToast('공감한 사람 목록 조회에 실패했어.', 'error');
     }
-  }, [feedId]);
+  };
 
   return (
     <View>
@@ -153,7 +145,7 @@ export default function HeartButton({
         </Pressable>
 
         {/* 뱃지 버튼 */}
-        <Pressable onPress={handleOpenModal}>
+        <Pressable onPress={handleOpenReactionModal}>
           <BadgeWrapper>
             <Badge
               label={getNumberWithComma(totalReaction + localCount)}
@@ -164,10 +156,10 @@ export default function HeartButton({
       </HeartWithBadge>
 
       <UserListModal
-        visible={isModalVisible}
+        visible={modalType === 'feedReaction'}
         title="공감한 Leets"
         list={reactedUsers}
-        onClose={() => setModalVisible(false)}
+        onClose={closeModal}
       />
     </View>
   );
