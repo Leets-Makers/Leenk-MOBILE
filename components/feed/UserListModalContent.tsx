@@ -2,17 +2,22 @@ import React from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import ProfileImageWithFallback from './ProfileImageWithFallback';
-import { FlatList, View } from 'react-native';
+import { FlatList, Pressable, View } from 'react-native';
 import { FeedConnectedUser, FeedReactedUser } from '@/types/feed';
 import { fontSize, fonts, lineHeight } from '@/theme/globalStyles';
 import { Badge } from '@/components';
 import { width } from '@/theme/globalStyles';
+import { useRouter } from 'expo-router';
 
 export default function UserListModalContent({
   list,
+  onClose,
 }: {
   list: (FeedConnectedUser | FeedReactedUser)[];
+  onClose: () => void;
 }) {
+  const router = useRouter();
+
   return (
     <FlatList
       data={list}
@@ -22,21 +27,28 @@ export default function UserListModalContent({
       renderItem={({ item }) => (
         <View onStartShouldSetResponder={() => true}>
           {/* TODO: 클릭 시 해당 유저의 프로필로 넘어가도록 추가 */}
-          <UserRow>
-            <ProfileImageWithFallback uri={item.profileImage} size={45} />
-            <NameRow>
-              <RightContent>
-                <UserName>{item.name}</UserName>
-                {'isAuthor' in item && item.isAuthor && (
-                  <Badge label="작성자" />
-                )}
-              </RightContent>
+          <Pressable
+            onPress={() => {
+              onClose();
+              router.push(`/users/${item.userId}`);
+            }}
+          >
+            <UserRow>
+              <ProfileImageWithFallback uri={item.profileImage} size={45} />
+              <NameRow>
+                <RightContent>
+                  <UserName>{item.name}</UserName>
+                  {'isAuthor' in item && item.isAuthor && (
+                    <Badge label="작성자" />
+                  )}
+                </RightContent>
 
-              {'reactionCount' in item && (
-                <Count>{item.reactionCount.toLocaleString()}</Count>
-              )}
-            </NameRow>
-          </UserRow>
+                {'reactionCount' in item && (
+                  <Count>{item.reactionCount.toLocaleString()}</Count>
+                )}
+              </NameRow>
+            </UserRow>
+          </Pressable>
         </View>
       )}
     />

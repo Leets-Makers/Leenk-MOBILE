@@ -40,7 +40,7 @@ export default function UserListModal({
                 <Title>{title}</Title>
 
                 {/* FlatList 요소 */}
-                <UserListModalContent list={list} />
+                <UserListModalContent list={list} onClose={onClose} />
               </BlurBackground>
             </SheetBox>
           </SheetContainer>
