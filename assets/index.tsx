@@ -28,6 +28,7 @@ import CongratsIcon from '@/assets/images/ic_congratsLogo.svg';
 import CheckIcon from '@/assets/images/ic_check.svg';
 import SearchIcon from '@/assets/images/ic_search.svg';
 import NoCheckIcon from '@/assets/images/ic_no_check.svg';
+import HeartReactionIcon from '@/assets/images/ic_reaction_heart.svg';
 export {
   FeedIcon,
   LeenkIcon,
@@ -59,4 +60,5 @@ export {
   SearchIcon,
   CheckIcon,
   NoCheckIcon,
+  HeartReactionIcon,
 };

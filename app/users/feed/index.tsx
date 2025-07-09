@@ -7,6 +7,7 @@ import styled from 'styled-components/native';
 import { height } from '@/theme/globalStyles';
 import useFeedList from '@/hooks/useFeedList';
 import { useLocalSearchParams } from 'expo-router';
+import MyTotalReactionCount from '@/components/feed/MyTotalReactionCount';
 
 export default function OtherUserProfilePage() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -15,6 +16,7 @@ export default function OtherUserProfilePage() {
   const {
     data: feeds,
     loadMore,
+    totalReactionCount,
     isLoading,
     isRefreshing,
     refresh,
@@ -43,7 +45,7 @@ export default function OtherUserProfilePage() {
           }
         }}
       />
-
+      <MyTotalReactionCount totalReactionCount={totalReactionCount} />
       <Content>
         <FlatList
           data={feeds}

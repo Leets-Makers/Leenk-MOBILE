@@ -9,6 +9,12 @@ export interface FeedListData {
   pageable: Pageable;
 }
 
+export interface MyFeedListData {
+  totalReactionCount: string;
+  feeds: FeedItem[];
+  pageable: Pageable;
+}
+
 // GET
 // 피드 전체 조회
 export const getFeedList = async (pageNumber: number, pageSize: number) => {
@@ -116,7 +122,7 @@ export const deleteFeed = async (feedId: number) => {
 // 마이페이지
 // 내가 작성한 피드 목록 조회
 export const getMyFeedList = async (pageNumber: number, pageSize: number) => {
-  const res = await api.get<ApiResponse<FeedListData>>('feeds/me', {
+  const res = await api.get<ApiResponse<MyFeedListData>>('feeds/me', {
     params: { pageNumber, pageSize },
   });
   if (__DEV__) console.log('내가 작성한 피드 목록 조회 : ', res.data);

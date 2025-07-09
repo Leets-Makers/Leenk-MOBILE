@@ -6,12 +6,14 @@ import { useState } from 'react';
 import styled from 'styled-components/native';
 import { height } from '@/theme/globalStyles';
 import useFeedList from '@/hooks/useFeedList';
+import MyTotalReactionCount from '@/components/feed/MyTotalReactionCount';
 
 export default function MyFeedPage() {
   const [tab, setTab] = useState<'uploaded' | 'joined'>('uploaded');
 
   const {
     data: feeds,
+    totalReactionCount,
     loadMore,
     isLoading,
     isRefreshing,
@@ -26,7 +28,7 @@ export default function MyFeedPage() {
 
   return (
     <Container>
-      <Header />
+      <Header RightSection="SETTING" />
       <TabMenu
         activeTab={tab}
         onTabChange={(newTab: string) => {
@@ -36,6 +38,9 @@ export default function MyFeedPage() {
           }
         }}
       />
+      {tab === 'uploaded' && (
+        <MyTotalReactionCount totalReactionCount={totalReactionCount ?? 0} />
+      )}
       <Content>
         <FlatList
           data={feeds}

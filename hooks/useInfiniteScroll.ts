@@ -5,7 +5,7 @@ interface UseInfiniteScrollProps<T> {
   fetchFunction: (
     pageNumber: number,
     pageSize: number,
-  ) => Promise<PageableResponse<T>>; // api 호출 함수
+  ) => Promise<PageableResponse<T> & { totalReactionCount?: number }>; // api 호출 함수
   initialPageNumber?: number; // 처음 조회할 페이지 번호
   pageSize?: number; // 한 페이지에 불러올 데이터 갯수
 }
@@ -19,6 +19,7 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
   const [pageable, setPageable] = useState<Pageable | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [totalReactionCount, setTotalReactionCount] = useState(0);
 
   const loadMore = useCallback(async () => {
     if (isLoading) return;
@@ -37,6 +38,9 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
         return [...prev, ...newData];
       });
       setPageable(res.pageable);
+      if (res.totalReactionCount !== undefined) {
+        setTotalReactionCount(res.totalReactionCount);
+      }
     } catch (error) {
       console.error('무한 스크롤 에러 :', error);
     } finally {
@@ -51,6 +55,9 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
       const res = await fetchFunction(initialPageNumber, pageSize);
       setData(res.data);
       setPageable(res.pageable);
+      if (res.totalReactionCount !== undefined) {
+        setTotalReactionCount(res.totalReactionCount);
+      }
     } catch (error) {
       console.error('무한 스크롤 Refresh 에러:', error);
     } finally {
@@ -64,6 +71,7 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
 
   return {
     data,
+    totalReactionCount,
     loadMore,
     isLoading,
     isRefreshing,

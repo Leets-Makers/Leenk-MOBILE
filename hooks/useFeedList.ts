@@ -50,6 +50,7 @@ export default function useFeedList({
       return {
         data: data.feeds,
         pageable: data.pageable,
+        totalReactionCount: data.totalReactionCount ?? 0,
       };
     } catch (err: any) {
       console.error('피드 목록 조회 실패:', err);
