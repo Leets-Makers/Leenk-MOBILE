@@ -1,20 +1,12 @@
-import { BackArrowIcon } from '@/assets';
 import { Header } from '@/components';
 import MyPageButton from '@/components/mypage/MypageButton';
 import colors from '@/theme/color';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
-export default function NotificationsPage() {
+export default function SettingNotificationsPage() {
   const router = useRouter();
 
   const [toggles, setToggles] = useState({

@@ -104,10 +104,7 @@ export default function PostFeedPage() {
 
       <View
         style={{
-<<<<<<< HEAD
           paddingHorizontal: CONTAINER_PADDING * width,
-=======
->>>>>>> 674757d721f8c130c1c794fe37a0e85f17531638
           paddingBottom: 32 * height,
           paddingTop: 16 * height,
         }}

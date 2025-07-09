@@ -7,7 +7,7 @@ export default function BellButton() {
   return (
     <TouchableOpacity
       onPress={() => {
-        router.push('/');
+        router.push('/account/notification-list');
       }}
     >
       <BellIcon />
