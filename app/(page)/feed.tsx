@@ -41,7 +41,7 @@ export default function FeedPage() {
     isLoading,
     isRefreshing,
     refresh,
-  } = useFeedList(10);
+  } = useFeedList({ type: 'all', pageSize: 10 });
 
   if (feeds.length === 0 && isLoading) return <Loading />;
 

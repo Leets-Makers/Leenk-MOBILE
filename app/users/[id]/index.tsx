@@ -60,7 +60,10 @@ export default function MyPage() {
       <MyPageButton
         text="피드 보기"
         onPress={() => {
-          router.push('/users/feed');
+          router.push({
+            pathname: '/users/feed',
+            params: { userId: id },
+          });
         }}
       />
       {/* <MyPageButton

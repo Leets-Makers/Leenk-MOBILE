@@ -44,6 +44,46 @@ export const getFeedReactions = async (feedId: number) => {
   return res.data.data;
 };
 
+// 다른 유저가 작성한 피드 목록 조회
+export const getOtherUserFeedList = async (
+  userId: number,
+  pageNumber: number,
+  pageSize: number,
+) => {
+  const res = await api.get<ApiResponse<FeedListData>>(
+    `feeds/users/${userId}`,
+    {
+      params: {
+        pageNumber,
+        pageSize,
+      },
+    },
+  );
+  if (__DEV__)
+    console.log(`유저 ${userId}가 작성한 피드 목록 조회 : `, res.data);
+  return res.data.data;
+};
+
+// 다른 유저가 함께한 피드 목록 조회
+export const getOtherUserLinkedFeedList = async (
+  userId: number,
+  pageNumber: number,
+  pageSize: number,
+) => {
+  const res = await api.get<ApiResponse<FeedListData>>(
+    `feeds/users/${userId}/linked`,
+    {
+      params: {
+        pageNumber,
+        pageSize,
+      },
+    },
+  );
+  if (__DEV__)
+    console.log(`유저 ${userId}가 함께한 피드 목록 조회 : `, res.data);
+  return res.data.data;
+};
+
 // POST
 // 피드 업로드
 export const uploadFeed = async (payload: UploadFeedPayload) => {
@@ -63,6 +103,7 @@ export const uploadFeedReactions = async (
   console.log('피드 공감하기 : ', res.data);
   return res.data.data;
 };
+
 // DELETE
 // 피드 삭제
 export const deleteFeed = async (feedId: number) => {
@@ -73,3 +114,23 @@ export const deleteFeed = async (feedId: number) => {
 
 // ----------------------------------
 // 마이페이지
+// 내가 작성한 피드 목록 조회
+export const getMyFeedList = async (pageNumber: number, pageSize: number) => {
+  const res = await api.get<ApiResponse<FeedListData>>('feeds/me', {
+    params: { pageNumber, pageSize },
+  });
+  if (__DEV__) console.log('내가 작성한 피드 목록 조회 : ', res.data);
+  return res.data.data;
+};
+
+// 내가 함께한 피드 목록 조회
+export const getMyLinkedFeedList = async (
+  pageNumber: number,
+  pageSize: number,
+) => {
+  const res = await api.get<ApiResponse<FeedListData>>('feeds/me/linked', {
+    params: { pageNumber, pageSize },
+  });
+  if (__DEV__) console.log('내가 함께한 피드 목록 조회 : ', res.data);
+  return res.data.data;
+};
