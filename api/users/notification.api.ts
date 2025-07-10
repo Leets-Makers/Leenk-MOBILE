@@ -7,11 +7,16 @@ export const getNotifications = async (page: number, size: number) => {
   return res.data.data;
 };
 
-export const markNotificationAsRead = async (notificationId: string) => {
-  await api.patch(`/notifications/${notificationId}`, {});
+export const markNotificationAsRead = async (
+  userId: number,
+  notificationId: string,
+) => {
+  await api.patch(`/notifications/${notificationId}`, null, {
+    params: { userId },
+  });
 };
 
-export const getNotificationCount = async () => {
-  const res = await api.get('/notifications/count');
+export const getNotificationCount = async (userId: number) => {
+  const res = await api.get('/notifications/count', { params: { userId } });
   return res.data.data.count;
 };
