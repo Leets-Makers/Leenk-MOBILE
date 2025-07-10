@@ -26,6 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     package: 'com.example.leenk',
+    googleServicesFile: './android/app/google-services.json',
     edgeToEdgeEnabled: true,
     adaptiveIcon: {
       foregroundImage: './assets/images/ic_logo.png',
@@ -73,5 +74,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   experiments: {
     typedRoutes: true,
+  },
+  extra: {
+    eas: {
+      projectId: 'e15a0ece-03d1-48b2-939f-1e4b8b44b498',
+    },
   },
 });
