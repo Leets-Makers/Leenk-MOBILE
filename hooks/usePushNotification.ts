@@ -1,47 +1,37 @@
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
-import { Platform } from 'react-native';
-import { useToastStore } from '@/stores/toastStore';
+import { PermissionsAndroid, Platform } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
-export async function registerForPushNotificationsAsync() {
-  const { showToast } = useToastStore();
-  if (!Device.isDevice) {
-    showToast('실제 기기에서만 푸시 알림을 사용할 수 있습니다!', 'error');
-    return;
+export async function requestNotificationPermission() {
+  // Android 13 이상 알림 권한 요청
+  if (Platform.OS === 'android' && Platform.Version >= 33) {
+    const permission = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    );
+
+    if (permission !== PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('알림 권한 거부됨');
+      return null;
+    }
+
+    console.log('알림 권한 허용됨');
   }
 
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-    });
+  // Firebase 권한 요청
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (!enabled) {
+    console.log('FCM 권한 요청 거부됨');
+    return null;
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
+  console.log('FCM 권한 요청 성공');
 
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-
-  if (finalStatus !== 'granted') {
-    showToast('푸시 알림 권한이 필요합니다!', 'error');
-    return;
-  }
-
-  const projectId =
-    Constants?.expoConfig?.extra?.eas?.projectId ??
-    Constants?.easConfig?.projectId;
-  if (!projectId) {
-    showToast('Project ID가 없습니다', 'error');
-    return;
-  }
-
-  const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  //TODO: 서버에 저장?
-  console.log('Push Token:', token);
+  // FCM 토큰 가져오기
+  const token = await messaging().getToken();
+  console.log('FCM Token:', token);
 
   return token;
 }
