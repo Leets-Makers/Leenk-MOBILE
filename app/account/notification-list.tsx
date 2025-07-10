@@ -8,15 +8,24 @@ import {
   markNotificationAsRead,
 } from '@/api/users/notification.api';
 import { RefreshControl } from 'react-native-gesture-handler';
-import { Notification } from '@/types/notification';
+import { ModalData, Notification } from '@/types/notification';
 import NotificationListItem from '@/components/NotificationListItem';
 import { width } from '@/theme/globalStyles';
 import { useProfileStore } from '@/stores/profileStore';
+import NotificationModal from '@/components/Modal/NotificationModal';
 
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const { userId, setUserId } = useProfileStore();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDetails, setSelectedDetails] = useState<ModalData[]>([]);
+
+  const openDetailModal = (details: ModalData[]) => {
+    setSelectedDetails(details);
+    setModalVisible(true);
+  };
 
   const fetchNotifications = useCallback(async () => {
     try {
@@ -61,11 +70,23 @@ export default function NotificationListPage() {
           <NotificationListItem
             item={item}
             onPress={() => handlePress(item.id)}
+            onMorePress={() => {
+              if (item.notificationType === 'FEED_REACTION_COUNT') {
+                openDetailModal(item.content.feedReactionCounts ?? []);
+              } else if (item.notificationType === 'FEED_FIRST_REACTION') {
+                openDetailModal(item.content.feedFirstReactions ?? []);
+              }
+            }}
           />
         )}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
+      />
+      <NotificationModal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        data={selectedDetails}
       />
     </Container>
   );

@@ -44,6 +44,7 @@ interface GetNotificationsResponse {
     notificationResponses: Notification[];
   };
 }
+type ModalData = FeedReactionCount | FeedFirstReaction;
 
 export type {
   GetNotificationsResponse,
@@ -51,4 +52,5 @@ export type {
   NotificationContent,
   FeedFirstReaction,
   NotificationType,
+  ModalData,
 };

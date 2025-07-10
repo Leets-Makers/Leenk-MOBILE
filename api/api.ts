@@ -36,6 +36,7 @@ api.interceptors.request.use(
   async (config) => {
     const token = await getAccessToken();
 
+    console.log(token, 'accessTOken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

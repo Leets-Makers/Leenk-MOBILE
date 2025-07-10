@@ -16,9 +16,11 @@ import { getSubjectJosa } from '@/utils/KoreanEndingCheck';
 export default function NotificationListItem({
   item,
   onPress,
+  onMorePress,
 }: {
   item: Notification;
   onPress: () => void;
+  onMorePress: () => void;
 }) {
   const renderContent = () => {
     switch (item.notificationType) {
@@ -27,10 +29,10 @@ export default function NotificationListItem({
         const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{firstReaction?.body ?? '알 수 없는 제목'}</TitleText>
-            <SubText>{firstReaction?.name ?? '알 수 없는 내용'}</SubText>
+            <TitleText>{firstReaction?.body ?? '알 수 없는 내용'}</TitleText>
+            <SubText>{firstReaction?.name ?? '알 수 없는 이름'}</SubText>
             {reactions.length > 1 && (
-              <MoreTextWrapper>
+              <MoreTextWrapper onPress={onMorePress}>
                 <MoreText>{reactions.length - 1}개 더보기</MoreText>
               </MoreTextWrapper>
             )}
@@ -43,10 +45,9 @@ export default function NotificationListItem({
         const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{firstReaction?.title ?? '알 수 없는 제목'}</TitleText>
-            <SubText>{firstReaction?.body ?? '알 수 없는 내용'}</SubText>
+            <TitleText>{firstReaction?.body ?? '알 수 없는 내용'}</TitleText>
             {reactions.length > 1 && (
-              <MoreTextWrapper>
+              <MoreTextWrapper onPress={onMorePress}>
                 <MoreText>{reactions.length - 1}개 더보기</MoreText>
               </MoreTextWrapper>
             )}
@@ -67,7 +68,6 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>{`${name}${josa} 나를 게시글에 언급했어`}</TitleText>
-
             <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
           </>
         );
@@ -103,19 +103,19 @@ const ItemContainer = styled.TouchableOpacity<{ isRead: boolean }>`
   border-radius: ${radius.xs}px;
 `;
 
-const Row = styled.View`
+export const Row = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${6 * height};
 `;
 
-const LeftSection = styled.View`
+export const LeftSection = styled.View`
   flex-direction: row;
   align-items: center;
 `;
 
-const TypeText = styled.Text`
+export const TypeText = styled.Text`
   font-family: ${fonts.Bold};
   font-size: ${fontSize.sm};
   color: ${colors.text[3]};
