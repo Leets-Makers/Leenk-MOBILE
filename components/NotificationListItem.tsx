@@ -123,19 +123,19 @@ export const TypeText = styled.Text`
   line-height: ${lineHeight.s};
 `;
 
-const ContentContainer = styled.View`
+export const ContentContainer = styled.View`
   flex: 1;
   margin-left: ${28 * width};
 `;
 
-const TitleText = styled.Text`
+export const TitleText = styled.Text`
   font-family: ${fonts.Regular};
   color: ${colors.text[2]};
   line-height: ${lineHeight.m};
   font-size: ${fontSize.md};
 `;
 
-const SubText = styled.Text`
+export const SubText = styled.Text`
   font-family: ${fonts.Bold};
   color: ${colors.black};
   font-size: ${fontSize.md};
@@ -152,7 +152,7 @@ const MoreText = styled.Text`
   font-size: ${fontSize.sm};
 `;
 
-const TimeText = styled.Text`
+export const TimeText = styled.Text`
   font-family: ${fonts.Regular};
   font-size: ${fontSize.sm};
   color: ${colors.text[3]};
