@@ -1,3 +1,5 @@
+// 상세 피드에서 수직 스크롤을 위해 분리한 컴포넌트
+
 import { FlatList, Dimensions, View } from 'react-native';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import FeedDetailItem from './FeedDetailItem';

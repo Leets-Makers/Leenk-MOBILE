@@ -1,4 +1,5 @@
 import api from '@/api/api';
+import { ApiResponse } from '@/api/api-type';
 
 export const deleteUser = async () => {
   try {
@@ -12,7 +13,7 @@ export const deleteUser = async () => {
 
 // 유저 차단
 export const blockUser = async (userId: number) => {
-  const res = await api.post(`users/${userId}/block`);
+  const res = await api.post<ApiResponse<string>>(`users/${userId}/block`);
   console.log('유저 차단 : ', res.data);
   return res.data.data;
 };

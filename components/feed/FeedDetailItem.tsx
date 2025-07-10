@@ -1,3 +1,5 @@
+// 상세 피드에서 수직 스크롤을 위해 분리한 컴포넌트
+
 import {
   fonts,
   fontSize,
@@ -28,6 +30,7 @@ import { FeedDetail } from '@/types/feed';
 import { useUserStore } from '@/stores/userStore';
 import styled from 'styled-components/native';
 import { useCallback } from 'react';
+import FeedReportModal from '../Modal/FeedReportModal';
 
 interface Props {
   feed: FeedDetail;
@@ -38,12 +41,25 @@ export default function FeedDetailItem({ feed }: Props) {
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
 
+  const isAuthor = feed.author.userId === userInfo?.id;
+
   const handleDelete = useCallback(() => {
+    console.log('작성자 id:', feed.author.userId);
+    console.log('현재 유저 id:', userInfo?.id);
     closeModal();
     openModal('deleteConfirm');
   }, [closeModal, openModal]);
 
+  const handleReport = useCallback(() => {
+    console.log('작성자 id:', feed.author.userId);
+    console.log('현재 유저 id:', userInfo?.id);
+    closeModal();
+    openModal('feedReport');
+  }, [closeModal, openModal]);
+
   const handleConfirmDelete = useCallback(async () => {
+    console.log('작성자 id:', feed.author.userId);
+    console.log('현재 유저 id:', userInfo?.id);
     try {
       await deleteFeed(feed.feedId);
       showToast('삭제 완료!', 'success');
@@ -163,10 +179,8 @@ export default function FeedDetailItem({ feed }: Props) {
         isWrite={false}
         onClose={closeModal}
         onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
-        secondOptionText={
-          feed.author.userId === userInfo?.id ? '삭제하기' : '신고하기'
-        }
-        onPressSecond={handleDelete}
+        secondOptionText={isAuthor ? '삭제하기' : '신고하기'}
+        onPressSecond={isAuthor ? handleDelete : handleReport}
       />
       {modalType === 'deleteConfirm' && (
         <PopupModal
@@ -179,6 +193,17 @@ export default function FeedDetailItem({ feed }: Props) {
           isCancel={true}
           leftBtnText="취소"
           rightBtnText="삭제할래"
+        />
+      )}
+      {modalType === 'feedReport' && (
+        <FeedReportModal
+          isOpen={modalType === 'feedReport'}
+          onClose={closeModal}
+          onSubmit={(reason) => {
+            console.log(`신고 사유: ${reason}`);
+            closeModal();
+            showToast('신고 완료!', 'success');
+          }}
         />
       )}
     </View>

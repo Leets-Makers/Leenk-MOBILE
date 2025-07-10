@@ -31,13 +31,13 @@ export default function MyPage() {
     if (!profile?.id) return;
     try {
       await blockUser(profile?.id);
-      showToast('차단 완료!', 'success');
+      showToast(`${profile?.name}을 차단했어.`, 'success');
       setTimeout(() => {
         router.replace('/(page)/feed'); // 차단 후 피드 목록으로 이동
       }, 1500);
     } catch (error) {
       console.error('유저 차단 오류 ', error);
-      showToast('차단 실패!', 'error');
+      showToast(`${profile?.name} 차단 실패!`, 'error');
     } finally {
       closeModal();
     }

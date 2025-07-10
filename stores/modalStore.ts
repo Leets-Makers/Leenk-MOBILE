@@ -8,6 +8,7 @@ type ModalType =
   | 'feedLinked'
   | 'popup'
   | 'bottomSheet'
+  | 'feedReport'
   | null;
 
 interface ModalStore {
