@@ -4,7 +4,9 @@
 node_modules/
 
 .env
-google-services.json
+/android/app/google-services.json
+/ios/GoogleService-Info.plist
+
 # Expo
 .expo/
 dist/

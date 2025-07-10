@@ -14,7 +14,6 @@ export default function useFeedList(page = 0, pageSize = 10) {
 
       try {
         const data = await getFeedList(page, pageSize);
-        console.log('피드 조회 응답 : ', data);
         setFeeds(data.feeds);
       } catch (err: any) {
         console.error('피드 목록 조회 실패:', err);
