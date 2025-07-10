@@ -10,6 +10,7 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { Notification } from '@/types/notification';
+import { formatRelativeTime } from '@/utils/format-date';
 
 export default function NotificationListItem({
   item,
@@ -77,7 +78,7 @@ export default function NotificationListItem({
           <FeedIcon width={16} stroke={colors.primary} />
           <TypeText>피드</TypeText>
         </LeftSection>
-        <TimeText>3시간 전</TimeText>
+        <TimeText>{formatRelativeTime(item.updateDate)}</TimeText>
       </Row>
       <ContentContainer>{renderContent()}</ContentContainer>
     </ItemContainer>
