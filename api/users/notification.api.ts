@@ -20,3 +20,20 @@ export const getNotificationCount = async (userId: number) => {
   const res = await api.get('/notifications/count', { params: { userId } });
   return res.data.data.count;
 };
+
+export const getNotificationsSetting = async () => {
+  const res = await api.get('/user-setting/notifications');
+  return res.data;
+};
+
+export const patchNotificationsSetting = async (
+  body: Partial<{
+    newLeenkNotify: boolean;
+    leenkStatusNotify: boolean;
+    newFeedNotify: boolean;
+    newReactionNotify: boolean;
+  }>,
+) => {
+  const res = await api.patch('/user-setting/notifications', body);
+  return res.data;
+};
