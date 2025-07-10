@@ -29,7 +29,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     googleServicesFile: './android/app/google-services.json',
     edgeToEdgeEnabled: true,
     adaptiveIcon: {
-      foregroundImage: './assets/images/ic_logo.png',
+      foregroundImage: './assets/images/ic_logo_round.png',
       backgroundColor: '#ffffff',
     },
     permissions: [
@@ -42,7 +42,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     bundler: 'metro',
     output: 'static',
-    favicon: './assets/images/ic_logo.png',
+    favicon: './assets/images/ic_logo_round.png',
   },
   plugins: [
     [

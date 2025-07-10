@@ -2,10 +2,12 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import { useToastStore } from '@/stores/toastStore';
 
 export async function registerForPushNotificationsAsync() {
+  const { showToast } = useToastStore();
   if (!Device.isDevice) {
-    alert('실제 기기에서만 푸시 알림을 사용할 수 있습니다!');
+    showToast('실제 기기에서만 푸시 알림을 사용할 수 있습니다!', 'error');
     return;
   }
 
@@ -25,7 +27,7 @@ export async function registerForPushNotificationsAsync() {
   }
 
   if (finalStatus !== 'granted') {
-    alert('푸시 알림 권한이 필요합니다!');
+    showToast('푸시 알림 권한이 필요합니다!', 'error');
     return;
   }
 
@@ -33,7 +35,7 @@ export async function registerForPushNotificationsAsync() {
     Constants?.expoConfig?.extra?.eas?.projectId ??
     Constants?.easConfig?.projectId;
   if (!projectId) {
-    alert('Project ID가 없습니다');
+    showToast('Project ID가 없습니다', 'error');
     return;
   }
 
