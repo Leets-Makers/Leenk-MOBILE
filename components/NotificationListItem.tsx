@@ -11,6 +11,7 @@ import {
 } from '@/theme/globalStyles';
 import { Notification } from '@/types/notification';
 import { formatRelativeTime } from '@/utils/format-date';
+import { getSubjectJosa } from '@/utils/KoreanEndingCheck';
 
 export default function NotificationListItem({
   item,
@@ -26,8 +27,8 @@ export default function NotificationListItem({
         const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{firstReaction?.title ?? '알 수 없는 제목'}</TitleText>
-            <SubText>{firstReaction?.body ?? '알 수 없는 내용'}</SubText>
+            <TitleText>{firstReaction?.body ?? '알 수 없는 제목'}</TitleText>
+            <SubText>{firstReaction?.name ?? '알 수 없는 내용'}</SubText>
             {reactions.length > 1 && (
               <MoreTextWrapper>
                 <MoreText>{reactions.length - 1}개 더보기</MoreText>
@@ -38,26 +39,36 @@ export default function NotificationListItem({
       }
 
       case 'FEED_REACTION_COUNT':
+        const reactions = item.content.feedReactionCounts || [];
+        const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{item.content.title ?? '알 수 없는 제목'}</TitleText>
-            <SubText>{item.content.body ?? '알 수 없는 내용'}</SubText>
+            <TitleText>{firstReaction?.title ?? '알 수 없는 제목'}</TitleText>
+            <SubText>{firstReaction?.body ?? '알 수 없는 내용'}</SubText>
+            {reactions.length > 1 && (
+              <MoreTextWrapper>
+                <MoreText>{reactions.length - 1}개 더보기</MoreText>
+              </MoreTextWrapper>
+            )}
           </>
         );
 
       case 'NEW_FEED':
         return (
           <>
-            <TitleText>{item.content.title ?? '새로운 피드'}</TitleText>
-            <SubText>{item.content.body ?? '내용 없음'}</SubText>
+            <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
+            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
           </>
         );
 
       case 'FEED_TAG':
+        const name = item.content.authorName ?? '내용 없음';
+        const josa = getSubjectJosa(name);
         return (
           <>
-            <TitleText>{item.content.title ?? '피드 태그'}</TitleText>
-            <SubText>{item.content.body ?? '내용 없음'}</SubText>
+            <TitleText>{`${name}${josa} 나를 게시글에 언급했어`}</TitleText>
+
+            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
           </>
         );
 
