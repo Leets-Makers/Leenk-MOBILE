@@ -5,8 +5,6 @@ import colors from '@/theme/color';
 import { fonts, fontSize, radius, height, width } from '@/theme/globalStyles';
 import { FeedReactedUser, FeedConnectedUser } from '@/types/feed';
 import UserListModalContent from '../feed/UserListModalContent';
-import { useEffect, useState } from 'react';
-import { getFeedReactions } from '@/api/feed/feed.api';
 
 interface Props {
   visible: boolean;
