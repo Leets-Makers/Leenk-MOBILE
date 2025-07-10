@@ -107,14 +107,16 @@ export const uploadFeedReactions = async (
     `/feeds/${feedId}/reactions`,
     { reactionCount },
   );
-  console.log('피드 공감하기 : ', res.data);
+  if (__DEV__) console.log('피드 공감하기 : ', res.data);
   return res.data.data;
 };
 
 // 피드 신고하기
-export const reportFeed = async (feedId: number) => {
-  const res = await api.post<ApiResponse<string>>(`feeds/${feedId}/reports`);
-  console.log('피드 신고하기 : ', res.data);
+export const reportFeed = async (feedId: number, report: string) => {
+  const res = await api.post<ApiResponse<string>>(`feeds/${feedId}/reports`, {
+    report,
+  });
+  if (__DEV__) console.log('피드 신고하기 : ', res.data);
   return res.data.data;
 };
 

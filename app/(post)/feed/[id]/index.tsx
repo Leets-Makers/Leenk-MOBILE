@@ -218,17 +218,7 @@ export default function FeedDetailPage() {
           rightBtnText="삭제할래"
         />
       )}
-      {modalType === 'feedReport' && (
-        <FeedReportModal
-          isOpen={modalType === 'feedReport'}
-          onClose={closeModal}
-          onSubmit={(reason) => {
-            console.log(`신고 사유: ${reason}`);
-            closeModal();
-            showToast('신고 완료!', 'success');
-          }}
-        />
-      )}
+      <FeedReportModal feedId={feed.feedId} />
     </View>
   );
 }

@@ -1,79 +1,140 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { height, width, fontSize, radius, fonts } from '@/theme/globalStyles';
-import CustomButton from '@/components/common/Button/CustomButton';
-import { BottomSheetModal } from '@/components'; // 바텀시트 모달 import
-import Textarea from '../common/Textarea';
 import colors from '@/theme/color';
+import CustomButton from '@/components/common/Button/CustomButton';
+import { Textarea } from '@/components';
+import { useModalStore } from '@/stores/modalStore';
+import { useToastStore } from '@/stores/toastStore';
+import { reportFeed } from '@/api/feed/feed.api';
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (reason: string) => void;
+interface FeedReportModalProps {
+  feedId: number;
 }
 
-export default function FeedReportModal({ isOpen, onClose, onSubmit }: Props) {
-  const [reason, setReason] = useState('');
+export default function FeedReportModal({ feedId }: FeedReportModalProps) {
+  const [report, setreport] = useState('');
+  const { modalType, closeModal } = useModalStore();
+  const { showToast } = useToastStore();
+
+  const isOpen = modalType === 'feedReport';
+
+  const handleSubmit = async () => {
+    try {
+      await reportFeed(feedId, report);
+      showToast('해당 피드를 신고했어!', 'success');
+    } catch (error) {
+      console.error('피드 신고 실패:', error);
+      showToast('신고 실패!', 'error');
+    } finally {
+      closeModal();
+      setreport('');
+    }
+  };
 
   return (
-    <BottomSheetModal visible={isOpen}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={10}
-      >
-        <Content>
-          <Title>해당 피드를 신고하는 이유를 알려줘</Title>
-          <SubText>빠르게 확인하고 조치를 취해줄게!</SubText>
-          <Textarea
-            placeholder="텍스트를 입력해주세요"
-            value={reason}
-            onChangeText={setReason}
-            maxLength={100}
-            minHeight={30}
-          />
+    <Modal
+      visible={isOpen}
+      transparent
+      animationType="slide"
+      onRequestClose={closeModal}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Backdrop>
+          <Pressable style={{ flex: 1 }} onPress={closeModal} />
 
-          <ButtonWrapper>
-            <CustomButton
-              variant="primary"
-              onPress={() => {
-                onSubmit(reason);
-                setReason('');
-              }}
-              disabled={reason.length === 0}
-            >
-              신고할게
-            </CustomButton>
-            <CustomButton variant="text" onPress={onClose}>
-              취소
-            </CustomButton>
-          </ButtonWrapper>
-        </Content>
-      </KeyboardAvoidingView>
-    </BottomSheetModal>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? -20 * height : 0}
+            style={{ flex: 1, justifyContent: 'flex-end' }}
+          >
+            <SheetContainer>
+              <SheetBox>
+                <Title>해당 피드를 신고하는 이유를 알려줘</Title>
+                <SubText>빠르게 확인하고 조치를 취해줄게!</SubText>
+
+                <Textarea
+                  placeholder="텍스트를 입력해 주세요"
+                  value={report}
+                  onChangeText={setreport}
+                  maxLength={100}
+                  minHeight={30}
+                />
+
+                <ButtonWrapper>
+                  <CustomButton
+                    variant="primary"
+                    size="lg"
+                    onPress={handleSubmit}
+                    disabled={report.length === 0}
+                  >
+                    신고할게
+                  </CustomButton>
+                  <CancelButton onPress={closeModal}>
+                    <CancelText>취소</CancelText>
+                  </CancelButton>
+                </ButtonWrapper>
+              </SheetBox>
+            </SheetContainer>
+          </KeyboardAvoidingView>
+        </Backdrop>
+      </TouchableWithoutFeedback>
+    </Modal>
   );
 }
 
-const Content = styled.View`
-  /* background-color: ${colors.white}; */
-  padding: ${20 * height}px;
+const Backdrop = styled.View`
+  flex: 1;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const SheetContainer = styled.View`
+  flex: 1;
+  justify-content: flex-end;
+  padding: ${20 * height}px ${16 * width}px ${30 * height}px;
+`;
+
+const SheetBox = styled.View`
+  height: ${320 * height}px;
+  background-color: ${colors.white};
   border-radius: ${radius.lg}px;
-  /* width: ${width * 30}px; */
+  padding: ${24 * height}px ${20 * width}px;
 `;
 
 const Title = styled.Text`
+  font-size: ${fontSize.xl}px;
   font-family: ${fonts.ExtraBold};
-  font-size: ${fontSize.lg}px;
-  margin-bottom: ${8 * height}px;
+  color: ${colors.text[1]};
+  margin-bottom: ${12 * height}px;
 `;
 
 const SubText = styled.Text`
-  font-family: ${fonts.Regular};
   font-size: ${fontSize.md}px;
+  font-family: ${fonts.Regular};
   color: ${colors.text[2]};
   margin-bottom: ${16 * height}px;
 `;
 
 const ButtonWrapper = styled.View`
-  margin-top: ${20 * height}px;
+  margin-top: ${40 * height}px;
+`;
+
+const CancelButton = styled.TouchableOpacity`
+  margin-top: ${16 * height}px;
+  align-items: center;
+`;
+
+const CancelText = styled.Text`
+  font-family: ${fonts.Bold};
+  font-size: ${fontSize.md}px;
+  color: ${colors.gray[700]};
 `;

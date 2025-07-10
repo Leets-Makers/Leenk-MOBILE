@@ -195,7 +195,7 @@ export default function FeedDetailItem({ feed }: Props) {
           rightBtnText="삭제할래"
         />
       )}
-      {modalType === 'feedReport' && (
+      {/* {modalType === 'feedReport' && (
         <FeedReportModal
           isOpen={modalType === 'feedReport'}
           onClose={closeModal}
@@ -205,7 +205,7 @@ export default function FeedDetailItem({ feed }: Props) {
             showToast('신고 완료!', 'success');
           }}
         />
-      )}
+      )} */}
     </View>
   );
 }
