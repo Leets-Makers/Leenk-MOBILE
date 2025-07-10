@@ -15,6 +15,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from '@/components/Toast';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
+import NotificationInitializer from '@/hooks/useNotification';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -67,6 +68,7 @@ function RootLayoutNav() {
 
   return (
     <SafeAreaProvider>
+      <NotificationInitializer />
       {/* StatusBar 설정 */}
       <StatusBar
         style={colorScheme === 'dark' ? 'light' : 'dark'}
