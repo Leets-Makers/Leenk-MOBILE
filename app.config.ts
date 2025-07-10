@@ -25,12 +25,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    icon: './assets/images/ic_logo_round.png',
     package: 'com.example.leenk',
     googleServicesFile: './android/app/google-services.json',
     edgeToEdgeEnabled: true,
     adaptiveIcon: {
-      foregroundImage: './assets/images/ic_logo_round.png',
-      backgroundColor: '#ffffff',
+      // foregroundImage: './assets/images/ic_logo_round.png',
+      // backgroundColor: '#ffffff',
     },
     permissions: [
       'READ_MEDIA_IMAGES',

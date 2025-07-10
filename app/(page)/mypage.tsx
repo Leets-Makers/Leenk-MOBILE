@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { width, height } from '@/theme/globalStyles';
-import { Header } from '@/components';
+import { Header, Loading } from '@/components';
 import { useFocusEffect, useRouter } from 'expo-router';
 import ProfileCard from '@/components/mypage/ProfileCard';
 import MyPageButton from '@/components/mypage/MypageButton';
@@ -11,7 +11,7 @@ import { useProfileStore } from '@/stores/profileStore';
 
 export default function MyPage() {
   const router = useRouter();
-  const { userInfo, error, refetch } = useUserInfo();
+  const { userInfo, error, refetch, loading } = useUserInfo();
   const { setkakaoTalkId, setintroduction, setMbti, setProfileImage } =
     useProfileStore();
 
@@ -34,6 +34,8 @@ export default function MyPage() {
       setProfileImage(userInfo.profileImage);
     }
   }, [userInfo, setkakaoTalkId, setintroduction, setMbti, setProfileImage]);
+
+  if (loading) return <Loading />;
 
   return (
     <Container>

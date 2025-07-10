@@ -1,15 +1,34 @@
-export type NotificationType =
-  | 'FEED_TAG'
-  | 'NEW_FEED'
-  | 'FEED_FIRST_REACTION'
-  | 'FEED_REACTION_COUNT';
-
-export interface NotificationContent {
+interface FeedFirstReaction {
   title: string;
   body: string;
+  userId: number;
+  name: string;
 }
 
-export interface Notification {
+interface FeedReactionCount {
+  title: string;
+  body: string;
+  reactionCount: number;
+}
+
+interface NotificationContent {
+  title: string | null;
+  body: string | null;
+  feedId?: number;
+  feedFirstReactions?: FeedFirstReaction[];
+  feedReactionCounts?: FeedReactionCount[];
+  authorUserId?: number;
+  authorName?: string;
+}
+
+type NotificationType =
+  | 'FEED_FIRST_REACTION'
+  | 'FEED_REACTION_COUNT'
+  | 'NEW_FEED'
+  | 'FEED_TAG'
+  | string;
+
+interface Notification {
   id: string;
   userId: number;
   notificationType: NotificationType;
@@ -17,3 +36,19 @@ export interface Notification {
   content: NotificationContent;
   updateDate: string;
 }
+
+interface GetNotificationsResponse {
+  code: number;
+  message: string;
+  data: {
+    notificationResponses: Notification[];
+  };
+}
+
+export type {
+  GetNotificationsResponse,
+  Notification,
+  NotificationContent,
+  FeedFirstReaction,
+  NotificationType,
+};
