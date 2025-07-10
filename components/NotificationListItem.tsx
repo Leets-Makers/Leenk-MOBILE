@@ -104,6 +104,7 @@ const ItemContainer = styled.TouchableOpacity<{ isRead: boolean }>`
 `;
 
 export const Row = styled.View`
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

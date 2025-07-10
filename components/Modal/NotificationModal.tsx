@@ -95,7 +95,7 @@ const Container = styled.View<{ $height: number }>`
 `;
 
 const Item = styled.View`
-  padding: ${12 * height}px 0;
+  padding: ${12 * height}px ${16 * width}px;
   width: 100%;
 `;
 
