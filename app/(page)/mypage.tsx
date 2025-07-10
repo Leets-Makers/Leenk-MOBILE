@@ -55,10 +55,10 @@ export default function MyPage() {
         text="피드 보기"
         onPress={() => router.push('/account/my-feed')}
       />
-      <MyPageButton
+      {/* <MyPageButton
         text="참여한 모임"
         onPress={() => router.push('/account/my-leenk')}
-      />
+      /> */}
     </Container>
   );
 }

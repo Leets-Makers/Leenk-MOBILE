@@ -16,7 +16,6 @@ export default function OtherUserProfilePage() {
   const {
     data: feeds,
     loadMore,
-    totalReactionCount,
     isLoading,
     isRefreshing,
     refresh,
@@ -45,7 +44,6 @@ export default function OtherUserProfilePage() {
           }
         }}
       />
-      <MyTotalReactionCount totalReactionCount={totalReactionCount} />
       <Content>
         <FlatList
           data={feeds}

@@ -5,23 +5,25 @@ import { FlatList, View } from 'react-native';
 import { useState } from 'react';
 import styled from 'styled-components/native';
 import { height } from '@/theme/globalStyles';
-import useFeedList from '@/hooks/useFeedList';
+import useFeedList, { UseFeedListOptions } from '@/hooks/useFeedList';
 import MyTotalReactionCount from '@/components/feed/MyTotalReactionCount';
 
 export default function MyFeedPage() {
   const [tab, setTab] = useState<'uploaded' | 'joined'>('uploaded');
 
+  const feedListProps: UseFeedListOptions =
+    tab === 'uploaded'
+      ? { type: 'myFeed', pageSize: 10 }
+      : { type: 'myJoined', pageSize: 10 };
+
   const {
     data: feeds,
-    totalReactionCount,
     loadMore,
     isLoading,
     isRefreshing,
     refresh,
-  } = useFeedList({
-    type: tab === 'uploaded' ? 'myJoined' : 'myFeed',
-    pageSize: 10,
-  });
+    totalReactionCount,
+  } = useFeedList(feedListProps);
 
   if (feeds.length === 0 && isLoading) return <Loading />;
   if (!feeds) return null;

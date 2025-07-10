@@ -9,3 +9,10 @@ export const deleteUser = async () => {
     throw error;
   }
 };
+
+// 유저 차단
+export const blockUser = async (userId: number) => {
+  const res = await api.post(`users/${userId}/block`);
+  console.log('유저 차단 : ', res.data);
+  return res.data.data;
+};

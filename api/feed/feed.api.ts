@@ -24,6 +24,7 @@ export const getFeedList = async (pageNumber: number, pageSize: number) => {
       pageSize,
     },
   });
+  if (__DEV__) console.log('피드 정체 조회 : ', res.data.data);
   return res.data.data;
 };
 
