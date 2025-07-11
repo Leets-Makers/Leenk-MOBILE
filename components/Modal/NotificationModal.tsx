@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Text, View } from 'react-native';
+import { Modal } from 'react-native';
 import styled from 'styled-components/native';
 import { width, height, radius } from '@/theme/globalStyles';
 import colors from '@/theme/color';

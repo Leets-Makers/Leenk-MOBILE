@@ -18,35 +18,43 @@ export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const { userId, setUserId } = useProfileStore();
-
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<ModalData[]>([]);
 
+  // 알림 상세 모달 열기
   const openDetailModal = (details: ModalData[]) => {
     setSelectedDetails(details);
     setModalVisible(true);
   };
 
+  // 알림 목록 불러오기
   const fetchNotifications = useCallback(async () => {
     try {
       const notifications = await getNotifications(0, 20);
-      setData(notifications.notificationResponses);
-      setUserId(notifications.notificationResponses.userId);
+      setData([...notifications.notificationResponses]);
+
+      // userId는 첫 번째 알림에서만 가져오기 (알림 없을 경우 대비)
+      if (notifications.notificationResponses.length > 0) {
+        setUserId(notifications.notificationResponses[0].userId);
+      }
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
     }
-  }, []);
+  }, [setUserId]);
 
+  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
 
+  // 새로고침 핸들러
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchNotifications();
     setRefreshing(false);
   };
 
+  // 알림 읽음 처리
   const handlePress = async (notificationId: string) => {
     try {
       await markNotificationAsRead(userId, notificationId);
@@ -71,18 +79,24 @@ export default function NotificationListPage() {
             item={item}
             onPress={() => handlePress(item.id)}
             onMorePress={() => {
-              if (item.notificationType === 'FEED_REACTION_COUNT') {
-                openDetailModal(item.content.feedReactionCounts ?? []);
-              } else if (item.notificationType === 'FEED_FIRST_REACTION') {
-                openDetailModal(item.content.feedFirstReactions ?? []);
-              }
+              const detailData =
+                item.notificationType === 'FEED_REACTION_COUNT'
+                  ? item.content.feedReactionCounts
+                  : item.notificationType === 'FEED_FIRST_REACTION'
+                    ? item.content.feedFirstReactions
+                    : [];
+
+              openDetailModal(detailData ?? []);
             }}
           />
         )}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
+        initialNumToRender={data.length}
+        removeClippedSubviews={false}
       />
+
       <NotificationModal
         isOpen={modalVisible}
         onClose={() => setModalVisible(false)}

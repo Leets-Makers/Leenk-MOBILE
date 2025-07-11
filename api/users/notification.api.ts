@@ -37,3 +37,8 @@ export const patchNotificationsSetting = async (
   const res = await api.patch('/user-setting/notifications', body);
   return res.data;
 };
+
+export const patchNotificationsToken = async (fcmToken: string) => {
+  const res = await api.patch('/users/me/fcm-token', { fcmToken: fcmToken });
+  return res.data;
+};

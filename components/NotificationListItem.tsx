@@ -20,7 +20,7 @@ export default function NotificationListItem({
 }: {
   item: Notification;
   onPress: () => void;
-  onMorePress: () => void;
+  onMorePress?: () => void;
 }) {
   const renderContent = () => {
     switch (item.notificationType) {
@@ -40,8 +40,11 @@ export default function NotificationListItem({
         );
       }
 
-      case 'FEED_REACTION_COUNT':
+      case 'FEED_REACTION_COUNT': {
         const reactions = item.content.feedReactionCounts || [];
+        if (reactions.length === 0) {
+          return <TitleText>공감 없음</TitleText>;
+        }
         const firstReaction = reactions[0];
         return (
           <>
@@ -53,6 +56,7 @@ export default function NotificationListItem({
             )}
           </>
         );
+      }
 
       case 'NEW_FEED':
         return (
