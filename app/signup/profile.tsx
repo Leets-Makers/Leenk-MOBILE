@@ -19,6 +19,8 @@ import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useToastStore } from '@/stores/toastStore';
+import { getFcmToken } from '@/utils/tokenStorage';
+import { patchNotificationsToken } from '@/api/users/notification.api';
 
 export default function ProfilePage() {
   const {
@@ -42,6 +44,18 @@ export default function ProfilePage() {
   const buttonTranslateY = useKeyboardAnimation(10);
 
   const { showToast } = useToastStore();
+
+  // FCM 토큰 서버 전송 함수
+  const registerFcmToken = async () => {
+    const fcmToken = await getFcmToken();
+    if (!fcmToken) return;
+    try {
+      await patchNotificationsToken(fcmToken);
+      console.log('FCM 토큰 서버 등록 성공');
+    } catch (error) {
+      console.error('FCM 토큰 서버 등록 실패:', error);
+    }
+  };
 
   // 프로필 저장 함수
   const saveProfile = async () => {
@@ -96,6 +110,7 @@ export default function ProfilePage() {
     } else {
       try {
         await saveProfile();
+        await registerFcmToken();
         router.replace('/(page)/feed');
       } catch (e) {
         console.error('[handleNext] 실패:', e);
@@ -114,6 +129,7 @@ export default function ProfilePage() {
     setSkipModalVisible(false);
     try {
       await saveProfile();
+      await registerFcmToken();
     } catch (error) {
       console.error('[handleSkip] 실패:', error);
     }

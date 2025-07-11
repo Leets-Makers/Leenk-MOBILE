@@ -34,13 +34,5 @@ export async function requestNotificationPermission() {
   const token = await messaging().getToken();
   console.log('FCM Token:', token);
 
-  // 서버에 FCM 토큰 등록
-  try {
-    await patchNotificationsToken(token);
-    console.log('서버에 FCM 토큰 등록 성공');
-  } catch (error) {
-    console.error('서버에 FCM 토큰 등록 실패:', error);
-  }
-
   return token;
 }
