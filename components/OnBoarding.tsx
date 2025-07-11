@@ -5,58 +5,45 @@ import {
   fontSize,
   height,
   lineHeight,
+  radius,
   SCREEN_WIDTH,
   width,
 } from '@/theme/globalStyles';
 import { Image } from 'expo-image';
-import React, { useRef } from 'react';
-import { FlatList, Animated } from 'react-native';
+import React, { useState } from 'react';
+import Carousel from 'react-native-reanimated-carousel';
 import styled from 'styled-components/native';
-import { ExpandingDot } from 'react-native-animated-pagination-dots';
-import CustomButton from '@/components/common/Button/CustomButton';
+import { CustomButton } from '@/components';
 
 export default function OnBoarding({ onClose }: { onClose: () => void }) {
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
     <Container>
-      <FlatList
+      <Carousel
+        loop={false}
+        width={SCREEN_WIDTH - 48 * width}
+        height={520 * height}
         data={onboardingData}
+        onSnapToItem={setCurrentIndex}
         renderItem={({ item }) => (
           <SlideContainer>
             <TitleText>{item.title}</TitleText>
             <SubText>{item.subText}</SubText>
-            <SlideImage source={item.image} contentFit="contain" />
+            <ImageWrapper>
+              <SlideImage source={item.image} contentFit="contain" />
+            </ImageWrapper>
           </SlideContainer>
         )}
-        keyExtractor={(item) => item.key}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        pagingEnabled
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false },
-        )}
+        scrollAnimationDuration={400}
       />
-      <ExpandingDot
-        data={onboardingData}
-        scrollX={scrollX}
-        expandingDotWidth={8}
-        inActiveDotOpacity={1}
-        dotStyle={{
-          width: 8 * width,
-          height: 8 * height,
-          borderRadius: 99,
-          marginHorizontal: 8 * width,
-        }}
-        containerStyle={{
-          alignSelf: 'center',
-          position: 'absolute',
-          bottom: 90 * height,
-        }}
-        inActiveDotColor={'#0000004D'}
-        activeDotColor={colors.black}
-      />
+
+      <IndicatorContainer>
+        {onboardingData.map((_, index) => (
+          <Dot key={index} isActive={index === currentIndex} />
+        ))}
+      </IndicatorContainer>
+
       <CustomButton fullWidth size="lg" onPress={onClose}>
         확인했어
       </CustomButton>
@@ -66,11 +53,16 @@ export default function OnBoarding({ onClose }: { onClose: () => void }) {
 
 const Container = styled.View`
   background-color: ${colors.white};
+  border-radius: ${radius.lg}px;
+  padding: ${32 * height}px ${18 * width}px ${32 * height}px;
+  justify-content: center;
+  align-items: center;
 `;
 
 const SlideContainer = styled.View`
+  width: 100%;
   justify-content: center;
-  align-items: start;
+  align-items: center;
 `;
 
 export const TitleText = styled.Text`
@@ -78,7 +70,9 @@ export const TitleText = styled.Text`
   line-height: ${lineHeight.l}px;
   font-family: ${fonts.Bold};
   color: ${colors.black};
-  text-align: start;
+  align-self: flex-start;
+  text-align: left;
+  width: 100%;
 `;
 
 export const SubText = styled.Text`
@@ -87,11 +81,38 @@ export const SubText = styled.Text`
   font-family: ${fonts.Regular};
   color: ${colors.text[2]};
   margin-top: ${4 * height}px;
-  text-align: start;
+  align-self: flex-start;
+  text-align: left;
+  width: 100%;
+`;
+
+const ImageWrapper = styled.View`
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: ${radius.sm}px;
+  overflow: hidden;
+  align-self: center;
+  margin-top: ${16 * height}px;
+  margin-bottom: ${32 * height}px;
 `;
 
 const SlideImage = styled(Image)`
-  width: ${324 * (SCREEN_WIDTH / 375)}px;
-  height: ${430 * height}px;
-  margin: ${16 * height}px 0 ${64 * height}px 0;
+  width: 100%;
+  height: 100%;
+`;
+
+const IndicatorContainer = styled.View`
+  flex-direction: row;
+  align-self: center;
+  margin-bottom: ${32 * height}px;
+  gap: ${8 * width}px;
+`;
+
+const Dot = styled.View<{ isActive: boolean }>`
+  width: ${8 * width}px;
+  height: ${8 * height}px;
+  margin-top: ${-10 * height}px;
+  border-radius: ${radius.full}px;
+  background-color: ${({ isActive }) =>
+    isActive ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.2)'};
 `;

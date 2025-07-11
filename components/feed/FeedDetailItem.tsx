@@ -1,3 +1,6 @@
+// 상세 피드에서 수직 스크롤을 위해 분리한 컴포넌트
+// TODO: 상세 피드에서 위아래 스크롤 시 이전/다음 피드로 넘어가도록 해야함
+
 import {
   fonts,
   fontSize,
@@ -14,59 +17,49 @@ import {
   HeartButton,
   MenuModal,
   PopupModal,
-  Loading,
-  OnBoarding,
 } from '@/components';
 import colors from '@/theme/color';
-import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
 import { Text, View } from 'react-native';
 import { StyledText } from '@/app/(post)/feed/write';
 import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
-import { router, useLocalSearchParams } from 'expo-router';
-import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
+import { router } from 'expo-router';
+import { deleteFeed } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
-import { useEffect, useState } from 'react';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
-import FeedReportModal from '@/components/Modal/FeedReportModal';
-import useFirstLaunch, { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
-import OnBoardingModal from '@/components/Modal/OnBoardingModal';
+import styled from 'styled-components/native';
+import { useCallback } from 'react';
+import FeedReportModal from '../Modal/FeedReportModal';
 
-export default function FeedDetailPage() {
-  const { id } = useLocalSearchParams();
-  const [feed, setFeed] = useState<FeedDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+interface Props {
+  feed: FeedDetail;
+}
 
+export default function FeedDetailItem({ feed }: Props) {
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
-
   const { userInfo } = useUserStore();
 
-  const firstLaunch = useDetailFirstLaunch();
-  const [showOnBoarding, setShowOnBoarding] = useState(false);
+  const isAuthor = feed.author.userId === userInfo?.id;
 
-  const isAuthor = feed?.author.userId === userInfo?.id;
-
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     closeModal();
     openModal('deleteConfirm');
-  };
+  }, [closeModal, openModal]);
 
-  const handleReport = () => {
+  const handleReport = useCallback(() => {
     closeModal();
     openModal('feedReport');
-  };
+  }, [closeModal, openModal]);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     try {
-      await deleteFeed(Number(id));
+      await deleteFeed(feed.feedId);
       showToast('삭제 완료!', 'success');
-
       setTimeout(() => {
-        router.replace('/(page)/feed');
+        router.replace('/(page)/feed'); // 삭제 후 목록으로 이동
       }, 1500);
     } catch (err: any) {
       console.error('피드 삭제 오류:', err);
@@ -74,42 +67,7 @@ export default function FeedDetailPage() {
     } finally {
       closeModal();
     }
-  };
-
-  useEffect(() => {
-    console.log('firstLaunch', firstLaunch);
-
-    if (firstLaunch === true) {
-      setShowOnBoarding(true);
-    }
-  }, [firstLaunch]);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchFeedDetail = async () => {
-      try {
-        setIsLoading(true);
-        const res = await getFeedDetail(Number(id));
-        console.log('res: ', res.linkedUser);
-        setFeed(res);
-      } catch (err: any) {
-        console.error('피드 상세 조회 오류:', err);
-        showToast('피드 조회에 실패했어!', 'error');
-        setTimeout(() => {
-          router.replace('/(page)/feed');
-        }, 1500);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchFeedDetail();
-  }, [id, showToast]);
-
-  if (isLoading) return <Loading />;
-
-  if (!feed) return null;
+  }, [feed.feedId, closeModal, showToast]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -132,10 +90,11 @@ export default function FeedDetailPage() {
       <View
         style={{
           paddingHorizontal: CONTAINER_PADDING * width,
-          marginBottom: 24 * width,
+          marginBottom: 52 * width,
           minHeight: 220 * height,
         }}
       >
+        {/* 작성자 정보 + 배지 */}
         <RowWrapper>
           <View
             style={{
@@ -168,10 +127,11 @@ export default function FeedDetailPage() {
           />
         </RowWrapper>
 
+        {/* 게시물 내용 */}
         <View
           style={{
             paddingHorizontal: 18 * width,
-            paddingBottom: 40 * height,
+            paddingBottom: 48 * height,
           }}
         >
           <Text
@@ -187,6 +147,7 @@ export default function FeedDetailPage() {
             {feed.description}
           </Text>
 
+          {/* 작성 날짜 */}
           <Text
             style={{
               color: colors.text[3],
@@ -200,22 +161,22 @@ export default function FeedDetailPage() {
         </View>
       </View>
 
+      {/* 유저리스트 모달 */}
       <UserListModal
         visible={modalType === 'feedLinked'}
         title="함께 연결된 Leets"
         list={feed.linkedUser}
         onClose={closeModal}
       />
-
+      {/* 삭제 메뉴 모달 */}
       <MenuModal
         visible={modalType === 'menu'}
         isWrite={false}
         onClose={closeModal}
-        onPressFirst={() => {}}
+        onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
         secondOptionText={isAuthor ? '삭제하기' : '신고하기'}
         onPressSecond={isAuthor ? handleDelete : handleReport}
       />
-
       {modalType === 'deleteConfirm' && (
         <PopupModal
           isOpen={modalType === 'deleteConfirm'}
@@ -229,16 +190,17 @@ export default function FeedDetailPage() {
           rightBtnText="삭제할래"
         />
       )}
-
-      <FeedReportModal feedId={feed.feedId} />
-
-      {/* 온보딩 */}
-      {showOnBoarding && (
-        <OnBoardingModal
-          visible={showOnBoarding}
-          onClose={() => setShowOnBoarding(false)}
+      {/* {modalType === 'feedReport' && (
+        <FeedReportModal
+          isOpen={modalType === 'feedReport'}
+          onClose={closeModal}
+          onSubmit={(reason) => {
+            console.log(`신고 사유: ${reason}`);
+            closeModal();
+            showToast('신고 완료!', 'success');
+          }}
         />
-      )}
+      )} */}
     </View>
   );
 }

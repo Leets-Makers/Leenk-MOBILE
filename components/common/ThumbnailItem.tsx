@@ -6,13 +6,15 @@ import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { ToastCheckIcon } from '@/assets';
 import { width, height, radius, fontSize } from '@/theme/globalStyles';
-import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 interface ThumbnailItemProps {
   asset: MediaLibrary.Asset;
   aspectRatio?: '1:1' | '9:16';
   mode?: 'profile' | 'feed'; // 프로필 선택인지 피드 이미지 선택 페이지인지 구분
   maxSelect: number;
+  isSelected?: boolean; // 선택 여부
+  onToggle: () => void; // 선택 토글 함수
+  selectionNumber?: number | null;
 }
 
 export default function ThumbnailItem({
@@ -20,39 +22,21 @@ export default function ThumbnailItem({
   aspectRatio = '1:1',
   mode = 'profile',
   maxSelect = 3,
+  isSelected = false,
+  onToggle,
+  selectionNumber,
 }: ThumbnailItemProps) {
   const [uri, setUri] = useState<string | null>(null);
-
-  const selectedImages = useFeedWriteStore((state) => state.selectedImages);
-  const setSelectedImages = useFeedWriteStore(
-    (state) => state.setSelectedImages,
-  );
-
-  const isSelected = selectedImages.some((item) => item.uri === asset.uri);
 
   const imageHeight =
     aspectRatio === '9:16' ? (IMAGE_SIZE * 16) / 9 : IMAGE_SIZE;
 
-  const getSelectionNumber = (photoUri: string) => {
-    const index = selectedImages.findIndex((item) => item.uri === photoUri);
-    return index >= 0 ? index + 1 : null;
-  };
-
-  const handleToggle = () => {
-    const updated = isSelected
-      ? selectedImages.filter((item) => item.uri !== asset.uri)
-      : selectedImages.length < maxSelect
-        ? [...selectedImages, { uri: asset.uri, filename: asset.filename }]
-        : selectedImages;
-
-    setSelectedImages(updated);
-  };
   useEffect(() => {
     setUri(asset.uri);
   }, [asset]);
 
   return (
-    <TouchableOpacity onPress={handleToggle}>
+    <TouchableOpacity onPress={onToggle}>
       <ImageWrapper $height={imageHeight}>
         {uri && (
           <Image
@@ -72,7 +56,7 @@ export default function ThumbnailItem({
               {mode === 'profile' ? (
                 <ToastCheckIcon />
               ) : (
-                getSelectionNumber(asset.uri)
+                (selectionNumber ?? '')
               )}
             </BadgeText>
           </CheckBadge>

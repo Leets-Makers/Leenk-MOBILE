@@ -1,26 +1,23 @@
 import { useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Platform } from 'react-native';
-import { SelectedImage, useFeedWriteStore } from '@/stores/feedWriteStore';
 
-export default function useImagePicker({
-  maxSelect = 3,
-  onChange,
-}: {
+interface ProfileImageProps {
   maxSelect: number;
   onChange?: (selected: string[]) => void;
-}) {
+}
+
+export default function useProfileImagePicker({
+  maxSelect = 1,
+  onChange,
+}: ProfileImageProps) {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
+  const [selected, setSelected] = useState<MediaLibrary.Asset | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [pageInfo, setPageInfo] = useState<{
     endCursor: string | null;
     hasNextPage: boolean;
   }>({ endCursor: null, hasNextPage: false });
-
-  const selectedUris = useFeedWriteStore((state) => state.selectedImages);
-  const setSelectedImages = useFeedWriteStore(
-    (state) => state.setSelectedImages,
-  );
 
   // 권한 요청
   const requestPermission = async (): Promise<boolean> => {
@@ -42,8 +39,8 @@ export default function useImagePicker({
         after: pageInfo?.endCursor ?? undefined,
         mediaType: MediaLibrary.MediaType.photo,
       });
+
     let assetsWithLocalUri: MediaLibrary.Asset[] = [];
-    console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
 
     if (Platform.OS === 'ios') {
       const assetInfoPromises = assets.map(async (asset) => {
@@ -55,7 +52,7 @@ export default function useImagePicker({
           };
         } catch (e) {
           console.warn('asset info error', e);
-          return asset; // fallback
+          return asset;
         }
       });
       assetsWithLocalUri = await Promise.all(assetInfoPromises);
@@ -72,43 +69,26 @@ export default function useImagePicker({
     });
 
     setPageInfo({ endCursor, hasNextPage });
-    console.log('📸 가져온 사진 개수:', assets.length);
-  }, [pageInfo]);
+  }, [pageInfo?.endCursor]);
 
-  // 선택 상태 변경
+  // 선택 상태 변경 (단일 선택)
   const toggleSelect = (photo: MediaLibrary.Asset) => {
-    const isSelected = selectedUris.some((item) => item.uri === photo.uri);
-    let updatedUris: SelectedImage[];
-
-    if (isSelected) {
-      updatedUris = selectedUris.filter((item) => item.uri !== photo.uri);
-    } else if (selectedUris.length < maxSelect) {
-      updatedUris = [
-        ...selectedUris,
-        { uri: photo.uri, filename: photo.filename },
-      ];
-    } else {
-      return;
-    }
-
-    setSelectedImages(updatedUris);
-  };
-
-  const getSelectionNumber = (photoId: string) => {
-    const photoUri = photos.find((photo) => photo.id === photoId)?.uri;
-    const index = selectedUris.findIndex((item) => item.uri === photoUri);
-    return index >= 0 ? index + 1 : null;
+    setSelected((prev) => {
+      const newSelected = prev?.id === photo.id ? null : photo;
+      //  선택 후 onChange 호출
+      if (onChange) {
+        onChange(newSelected ? [newSelected.uri] : []);
+      }
+      return newSelected;
+    });
   };
 
   return {
     photos,
-    selected: photos.filter((photo) =>
-      selectedUris.some((item) => item.uri === photo.uri),
-    ),
+    selected,
     hasPermission,
     requestPermission,
     toggleSelect,
-    getSelectionNumber,
     fetchPhotos,
     hasNextPage: pageInfo?.hasNextPage,
   };

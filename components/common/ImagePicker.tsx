@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { FlatList, Platform, View } from 'react-native';
 import { ThumbnailItem } from '@/components';
-import useImagePicker from '@/hooks/useImagePicker';
+import useFeedImagePicker from '@/hooks/useFeedImagePicker';
 import { NUM_COLUMNS } from '@/constants';
 import { AspectRatio } from '@/types/aspect-ratio';
 import { width } from '@/theme/globalStyles';
+import useProfileImagePicker from '@/hooks/useProfileImagePicker';
 
 interface ImagePickerProps {
   maxSelect: number;
@@ -19,8 +20,25 @@ export default function ImagePicker({
   mode = 'profile',
   onSelect,
 }: ImagePickerProps) {
-  const { photos, requestPermission, hasPermission, fetchPhotos, hasNextPage } =
-    useImagePicker({ maxSelect });
+  const picker =
+    mode === 'profile'
+      ? useProfileImagePicker({ maxSelect, onChange: onSelect })
+      : useFeedImagePicker({ maxSelect, onChange: onSelect });
+
+  const {
+    photos,
+    selected,
+    hasPermission,
+    requestPermission,
+    fetchPhotos,
+    hasNextPage,
+    toggleSelect,
+  } = picker;
+
+  const getSelectionNumber =
+    mode === 'feed' && 'getSelectionNumber' in picker
+      ? picker.getSelectionNumber
+      : undefined;
 
   // 권한 요청 및 초기 사진 로딩
   useEffect(() => {
@@ -35,12 +53,6 @@ export default function ImagePicker({
       }
     })();
   }, []);
-
-  useEffect(() => {
-    if (!onSelect) return;
-    const uris = selected.map((item) => item.uri);
-    onSelect(uris);
-  }, [selected, onSelect]);
 
   if (hasPermission === false) return null;
 
@@ -66,6 +78,20 @@ export default function ImagePicker({
             aspectRatio={aspectRatio}
             mode={mode}
             maxSelect={maxSelect}
+            isSelected={
+              mode === 'profile'
+                ? !!(
+                    selected &&
+                    !Array.isArray(selected) &&
+                    selected.id === item.id
+                  )
+                : Array.isArray(selected) &&
+                  selected.some((s) => s.uri === item.uri)
+            }
+            selectionNumber={
+              mode === 'feed' ? (getSelectionNumber?.(item.id) ?? null) : null
+            }
+            onToggle={() => toggleSelect(item)}
           />
         )}
       />
