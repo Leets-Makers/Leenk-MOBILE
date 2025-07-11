@@ -57,6 +57,7 @@ export default function HelpPage() {
             <CustomButton
               variant="primary"
               fullWidth
+              size="lg"
               onPress={handleConfirm}
               disabled={feedback.trim() === ''}
             >

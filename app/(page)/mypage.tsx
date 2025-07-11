@@ -50,6 +50,7 @@ export default function MyPage() {
           kakaoTalkId={userInfo?.kakaoTalkId}
           introduction={userInfo?.introduction}
           mbti={userInfo?.mbti}
+          isMyProfile
         />
       )}
       <MyPageButton

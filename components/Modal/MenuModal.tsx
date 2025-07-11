@@ -18,6 +18,8 @@ interface MenuModalProps {
   onClose: () => void;
   onPressFirst: (e: GestureResponderEvent) => void;
   onPressSecond: (e: GestureResponderEvent) => void;
+  secondOptionText?: string;
+  isDanger?: boolean;
 }
 
 export default function MenuModal({
@@ -26,6 +28,8 @@ export default function MenuModal({
   onClose,
   onPressFirst,
   onPressSecond,
+  secondOptionText,
+  isDanger = false,
 }: MenuModalProps) {
   const topPosition = Platform.OS === 'ios' ? 95 * height : 50 * height;
   return (
@@ -65,7 +69,9 @@ export default function MenuModal({
             <MenuItemWrapper onPress={onPressSecond}>
               {({ pressed }) => (
                 <MenuItem pressed={pressed} $isWrite={isWrite}>
-                  <MenuText $isWrite={isWrite}>삭제하기</MenuText>
+                  <MenuText $isWrite={isWrite} $isDanger={isDanger}>
+                    {secondOptionText}
+                  </MenuText>
                 </MenuItem>
               )}
             </MenuItemWrapper>
@@ -112,10 +118,11 @@ const MenuItem = styled.View<{ pressed: boolean; $isWrite: boolean }>`
     pressed ? colors.bg[3] : 'transparent'};
 `;
 
-const MenuText = styled.Text<{ $isWrite: boolean }>`
+const MenuText = styled.Text<{ $isWrite: boolean; $isDanger?: boolean }>`
   font-family: ${({ $isWrite }) => ($isWrite ? fonts.Bold : fonts.Regular)};
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
+  color: ${({ $isDanger }) => ($isDanger ? colors.pink[500] : colors.black)};
 `;
 
 const MenuItemWrapper = styled.Pressable``;

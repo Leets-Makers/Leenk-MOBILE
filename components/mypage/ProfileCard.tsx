@@ -21,6 +21,7 @@ type ProfileCardProps = {
   introduction: string;
   kakaoTalkId: string;
   mbti: string;
+  isMyProfile?: boolean;
 };
 
 export default function ProfileCard({
@@ -30,6 +31,7 @@ export default function ProfileCard({
   introduction,
   kakaoTalkId,
   mbti,
+  isMyProfile = false,
 }: ProfileCardProps) {
   const router = useRouter();
   return (
@@ -48,18 +50,21 @@ export default function ProfileCard({
       </RowContainer>
       <IntroContainer>{introduction}</IntroContainer>
       <KakaoIdButton kakaoTalkId={kakaoTalkId} />
-      <CustomButton
-        variant="text"
-        textColor="text[2]"
-        size="sm"
-        fullWidth
-        onPress={() => router.push('/account' as const)}
-        style={{
-          marginTop: 12 * height,
-        }}
-      >
-        프로필 수정하기
-      </CustomButton>
+
+      {isMyProfile && (
+        <CustomButton
+          variant="text"
+          textColor="text[2]"
+          size="sm"
+          fullWidth
+          onPress={() => router.push('/account' as const)}
+          style={{
+            marginTop: 12 * height,
+          }}
+        >
+          프로필 수정하기
+        </CustomButton>
+      )}
     </Container>
   );
 }

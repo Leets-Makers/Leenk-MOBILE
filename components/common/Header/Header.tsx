@@ -17,6 +17,7 @@ interface HeaderProps extends ViewProps {
   children?: React.ReactNode;
   signUpBackPress?: () => void;
   kebabPress?: () => void;
+  kebabColor?: 'white' | 'black';
 }
 
 export default function Header({
@@ -26,6 +27,7 @@ export default function Header({
   children,
   RightSection = 'NONE',
   kebabPress,
+  kebabColor,
   ...props
 }: HeaderProps) {
   return (
@@ -48,7 +50,9 @@ export default function Header({
       <Side>
         {RightSection === 'BELL' && <BellButton />}
         {RightSection === 'SETTING' && <SettingButton />}
-        {RightSection === 'KEBAB' && <KebabButton handleKebab={kebabPress} />}
+        {RightSection === 'KEBAB' && (
+          <KebabButton handleKebab={kebabPress} color={kebabColor} />
+        )}
         {RightSection === 'NONE' && <None />}
       </Side>
     </Container>

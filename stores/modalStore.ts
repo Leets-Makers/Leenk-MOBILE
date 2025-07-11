@@ -4,9 +4,11 @@ type ModalType =
   | 'menu'
   | 'deleteConfirm'
   | 'feedUpload'
-  | 'userList'
+  | 'feedReaction'
+  | 'feedLinked'
   | 'popup'
   | 'bottomSheet'
+  | 'feedReport'
   | null;
 
 interface ModalStore {

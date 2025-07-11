@@ -2,15 +2,22 @@ import React from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import ProfileImageWithFallback from './ProfileImageWithFallback';
-import { FlatList, View } from 'react-native';
+import { FlatList, Pressable, View } from 'react-native';
 import { FeedConnectedUser, FeedReactedUser } from '@/types/feed';
 import { fontSize, fonts, lineHeight } from '@/theme/globalStyles';
+import { Badge } from '@/components';
+import { width } from '@/theme/globalStyles';
+import { useRouter } from 'expo-router';
 
 export default function UserListModalContent({
   list,
+  onClose,
 }: {
   list: (FeedConnectedUser | FeedReactedUser)[];
+  onClose: () => void;
 }) {
+  const router = useRouter();
+
   return (
     <FlatList
       data={list}
@@ -19,15 +26,28 @@ export default function UserListModalContent({
       showsVerticalScrollIndicator={true}
       renderItem={({ item }) => (
         <View onStartShouldSetResponder={() => true}>
-          <UserRow>
-            <ProfileImageWithFallback uri={item.profileImage} size={45} />
-            <NameRow>
-              <UserName>{item.name}</UserName>
-              {'reactionCount' in item && (
-                <Count>{item.reactionCount.toLocaleString()}</Count>
-              )}
-            </NameRow>
-          </UserRow>
+          <Pressable
+            onPress={() => {
+              onClose();
+              router.push(`/users/${item.userId}`);
+            }}
+          >
+            <UserRow>
+              <ProfileImageWithFallback uri={item.profileImage} size={45} />
+              <NameRow>
+                <RightContent>
+                  <UserName>{item.name}</UserName>
+                  {'isAuthor' in item && item.isAuthor && (
+                    <Badge label="작성자" />
+                  )}
+                </RightContent>
+
+                {'reactionCount' in item && (
+                  <Count>{item.reactionCount.toLocaleString()}</Count>
+                )}
+              </NameRow>
+            </UserRow>
+          </Pressable>
         </View>
       )}
     />
@@ -42,16 +62,23 @@ export const UserRow = styled.View`
 
 export const NameRow = styled.View`
   flex: 1;
-  margin-left: 12px;
+  margin-left: ${12 * width}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+`;
+
+const RightContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${2 * width}px;
 `;
 
 export const UserName = styled.Text`
   font-size: ${fontSize.lg};
   font-family: ${fonts.Regular};
   line-height: ${lineHeight.l};
+  margin-right: ${8 * width}px;
 `;
 
 export const Count = styled.Text`

@@ -91,10 +91,10 @@ const Container = styled.View<{
   `}
 `;
 
-const Text = styled.Text<{ $variant: string }>`
+const Text = styled.Text<{ variant: string }>`
   font-size: ${fontSize.sm}px;
-  color: ${({ $variant }) =>
-    $variant === 'primary' || $variant === 'gray'
+  color: ${({ variant }) =>
+    variant === 'primary' || variant === 'gray'
       ? colors.white
       : colors.text[3]};
   font-family: ${fonts.Bold};

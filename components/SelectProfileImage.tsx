@@ -3,6 +3,7 @@ import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { AspectRatio } from '@/types/aspect-ratio';
 import styled from 'styled-components/native';
+import { Container } from '@/app/(post)/feed';
 
 import { useRouter } from 'expo-router';
 import { useProfileStore } from '@/stores/profileStore';
@@ -54,7 +55,7 @@ export default function SelectProfileImage({
 
   return (
     <Container>
-      <Header>프로필 사진 선택</Header>
+      <Header style={{ marginBottom: 12 * height }}>프로필 사진 선택</Header>
       <ImagePicker
         maxSelect={1}
         aspectRatio={AspectRatio.SQUARE}
@@ -76,12 +77,6 @@ export default function SelectProfileImage({
     </Container>
   );
 }
-
-const Container = styled.View`
-  flex: 1;
-  background-color: ${colors.bg[2]};
-  padding-horizontal: ${20 * width}px;
-`;
 
 const ButtonContainer = styled.View`
   position: absolute;

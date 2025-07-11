@@ -8,10 +8,25 @@ import { SubText, TitleText } from '@/components/OnBoarding';
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 import { CongratsIcon } from '@/assets';
 import useFeedList from '@/hooks/useFeedList';
+import { useUserInfo } from '@/hooks/useUserInfo';
+import { useUserStore } from '@/stores/userStore';
 
 export default function FeedPage() {
   const firstLaunch = useFirstLaunch();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  const { userInfo: fetchedUserInfo, refetch, loading } = useUserInfo();
+  const { userInfo, setUserInfo } = useUserStore();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  useEffect(() => {
+    if (fetchedUserInfo && !userInfo) {
+      setUserInfo(fetchedUserInfo);
+    }
+  }, [fetchedUserInfo, userInfo, setUserInfo]);
 
   useEffect(() => {
     if (firstLaunch === true) {
@@ -20,9 +35,16 @@ export default function FeedPage() {
     }
   }, [firstLaunch]);
 
-  const { feeds, isLoading } = useFeedList(0, 10);
+  const {
+    data: feeds,
+    loadMore,
+    isLoading,
+    isRefreshing,
+    refresh,
+  } = useFeedList({ type: 'all', pageSize: 10 });
 
-  if (isLoading) return <Loading />;
+  if (feeds.length === 0 && isLoading) return <Loading />;
+
   if (!feeds) return null;
 
   return (
@@ -45,6 +67,11 @@ export default function FeedPage() {
         }}
         renderItem={({ item }) => <FeedCard item={item} />}
         showsVerticalScrollIndicator={true}
+        onEndReached={loadMore} // 스크롤 끝 도달 시 loadMore 실행
+        onEndReachedThreshold={0.5} // 50% 스크롤 시점부터 호출
+        refreshing={isRefreshing} // Pull to Refresh
+        onRefresh={refresh}
+        ListFooterComponent={feeds.length > 0 && isLoading ? <Loading /> : null}
       />
 
       {showWelcomeModal && (
