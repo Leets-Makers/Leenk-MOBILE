@@ -119,6 +119,7 @@ export default function AccountEdit() {
               style={{ marginBottom: 10 * height }}
               variant="primary"
               fullWidth
+              size="lg"
               onPress={handleSubmit}
               disabled={
                 (type === 'kakaoTalkId' &&

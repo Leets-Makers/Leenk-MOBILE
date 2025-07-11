@@ -40,7 +40,6 @@ export default function TabLayout() {
           position: 'absolute',
           borderTopWidth: 0,
           elevation: 0,
-          overflow: 'hidden',
         },
       }}
       tabBar={({ state, navigation }) => (
@@ -126,7 +125,9 @@ export default function TabLayout() {
 }
 
 const StyledSafeArea = styled(SafeAreaView)`
-  background-color: transparent;
+  background-color: ${colors.white};
+  border-top-left-radius: ${radius.lg}px;
+  border-top-right-radius: ${radius.lg}px;
 `;
 
 const TabContainer = styled.View`
@@ -134,7 +135,7 @@ const TabContainer = styled.View`
   justify-content: space-around;
   align-items: center;
   height: ${51 * height}px;
-  padding-vertical: ${4 * height}px;
+  padding: ${4 * height}px 0;
   background-color: ${colors.white};
   border-top-left-radius: ${radius.lg}px;
   border-top-right-radius: ${radius.lg}px;
@@ -162,9 +163,8 @@ const TabButton = styled.TouchableOpacity<{ $isSpecial?: boolean }>`
 `;
 
 const TabLabel = styled.Text<{ $focused: boolean }>`
-  font-family: ${fonts.Regular};
+  font-family: ${fonts.Bold};
   font-size: ${fontSize.sm}px;
-  font-weight: 700;
   margin-top: ${4 * height}px;
   color: ${({ $focused }) => ($focused ? colors.primary : colors.gray[500])};
 `;
