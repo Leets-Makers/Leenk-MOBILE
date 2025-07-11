@@ -15,7 +15,6 @@ import {
   MenuModal,
   PopupModal,
   Loading,
-  OnBoarding,
 } from '@/components';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
@@ -29,11 +28,11 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
 import { useEffect, useState } from 'react';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
 import FeedReportModal from '@/components/Modal/FeedReportModal';
-import useFirstLaunch, { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
+import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
+import GradientOverlay from '@/components/feed/GradientOverlay';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -114,7 +113,8 @@ export default function FeedDetailPage() {
   return (
     <View style={{ flex: 1 }}>
       <BackgroundImageSlider mediaUrls={feed.media} />
-
+      <GradientOverlay type="top" heightValue={160 * height} />
+      <GradientOverlay type="bottom" heightValue={180 * height} />
       <Header
         isBackWhite
         RightSection="KEBAB"

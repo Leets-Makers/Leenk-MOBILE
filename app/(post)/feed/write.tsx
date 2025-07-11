@@ -23,6 +23,7 @@ import { uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
+import GradientOverlay from '@/components/feed/GradientOverlay';
 
 export default function FeedWritePage() {
   const selectedImages = useFeedWriteStore((state) => state.selectedImages);
@@ -108,6 +109,7 @@ export default function FeedWritePage() {
       >
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider mediaUrls={media} />
+          <GradientOverlay type="top" heightValue={160 * height} />
           <Header
             isBackWhite
             style={{
