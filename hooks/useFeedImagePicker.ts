@@ -43,7 +43,7 @@ export default function useFeedImagePicker({
         mediaType: MediaLibrary.MediaType.photo,
       });
     let assetsWithLocalUri: MediaLibrary.Asset[] = [];
-    console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
+    // console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
 
     if (Platform.OS === 'ios') {
       const assetInfoPromises = assets.map(async (asset) => {

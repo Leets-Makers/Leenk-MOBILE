@@ -3,7 +3,6 @@ import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { AspectRatio } from '@/types/aspect-ratio';
 import styled from 'styled-components/native';
-import { Container } from '@/app/(post)/feed';
 
 import { useRouter } from 'expo-router';
 import { useProfileStore } from '@/stores/profileStore';
@@ -12,6 +11,7 @@ import { useState } from 'react';
 import { Platform } from 'react-native';
 import { updateProfileImage } from '@/api/users/patchUserEachInfo.api';
 import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function SelectProfileImage({
   mode,
@@ -19,6 +19,8 @@ export default function SelectProfileImage({
   mode: 'profile' | 'edit';
 }) {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+
   const { setProfileImage } = useProfileStore();
 
   const [selectedUri, setSelectedUri] = useState<string | null>(null);
@@ -52,7 +54,7 @@ export default function SelectProfileImage({
 
     router.back();
   };
-
+  console.log('바닥', insets.bottom);
   return (
     <Container>
       <Header style={{ marginBottom: 12 * height }}>프로필 사진 선택</Header>
@@ -64,7 +66,7 @@ export default function SelectProfileImage({
           setSelectedUri(uris[0]);
         }}
       />
-      <ButtonContainer>
+      <ButtonContainer $bottomInset={insets.bottom}>
         <CustomButton
           variant="primary"
           size="lg"
@@ -78,9 +80,16 @@ export default function SelectProfileImage({
   );
 }
 
-const ButtonContainer = styled.View`
+const Container = styled.View`
+  flex: 1;
+  padding-horizontal: ${20 * width}px;
+  background-color: ${colors.bg[2]};
+  position: relative;
+`;
+
+const ButtonContainer = styled.View<{ $bottomInset: number }>`
   position: absolute;
-  bottom: ${44 * height}px;
+  bottom: ${(props) => props.$bottomInset + 10 * height}px;
   align-self: center;
   width: 100%;
   ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
