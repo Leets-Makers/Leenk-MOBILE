@@ -1,10 +1,10 @@
 export const onboardingData = [
-  {
-    key: '1',
-    title: '스크롤해서 전환해 보자!',
-    subText: '위아래로 스크롤 하면 다른 피드를 볼 수 있어.',
-    image: require('@/assets/images/onboarding/slide1.png'),
-  },
+  // {
+  //   key: '1',
+  //   title: '스크롤해서 전환해 보자!',
+  //   subText: '위아래로 스크롤 하면 다른 피드를 볼 수 있어.',
+  //   image: require('@/assets/images/onboarding/slide1.png'),
+  // },
   {
     key: '2',
     title: '하트 테러 함께 해볼까?!',

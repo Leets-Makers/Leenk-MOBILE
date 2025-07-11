@@ -15,6 +15,7 @@ import {
   MenuModal,
   PopupModal,
   Loading,
+  OnBoarding,
 } from '@/components';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
@@ -31,6 +32,8 @@ import { useEffect, useState } from 'react';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
 import FeedReportModal from '@/components/Modal/FeedReportModal';
+import useFirstLaunch, { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
+import OnBoardingModal from '@/components/Modal/OnBoardingModal';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -41,6 +44,9 @@ export default function FeedDetailPage() {
   const { showToast } = useToastStore();
 
   const { userInfo } = useUserStore();
+
+  const firstLaunch = useDetailFirstLaunch();
+  const [showOnBoarding, setShowOnBoarding] = useState(false);
 
   const isAuthor = feed?.author.userId === userInfo?.id;
 
@@ -69,6 +75,14 @@ export default function FeedDetailPage() {
       closeModal();
     }
   };
+
+  useEffect(() => {
+    console.log('firstLaunch', firstLaunch);
+
+    if (firstLaunch === true) {
+      setShowOnBoarding(true);
+    }
+  }, [firstLaunch]);
 
   useEffect(() => {
     if (!id) return;
@@ -122,7 +136,6 @@ export default function FeedDetailPage() {
           minHeight: 220 * height,
         }}
       >
-        {/* 작성자 정보 + 배지 */}
         <RowWrapper>
           <View
             style={{
@@ -155,7 +168,6 @@ export default function FeedDetailPage() {
           />
         </RowWrapper>
 
-        {/* 게시물 내용 */}
         <View
           style={{
             paddingHorizontal: 18 * width,
@@ -175,8 +187,6 @@ export default function FeedDetailPage() {
             {feed.description}
           </Text>
 
-          {/* 작성 날짜 */}
-
           <Text
             style={{
               color: colors.text[3],
@@ -189,22 +199,23 @@ export default function FeedDetailPage() {
           </Text>
         </View>
       </View>
-      {/* 유저리스트 모달 */}
+
       <UserListModal
         visible={modalType === 'feedLinked'}
         title="함께 연결된 Leets"
         list={feed.linkedUser}
         onClose={closeModal}
       />
-      {/* 삭제 메뉴 모달 */}
+
       <MenuModal
         visible={modalType === 'menu'}
         isWrite={false}
         onClose={closeModal}
-        onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
+        onPressFirst={() => {}}
         secondOptionText={isAuthor ? '삭제하기' : '신고하기'}
         onPressSecond={isAuthor ? handleDelete : handleReport}
       />
+
       {modalType === 'deleteConfirm' && (
         <PopupModal
           isOpen={modalType === 'deleteConfirm'}
@@ -218,7 +229,16 @@ export default function FeedDetailPage() {
           rightBtnText="삭제할래"
         />
       )}
+
       <FeedReportModal feedId={feed.feedId} />
+
+      {/* 온보딩 */}
+      {showOnBoarding && (
+        <OnBoardingModal
+          visible={showOnBoarding}
+          onClose={() => setShowOnBoarding(false)}
+        />
+      )}
     </View>
   );
 }

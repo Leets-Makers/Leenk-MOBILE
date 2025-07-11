@@ -25,3 +25,28 @@ export default function useFirstLaunch() {
 
   return firstLaunch;
 }
+
+export function useDetailFirstLaunch() {
+  const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      try {
+        const value = await AsyncStorage.getItem('detailLaunched');
+        if (value == null) {
+          await AsyncStorage.setItem('detailLaunched', 'true');
+          setFirstLaunch(true);
+        } else {
+          setFirstLaunch(false);
+        }
+      } catch (error) {
+        console.warn('Failed to check first launch status:', error);
+        setFirstLaunch(false);
+      }
+    };
+
+    checkFirstLaunch();
+  }, []);
+
+  return firstLaunch;
+}

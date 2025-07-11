@@ -21,6 +21,7 @@ import MenuModal from '@/components/Modal/MenuModal';
 import PopupModal from '@/components/Modal/PopupModal';
 import Loading from '@/components/common/Loading';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
+import OnBoarding from '@/components/OnBoarding';
 export {
   CustomButton,
   Input,
@@ -45,4 +46,5 @@ export {
   PopupModal,
   Loading,
   BottomSheetModal,
+  OnBoarding,
 };
