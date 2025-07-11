@@ -10,7 +10,7 @@ export interface FeedListData {
 }
 
 export interface MyFeedListData {
-  totalReactionCount: string;
+  totalReactionCount: number;
   feeds: FeedItem[];
   pageable: Pageable;
 }
@@ -58,7 +58,7 @@ export const getOtherUserFeedList = async (
   pageSize: number,
 ) => {
   const res = await api.get<ApiResponse<FeedListData>>(
-    `feeds/users/${userId}`,
+    `/feeds/users/${userId}`,
     {
       params: {
         pageNumber,
@@ -78,7 +78,7 @@ export const getOtherUserLinkedFeedList = async (
   pageSize: number,
 ) => {
   const res = await api.get<ApiResponse<FeedListData>>(
-    `feeds/users/${userId}/linked`,
+    `/feeds/users/${userId}/linked`,
     {
       params: {
         pageNumber,
@@ -113,7 +113,7 @@ export const uploadFeedReactions = async (
 
 // 피드 신고하기
 export const reportFeed = async (feedId: number, report: string) => {
-  const res = await api.post<ApiResponse<string>>(`feeds/${feedId}/reports`, {
+  const res = await api.post<ApiResponse<string>>(`/feeds/${feedId}/reports`, {
     report,
   });
   if (__DEV__) console.log('피드 신고하기 : ', res.data);
@@ -132,7 +132,7 @@ export const deleteFeed = async (feedId: number) => {
 // 마이페이지
 // 내가 작성한 피드 목록 조회
 export const getMyFeedList = async (pageNumber: number, pageSize: number) => {
-  const res = await api.get<ApiResponse<MyFeedListData>>('feeds/me', {
+  const res = await api.get<ApiResponse<MyFeedListData>>('/feeds/me', {
     params: { pageNumber, pageSize },
   });
   if (__DEV__) console.log('내가 작성한 피드 목록 조회 : ', res.data);
@@ -144,7 +144,7 @@ export const getMyLinkedFeedList = async (
   pageNumber: number,
   pageSize: number,
 ) => {
-  const res = await api.get<ApiResponse<FeedListData>>('feeds/me/linked', {
+  const res = await api.get<ApiResponse<FeedListData>>('/feeds/me/linked', {
     params: { pageNumber, pageSize },
   });
   if (__DEV__) console.log('내가 함께한 피드 목록 조회 : ', res.data);

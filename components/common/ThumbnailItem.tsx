@@ -6,7 +6,6 @@ import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { ToastCheckIcon } from '@/assets';
 import { width, height, radius, fontSize } from '@/theme/globalStyles';
-import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 interface ThumbnailItemProps {
   asset: MediaLibrary.Asset;
@@ -29,30 +28,8 @@ export default function ThumbnailItem({
 }: ThumbnailItemProps) {
   const [uri, setUri] = useState<string | null>(null);
 
-  // const selectedImages = useFeedWriteStore((state) => state.selectedImages);
-  // const setSelectedImages = useFeedWriteStore(
-  //   (state) => state.setSelectedImages,
-  // );
-
-  // const isSelected = selectedImages.some((item) => item.uri === asset.uri);
-
   const imageHeight =
     aspectRatio === '9:16' ? (IMAGE_SIZE * 16) / 9 : IMAGE_SIZE;
-
-  // const getSelectionNumber = (photoUri: string) => {
-  //   const index = selectedImages.findIndex((item) => item.uri === photoUri);
-  //   return index >= 0 ? index + 1 : null;
-  // };
-
-  // const handleToggle = () => {
-  //   const updated = isSelected
-  //     ? selectedImages.filter((item) => item.uri !== asset.uri)
-  //     : selectedImages.length < maxSelect
-  //       ? [...selectedImages, { uri: asset.uri, filename: asset.filename }]
-  //       : selectedImages;
-
-  //   setSelectedImages(updated);
-  // };
 
   useEffect(() => {
     setUri(asset.uri);

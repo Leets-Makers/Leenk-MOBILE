@@ -19,14 +19,14 @@ export default function FeedPage() {
   const { userInfo, setUserInfo } = useUserStore();
 
   useEffect(() => {
-    if (!userInfo) {
-      refetch().then(() => {
-        if (fetchedUserInfo) {
-          setUserInfo(fetchedUserInfo);
-        }
-      });
+    refetch();
+  }, [refetch]);
+
+  useEffect(() => {
+    if (fetchedUserInfo && !userInfo) {
+      setUserInfo(fetchedUserInfo);
     }
-  }, [userInfo, fetchedUserInfo, refetch, setUserInfo]);
+  }, [fetchedUserInfo, userInfo, setUserInfo]);
 
   useEffect(() => {
     if (firstLaunch === true) {

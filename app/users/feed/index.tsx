@@ -1,18 +1,16 @@
 import { Container } from '@/app/(post)/feed';
 import { FeedCard, Header, Loading } from '@/components';
 import TabMenu from '@/components/feed/TabMenu';
-import { FlatList, View } from 'react-native';
+import { FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { height } from '@/theme/globalStyles';
 import useFeedList from '@/hooks/useFeedList';
 import { useLocalSearchParams } from 'expo-router';
-import MyTotalReactionCount from '@/components/feed/MyTotalReactionCount';
 
 export default function OtherUserProfilePage() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const [tab, setTab] = useState<'uploaded' | 'joined'>('uploaded');
-  console.log('받은 userId:', userId);
   const {
     data: feeds,
     loadMore,

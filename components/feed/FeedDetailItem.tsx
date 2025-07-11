@@ -45,22 +45,16 @@ export default function FeedDetailItem({ feed }: Props) {
   const isAuthor = feed.author.userId === userInfo?.id;
 
   const handleDelete = useCallback(() => {
-    console.log('작성자 id:', feed.author.userId);
-    console.log('현재 유저 id:', userInfo?.id);
     closeModal();
     openModal('deleteConfirm');
   }, [closeModal, openModal]);
 
   const handleReport = useCallback(() => {
-    console.log('작성자 id:', feed.author.userId);
-    console.log('현재 유저 id:', userInfo?.id);
     closeModal();
     openModal('feedReport');
   }, [closeModal, openModal]);
 
   const handleConfirmDelete = useCallback(async () => {
-    console.log('작성자 id:', feed.author.userId);
-    console.log('현재 유저 id:', userInfo?.id);
     try {
       await deleteFeed(feed.feedId);
       showToast('삭제 완료!', 'success');

@@ -67,7 +67,7 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
 
   useEffect(() => {
     refresh();
-  }, [fetchFunction]);
+  }, [refresh]);
 
   return {
     data,

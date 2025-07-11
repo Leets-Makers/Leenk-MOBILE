@@ -92,6 +92,10 @@ export default function FeedWritePage() {
     router.push('/feed/link-members');
   };
 
+  if (!userInfo) {
+    return <Loading />;
+  }
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}

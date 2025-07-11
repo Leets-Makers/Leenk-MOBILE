@@ -26,7 +26,6 @@ export default function UserListModalContent({
       showsVerticalScrollIndicator={true}
       renderItem={({ item }) => (
         <View onStartShouldSetResponder={() => true}>
-          {/* TODO: 클릭 시 해당 유저의 프로필로 넘어가도록 추가 */}
           <Pressable
             onPress={() => {
               onClose();

@@ -69,7 +69,7 @@ export default function useProfileImagePicker({
     });
 
     setPageInfo({ endCursor, hasNextPage });
-  }, [pageInfo]);
+  }, [pageInfo?.endCursor]);
 
   // 선택 상태 변경 (단일 선택)
   const toggleSelect = (photo: MediaLibrary.Asset) => {

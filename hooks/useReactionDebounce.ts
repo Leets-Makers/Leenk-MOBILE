@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import debounce from 'lodash/debounce';
+import { useCallback, useEffect, useState } from 'react';
+import debounce from 'lodash.debounce';
 import { uploadFeedReactions } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { AxiosError } from 'axios';
