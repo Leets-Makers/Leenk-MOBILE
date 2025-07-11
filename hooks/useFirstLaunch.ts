@@ -1,52 +1,41 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function useFirstLaunch() {
+/**
+ * 공통 로직: key만 다르게 주입받아 처리
+ */
+function useFirstLaunchBase(storageKey: string) {
   const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);
+
   useEffect(() => {
     const checkFirstLaunch = async () => {
       try {
-        const value = await AsyncStorage.getItem('launched');
+        const value = await AsyncStorage.getItem(storageKey);
         if (value == null) {
-          await AsyncStorage.setItem('launched', 'true');
+          await AsyncStorage.setItem(storageKey, 'true');
           setFirstLaunch(true);
         } else {
           setFirstLaunch(false);
         }
       } catch (error) {
         console.warn('Failed to check first launch status:', error);
-        // 에러 발생 시 기본값으로 false 설정
         setFirstLaunch(false);
       }
     };
 
     checkFirstLaunch();
-  }, []);
+  }, [storageKey]); // storageKey 변경에 대응할 수 있게 의존성 추가
 
   return firstLaunch;
 }
 
+/**
+ * 실제 사용하는 훅들
+ */
+export default function useFirstLaunch() {
+  return useFirstLaunchBase('launched');
+}
+
 export function useDetailFirstLaunch() {
-  const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const checkFirstLaunch = async () => {
-      try {
-        const value = await AsyncStorage.getItem('detailLaunched');
-        if (value == null) {
-          await AsyncStorage.setItem('detailLaunched', 'true');
-          setFirstLaunch(true);
-        } else {
-          setFirstLaunch(false);
-        }
-      } catch (error) {
-        console.warn('Failed to check first launch status:', error);
-        setFirstLaunch(false);
-      }
-    };
-
-    checkFirstLaunch();
-  }, []);
-
-  return firstLaunch;
+  return useFirstLaunchBase('detailLaunched');
 }
