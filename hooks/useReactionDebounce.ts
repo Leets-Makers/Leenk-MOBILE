@@ -24,6 +24,17 @@ export default function useReactionDebounce(
       } catch (error) {
         const err = error as AxiosError;
 
+        console.error('❌ Reaction API Error:', err);
+
+        if (err.response) {
+          console.error('Response data:', err.response.data);
+          console.error('Response status:', err.response.status);
+        } else if (err.request) {
+          console.error('No response received. Request:', err.request);
+        } else {
+          console.error('Error setting up request:', err.message);
+        }
+
         if (err.response?.status === 403) {
           showToast('내 피드에는 공감할 수 없어!', 'error');
         } else {
