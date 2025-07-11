@@ -6,10 +6,17 @@ import { height, SCREEN_HEIGHT, width } from '@/theme/globalStyles';
 
 interface Props {
   visible: boolean;
+  dismissOnBackdropPress?: boolean;
+  onClose?: () => void;
   children: React.ReactNode;
 }
 
-export default function BottomSheetModal({ visible, children }: Props) {
+export default function BottomSheetModal({
+  visible,
+  dismissOnBackdropPress = false,
+  onClose,
+  children,
+}: Props) {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   useEffect(() => {
@@ -30,7 +37,7 @@ export default function BottomSheetModal({ visible, children }: Props) {
 
   return (
     <Modal transparent visible={visible} animationType="none">
-      <Overlay />
+      <Overlay onPress={dismissOnBackdropPress ? onClose : undefined} />
       <AnimatedContainer style={{ transform: [{ translateY }] }}>
         {children}
       </AnimatedContainer>
