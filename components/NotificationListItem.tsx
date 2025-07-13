@@ -66,7 +66,7 @@ export default function NotificationListItem({
           </>
         );
 
-      case 'FEED_TAG':
+      case 'FEED_TAG': {
         const name = item.content.authorName ?? '내용 없음';
         const josa = getSubjectJosa(name);
         return (
@@ -75,6 +75,7 @@ export default function NotificationListItem({
             <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
           </>
         );
+      }
 
       default:
         return (

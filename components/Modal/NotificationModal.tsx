@@ -28,6 +28,7 @@ export default function NotificationModal({
   const isScrollable = data.length > 5;
   const containerHeight = isScrollable ? 500 * height : 348 * height;
 
+  // TODO: Time Text에 시간 추가
   return (
     <Modal transparent visible={isOpen}>
       <Overlay onPress={onClose}>
@@ -43,7 +44,7 @@ export default function NotificationModal({
                       <FeedIcon width={16} stroke={colors.primary} />
                       <TypeText>피드</TypeText>
                     </LeftSection>
-                    <TimeText>n분전</TimeText>
+                    <TimeText> </TimeText>
                   </Row>
                   <ContentContainer>
                     <Title>{item.body}</Title>
@@ -57,7 +58,7 @@ export default function NotificationModal({
                       <FeedIcon width={16} stroke={colors.primary} />
                       <TypeText>피드</TypeText>
                     </LeftSection>
-                    <TimeText>n분전</TimeText>
+                    <TimeText> </TimeText>
                   </Row>
                   <ContentContainer>
                     <Title>{item.body}</Title>

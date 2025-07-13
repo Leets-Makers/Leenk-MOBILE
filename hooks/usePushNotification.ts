@@ -1,6 +1,7 @@
 import { PermissionsAndroid, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import { patchNotificationsToken } from '@/api/users/notification.api';
+import { saveFcmToken } from '@/utils/tokenStorage';
 
 export async function requestNotificationPermission() {
   // Android 13 이상 알림 권한 요청
@@ -24,7 +25,7 @@ export async function requestNotificationPermission() {
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (!enabled) {
-    console.log('FCM 권한 요청 거부됨');
+    if (__DEV__) console.log('FCM 권한 요청 거부됨');
     return null;
   }
 
@@ -32,7 +33,19 @@ export async function requestNotificationPermission() {
 
   // FCM 토큰 가져오기
   const token = await messaging().getToken();
-  console.log('FCM Token:', token);
+  await saveFcmToken(token);
 
+  // 프로필 페이지 없이 시작할 경우 해당 코드 활성화 시키기
+  // const registerFcmToken = async () => {
+  //   if (!token) return;
+  //   try {
+  //     await patchNotificationsToken(token);
+  //     console.log('FCM 토큰 서버 등록 성공');
+  //   } catch (error) {
+  //     console.error('FCM 토큰 서버 등록 실패:', error);
+  //   }
+  // };
+
+  // registerFcmToken();
   return token;
 }

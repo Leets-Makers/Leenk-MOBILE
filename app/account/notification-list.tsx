@@ -11,15 +11,18 @@ import { RefreshControl } from 'react-native-gesture-handler';
 import { ModalData, Notification } from '@/types/notification';
 import NotificationListItem from '@/components/NotificationListItem';
 import { width } from '@/theme/globalStyles';
-import { useProfileStore } from '@/stores/profileStore';
 import NotificationModal from '@/components/Modal/NotificationModal';
+import { useToastStore } from '@/stores/toastStore';
+import { useUserStore } from '@/stores/userStore';
 
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const { userId, setUserId } = useProfileStore();
+  const { userInfo } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<ModalData[]>([]);
+
+  const { showToast } = useToastStore();
 
   // 알림 상세 모달 열기
   const openDetailModal = (details: ModalData[]) => {
@@ -32,15 +35,10 @@ export default function NotificationListPage() {
     try {
       const notifications = await getNotifications(0, 20);
       setData([...notifications.notificationResponses]);
-
-      // userId는 첫 번째 알림에서만 가져오기 (알림 없을 경우 대비)
-      if (notifications.notificationResponses.length > 0) {
-        setUserId(notifications.notificationResponses[0].userId);
-      }
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
     }
-  }, [setUserId]);
+  }, []);
 
   // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
@@ -57,14 +55,15 @@ export default function NotificationListPage() {
   // 알림 읽음 처리
   const handlePress = async (notificationId: string) => {
     try {
-      await markNotificationAsRead(userId, notificationId);
+      if (userInfo) await markNotificationAsRead(userInfo?.id, notificationId);
       setData((prev) =>
         prev.map((item) =>
           item.id === notificationId ? { ...item, isRead: true } : item,
         ),
       );
     } catch (error) {
-      console.error('Failed to mark notification as read:', error);
+      if (__DEV__) console.error('Failed to mark notification as read:', error);
+      showToast('알림을 불러오는데 실패했습니다.', 'error');
     }
   };
 
