@@ -1,16 +1,35 @@
+import { useEffect, useState } from 'react';
+import styled from 'styled-components/native';
 import { Header } from '@/components';
 import MyPageButton from '@/components/mypage/MypageButton';
 import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
-import { useState } from 'react';
-import styled from 'styled-components/native';
-import { patchNotificationsSetting } from '@/api/users/notification.api';
+import {
+  getNotificationsSetting,
+  patchNotificationsSetting,
+} from '@/api/users/notification.api';
 
 export default function SettingNotificationsPage() {
   const [toggles, setToggles] = useState({
     feedLike: false,
     newFeedPost: false,
   });
+
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const settings = await getNotificationsSetting();
+        setToggles({
+          feedLike: settings.isNewReactionNotify,
+          newFeedPost: settings.isNewFeedNotify,
+        });
+      } catch (error) {
+        if (__DEV__) console.error('알림 설정을 불러오지 못했습니다:', error);
+      }
+    };
+
+    getSettings();
+  }, []);
 
   const toggleKeys = [
     { key: 'feedLike', label: '피드 좋아요', apiKey: 'newReactionNotify' },
@@ -19,6 +38,7 @@ export default function SettingNotificationsPage() {
 
   const handleToggle = async (key: keyof typeof toggles, apiKey: string) => {
     const newValue = !toggles[key];
+
     setToggles((prev) => ({
       ...prev,
       [key]: newValue,
@@ -27,8 +47,8 @@ export default function SettingNotificationsPage() {
     try {
       await patchNotificationsSetting({ [apiKey]: newValue });
     } catch (error) {
-      console.error('Failed to update notification setting:', error);
-      // 실패 시 다시 원래 값으로 되돌리기
+      console.error('알림 설정 업데이트 실패:', error);
+      // 실패 시 이전 상태로 복구
       setToggles((prev) => ({
         ...prev,
         [key]: !newValue,
