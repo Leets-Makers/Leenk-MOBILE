@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>leenk</string>
-          <string>com.example.leenk</string>
+          <string>com.leetsmakers.leenk</string>
         </array>
       </dict>
     </array>

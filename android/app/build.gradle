@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services' 
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
@@ -87,12 +88,12 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.example.leenk'
+    namespace 'com.leetsmakers.leenk'
     defaultConfig {
     manifestPlaceholders += [
         EXPO_PUBLIC_NATIVE_APP_KEY: project.hasProperty("EXPO_PUBLIC_NATIVE_APP_KEY") ? project.EXPO_PUBLIC_NATIVE_APP_KEY : ""
     ]
-        applicationId 'com.example.leenk'
+        applicationId 'com.leetsmakers.leenk'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -151,6 +152,12 @@ android {
 }
 
 dependencies {
+
+    // firebase setting
+    implementation platform('com.google.firebase:firebase-bom:33.16.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging'
+
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 

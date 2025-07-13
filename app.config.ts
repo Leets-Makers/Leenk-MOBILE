@@ -18,18 +18,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.example.leenk',
+    bundleIdentifier: 'com.leetsmakers.leenk',
     infoPlist: {
       NSPhotoLibraryUsageDescription:
         '사진을 선택하려면 접근 권한이 필요합니다.',
     },
   },
   android: {
-    package: 'com.example.leenk',
+    icon: './assets/images/ic_logo_round.png',
+    package: 'com.leetsmakers.leenk',
+    googleServicesFile: './android/app/google-services.json',
     edgeToEdgeEnabled: true,
     adaptiveIcon: {
-      foregroundImage: './assets/images/ic_logo.png',
-      backgroundColor: '#ffffff',
+      // foregroundImage: './assets/images/ic_logo_round.png',
+      // backgroundColor: '#ffffff',
     },
     permissions: [
       'READ_MEDIA_IMAGES',
@@ -41,7 +43,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     bundler: 'metro',
     output: 'static',
-    favicon: './assets/images/ic_logo.png',
+    favicon: './assets/images/ic_logo_round.png',
   },
   plugins: [
     [
@@ -73,5 +75,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   experiments: {
     typedRoutes: true,
+  },
+  extra: {
+    eas: {
+      projectId: 'e15a0ece-03d1-48b2-939f-1e4b8b44b498',
+    },
   },
 });

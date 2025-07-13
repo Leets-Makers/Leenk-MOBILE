@@ -18,6 +18,8 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { infoTerm, serviceTerm } from '@/constants/termsText';
 import LinearGradient from 'react-native-linear-gradient';
+import { updateUserAgreement } from '@/api/users/patchUserEachInfo.api';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function TermsPage() {
   const [allCheck, setAllCheck] = useState(false);
@@ -29,6 +31,7 @@ export default function TermsPage() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { showToast } = useToastStore();
 
   const toggleAllCheck = () => {
     const next = !allCheck;
@@ -49,8 +52,16 @@ export default function TermsPage() {
     setAllCheck(serviceCheck && next);
   };
 
-  const handleNext = () => {
-    router.push('/signup/verify');
+  const handleNext = async () => {
+    try {
+      await updateUserAgreement({
+        termsService: serviceCheck,
+        privacyPolicy: infoCheck,
+      });
+      router.push('/signup/verify');
+    } catch (error) {
+      showToast('약관 동의에 실패했어.', 'error');
+    }
   };
 
   return (
@@ -98,7 +109,10 @@ export default function TermsPage() {
         </CustomButton>
       </BottomButtonContainer>
 
-      <BottomSheetModal visible={visibleModal !== null}>
+      <BottomSheetModal
+        visible={visibleModal !== null}
+        dismissOnBackdropPress={true}
+      >
         <ModalContainer>
           <TermsTitle>
             {visibleModal === 'service'

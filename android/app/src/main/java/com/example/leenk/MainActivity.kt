@@ -1,4 +1,4 @@
-package com.example.leenk
+package com.leetsmakers.leenk
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

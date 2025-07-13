@@ -7,7 +7,7 @@ import {
   ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme, Platform } from 'react-native';
@@ -15,6 +15,8 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from '@/components/Toast';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
+import NotificationInitializer from '@/hooks/useNotification';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -64,28 +66,43 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const pathname = usePathname();
+
+  const excludeSafeAreaPages = ['/feed/write', /^\/feed\/[^/]+$/];
+  const isExcluded = excludeSafeAreaPages.some((pattern) =>
+    pattern instanceof RegExp ? pattern.test(pathname) : pattern === pathname,
+  );
 
   return (
-    <SafeAreaProvider>
-      {/* StatusBar 설정 */}
-      <StatusBar
-        style={colorScheme === 'dark' ? 'light' : 'dark'}
-        backgroundColor="#F0ECFE"
-        translucent={Platform.OS === 'ios'}
-      />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <NotificationInitializer />
 
-      {/* iOS 대응: SafeAreaView top 영역 배경 적용 */}
-      <SafeAreaView edges={['top']} style={{ backgroundColor: '#F0ECFE' }} />
+        <StatusBar
+          style={colorScheme === 'dark' ? 'light' : 'dark'}
+          backgroundColor="#F0ECFE"
+          translucent={Platform.OS === 'ios'}
+        />
 
-      {/* 앱 전체 Theme 적용 */}
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        ></Stack>
-        <Toast />
-      </ThemeProvider>
-    </SafeAreaProvider>
+        {/* 조건부 SafeAreaView */}
+        {!isExcluded && (
+          <SafeAreaView
+            edges={['top']}
+            style={{ backgroundColor: '#F0ECFE' }}
+          />
+        )}
+
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          />
+          <Toast />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

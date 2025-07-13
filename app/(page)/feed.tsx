@@ -15,7 +15,7 @@ export default function FeedPage() {
   const firstLaunch = useFirstLaunch();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
-  const { userInfo: fetchedUserInfo, refetch, loading } = useUserInfo();
+  const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
 
   useEffect(() => {

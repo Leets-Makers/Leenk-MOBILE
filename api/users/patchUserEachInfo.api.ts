@@ -1,5 +1,25 @@
 import api from '@/api/api';
 
+// 약관 동의
+export const updateUserAgreement = async ({
+  termsService,
+  privacyPolicy,
+}: {
+  termsService: boolean;
+  privacyPolicy: boolean;
+}) => {
+  try {
+    const response = await api.patch('/users/agreement', {
+      termsService,
+      privacyPolicy,
+    });
+    console.log('updateUserAgreement: ', response.data);
+  } catch (error: any) {
+    console.error('updateUserAgreement 오류:', error.message);
+    throw error;
+  }
+};
+
 // 카톡 ID 수정
 export const updateKakaoTalkId = async ({
   kakaoTalkId,

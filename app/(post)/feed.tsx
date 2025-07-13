@@ -1,4 +1,3 @@
-// 모달 -> 피드 글 쓰기 -> 피드 이미지 선택 페이지
 import React, { useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
@@ -13,8 +12,10 @@ import { sizeStyles } from '@/components/common/Button/CustomButton.styled';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 import { Media } from '@/types/feed';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PostFeedPage() {
+  const insets = useSafeAreaInsets();
   const selectedUrisLength = useFeedWriteStore(
     (state) => state.selectedImages.length,
   );
@@ -43,14 +44,12 @@ export default function PostFeedPage() {
     setIsUploading(true);
 
     try {
-      // 1. 파일명 추출
       const fileNames = selectedImages.map((img) => img.filename);
       console.log('파일명: ', fileNames);
-      // 2. presigned url 요청
+
       const presignedUrls = await getPresignedUrl(fileNames);
       console.log('presigned url : ', presignedUrls);
 
-      // 3. S3 업로드 및 mediaUrl 배열 생성
       const mediaArray: Media[] = [];
 
       for (let i = 0; i < presignedUrls.length; i++) {
@@ -61,25 +60,22 @@ export default function PostFeedPage() {
         if (!foundImage) continue;
         const { uri } = foundImage;
 
-        // S3 업로드
         try {
           await uploadImageToS3(mediaUrl, uri);
         } catch (uploadError) {
           console.error(`S3 업로드 실패 (${fileName}):`, uploadError);
-          continue; // 실패한 이미지는 media 에 추가하지 않음
+          continue;
         }
 
-        // media 배열에 추가
         mediaArray.push({
           position: i + 1,
           mediaUrl: mediaUrl.split('?')[0],
           mediaType: 'IMAGE',
         });
       }
-      // 4. 전역 상태 업데이트
+
       setMediaUrls(mediaArray);
       console.log('MediaUrls : ', mediaArray);
-      // 다음 페이지 이동
       router.push('/(post)/feed/write');
     } catch (error) {
       console.error('이미지 업로드 중 에러 발생:', error);
@@ -104,7 +100,7 @@ export default function PostFeedPage() {
 
       <View
         style={{
-          paddingBottom: 32 * height,
+          paddingBottom: 10 * height + insets.bottom,
           paddingTop: 16 * height,
         }}
       >

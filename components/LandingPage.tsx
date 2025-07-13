@@ -58,8 +58,8 @@ export default function LandingPage() {
         } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
           router.replace('/(page)/feed');
-          // setName('마스터');
-          // setPosition('BE');
+          // setName('이유진');
+          // setPosition('FE');
           // setCardinal(4);
           // router.push('/signup/terms');
         }

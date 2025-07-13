@@ -43,19 +43,23 @@ export default function MenuModal({
         <MenuContainer $isWrite={isWrite} $topPosition={topPosition}>
           {isWrite ? (
             <>
-              <MenuItemWrapper onPress={onPressFirst}>
+              {/* <MenuItemWrapper onPress={onPressFirst}>
                 {({ pressed }) => (
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
                     <LeenkIcon width={20 * width} height={20 * width} />
                     <MenuText $isWrite={isWrite}>링크 글 쓰기</MenuText>
                   </MenuItem>
                 )}
-              </MenuItemWrapper>
+              </MenuItemWrapper> */}
 
               <MenuItemWrapper onPress={onPressSecond}>
                 {({ pressed }) => (
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
-                    <FeedIcon width={20 * width} height={20 * width} />
+                    <FeedIcon
+                      width={20 * width}
+                      height={20 * width}
+                      stroke={colors.primary}
+                    />
                     <MenuText $isWrite={isWrite}>피드 글 쓰기</MenuText>
                   </MenuItem>
                 )}
