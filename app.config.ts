@@ -23,6 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       NSPhotoLibraryUsageDescription:
         '사진을 선택하려면 접근 권한이 필요합니다.',
     },
+    googleServicesFile: './ios/GoogleService-Info.plist',
   },
   android: {
     icon: './assets/images/ic_logo_round.png',
