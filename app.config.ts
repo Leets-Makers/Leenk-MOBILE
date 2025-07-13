@@ -18,7 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.example.leenk',
+    bundleIdentifier: 'com.leetsmakers.leenk',
     infoPlist: {
       NSPhotoLibraryUsageDescription:
         '사진을 선택하려면 접근 권한이 필요합니다.',
@@ -26,7 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     icon: './assets/images/ic_logo_round.png',
-    package: 'com.example.leenk',
+    package: 'com.leetsmakers.leenk',
     googleServicesFile: './android/app/google-services.json',
     edgeToEdgeEnabled: true,
     adaptiveIcon: {
