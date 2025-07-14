@@ -121,7 +121,7 @@ export default function FeedDetailPage() {
         kebabPress={() => openModal('menu')}
         style={{
           position: 'absolute',
-          top: 0,
+          top: 35,
           width: '100%',
           zIndex: 20,
           paddingHorizontal: CONTAINER_PADDING * width,
