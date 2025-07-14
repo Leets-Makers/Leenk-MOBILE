@@ -114,7 +114,7 @@ export default function FeedWritePage() {
             isBackWhite
             style={{
               position: 'absolute',
-              top: 0,
+              top: 35,
               width: '100%',
               zIndex: 20,
               paddingHorizontal: 16 * width,
