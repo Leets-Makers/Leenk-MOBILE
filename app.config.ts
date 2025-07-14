@@ -9,6 +9,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/images/ic_logo.png',
   scheme: 'leenk',
+  jsEngine: 'jsc',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   splash: {
@@ -23,11 +24,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       NSPhotoLibraryUsageDescription:
         '사진을 선택하려면 접근 권한이 필요합니다.',
     },
+    googleServicesFile: './GoogleService-Info.plist',
   },
   android: {
     icon: './assets/images/ic_logo_round.png',
     package: 'com.leetsmakers.leenk',
-    googleServicesFile: './android/app/google-services.json',
+    googleServicesFile: './google-services.json',
     edgeToEdgeEnabled: true,
     adaptiveIcon: {
       // foregroundImage: './assets/images/ic_logo_round.png',
@@ -58,6 +60,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
+    ['@react-native-firebase/app'],
     [
       'expo-build-properties',
       {
@@ -68,6 +71,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           manifestPlaceholders: {
             EXPO_PUBLIC_NATIVE_APP_KEY: process.env.EXPO_PUBLIC_NATIVE_APP_KEY,
           },
+        },
+        ios: {
+          'useFrameworks!': 'static',
         },
       },
     ],
@@ -80,5 +86,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     eas: {
       projectId: 'e15a0ece-03d1-48b2-939f-1e4b8b44b498',
     },
+    googleServicesFile: './GoogleService-Info.plist',
   },
 });

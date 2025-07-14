@@ -7,6 +7,9 @@ node_modules/
 /android/app/google-services.json
 /ios/GoogleService-Info.plist
 
+/google-services.json
+/GoogleService-Info.plist
+
 # Expo
 .expo/
 dist/
