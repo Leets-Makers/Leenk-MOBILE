@@ -101,7 +101,7 @@ export default function FeedWritePage() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? -40 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? -90 : 0}
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
@@ -110,6 +110,7 @@ export default function FeedWritePage() {
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider mediaUrls={media} />
           <GradientOverlay type="top" heightValue={160 * height} />
+          <GradientOverlay type="bottom" heightValue={230 * height} />
           <Header
             isBackWhite
             style={{
@@ -120,7 +121,9 @@ export default function FeedWritePage() {
               paddingHorizontal: 16 * width,
             }}
           />
-          <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
+          <View
+            style={{ paddingHorizontal: 16, marginBottom: 24, zIndex: 9999 }}
+          >
             <View
               style={{
                 flexDirection: 'row',
