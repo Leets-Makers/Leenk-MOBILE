@@ -1,6 +1,6 @@
 import { CheckBox, CustomButton, Header } from '@/components';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
-import { StyledSubText } from './profile';
+import { StyledSubText } from '@/app/signup/profile';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import colors from '@/theme/color';
 import {
@@ -161,7 +161,7 @@ const AllAgreeButton = styled.Pressable`
   flex-direction: row;
   align-items: center;
   gap: ${10 * width}px;
-  margin-bottom: ${8 * height}px;
+  margin: ${28 * height} 0 ${8 * height} 0px;
 `;
 
 const ButtonText = styled.Text`
