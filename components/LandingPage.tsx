@@ -10,7 +10,7 @@ import {
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CustomButton } from '@/components';
 import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
@@ -19,6 +19,7 @@ import { kakaoLogin } from '@/api/login/kakao.api';
 import { saveAccessToken } from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
 import { useToastStore } from '@/stores/toastStore';
+import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -26,8 +27,13 @@ export default function LandingPage() {
   const [waitModal, setWaitModal] = useState(false);
   const weethSiteURL = 'https://www.weeth.site/';
   const { showToast } = useToastStore();
+  const { fromLogout } = useLocalSearchParams();
 
   const { setName, setPosition, setCardinal } = useProfileStore();
+
+  const shouldBlock = fromLogout === 'true';
+
+  useBlockBackHandler(shouldBlock);
 
   const handleKakaoLogin = async () => {
     setName('이유진');

@@ -58,7 +58,7 @@ export default function TermsPage() {
         termsService: serviceCheck,
         privacyPolicy: infoCheck,
       });
-      router.push('/signup/verify');
+      router.replace('/signup/verify');
     } catch (error) {
       showToast('약관 동의에 실패했어.', 'error');
     }

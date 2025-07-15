@@ -11,7 +11,7 @@ import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { useToastStore } from '@/stores/toastStore';
 
 export default function VerifyPage() {
-  useBlockBackHandler();
+  useBlockBackHandler(true);
 
   const router = useRouter();
   const { name, cardinal, position } = useProfileStore();

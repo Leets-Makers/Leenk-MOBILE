@@ -1,23 +1,36 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { BackHandler } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
 
-export const useBlockBackHandler = () => {
-  const navigation = useNavigation();
+export const useBlockBackHandler = (shouldBlock: boolean): void => {
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
-  useEffect(() => {
-    // iOS: 제스처 및 헤더 뒤로가기 제거
-    navigation.setOptions?.({
-      gestureEnabled: false,
-      headerBackVisible: false,
-    });
+  useFocusEffect(
+    useCallback(() => {
+      if (!shouldBlock) return;
 
-    // Android: 하드웨어 뒤로가기 차단
-    const subscription = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => true,
-    );
+      // iOS: 뒤로가기 제스처 및 버튼 막기
+      if (navigation.setOptions) {
+        navigation.setOptions({
+          gestureEnabled: false,
+          headerBackVisible: false,
+        });
+      }
 
-    return () => subscription.remove();
-  }, [navigation]);
+      // Android: 하드웨어 뒤로가기 막기
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => true,
+      );
+
+      return () => {
+        subscription.remove();
+      };
+    }, [navigation, shouldBlock]),
+  );
 };
