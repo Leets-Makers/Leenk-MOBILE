@@ -75,7 +75,7 @@ export default function TermsPage() {
       </StyledSubText>
 
       <AllAgreeButton onPress={toggleAllCheck}>
-        <CheckBox checked={allCheck} />
+        <CheckBox checked={allCheck} onPress={toggleAllCheck} />
         <ButtonText>모두 동의할게</ButtonText>
       </AllAgreeButton>
 
