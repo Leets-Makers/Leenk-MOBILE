@@ -30,8 +30,12 @@ export default function LandingPage() {
   const { setName, setPosition, setCardinal } = useProfileStore();
 
   const handleKakaoLogin = async () => {
+    setName('이유진');
+    setPosition('FE');
+    setCardinal(4);
+    router.push('/signup/terms');
     //카카오 로그인 로직
-    try {
+    /*  try {
       const token = await login();
       const accessToken = token?.accessToken;
 
@@ -81,7 +85,7 @@ export default function LandingPage() {
       }
     } catch (e) {
       if (__DEV__) console.error('카카오 로그인 실패:', e);
-    }
+    } */
   };
 
   const handleSignUp = () => {

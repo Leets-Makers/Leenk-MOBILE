@@ -34,8 +34,8 @@ const refreshAccessToken = async () => {
 // 요청 인터셉터
 api.interceptors.request.use(
   async (config) => {
-    const token = await getAccessToken();
-
+    // const token = await getAccessToken();
+    const token = process.env.EXPO_PUBLIC_TOKEN;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

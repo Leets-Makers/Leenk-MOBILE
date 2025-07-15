@@ -7,13 +7,19 @@ import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
 import { Position } from '@/constants/Position';
+import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function VerifyPage() {
+  useBlockBackHandler();
+
   const router = useRouter();
   const { name, cardinal, position } = useProfileStore();
+  const { showToast } = useToastStore();
 
   const handleCancel = () => {
-    router.back();
+    router.replace('/');
+    showToast('관리자에게 문의해주세요.', 'error');
   };
 
   const handleRight = () => {
@@ -22,7 +28,6 @@ export default function VerifyPage() {
 
   return (
     <Container>
-      <Header />
       <ProfileTitleText>너의 계정이 맞는지 확인해 줘</ProfileTitleText>
 
       {name && cardinal && position && typeof cardinal === 'number' && (
@@ -70,6 +75,7 @@ const Container = styled.View`
   align-items: center;
   position: relative;
   padding-horizontal: ${20 * width}px;
+  padding-top: ${44 * height}px;
 `;
 
 const ButtonContainer = styled.View`
