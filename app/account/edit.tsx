@@ -13,10 +13,12 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useProfileStore } from '@/stores/profileStore';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function AccountEdit() {
   const { type } = useLocalSearchParams();
   const [edituserInfo, setEdituserInfo] = useState('');
+  const { showToast } = useToastStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const buttonTranslateY = useKeyboardAnimation(10);
@@ -44,19 +46,22 @@ export default function AccountEdit() {
       if (type === 'kakaoTalkId') {
         setkakaoTalkId(edituserInfo);
         await updateKakaoTalkId({ kakaoTalkId: edituserInfo });
+        showToast('카톡 아이디가 수정됐어', 'success');
       } else if (type === 'mbti') {
         setMbti(edituserInfo);
         await updateMbti({ mbti: edituserInfo });
+        showToast('MBTI가 수정됐어', 'success');
       } else if (type === 'introduction') {
         setintroduction(edituserInfo);
         await updateIntroduction({ introduction: edituserInfo });
+        showToast('자기소개가 수정됐어', 'success');
       } else {
         console.warn('알 수 없는 수정 타입입니다:', type);
       }
 
       router.back();
     } catch (error) {
-      console.error('[AccountEdit] 수정 실패:', error);
+      showToast('프로필 수정을 실패했어:', 'error');
     }
   };
 
