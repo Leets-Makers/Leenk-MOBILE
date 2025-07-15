@@ -79,7 +79,7 @@ function RootLayoutNav() {
         <NotificationInitializer />
 
         <StatusBar
-          style={colorScheme === 'dark' ? 'light' : 'dark'}
+          style="dark"
           backgroundColor="#F0ECFE"
           translucent={Platform.OS === 'ios'}
         />
@@ -92,9 +92,7 @@ function RootLayoutNav() {
           />
         )}
 
-        <ThemeProvider
-          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-        >
+        <ThemeProvider value={DefaultTheme}>
           <Stack
             screenOptions={{
               headerShown: false,
