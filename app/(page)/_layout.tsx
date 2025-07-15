@@ -86,8 +86,8 @@ export default function TabLayout() {
                   >
                     {IconComponent && (
                       <IconComponent
-                        width={24}
-                        height={24}
+                        width={IconComponent === PlusIcon ? 28 : 24}
+                        height={IconComponent === PlusIcon ? 28 : 24}
                         stroke={
                           tab.isSpecial
                             ? '#fff'
@@ -97,6 +97,7 @@ export default function TabLayout() {
                         }
                       />
                     )}
+
                     {tab.label !== '' && (
                       <TabLabel $focused={isFocused}>{tab.label}</TabLabel>
                     )}
