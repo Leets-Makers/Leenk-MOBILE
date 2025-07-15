@@ -17,8 +17,7 @@ export default function Splash() {
 
 const Container = styled.View`
   flex: 1;
-  margin-top: ${200 * height}px;
-  justify-content: center;
+  align-items: center;
   background-color: ${colors.bg[2]};
 `;
 
@@ -26,4 +25,5 @@ const LogoImage = styled(Image)`
   width: ${300 * width}px;
   aspect-ratio: ${300 / 171};
   height: auto;
+  margin-top: ${250 * height};
 `;
