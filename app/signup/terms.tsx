@@ -81,7 +81,7 @@ export default function TermsPage() {
 
       <CheckItem onPress={() => setVisibleModal('service')}>
         <CheckLeft>
-          <CheckBox checked={serviceCheck} noBox />
+          <CheckBox checked={serviceCheck} onPress={toggleServiceCheck} noBox />
           <CheckText>서비스 이용약관 (필수)</CheckText>
         </CheckLeft>
         <RightArrowIcon />
@@ -89,7 +89,7 @@ export default function TermsPage() {
 
       <CheckItem onPress={() => setVisibleModal('info')}>
         <CheckLeft>
-          <CheckBox checked={infoCheck} noBox />
+          <CheckBox checked={infoCheck} onPress={toggleInfoCheck} noBox />
           <CheckText>개인정보 수집/이용 동의 (필수)</CheckText>
         </CheckLeft>
         <RightArrowIcon />
@@ -130,8 +130,8 @@ export default function TermsPage() {
           <CustomButton
             variant="primary"
             onPress={() => {
-              if (visibleModal === 'service') toggleServiceCheck();
-              if (visibleModal === 'info') toggleInfoCheck();
+              if (visibleModal === 'service') setServiceCheck(true);
+              if (visibleModal === 'info') setInfoCheck(true);
               setVisibleModal(null);
             }}
             fullWidth
@@ -161,7 +161,7 @@ const AllAgreeButton = styled.Pressable`
   flex-direction: row;
   align-items: center;
   gap: ${10 * width}px;
-  margin: ${28 * height} 0 ${8 * height} 0px;
+  margin: ${28 * height}px 0px ${8 * height}px 0px;
 `;
 
 const ButtonText = styled.Text`
