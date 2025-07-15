@@ -133,6 +133,7 @@ export default function LandingPage() {
           </KakaoContainer>
         </CustomButton>
         <CustomButton
+          style={{ marginTop: 12 * height }}
           variant="text"
           textColor="text[3]"
           size="md"
