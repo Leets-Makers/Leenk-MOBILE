@@ -18,6 +18,7 @@ import { initializeKakaoSDK } from '@react-native-kakao/core';
 import NotificationInitializer from '@/hooks/useNotification';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'core-js/features/array/find-last-index';
+import colors from '@/theme/color';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -81,7 +82,7 @@ function RootLayoutNav() {
 
         <StatusBar
           style="dark"
-          backgroundColor="#F0ECFE"
+          backgroundColor={colors.bg[2]}
           translucent={Platform.OS === 'ios'}
         />
 
@@ -89,7 +90,7 @@ function RootLayoutNav() {
         {!isExcluded && (
           <SafeAreaView
             edges={['top']}
-            style={{ backgroundColor: '#F0ECFE' }}
+            style={{ backgroundColor: colors.bg[2] }}
           />
         )}
 
