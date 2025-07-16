@@ -81,6 +81,17 @@ export default function FeedDetailPage() {
     }
   };
 
+  const getLinkedUserBadgeLabel = (
+    linkedUser: FeedDetail['linkedUser'],
+    totalCount: number,
+  ) => {
+    const nonAuthorUsers = linkedUser.filter((u) => !u.isAuthor);
+    const firstName = nonAuthorUsers[0]?.name ?? '사용자';
+    const othersCount = totalCount - 1;
+
+    return `${firstName} 외 ${othersCount}명`;
+  };
+
   useEffect(() => {
     console.log('firstLaunch', firstLaunch);
 
@@ -166,7 +177,10 @@ export default function FeedDetailPage() {
             {feed.linkedUserCount > 1 && (
               <Badge
                 variant="gray"
-                label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
+                label={getLinkedUserBadgeLabel(
+                  feed.linkedUser,
+                  feed.linkedUserCount,
+                )}
                 onPress={() => openModal('feedLinked')}
               />
             )}

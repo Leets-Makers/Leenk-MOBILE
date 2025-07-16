@@ -8,6 +8,7 @@ import { fontSize, fonts, lineHeight } from '@/theme/globalStyles';
 import { Badge } from '@/components';
 import { width } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
+import { sortByAuthorFirst } from '@/utils/sort-by-author-first';
 
 export default function UserListModalContent({
   list,
@@ -17,10 +18,11 @@ export default function UserListModalContent({
   onClose: () => void;
 }) {
   const router = useRouter();
+  const sortedList = sortByAuthorFirst(list);
 
   return (
     <FlatList
-      data={list}
+      data={sortedList}
       keyExtractor={(item, index) => `${item.userId}-${index}`}
       contentContainerStyle={{ paddingBottom: 32 }}
       showsVerticalScrollIndicator={true}
