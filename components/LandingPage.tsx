@@ -16,17 +16,32 @@ import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
 import { kakaoLogin } from '@/api/login/kakao.api';
-import { saveAccessToken } from '@/utils/tokenStorage';
+import {
+  getFcmToken,
+  saveAccessToken,
+  saveTempAccessToken,
+} from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
-import { useToastStore } from '@/stores/toastStore';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
+import { patchNotificationsToken } from '@/api/users/notification.api';
+
+// FCM 토큰 서버 전송 함수
+export const registerFcmToken = async () => {
+  const fcmToken = await getFcmToken();
+  if (!fcmToken) return;
+  try {
+    await patchNotificationsToken(fcmToken);
+    console.log('FCM 토큰 서버 등록 성공');
+  } catch (error) {
+    console.error('FCM 토큰 서버 등록 실패:', error);
+  }
+};
 
 export default function LandingPage() {
   const router = useRouter();
   const [notRegisterModal, setNotRegisterModal] = useState(false);
   const [waitModal, setWaitModal] = useState(false);
   const weethSiteURL = 'https://www.weeth.site/';
-  const { showToast } = useToastStore();
   const { fromLogout } = useLocalSearchParams();
 
   const { setName, setPosition, setCardinal } = useProfileStore();
@@ -40,26 +55,21 @@ export default function LandingPage() {
     setPosition('FE');
     setCardinal(4);
     router.push('/signup/terms');
+
     //카카오 로그인 로직
-    /*  try {
+    /* try {
       const token = await login();
       const accessToken = token?.accessToken;
 
       // 이메일 정보 조회
       // const userInfo = await getKakaoUserInfo(accessToken);
       // console.log('사용자 이메일:', userInfo.kakao_account.email);
-
       const result = await kakaoLogin(accessToken);
       if (result.success) {
         const serverToken = result.data.accessToken;
-        try {
-          await saveAccessToken(serverToken);
-        } catch (error) {
-          console.error('토큰 저장 실패:', error);
-          showToast('에러가 발생했어. 관리자에게 문의해줘.', 'error');
-          return;
-        }
+
         if (result.code === 1002) {
+          await saveTempAccessToken(result.data.accessToken);
           setName(result.data.name);
           setPosition(result.data.position);
           setCardinal(result.data.cardinal);
@@ -67,6 +77,8 @@ export default function LandingPage() {
           router.push('/signup/terms');
         } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
+          await saveAccessToken(serverToken);
+          await registerFcmToken();
           router.replace('/(page)/feed');
           // setName('이유진');
           // setPosition('FE');
