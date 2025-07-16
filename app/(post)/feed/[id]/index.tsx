@@ -113,8 +113,8 @@ export default function FeedDetailPage() {
   return (
     <View style={{ flex: 1 }}>
       <BackgroundImageSlider mediaUrls={feed.media} />
-      <GradientOverlay type="top" heightValue={160 * height} />
-      <GradientOverlay type="bottom" heightValue={180 * height} />
+      <GradientOverlay type="top" heightValue={120 * height} />
+      <GradientOverlay type="bottom" heightValue={520 * height} />
       <Header
         isBackWhite
         RightSection="KEBAB"
@@ -134,6 +134,7 @@ export default function FeedDetailPage() {
           paddingHorizontal: CONTAINER_PADDING * width,
           marginBottom: 24 * width,
           minHeight: 220 * height,
+          zIndex: 9999,
         }}
       >
         <RowWrapper>
@@ -144,12 +145,10 @@ export default function FeedDetailPage() {
               marginBottom: 16,
             }}
           >
-            <View style={{ marginRight: 8 * width }}>
-              <ProfileImageWithFallback
-                uri={feed.author.profileImage}
-                size={36}
-              />
-            </View>
+            <ProfileImageWithFallback
+              uri={feed.author.profileImage}
+              size={36}
+            />
             <StyledText>{feed.author.name}</StyledText>
 
             {feed.linkedUserCount > 1 && (
@@ -176,7 +175,7 @@ export default function FeedDetailPage() {
         >
           <Text
             style={{
-              color: colors.gray[400],
+              color: colors.white,
               fontSize: fontSize.md,
               fontFamily: fonts.Bold,
               marginBottom: 8,
@@ -189,7 +188,7 @@ export default function FeedDetailPage() {
 
           <Text
             style={{
-              color: colors.text[3],
+              color: colors.text[4],
               fontSize: fontSize.md,
               fontFamily: fonts.Light,
               lineHeight: lineHeight.s,

@@ -9,9 +9,8 @@ import {
 } from '@/components';
 import colors from '@/theme/color';
 import { router } from 'expo-router';
-import { View, Image, ScrollView, Platform } from 'react-native';
-import { generateMockFeeds } from '@/__mocks__/mockFeed';
-import { Author, Media } from '@/types/feed';
+import { View, ScrollView, Platform } from 'react-native';
+import { Media } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
 import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
@@ -21,7 +20,6 @@ import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 import { uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
-import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
 import GradientOverlay from '@/components/feed/GradientOverlay';
 
@@ -109,8 +107,8 @@ export default function FeedWritePage() {
       >
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider mediaUrls={media} />
-          <GradientOverlay type="top" heightValue={160 * height} />
-          <GradientOverlay type="bottom" heightValue={230 * height} />
+          <GradientOverlay type="top" heightValue={120 * height} />
+          <GradientOverlay type="bottom" heightValue={520 * height} />
           <Header
             isBackWhite
             style={{

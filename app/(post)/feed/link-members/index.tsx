@@ -18,9 +18,11 @@ import { getAllUsers } from '@/api/feed/feed.api';
 import { CONTAINER_PADDING } from '@/constants';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function LinkMembersPage() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const [allUsers, setAllUsers] = useState<FeedConnectedUser[]>([]);
   const selectedUsers = useFeedWriteStore((state) => state.users);
@@ -76,7 +78,7 @@ export default function LinkMembersPage() {
     fetchUsers();
   }, []);
   return (
-    <Container>
+    <Container style={{ top: 35 }}>
       <Header>함께 한 사람 추가</Header>
       <SearchBar value={searchUser} onChange={setSearchUser} />
       <MemberBadgeList
@@ -84,17 +86,19 @@ export default function LinkMembersPage() {
         onRemove={handleRemoveUser}
       />
 
-      <UserList
-        users={filteredUsers}
-        selectedUsers={tempSelectedUsers}
-        onToggleUser={handleToggleUser}
-      />
+      <View style={{ height: 500 * height }}>
+        <UserList
+          users={filteredUsers}
+          selectedUsers={tempSelectedUsers}
+          onToggleUser={handleToggleUser}
+        />
+      </View>
 
       {/* 버튼 */}
       <View
         style={{
-          paddingBottom: 32 * height,
-          paddingTop: 16 * height,
+          paddingBottom: 52 * height + insets.bottom,
+          paddingTop: 36 * height + insets.top,
         }}
       >
         <SubmitButton

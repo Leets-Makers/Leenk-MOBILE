@@ -18,7 +18,7 @@ export default function GradientOverlay({
 }: GradientOverlayProps) {
   const defaultColors =
     type === 'top'
-      ? ['rgba(0,0,0,0.7)', 'transparent']
+      ? ['rgba(0,0,0,0.55)', 'transparent']
       : ['transparent', 'rgba(0,0,0,0.6)'];
 
   return (
