@@ -17,6 +17,7 @@ import Toast from '@/components/Toast';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
 import NotificationInitializer from '@/hooks/useNotification';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'core-js/features/array/find-last-index';
 
 export {
   // Catch any errors thrown by the Layout component.
