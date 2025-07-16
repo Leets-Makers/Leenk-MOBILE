@@ -11,6 +11,7 @@ interface TextareaProps extends TextInputProps {
   maxLength?: number;
   variant?: 'light' | 'dark'; // 밝은 테마 / 어두운 테마
   minHeight?: number;
+  maxHeight?: number;
 }
 
 export default function Textarea({
@@ -20,17 +21,19 @@ export default function Textarea({
   placeholder,
   variant = 'light',
   minHeight,
+  maxHeight,
   value,
   onChangeText,
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
   const isDark = variant === 'dark';
+  const isActive = !!value && value.length > 0;
 
   return (
     <Wrapper>
       {title && <Title>{title}</Title>}
-      <InputBox focused={focused} isDark={isDark}>
+      <InputBox focused={focused} active={isActive} isDark={isDark}>
         <StyledTextarea
           {...props}
           placeholder={placeholder}
@@ -40,6 +43,7 @@ export default function Textarea({
           value={value}
           isDark={isDark}
           minHeight={minHeight}
+          maxHeight={maxHeight}
           onChangeText={onChangeText}
           onFocus={(e) => {
             setFocused(true);
@@ -60,24 +64,37 @@ export default function Textarea({
   );
 }
 
-const InputBox = styled.View<{ focused: boolean; isDark: boolean }>`
+const InputBox = styled.View<{
+  focused: boolean;
+  active: boolean;
+  isDark: boolean;
+}>`
   width: 100%;
   border-radius: ${radius.sm}px;
   padding-vertical: ${12 * height}px;
   padding-horizontal: ${12 * width}px;
-  border-width: 2px;
-  border-color: ${({ focused }) =>
-    focused ? colors.violet[400] : colors.gray[300]};
+  border-width: ${({ focused, active, isDark }) =>
+    focused || active || !isDark ? '1px' : '0px'};
+  border-width: ${({ isDark }) => (isDark ? '0px' : '1px')};
+  border-color: ${({ focused, active, isDark }) => {
+    if (focused || active) return colors.violet[400];
+    return isDark ? 'transparent' : colors.gray[300];
+  }};
   border-style: solid;
   background-color: ${({ isDark }) =>
     isDark ? 'rgba(255, 255, 255, 0.2)' : 'transparent'};
 `;
 
-const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
+const StyledTextarea = styled.TextInput<{
+  isDark: boolean;
+  minHeight?: number;
+  maxHeight?: number;
+}>`
   width: 100%;
   min-height: ${({ minHeight }) =>
     minHeight ? `${minHeight * height}px` : `${74 * height}px`};
-  max-height: ${85 * height}px;
+  max-height: ${({ maxHeight }) =>
+    maxHeight ? `${maxHeight * height}px` : `${85 * height}px`};
   font-size: ${fontSize.md}px;
   font-family: ${fonts.Bold};
   color: ${({ isDark }) => (isDark ? colors.white : colors.black)};
@@ -85,6 +102,7 @@ const StyledTextarea = styled.TextInput<{ isDark: boolean; minHeight: number }>`
 `;
 
 const CharCount = styled.Text<{ isDark: boolean }>`
+  font-family: ${fonts.Regular};
   font-size: ${fontSize.sm}px;
   color: ${({ isDark }) => (isDark ? colors.gray[400] : colors.gray[500])};
   text-align: right;

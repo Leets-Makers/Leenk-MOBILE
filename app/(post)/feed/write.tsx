@@ -9,10 +9,15 @@ import {
 } from '@/components';
 import colors from '@/theme/color';
 import { router } from 'expo-router';
-import { View, ScrollView, Platform } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Platform,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+} from 'react-native';
 import { Media } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
-import { KeyboardAvoidingView } from 'react-native';
 import { useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import styled from 'styled-components/native';

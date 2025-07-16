@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 
 export default function useReactionDebounce(
   feedId: number,
-  debounceTime = 1000,
+  debounceTime = 500,
   onSuccess?: (reactionCount: number) => void,
 ) {
   const [count, setCount] = useState(0);
