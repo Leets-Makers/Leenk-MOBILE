@@ -66,7 +66,7 @@ export default function FeedPage() {
           paddingTop: 12 * height,
         }}
         renderItem={({ item }) => <FeedCard item={item} />}
-        showsVerticalScrollIndicator={true}
+        showsVerticalScrollIndicator={false}
         onEndReached={loadMore} // 스크롤 끝 도달 시 loadMore 실행
         onEndReachedThreshold={0.5} // 50% 스크롤 시점부터 호출
         refreshing={isRefreshing} // Pull to Refresh

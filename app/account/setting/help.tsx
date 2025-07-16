@@ -1,11 +1,17 @@
-import { KeyboardAvoidingView, Platform, Animated } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+  ScrollView,
+  View,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
 import { Header, CustomButton, Textarea } from '@/components';
 import colors from '@/theme/color';
 import { width, height } from '@/theme/globalStyles';
 import { postUserFeedback } from '@/api/users/postFeedback.api';
-import { useState } from 'react';
 import { useToastStore } from '@/stores/toastStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
@@ -15,13 +21,14 @@ export default function HelpPage() {
   const [feedback, setFeedback] = useState('');
   const { showToast } = useToastStore();
   const insets = useSafeAreaInsets();
-  const buttonTranslateY = useKeyboardAnimation(10);
+  const buttonTranslateY = useKeyboardAnimation(
+    Platform.OS === 'ios' ? -310 : 10, // 임시 해결 ..
+  );
 
   const handleConfirm = async () => {
     try {
       await postUserFeedback({ feedback });
       showToast('의견이 성공적으로 제출됐어!', 'success');
-
       router.back();
     } catch (error) {
       console.error(error);
@@ -32,11 +39,17 @@ export default function HelpPage() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
+      keyboardVerticalOffset={0}
     >
       <Wrapper>
-        <Container>
+        <ScrollContainer
+          contentContainerStyle={{
+            paddingBottom: 160 * height,
+          }}
+          keyboardShouldPersistTaps="handled"
+        >
           <Header>의견 남기기</Header>
+
           <MarginContainer>
             <Textarea
               title="LEENK에 대한 의견을 입력해줘"
@@ -48,22 +61,27 @@ export default function HelpPage() {
               onChangeText={setFeedback}
             />
           </MarginContainer>
-        </Container>
+        </ScrollContainer>
 
         <Animated.View
-          style={{ transform: [{ translateY: buttonTranslateY }] }}
+          style={{
+            position: 'absolute',
+            bottom: insets.bottom,
+            left: 0,
+            right: 0,
+            transform: [{ translateY: buttonTranslateY }],
+            paddingHorizontal: 20 * width,
+          }}
         >
-          <BottomArea $bottomInset={insets.bottom}>
-            <CustomButton
-              variant="primary"
-              fullWidth
-              size="lg"
-              onPress={handleConfirm}
-              disabled={feedback.trim() === ''}
-            >
-              제출하기
-            </CustomButton>
-          </BottomArea>
+          <CustomButton
+            variant="primary"
+            fullWidth
+            size="lg"
+            onPress={handleConfirm}
+            disabled={feedback.trim() === ''}
+          >
+            제출하기
+          </CustomButton>
         </Animated.View>
       </Wrapper>
     </KeyboardAvoidingView>
@@ -73,24 +91,14 @@ export default function HelpPage() {
 const Wrapper = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  position: relative;
 `;
 
-const Container = styled.ScrollView.attrs({
-  keyboardShouldPersistTaps: 'handled',
-})`
+const ScrollContainer = styled.ScrollView`
   flex: 1;
-  padding-horizontal: ${20 * width}px;
+  padding: 0 ${20 * width}px;
 `;
 
 const MarginContainer = styled.View`
   margin-top: ${12 * height}px;
   gap: ${8 * height}px;
-`;
-
-const BottomArea = styled.View<{ $bottomInset: number }>`
-  position: absolute;
-  bottom: ${(props) => props.$bottomInset}px;
-  width: 100%;
-  padding: 0 ${20 * width}px;
 `;
