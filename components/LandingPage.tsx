@@ -48,7 +48,7 @@ export default function LandingPage() {
 
   const shouldBlock = fromLogout === 'true';
 
-  useBlockBackHandler(shouldBlock);
+  useBlockBackHandler({ block: shouldBlock });
 
   const handleKakaoLogin = async () => {
     setName('이유진');
