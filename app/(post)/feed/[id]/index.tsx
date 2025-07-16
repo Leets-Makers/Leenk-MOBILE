@@ -19,12 +19,18 @@ import {
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
-import { Text, View } from 'react-native';
+import {
+  Pressable,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { StyledText } from '@/app/(post)/feed/write';
 import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
-import { router, useLocalSearchParams } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
 import { useEffect, useState } from 'react';
@@ -145,11 +151,17 @@ export default function FeedDetailPage() {
               marginBottom: 16,
             }}
           >
-            <ProfileImageWithFallback
-              uri={feed.author.profileImage}
-              size={36}
-            />
-            <StyledText>{feed.author.name}</StyledText>
+            <Link href={`/users/${feed.author.userId}`} asChild>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', alignItems: 'center' }}
+              >
+                <ProfileImageWithFallback
+                  uri={feed.author.profileImage}
+                  size={36}
+                />
+                <StyledText>{feed.author.name}</StyledText>
+              </TouchableOpacity>
+            </Link>
 
             {feed.linkedUserCount > 1 && (
               <Badge
