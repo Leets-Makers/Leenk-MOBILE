@@ -19,6 +19,7 @@ import { kakaoLogin } from '@/api/login/kakao.api';
 import {
   getFcmToken,
   saveAccessToken,
+  saveRefreshToken,
   saveTempAccessToken,
 } from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
@@ -62,9 +63,11 @@ export default function LandingPage() {
       const result = await kakaoLogin(accessToken);
       if (result.success) {
         const serverToken = result.data.accessToken;
+        const refreshToken = result.data.refreshToken;
 
         if (result.code === 1002) {
           await saveTempAccessToken(result.data.accessToken);
+          await saveRefreshToken(refreshToken);
           setName(result.data.name);
           setPosition(result.data.position);
           setCardinal(result.data.cardinal);
@@ -73,8 +76,10 @@ export default function LandingPage() {
         } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
           await saveAccessToken(serverToken);
+          await saveRefreshToken(refreshToken);
           await registerFcmToken();
           router.replace('/(page)/feed');
+
           // setName('이유진');
           // setPosition('FE');
           // setCardinal(4);
