@@ -26,7 +26,18 @@ export default function NotificationModal({
   console.log(data.length);
 
   const isScrollable = data.length > 5;
-  const containerHeight = isScrollable ? 500 * height : 348 * height;
+
+  const MIN_HEIGHT = 348 * height;
+  const MAX_HEIGHT = 500 * height;
+
+  let containerHeight: number | undefined = undefined;
+
+  if (isScrollable) {
+    containerHeight = MAX_HEIGHT;
+  } else if (data.length <= 5) {
+    const estimatedHeight = data.length * 65 * height;
+    containerHeight = estimatedHeight < MIN_HEIGHT ? MIN_HEIGHT : undefined;
+  }
 
   // TODO: Time Text에 시간 추가
   return (
@@ -87,12 +98,19 @@ const Overlay = styled.Pressable`
   padding: 0 ${10 * width}px;
 `;
 
-const Container = styled.View<{ $height: number }>`
+const Container = styled.View<{ $height?: number }>`
   background-color: ${colors.white};
   align-items: center;
-  height: ${(props) => props.$height}px;
-  border-radius: ${radius.md}px;
   width: 100%;
+  border-radius: ${radius.md}px;
+  overflow: hidden;
+  padding: 0 ${16 * height}px;
+
+  ${(props) =>
+    props.$height &&
+    `
+      height: ${props.$height}px;
+  `}
 `;
 
 const Item = styled.View`

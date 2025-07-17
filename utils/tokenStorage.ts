@@ -5,6 +5,8 @@ const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const FCM_TOKEN_KEY = 'fcm_token';
 
+const TEMP_ACCESS_TOKEN_KEY = 'temp_access_token';
+
 // Access Token
 export const saveAccessToken = async (token: string) => {
   if (Platform.OS === 'web') return;
@@ -53,9 +55,26 @@ export const deleteFcmToken = async () => {
   await SecureStore.deleteItemAsync(FCM_TOKEN_KEY);
 };
 
+// Temp Access Token
+export const saveTempAccessToken = async (token: string) => {
+  if (Platform.OS === 'web') return;
+  await SecureStore.setItemAsync(TEMP_ACCESS_TOKEN_KEY, token);
+};
+
+export const getTempAccessToken = async () => {
+  if (Platform.OS === 'web') return null;
+  return await SecureStore.getItemAsync(TEMP_ACCESS_TOKEN_KEY);
+};
+
+export const deleteTempAccessToken = async () => {
+  if (Platform.OS === 'web') return;
+  await SecureStore.deleteItemAsync(TEMP_ACCESS_TOKEN_KEY);
+};
+
 // Clear All
 export const clearAllTokens = async () => {
   await deleteAccessToken();
   await deleteRefreshToken();
   await deleteFcmToken();
+  await deleteTempAccessToken();
 };

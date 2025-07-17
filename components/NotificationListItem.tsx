@@ -12,6 +12,7 @@ import {
 import { Notification } from '@/types/notification';
 import { formatRelativeTime } from '@/utils/format-date';
 import { getSubjectJosa } from '@/utils/KoreanEndingCheck';
+import { Pressable } from 'react-native';
 
 export default function NotificationListItem({
   item,
@@ -88,23 +89,31 @@ export default function NotificationListItem({
   };
 
   return (
-    <ItemContainer isRead={item.isRead} onPress={onPress}>
-      <Row>
-        <LeftSection>
-          <FeedIcon width={16} stroke={colors.primary} />
-          <TypeText>피드</TypeText>
-        </LeftSection>
-        <TimeText>{formatRelativeTime(item.updateDate)}</TimeText>
-      </Row>
-      <ContentContainer>{renderContent()}</ContentContainer>
+    <ItemContainer onPress={onPress}>
+      {({ pressed }) => (
+        <StyledItemContent pressed={pressed}>
+          <Row>
+            <LeftSection>
+              <FeedIcon width={16} stroke={colors.primary} />
+              <TypeText>피드</TypeText>
+            </LeftSection>
+            <TimeText>{formatRelativeTime(item.updateDate)}</TimeText>
+          </Row>
+          <ContentContainer>{renderContent()}</ContentContainer>
+        </StyledItemContent>
+      )}
     </ItemContainer>
   );
 }
 
-const ItemContainer = styled.TouchableOpacity<{ isRead: boolean }>`
-  background-color: ${(props) => (props.isRead ? colors.bg[3] : colors.white)};
+const ItemContainer = styled(Pressable)`
   margin-bottom: ${40 * height}px;
   padding: ${4 * height}px;
+  border-radius: ${radius.xs}px;
+`;
+
+const StyledItemContent = styled.View<{ pressed: boolean }>`
+  background-color: ${(props) => (props.pressed ? colors.bg[3] : colors.white)};
   border-radius: ${radius.xs}px;
 `;
 

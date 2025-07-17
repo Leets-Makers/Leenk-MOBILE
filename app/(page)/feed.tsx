@@ -10,6 +10,7 @@ import { CongratsIcon } from '@/assets';
 import useFeedList from '@/hooks/useFeedList';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
+import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 
 export default function FeedPage() {
   const firstLaunch = useFirstLaunch();
@@ -17,6 +18,11 @@ export default function FeedPage() {
 
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
+
+  useBlockBackHandler({
+    block: true,
+    exitOnDoubleBack: true,
+  });
 
   useEffect(() => {
     refetch();

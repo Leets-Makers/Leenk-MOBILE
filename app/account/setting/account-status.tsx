@@ -35,7 +35,7 @@ export default function AccountStatusPage() {
       setLogoutModalVisible(false);
 
       setTimeout(() => {
-        router.replace('/');
+        router.replace({ pathname: '/', params: { fromLogout: 'true' } });
       }, 200);
     } catch (error) {
       console.error('로그아웃 실패:', error);
@@ -53,7 +53,7 @@ export default function AccountStatusPage() {
       setDeleteModalVisible(false);
 
       setTimeout(() => {
-        router.replace('/');
+        router.replace({ pathname: '/', params: { fromLogout: 'true' } });
       }, 200);
     } catch (error) {
       console.error('회원탈퇴 실패:', error);
