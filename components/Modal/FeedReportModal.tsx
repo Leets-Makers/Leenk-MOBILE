@@ -67,6 +67,7 @@ export default function FeedReportModal({ feedId }: FeedReportModalProps) {
                   onChangeText={setreport}
                   maxLength={100}
                   minHeight={30}
+                  maxHeight={40}
                 />
 
                 <ButtonWrapper>

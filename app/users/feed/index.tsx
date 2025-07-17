@@ -52,7 +52,7 @@ export default function OtherUserProfilePage() {
             paddingBottom: 100 * height,
           }}
           renderItem={({ item }) => <FeedCard item={item} />}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           refreshing={isRefreshing}

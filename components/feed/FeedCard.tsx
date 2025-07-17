@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { FeedItem } from '@/types/feed';
 import { width, height, radius } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
-import { Badge } from '@/components';
+import { Badge, ProfileImageWithFallback } from '@/components';
 import { getNumberWithComma } from '@/utils';
 
 interface FeedCardProps {
@@ -20,7 +20,7 @@ export default function FeedCard({ item }: FeedCardProps) {
     <CardContainer onPress={handlePress}>
       <Thumbnail source={{ uri: item.thumbNail }} resizeMode="cover">
         <OverlayTopLeft>
-          <ProfileImage source={{ uri: item.author.profileImage }} />
+          <ProfileImageWithFallback uri={item.author.profileImage} />
         </OverlayTopLeft>
 
         <OverlayBottomRight>

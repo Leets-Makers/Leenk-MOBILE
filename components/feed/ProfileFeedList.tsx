@@ -48,7 +48,7 @@ export default function ProfileFeedList({
           paddingBottom: 100 * height,
         }}
         renderItem={({ item }) => <FeedCard item={item} />}
-        showsVerticalScrollIndicator
+        showsVerticalScrollIndicator={false}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         refreshing={isRefreshing}

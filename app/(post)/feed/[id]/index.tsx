@@ -19,12 +19,18 @@ import {
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
-import { Text, View } from 'react-native';
+import {
+  Pressable,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { StyledText } from '@/app/(post)/feed/write';
 import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
-import { router, useLocalSearchParams } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
 import { useEffect, useState } from 'react';
@@ -75,6 +81,17 @@ export default function FeedDetailPage() {
     }
   };
 
+  const getLinkedUserBadgeLabel = (
+    linkedUser: FeedDetail['linkedUser'],
+    totalCount: number,
+  ) => {
+    const nonAuthorUsers = linkedUser.filter((u) => !u.isAuthor);
+    const firstName = nonAuthorUsers[0]?.name ?? '사용자';
+    const othersCount = totalCount - 1;
+
+    return `${firstName} 외 ${othersCount}명`;
+  };
+
   useEffect(() => {
     console.log('firstLaunch', firstLaunch);
 
@@ -113,8 +130,8 @@ export default function FeedDetailPage() {
   return (
     <View style={{ flex: 1 }}>
       <BackgroundImageSlider mediaUrls={feed.media} />
-      <GradientOverlay type="top" heightValue={160 * height} />
-      <GradientOverlay type="bottom" heightValue={180 * height} />
+      <GradientOverlay type="top" heightValue={120 * height} />
+      <GradientOverlay type="bottom" heightValue={520 * height} />
       <Header
         isBackWhite
         RightSection="KEBAB"
@@ -134,6 +151,7 @@ export default function FeedDetailPage() {
           paddingHorizontal: CONTAINER_PADDING * width,
           marginBottom: 24 * width,
           minHeight: 220 * height,
+          zIndex: 9999,
         }}
       >
         <RowWrapper>
@@ -144,18 +162,25 @@ export default function FeedDetailPage() {
               marginBottom: 16,
             }}
           >
-            <View style={{ marginRight: 8 * width }}>
-              <ProfileImageWithFallback
-                uri={feed.author.profileImage}
-                size={36}
-              />
-            </View>
-            <StyledText>{feed.author.name}</StyledText>
+            <Link href={`/users/${feed.author.userId}`} asChild>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', alignItems: 'center' }}
+              >
+                <ProfileImageWithFallback
+                  uri={feed.author.profileImage}
+                  size={36}
+                />
+                <StyledText>{feed.author.name}</StyledText>
+              </TouchableOpacity>
+            </Link>
 
             {feed.linkedUserCount > 1 && (
               <Badge
                 variant="gray"
-                label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
+                label={getLinkedUserBadgeLabel(
+                  feed.linkedUser,
+                  feed.linkedUserCount,
+                )}
                 onPress={() => openModal('feedLinked')}
               />
             )}
@@ -176,7 +201,7 @@ export default function FeedDetailPage() {
         >
           <Text
             style={{
-              color: colors.gray[400],
+              color: colors.white,
               fontSize: fontSize.md,
               fontFamily: fonts.Bold,
               marginBottom: 8,
@@ -189,7 +214,7 @@ export default function FeedDetailPage() {
 
           <Text
             style={{
-              color: colors.text[3],
+              color: colors.text[4],
               fontSize: fontSize.md,
               fontFamily: fonts.Light,
               lineHeight: lineHeight.s,

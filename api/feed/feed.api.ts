@@ -31,7 +31,7 @@ export const getFeedList = async (pageNumber: number, pageSize: number) => {
 // 피드 상세 조회
 export const getFeedDetail = async (feedId: number) => {
   const res = await api.get<ApiResponse<FeedDetail>>(`/feeds/${feedId}`);
-  if (__DEV__) console.log('피드 상세 조회 : ', res.data);
+  if (__DEV__) console.log('피드 상세 조회 함께한 유저 : ', res.data.data);
   return res.data.data;
 };
 

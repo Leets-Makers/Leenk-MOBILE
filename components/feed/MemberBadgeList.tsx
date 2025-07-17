@@ -41,7 +41,7 @@ const ScrollContainer = styled.ScrollView<{ hasMembers: boolean }>`
   ${({ hasMembers }) =>
     hasMembers
       ? `min-height: ${32 * height}px;`
-      : 'height: 0px; padding-vertical: 0px;'}
+      : 'height:0px; padding-vertical: 0px;'}
 `;
 
 const BadgeWrapper = styled.View`

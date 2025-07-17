@@ -18,9 +18,14 @@ import { getAllUsers } from '@/api/feed/feed.api';
 import { CONTAINER_PADDING } from '@/constants';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 export default function LinkMembersPage() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const [allUsers, setAllUsers] = useState<FeedConnectedUser[]>([]);
   const selectedUsers = useFeedWriteStore((state) => state.users);
@@ -75,6 +80,7 @@ export default function LinkMembersPage() {
 
     fetchUsers();
   }, []);
+
   return (
     <Container>
       <Header>함께 한 사람 추가</Header>
@@ -84,16 +90,22 @@ export default function LinkMembersPage() {
         onRemove={handleRemoveUser}
       />
 
-      <UserList
-        users={filteredUsers}
-        selectedUsers={tempSelectedUsers}
-        onToggleUser={handleToggleUser}
-      />
-
-      {/* 버튼 */}
       <View
         style={{
-          paddingBottom: 32 * height,
+          height: (tempSelectedUsers.length === 0 ? 560 : 530) * height,
+        }}
+      >
+        <UserList
+          users={filteredUsers}
+          selectedUsers={tempSelectedUsers}
+          onToggleUser={handleToggleUser}
+        />
+      </View>
+      {/* 버튼 */}
+
+      <View
+        style={{
+          paddingBottom: 10 * height + insets.bottom,
           paddingTop: 16 * height,
         }}
       >
@@ -113,7 +125,8 @@ export default function LinkMembersPage() {
   );
 }
 
-const Container = styled.View`
+const Container = styled(SafeAreaView)`
+  flex: 1;
   padding: 0 ${CONTAINER_PADDING * width}px;
   background-color: ${colors.gray[50]};
 `;

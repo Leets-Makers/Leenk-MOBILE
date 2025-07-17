@@ -4,7 +4,6 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import UserItem from '@/components/feed/UserItem';
 import { FeedConnectedUser } from '@/types/feed';
-import { height } from '@/theme/globalStyles';
 
 interface UserListProps {
   users: FeedConnectedUser[];
@@ -23,7 +22,6 @@ export default function UserList({
       keyExtractor={(item) => item.userId.toString()}
       contentContainerStyle={{
         justifyContent: 'flex-start',
-        minHeight: 530 * height,
       }}
       renderItem={({ item }) => (
         <UserItem
@@ -32,6 +30,7 @@ export default function UserList({
           onToggle={() => onToggleUser(item)}
         />
       )}
+      showsVerticalScrollIndicator={false}
     />
   );
 }

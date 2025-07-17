@@ -20,17 +20,18 @@ const AnimatedContainer = styled(Animated.View)`
   position: absolute;
   bottom: 60px;
   left: 50%;
+  transform: translateX(-14px);
 `;
 
 export default function FloatingHeart({ onComplete, color }: Props) {
   const translateY = useSharedValue(0);
-  const translateX = useSharedValue(Math.random() * 50 - 30);
+  const translateX = useSharedValue(Math.random() * 10 - 5);
   const opacity = useSharedValue(1);
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
-      { translateX: translateX.value },
+      { translateX: translateX.value + 10 },
       { translateY: translateY.value },
       { scale: scale.value },
     ],
@@ -52,7 +53,7 @@ export default function FloatingHeart({ onComplete, color }: Props) {
     // 좌우 흔들림 반복
     translateX.value = withRepeat(
       withSequence(
-        withTiming(translateX.value + 20, { duration: 300 }),
+        withTiming(translateX.value + 10, { duration: 300 }),
         withTiming(translateX.value - 10, { duration: 300 }),
       ),
       5, // 5번 반복
