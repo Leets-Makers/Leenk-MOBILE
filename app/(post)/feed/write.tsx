@@ -45,7 +45,7 @@ export default function FeedWritePage() {
   const { userInfo } = useUserStore();
 
   const buttonTranslateY = useKeyboardAnimation(
-    Platform.OS === 'ios' ? -425 : -85,
+    Platform.OS === 'ios' ? -390 * height : -85,
   );
 
   const insets = useSafeAreaInsets();
@@ -128,7 +128,7 @@ export default function FeedWritePage() {
               position: 'absolute',
               top: 35,
               width: '100%',
-              zIndex: 20,
+              zIndex: 9999,
               paddingHorizontal: 16 * width,
             }}
           />
