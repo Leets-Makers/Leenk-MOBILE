@@ -140,7 +140,7 @@ export default function FeedDetailPage() {
           position: 'absolute',
           top: 35,
           width: '100%',
-          zIndex: 20,
+          zIndex: 9999,
           paddingHorizontal: CONTAINER_PADDING * width,
         }}
       />

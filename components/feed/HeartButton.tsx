@@ -46,7 +46,7 @@ export default function HeartButton({
 
   const { count: localCount, increaseReaction } = useReactionDebounce(
     feedId,
-    300,
+    400,
     (reactionCount) => {
       setTotalReaction((prev) => prev + reactionCount);
     },

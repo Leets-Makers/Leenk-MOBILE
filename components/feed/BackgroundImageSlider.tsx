@@ -52,6 +52,7 @@ export default function BackgroundImageSlider({
 const Wrapper = styled.View`
   flex: 1;
   position: relative;
+  z-index: 9999;
 `;
 
 const CarouselWrapper = styled.View`
