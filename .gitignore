@@ -6,6 +6,7 @@ node_modules/
 .env
 /android/app/google-services.json
 /ios/GoogleService-Info.plist
+/ios/Leenk/GoogleService-Info.plist
 
 /google-services.json
 /GoogleService-Info.plist
@@ -84,5 +85,3 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
-
-/ios/Leenk/GoogleService-Info-2.plist
