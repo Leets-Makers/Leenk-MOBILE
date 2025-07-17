@@ -41,7 +41,7 @@ export const useBlockBackHandler = ({
         }
 
         lastBackPressed.current = now;
-        showToast('한 번 더 누르면 종료됩니다.', 'success');
+        showToast('한 번 더 누르면 종료 돼!', 'success');
         return true;
       };
 
