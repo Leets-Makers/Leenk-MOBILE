@@ -82,7 +82,11 @@ function RootLayoutNav() {
 
         <StatusBar
           style="dark"
-          backgroundColor={colors.bg[2]}
+          backgroundColor={
+            pathname === '/account/notification-list'
+              ? colors.white
+              : colors.bg[2]
+          }
           translucent={Platform.OS === 'ios'}
         />
 
@@ -90,7 +94,12 @@ function RootLayoutNav() {
         {!isExcluded && (
           <SafeAreaView
             edges={['top']}
-            style={{ backgroundColor: colors.bg[2] }}
+            style={{
+              backgroundColor:
+                pathname === '/account/notification-list'
+                  ? colors.white
+                  : colors.bg[2],
+            }}
           />
         )}
 
