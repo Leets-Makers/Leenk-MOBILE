@@ -22,7 +22,7 @@ export default function AccountEdit() {
   const insets = useSafeAreaInsets();
 
   const buttonTranslateY = useKeyboardAnimation(
-    Platform.OS === 'ios' ? -320 : 10,
+    Platform.OS === 'ios' ? -290 : 10,
   );
 
   const { showToast } = useToastStore();

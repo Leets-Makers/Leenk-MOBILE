@@ -22,7 +22,7 @@ export default function HelpPage() {
   const { showToast } = useToastStore();
   const insets = useSafeAreaInsets();
   const buttonTranslateY = useKeyboardAnimation(
-    Platform.OS === 'ios' ? -310 : 10, // 임시 해결 ..
+    Platform.OS === 'ios' ? -290 : 10, // 임시 해결 ..
   );
 
   const handleConfirm = async () => {
