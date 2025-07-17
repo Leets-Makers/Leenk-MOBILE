@@ -73,6 +73,7 @@ export default function NotificationListPage() {
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <NotificationListItem
             item={item}

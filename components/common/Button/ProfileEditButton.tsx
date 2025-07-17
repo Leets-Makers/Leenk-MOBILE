@@ -79,7 +79,7 @@ const ScrollableTextContainer = styled.ScrollView.attrs({
 
 const TextareaText = styled.Text`
   font-size: ${fontSize.md}px;
-  color: ${colors.text[2]};
+  color: ${colors.black};
   font-family: ${fonts.Regular};
   line-height: ${lineHeight.l}px;
 `;

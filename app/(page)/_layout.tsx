@@ -8,6 +8,7 @@ import { useWriteMenuStore } from '@/stores/writeMenuStore';
 import MenuModal from '@/components/Modal/MenuModal';
 import { FeedIcon, LeenkIcon, LockIcon, MypageIcon, PlusIcon } from '@/assets';
 import { fontSize, radius, width, height, fonts } from '@/theme/globalStyles';
+import { View, Platform } from 'react-native';
 
 type TabConfigItem = {
   name: string;
@@ -31,96 +32,115 @@ export default function TabLayout() {
   const closeWriteMenu = useWriteMenuStore((s) => s.close);
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: true,
-        tabBarStyle: {
-          height: 73 * height,
-          position: 'absolute',
-          borderTopWidth: 0,
-          elevation: 0,
-        },
-      }}
-      tabBar={({ state, navigation }) => (
-        <>
-          <StyledSafeArea edges={['bottom']}>
-            <TabContainer>
-              {TAB_CONFIG.map((tab) => {
-                const isCustomTab = tab.name === 'write';
-                const route = state.routes.find((r) => r.name === tab.name);
+    <View style={{ flex: 1, backgroundColor: colors.bg[2] }}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarStyle: {
+            height: 73 * height,
+            position: 'absolute',
+            borderTopWidth: 0,
+            elevation: 0,
+            backgroundColor: 'transparent',
+          },
+        }}
+        tabBar={({ state, navigation }) => (
+          <>
+            <StyledSafeArea edges={['bottom']}>
+              <TabContainer>
+                {TAB_CONFIG.map((tab) => {
+                  const isCustomTab = tab.name === 'write';
+                  const route = state.routes.find((r) => r.name === tab.name);
 
-                if (!isCustomTab && !route) return null;
+                  if (!isCustomTab && !route) return null;
 
-                const isFocused = isCustomTab
-                  ? false
-                  : state.index ===
-                    state.routes.findIndex((r) => r.name === tab.name);
+                  const isFocused = isCustomTab
+                    ? false
+                    : state.index ===
+                      state.routes.findIndex((r) => r.name === tab.name);
 
-                const onPress = () => {
-                  if (isCustomTab) {
-                    openWriteMenu();
-                    return;
-                  }
+                  const onPress = () => {
+                    if (isCustomTab) {
+                      openWriteMenu();
+                      return;
+                    }
 
-                  if (!route) return;
+                    if (!route) return;
 
-                  const event = navigation.emit({
-                    type: 'tabPress',
-                    target: route.key,
-                    canPreventDefault: true,
-                  });
+                    const event = navigation.emit({
+                      type: 'tabPress',
+                      target: route.key,
+                      canPreventDefault: true,
+                    });
 
-                  if (!isFocused && !event.defaultPrevented) {
-                    navigation.navigate(route.name);
-                  }
-                };
+                    if (!isFocused && !event.defaultPrevented) {
+                      navigation.navigate(route.name);
+                    }
+                  };
 
-                const IconComponent = tab.icon;
+                  const IconComponent = tab.icon;
 
-                return (
-                  <TabButton
-                    key={tab.name}
-                    onPress={onPress}
-                    $isSpecial={tab.isSpecial}
-                  >
-                    {IconComponent && (
-                      <IconComponent
-                        width={24}
-                        height={24}
-                        stroke={
-                          tab.isSpecial
-                            ? '#fff'
-                            : isFocused
-                              ? colors.primary
-                              : colors.black
-                        }
-                      />
-                    )}
-                    {tab.label !== '' && (
-                      <TabLabel $focused={isFocused}>{tab.label}</TabLabel>
-                    )}
-                  </TabButton>
-                );
-              })}
-            </TabContainer>
-          </StyledSafeArea>
+                  return (
+                    <TabButton
+                      key={tab.name}
+                      onPress={onPress}
+                      $isSpecial={tab.isSpecial}
+                    >
+                      {IconComponent && (
+                        <IconComponent
+                          width={IconComponent === PlusIcon ? 28 : 24}
+                          height={IconComponent === PlusIcon ? 28 : 24}
+                          stroke={
+                            tab.isSpecial
+                              ? '#fff'
+                              : isFocused
+                                ? colors.primary
+                                : colors.black
+                          }
+                        />
+                      )}
 
-          <MenuModal
-            visible={isWriteMenuOpen}
-            onClose={closeWriteMenu}
-            onPressFirst={() => {
-              closeWriteMenu();
-              router.push('/(post)/leenk');
-            }}
-            onPressSecond={() => {
-              closeWriteMenu();
-              router.push('/(post)/feed');
-            }}
-          />
-        </>
+                      {tab.label !== '' && (
+                        <TabLabel $focused={isFocused}>{tab.label}</TabLabel>
+                      )}
+                    </TabButton>
+                  );
+                })}
+              </TabContainer>
+            </StyledSafeArea>
+
+            <MenuModal
+              visible={isWriteMenuOpen}
+              onClose={closeWriteMenu}
+              onPressFirst={() => {
+                closeWriteMenu();
+                router.push('/(post)/leenk');
+              }}
+              onPressSecond={() => {
+                closeWriteMenu();
+                router.push('/(post)/feed');
+              }}
+            />
+          </>
+        )}
+      />
+
+      {/* iOS 하단 배경 덮개 추가 */}
+      {Platform.OS === 'ios' && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 36 * height,
+            backgroundColor: colors.bg[2],
+            zIndex: -1,
+          }}
+        />
       )}
-    />
+    </View>
   );
 }
 

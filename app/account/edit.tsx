@@ -19,7 +19,10 @@ export default function AccountEdit() {
   const [edituserInfo, setEdituserInfo] = useState('');
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const buttonTranslateY = useKeyboardAnimation(10);
+
+  const buttonTranslateY = useKeyboardAnimation(
+    Platform.OS === 'ios' ? -320 : 10,
+  );
 
   const {
     kakaoTalkId,
@@ -64,7 +67,7 @@ export default function AccountEdit() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
+      keyboardVerticalOffset={0}
     >
       <Wrapper>
         <Container>

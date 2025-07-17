@@ -82,6 +82,7 @@ const ToastBox = styled(BlurView).attrs({
   padding: ${4 * height}px ${5 * width}px;
   width: 90%;
   background-color: ${({ $backgroundColor }) => $backgroundColor};
+  overflow: hidden;
 `;
 
 const ToastText = styled.Text`
