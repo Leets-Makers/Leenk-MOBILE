@@ -30,6 +30,7 @@ export default function UserList({
           onToggle={() => onToggleUser(item)}
         />
       )}
+      showsVerticalScrollIndicator={false}
     />
   );
 }

@@ -18,7 +18,10 @@ import { getAllUsers } from '@/api/feed/feed.api';
 import { CONTAINER_PADDING } from '@/constants';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 export default function LinkMembersPage() {
   const router = useRouter();
@@ -77,8 +80,9 @@ export default function LinkMembersPage() {
 
     fetchUsers();
   }, []);
+
   return (
-    <Container style={{ top: 35 }}>
+    <Container>
       <Header>함께 한 사람 추가</Header>
       <SearchBar value={searchUser} onChange={setSearchUser} />
       <MemberBadgeList
@@ -86,19 +90,23 @@ export default function LinkMembersPage() {
         onRemove={handleRemoveUser}
       />
 
-      <View style={{ height: 500 * height }}>
+      <View
+        style={{
+          height: (tempSelectedUsers.length === 0 ? 560 : 530) * height,
+        }}
+      >
         <UserList
           users={filteredUsers}
           selectedUsers={tempSelectedUsers}
           onToggleUser={handleToggleUser}
         />
       </View>
-
       {/* 버튼 */}
+
       <View
         style={{
-          paddingBottom: 52 * height + insets.bottom,
-          paddingTop: 36 * height + insets.top,
+          paddingBottom: 10 * height + insets.bottom,
+          paddingTop: 16 * height,
         }}
       >
         <SubmitButton
@@ -117,7 +125,8 @@ export default function LinkMembersPage() {
   );
 }
 
-const Container = styled.View`
+const Container = styled(SafeAreaView)`
+  flex: 1;
   padding: 0 ${CONTAINER_PADDING * width}px;
   background-color: ${colors.gray[50]};
 `;

@@ -13,8 +13,8 @@ import {
   View,
   ScrollView,
   Platform,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Animated,
 } from 'react-native';
 import { Media } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
@@ -27,6 +27,8 @@ import { uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
 import GradientOverlay from '@/components/feed/GradientOverlay';
+import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function FeedWritePage() {
   const selectedImages = useFeedWriteStore((state) => state.selectedImages);
@@ -41,6 +43,12 @@ export default function FeedWritePage() {
 
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
+
+  const buttonTranslateY = useKeyboardAnimation(
+    Platform.OS === 'ios' ? -425 : -85,
+  );
+
+  const insets = useSafeAreaInsets();
 
   const media: Media[] = selectedImages.map((img, index) => ({
     position: index + 1,
@@ -104,7 +112,7 @@ export default function FeedWritePage() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? -90 : 0}
+      keyboardVerticalOffset={0}
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
@@ -127,44 +135,56 @@ export default function FeedWritePage() {
           <View
             style={{ paddingHorizontal: 16, marginBottom: 24, zIndex: 9999 }}
           >
-            <View
+            <Animated.View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 16,
+                transform: [{ translateY: buttonTranslateY }],
               }}
             >
-              <ProfileImageWithFallback
-                uri={userInfo?.profileImage}
-                size={36}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 16,
+                }}
+              >
+                <ProfileImageWithFallback
+                  uri={userInfo?.profileImage}
+                  size={36}
+                />
+                <StyledText>{userInfo?.name}</StyledText>
+                <Badge
+                  variant="gray"
+                  iconType="plus"
+                  label={
+                    connectedUsers.length > 0
+                      ? `${userInfo?.name} 외 ${connectedUsers.length}명`
+                      : '함께한 사람 추가'
+                  }
+                  onPress={onClickToAddMember}
+                />
+              </View>
+
+              <Textarea
+                variant="dark"
+                placeholder="텍스트를 입력해주세요"
+                maxLength={100}
+                value={description}
+                onChangeText={setDescription}
               />
-              <StyledText>{userInfo?.name}</StyledText>
-              <Badge
-                variant="gray"
-                iconType="plus"
-                label={
-                  connectedUsers.length > 0
-                    ? `${userInfo?.name} 외 ${connectedUsers.length}명`
-                    : '함께한 사람 추가'
-                }
-                onPress={onClickToAddMember}
-              />
-            </View>
-            <Textarea
-              variant="dark"
-              placeholder="텍스트를 입력해주세요"
-              maxLength={100}
-              value={description}
-              onChangeText={setDescription}
-            />
-            <CustomButton
-              size="lg"
-              onPress={handleUpload}
-              style={{ marginTop: 16 * height, marginBottom: 8 * height }}
-              disabled={description.trim().length === 0}
-            >
-              업로드할래
-            </CustomButton>
+
+              <CustomButton
+                size="lg"
+                onPress={handleUpload}
+                style={{
+                  marginTop: 16 * height,
+                  marginBottom:
+                    Platform.OS === 'android' ? insets.bottom : 8 * height,
+                }}
+                disabled={description.trim().length === 0}
+              >
+                업로드할래
+              </CustomButton>
+            </Animated.View>
           </View>
 
           <PopupModal
