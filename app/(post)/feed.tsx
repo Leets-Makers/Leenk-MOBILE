@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
@@ -13,6 +13,7 @@ import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 import { Media } from '@/types/feed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useModalStore } from '@/stores/modalStore';
 
 export default function PostFeedPage() {
   const insets = useSafeAreaInsets();
@@ -23,12 +24,13 @@ export default function PostFeedPage() {
   const resetSelectedImages = useFeedWriteStore.getState().reset;
 
   const setMediaUrls = useFeedWriteStore.getState().setMediaUrls;
-  const [isUploading, setIsUploading] = useState(false);
 
-  console.log('[🔁 selectedUrisLength]:', selectedUrisLength);
+  const closeModal = useModalStore((state) => state.closeModal);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleBackPress = () => {
     setIsModalOpen(true);
