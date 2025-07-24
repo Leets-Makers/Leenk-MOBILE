@@ -112,7 +112,7 @@ const MenuItem = styled.View<{ pressed: boolean; $isWrite: boolean }>`
   align-items: center;
   justify-content: ${({ $isWrite }) => ($isWrite ? 'flex-start' : 'center')};
   padding: ${4 * height}px ${4 * width}px;
-  border-radius: ${radius.xs}px;
+  border-radius: ${radius.md}px;
   gap: ${({ $isWrite }) => ($isWrite ? 6 * width : 0)}px;
   background-color: ${({ pressed }) =>
     pressed ? colors.bg[3] : 'transparent'};

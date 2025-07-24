@@ -11,6 +11,10 @@ node_modules/
 /google-services.json
 /GoogleService-Info.plist
 
+
+# Android release keystore
+android/app/my-release-key.keystore
+
 # Expo
 .expo/
 dist/
