@@ -68,5 +68,11 @@ export default function useReactionDebounce(
   return {
     count,
     increaseReaction,
+    flush: () => {
+      sendReactions.flush();
+      if (count > 0) {
+        sendReactions(count);
+      }
+    },
   };
 }

@@ -19,6 +19,7 @@ import { getFeedReactions } from '@/api/feed/feed.api';
 import useReactionDebounce from '@/hooks/useReactionDebounce';
 import { useToastStore } from '@/stores/toastStore';
 import { useModalStore } from '@/stores/modalStore';
+import useFlushOnExit from '@/hooks/useFlushonExit';
 
 type HeartData = {
   id: number;
@@ -30,6 +31,7 @@ interface HeartButtonProps {
   totalReactionCount: number;
   authorId: number;
   currentUserId: number | undefined;
+  flushOnExit?: boolean;
 }
 
 export default function HeartButton({
@@ -37,6 +39,7 @@ export default function HeartButton({
   totalReactionCount,
   authorId,
   currentUserId,
+  flushOnExit,
 }: HeartButtonProps) {
   const [hearts, setHearts] = useState<HeartData[]>([]);
   const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
@@ -44,13 +47,15 @@ export default function HeartButton({
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
 
-  const { count: localCount, increaseReaction } = useReactionDebounce(
-    feedId,
-    400,
-    (reactionCount) => {
-      setTotalReaction((prev) => prev + reactionCount);
-    },
-  );
+  const {
+    count: localCount,
+    increaseReaction,
+    flush,
+  } = useReactionDebounce(feedId, 500, (reactionCount) => {
+    setTotalReaction((prev) => prev + reactionCount);
+  });
+
+  useFlushOnExit(flushOnExit ?? false, flush, localCount);
 
   const heartScale = useSharedValue(1);
   const outlineScale = useSharedValue(0.8);

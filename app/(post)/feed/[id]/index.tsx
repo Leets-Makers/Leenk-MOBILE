@@ -19,13 +19,7 @@ import {
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
-import {
-  Pressable,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { StyledText } from '@/app/(post)/feed/write';
 import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
@@ -190,6 +184,7 @@ export default function FeedDetailPage() {
             totalReactionCount={feed.totalReactionCount}
             authorId={feed.author.userId}
             currentUserId={userInfo?.id}
+            flushOnExit
           />
         </RowWrapper>
 
