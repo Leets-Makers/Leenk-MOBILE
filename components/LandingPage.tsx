@@ -42,7 +42,7 @@ export default function LandingPage() {
   const router = useRouter();
   const [notRegisterModal, setNotRegisterModal] = useState(false);
   const [waitModal, setWaitModal] = useState(false);
-  const weethSiteURL = 'https://www.weeth.site/';
+  const weethSiteURL = 'https://www.weeth.kr';
   const { fromLogout } = useLocalSearchParams();
 
   const { setName, setPosition, setCardinal } = useProfileStore();
