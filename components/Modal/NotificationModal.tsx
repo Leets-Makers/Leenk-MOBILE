@@ -25,25 +25,13 @@ export default function NotificationModal({
 
   console.log(data.length);
 
-  const isScrollable = data.length > 5;
-
-  const MIN_HEIGHT = 348 * height;
-  const MAX_HEIGHT = 500 * height;
-
-  let containerHeight: number | undefined = undefined;
-
-  if (isScrollable) {
-    containerHeight = MAX_HEIGHT;
-  } else if (data.length <= 5) {
-    const estimatedHeight = data.length * 65 * height;
-    containerHeight = estimatedHeight < MIN_HEIGHT ? MIN_HEIGHT : undefined;
-  }
+  const isScrollable = data.length > 6;
 
   // TODO: Time Text에 시간 추가
   return (
     <Modal transparent visible={isOpen}>
       <Overlay onPress={onClose}>
-        <Container $height={containerHeight}>
+        <Container>
           <FlatList
             data={data}
             keyExtractor={(item, index) => index.toString()}
@@ -98,19 +86,14 @@ const Overlay = styled.Pressable`
   padding: 0 ${10 * width}px;
 `;
 
-const Container = styled.View<{ $height?: number }>`
+const Container = styled.View`
   background-color: ${colors.white};
   align-items: center;
   width: 100%;
+  max-height: ${400 * height};
   border-radius: ${radius.md}px;
   overflow: hidden;
   padding: 0 ${16 * height}px;
-
-  ${(props) =>
-    props.$height &&
-    `
-      height: ${props.$height}px;
-  `}
 `;
 
 const Item = styled.View`
