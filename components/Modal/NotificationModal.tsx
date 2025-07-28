@@ -26,7 +26,13 @@ export default function NotificationModal({
   const isScrollable = data.length > 5;
 
   return (
-    <Modal transparent visible={isOpen}>
+    <Modal
+      transparent
+      visible={isOpen}
+      onRequestClose={onClose}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <Overlay>
         <TouchableWithoutFeedback onPress={onClose}>
           <Background />
