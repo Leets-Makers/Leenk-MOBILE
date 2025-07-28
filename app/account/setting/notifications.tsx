@@ -18,11 +18,12 @@ export default function SettingNotificationsPage() {
   useEffect(() => {
     const getSettings = async () => {
       try {
-        const settings = await getNotificationsSetting();
+        const { data } = await getNotificationsSetting();
         setToggles({
-          feedLike: settings.isNewReactionNotify,
-          newFeedPost: settings.isNewFeedNotify,
+          feedLike: data.isNewReactionNotify,
+          newFeedPost: data.isNewFeedNotify,
         });
+        console.log(data);
       } catch (error) {
         if (__DEV__) console.error('알림 설정을 불러오지 못했습니다:', error);
       }
@@ -55,6 +56,8 @@ export default function SettingNotificationsPage() {
       }));
     }
   };
+
+  console.log(toggles);
 
   return (
     <Container>
