@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from 'react-native';
+import { Modal, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
 import { width, height, radius } from '@/theme/globalStyles';
 import colors from '@/theme/color';
@@ -23,56 +23,66 @@ export default function NotificationModal({
   const isFirstReaction = (item: ModalData): item is FeedFirstReaction =>
     (item as FeedFirstReaction).name !== undefined;
 
-  console.log(data.length);
+  const isScrollable = data.length > 5;
 
-  const isScrollable = data.length > 6;
-
-  // TODO: Time Text에 시간 추가
   return (
     <Modal transparent visible={isOpen}>
-      <Overlay onPress={onClose}>
-        <Container>
-          <FlatList
-            data={data}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) =>
-              isFirstReaction(item) ? (
-                <Item>
-                  <Row>
-                    <LeftSection>
-                      <FeedIcon width={16} stroke={colors.primary} />
-                      <TypeText>피드</TypeText>
-                    </LeftSection>
-                    <TimeText> </TimeText>
-                  </Row>
-                  <ContentContainer>
-                    <Title>{item.body}</Title>
-                    <SubText>{item.name}</SubText>
-                  </ContentContainer>
-                </Item>
-              ) : (
-                <Item>
-                  <Row>
-                    <LeftSection>
-                      <FeedIcon width={16} stroke={colors.primary} />
-                      <TypeText>피드</TypeText>
-                    </LeftSection>
-                    <TimeText> </TimeText>
-                  </Row>
-                  <ContentContainer>
-                    <Title>{item.body}</Title>
-                  </ContentContainer>
-                </Item>
-              )
-            }
-            scrollEnabled={isScrollable}
-            showsVerticalScrollIndicator={false}
-          />
+      <Overlay>
+        <TouchableWithoutFeedback onPress={onClose}>
+          <Background />
+        </TouchableWithoutFeedback>
 
-          {isScrollable && (
-            <GradientOverlay colors={['rgba(255,255,255,0)', colors.white]} />
-          )}
-        </Container>
+        <TouchableWithoutFeedback onPress={() => {}}>
+          <ContainerWrapper isScrollable={isScrollable}>
+            <Container isScrollable={isScrollable}>
+              <FlatList
+                data={data}
+                keyExtractor={(_, index) => index.toString()}
+                renderItem={({ item }) =>
+                  isFirstReaction(item) ? (
+                    <Item>
+                      <Row>
+                        <LeftSection>
+                          <FeedIcon width={16} stroke={colors.primary} />
+                          <TypeText>피드</TypeText>
+                        </LeftSection>
+                        <TimeText>방금</TimeText>
+                      </Row>
+                      <ContentContainer>
+                        <Title>{item.body}</Title>
+                        <SubText>{item.name}</SubText>
+                      </ContentContainer>
+                    </Item>
+                  ) : (
+                    <Item>
+                      <Row>
+                        <LeftSection>
+                          <FeedIcon width={16} stroke={colors.primary} />
+                          <TypeText>피드</TypeText>
+                        </LeftSection>
+                        <TimeText>방금</TimeText>
+                      </Row>
+                      <ContentContainer>
+                        <Title>{item.body}</Title>
+                      </ContentContainer>
+                    </Item>
+                  )
+                }
+                ItemSeparatorComponent={() => <ItemGap />}
+                scrollEnabled={isScrollable}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+              />
+
+              {isScrollable && (
+                <GradientOverlay
+                  colors={['rgba(255,255,255,0)', colors.white]}
+                />
+              )}
+            </Container>
+          </ContainerWrapper>
+        </TouchableWithoutFeedback>
       </Overlay>
     </Modal>
   );
@@ -85,24 +95,40 @@ const Overlay = styled.Pressable`
   align-items: center;
   padding: 0 ${10 * width}px;
 `;
+const Background = styled.View`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
 
-const Container = styled.View`
-  background-color: ${colors.white};
-  align-items: center;
+const ContainerWrapper = styled.View<{ isScrollable: boolean }>`
   width: 100%;
-  max-height: ${400 * height};
+  max-height: ${400 * height}px;
+  justify-content: ${({ isScrollable }) =>
+    isScrollable ? 'flex-start' : 'center'};
+  align-items: center;
+`;
+
+const Container = styled.View<{ isScrollable: boolean }>`
+  width: 100%;
+  background-color: ${colors.white};
   border-radius: ${radius.md}px;
   overflow: hidden;
-  padding: 0 ${16 * height}px;
+  padding: ${16 * height}px ${16 * width}px;
+`;
+
+const ItemGap = styled.View`
+  height: ${24 * height}px;
 `;
 
 const Item = styled.View`
-  padding: ${12 * height}px ${16 * width}px;
   width: 100%;
 `;
 
 const ContentContainer = styled.View`
-  margin-left: ${28 * width};
+  margin-left: ${28 * width}px;
 `;
 
 const GradientOverlay = styled(LinearGradient)`
