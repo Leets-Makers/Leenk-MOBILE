@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import LockIcon from '@/assets/images/ic_leenk_bg_gray.svg';
 import {
   fontSize,
   lineHeight,
@@ -10,16 +9,24 @@ import {
   height,
 } from '@/theme/globalStyles';
 import { Header } from '@/components';
+import TabMenu from '@/components/common/TabMenu';
 export default function LeenkPage() {
+  const [tab, setTab] = useState<'all' | 'recruting' | 'completed'>('all');
   return (
     <Container>
       <Header LeftSection="LOGO" RightSection="BELL" />
-      <LockIcon
-        width={120 * width}
-        height={120 * width}
-        style={{ marginTop: 162 * height }}
+      <TabMenu
+        activeTab={tab}
+        onTabChange={(newTab: string) => {
+          if (
+            newTab === 'all' ||
+            newTab === 'recruting' ||
+            newTab === 'completed'
+          ) {
+            setTab(newTab);
+          }
+        }}
       />
-      <MessageText>곧 출시될 예정이야{'\n'} 조금만 기다려줘!</MessageText>
     </Container>
   );
 }

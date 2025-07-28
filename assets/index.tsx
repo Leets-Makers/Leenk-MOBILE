@@ -29,6 +29,8 @@ import CheckIcon from '@/assets/images/ic_check.svg';
 import SearchIcon from '@/assets/images/ic_search.svg';
 import NoCheckIcon from '@/assets/images/ic_no_check.svg';
 import HeartReactionIcon from '@/assets/images/ic_reaction_heart.svg';
+import ClockIcon from '@/assets/images/ic_clock.svg';
+import PeopleIcon from '@/assets/images/ic_people.svg';
 export {
   FeedIcon,
   LeenkIcon,
@@ -61,4 +63,6 @@ export {
   CheckIcon,
   NoCheckIcon,
   HeartReactionIcon,
+  ClockIcon,
+  PeopleIcon,
 };
