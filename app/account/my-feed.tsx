@@ -1,6 +1,6 @@
 import { Container } from '@/app/(post)/feed';
 import { Header } from '@/components';
-import TabMenu from '@/components/feed/TabMenu';
+import TabMenu from '@/components/common/TabMenu';
 import { useState } from 'react';
 import MyTotalReactionCount from '@/components/feed/MyTotalReactionCount';
 import ProfileFeedList from '@/components/feed/ProfileFeedList';
