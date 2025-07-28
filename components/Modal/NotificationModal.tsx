@@ -32,63 +32,58 @@ export default function NotificationModal({
           <Background />
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={() => {}}>
-          <ContainerWrapper isScrollable={isScrollable}>
-            <Container isScrollable={isScrollable}>
-              <FlatList
-                data={data}
-                keyExtractor={(_, index) => index.toString()}
-                renderItem={({ item }) =>
-                  isFirstReaction(item) ? (
-                    <Item>
-                      <Row>
-                        <LeftSection>
-                          <FeedIcon width={16} stroke={colors.primary} />
-                          <TypeText>피드</TypeText>
-                        </LeftSection>
-                        <TimeText>방금</TimeText>
-                      </Row>
-                      <ContentContainer>
-                        <Title>{item.body}</Title>
-                        <SubText>{item.name}</SubText>
-                      </ContentContainer>
-                    </Item>
-                  ) : (
-                    <Item>
-                      <Row>
-                        <LeftSection>
-                          <FeedIcon width={16} stroke={colors.primary} />
-                          <TypeText>피드</TypeText>
-                        </LeftSection>
-                        <TimeText>방금</TimeText>
-                      </Row>
-                      <ContentContainer>
-                        <Title>{item.body}</Title>
-                      </ContentContainer>
-                    </Item>
-                  )
-                }
-                ItemSeparatorComponent={() => <ItemGap />}
-                scrollEnabled={isScrollable}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1 }}
-                keyboardShouldPersistTaps="handled"
-              />
+        <ContainerWrapper isScrollable={isScrollable}>
+          <Container isScrollable={isScrollable}>
+            <FlatList
+              data={data}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item }) =>
+                isFirstReaction(item) ? (
+                  <Item>
+                    <Row>
+                      <LeftSection>
+                        <FeedIcon width={16} stroke={colors.primary} />
+                        <TypeText>피드</TypeText>
+                      </LeftSection>
+                      <TimeText>방금</TimeText>
+                    </Row>
+                    <ContentContainer>
+                      <Title>{item.body}</Title>
+                      <SubText>{item.name}</SubText>
+                    </ContentContainer>
+                  </Item>
+                ) : (
+                  <Item>
+                    <Row>
+                      <LeftSection>
+                        <FeedIcon width={16} stroke={colors.primary} />
+                        <TypeText>피드</TypeText>
+                      </LeftSection>
+                      <TimeText>방금</TimeText>
+                    </Row>
+                    <ContentContainer>
+                      <Title>{item.body}</Title>
+                    </ContentContainer>
+                  </Item>
+                )
+              }
+              ItemSeparatorComponent={() => <ItemGap />}
+              scrollEnabled={isScrollable}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
+            />
 
-              {isScrollable && (
-                <GradientOverlay
-                  colors={['rgba(255,255,255,0)', colors.white]}
-                />
-              )}
-            </Container>
-          </ContainerWrapper>
-        </TouchableWithoutFeedback>
+            {isScrollable && (
+              <GradientOverlay colors={['rgba(255,255,255,0)', colors.white]} />
+            )}
+          </Container>
+        </ContainerWrapper>
       </Overlay>
     </Modal>
   );
 }
 
-const Overlay = styled.Pressable`
+const Overlay = styled.View`
   flex: 1;
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
@@ -131,12 +126,13 @@ const ContentContainer = styled.View`
   margin-left: ${28 * width}px;
 `;
 
-const GradientOverlay = styled(LinearGradient)`
+const GradientOverlay = styled(LinearGradient).attrs({
+  pointerEvents: 'none',
+})`
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   height: ${60 * height}px;
   z-index: 1;
-  pointer-events: none;
 `;

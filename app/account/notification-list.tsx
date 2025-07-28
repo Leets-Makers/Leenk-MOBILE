@@ -1,8 +1,12 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { Header } from '@/components';
+import {
+  getNotifications,
+  markNotificationAsRead,
+} from '@/api/users/notification.api';
 import { RefreshControl } from 'react-native-gesture-handler';
 import { ModalData, Notification } from '@/types/notification';
 import NotificationListItem from '@/components/NotificationListItem';
@@ -11,81 +15,54 @@ import NotificationModal from '@/components/Modal/NotificationModal';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
 
-// ✅ Mock Data
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: 'mock-1',
-    isRead: false,
-    createdAt: '2024-07-27T12:00:00',
-    notificationType: 'FEED_FIRST_REACTION',
-    content: {
-      feedFirstReactions: [
-        { body: '내가 쓴 피드에 좋아요를 받았어', name: '이한별' },
-        { body: '내가 쓴 피드에 좋아요를 받았어', name: '김도연' },
-      ],
-    },
-  },
-  {
-    id: 'mock-2',
-    isRead: false,
-    createdAt: '2024-07-27T13:00:00',
-    notificationType: 'FEED_REACTION_COUNT',
-    content: {
-      feedReactionCounts: [
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-        { body: '[모임 이름]에 새로운 참여자가 들어왔어' },
-      ],
-    },
-  },
-];
-
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const { userInfo } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<ModalData[]>([]);
+
   const { showToast } = useToastStore();
 
+  // 알림 상세 모달 열기
   const openDetailModal = (details: ModalData[]) => {
     setSelectedDetails(details);
     setModalVisible(true);
   };
 
+  // 알림 목록 불러오기
   const fetchNotifications = useCallback(async () => {
     try {
-      setData(MOCK_NOTIFICATIONS); // ✅ mock 연결
+      const notifications = await getNotifications(0, 20);
+      setData([...notifications.notificationResponses]);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
     }
   }, []);
 
+  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
 
+  // 새로고침 핸들러
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchNotifications();
     setRefreshing(false);
   };
 
+  // 알림 읽음 처리
   const handlePress = async (notificationId: string) => {
     try {
-      // ❌ API 제거
+      if (userInfo) await markNotificationAsRead(userInfo?.id, notificationId);
       setData((prev) =>
         prev.map((item) =>
           item.id === notificationId ? { ...item, isRead: true } : item,
         ),
       );
     } catch (error) {
+      if (__DEV__) console.error('Failed to mark notification as read:', error);
       showToast('알림을 불러오는데 실패했습니다.', 'error');
     }
   };
