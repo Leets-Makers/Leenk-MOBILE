@@ -74,6 +74,7 @@ export const StyledTextInput = styled.TextInput`
   width: 100%;
   font-size: ${fontSize.lg}px;
   color: ${colors.black};
+  padding: 0;
 `;
 
 export const SubMessage = styled.Text`

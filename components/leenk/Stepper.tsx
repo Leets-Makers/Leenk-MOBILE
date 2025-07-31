@@ -47,6 +47,7 @@ const Container = styled.View`
   flex-direction: row;
   align-items: center;
   gap: ${width * 12}px;
+  margin-top: ${height * 8}px;
 `;
 
 const RoundBtn = styled.Pressable`

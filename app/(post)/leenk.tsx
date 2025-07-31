@@ -4,7 +4,13 @@ import CalendarButton from '@/components/leenk/CalendarButton';
 import LeenkImagePicker from '@/components/leenk/LeenkImagePicker';
 import Stepper from '@/components/leenk/Stepper';
 import colors from '@/theme/color';
-import { fonts, fontSize, lineHeight, width } from '@/theme/globalStyles';
+import {
+  fonts,
+  fontSize,
+  height,
+  lineHeight,
+  width,
+} from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import styled from 'styled-components/native';
@@ -27,11 +33,11 @@ export default function PostLeenkPage() {
   return (
     <Conatiner>
       <Header signUpBackPress={handleBackPress} />
-      <Row>
+      <Row style={{ marginTop: height * 10 }}>
         <Title>사진선택</Title>
         <SubText>원하는 사진을 선택하거나, 새로운 사진을 올려줘.</SubText>
       </Row>
-      <LeenkImagePicker />
+      <Margin />
       <Input
         title="제목"
         placeholder="제목을 입력해줘"
@@ -39,6 +45,7 @@ export default function PostLeenkPage() {
         onChangeText={setTitle}
         maxLength={36}
       />
+      <Margin />
       <Input
         title="장소"
         placeholder="모임 장소를 입력해줘"
@@ -46,13 +53,16 @@ export default function PostLeenkPage() {
         onChangeText={setPlace}
         maxLength={15}
       />
+      <Margin />
       <Title>일시</Title>
       <CalendarButton />
+      <Margin />
       <Row>
         <Title>모임 인원</Title>
         <SubText>나 포함 최소 3명부터 모임을 만들 수 있어.</SubText>
       </Row>
       <Stepper />
+      <Margin />
       <Textarea
         title="내용"
         placeholder="자세한 내용을 입력해줘"
@@ -81,6 +91,10 @@ const Conatiner = styled.ScrollView`
 `;
 const Row = styled.View`
   flex-direction: row;
+`;
+
+const Margin = styled.View`
+  height: ${height * 32}px;
 `;
 export const SubText = styled.Text`
   font-size: ${fontSize.sm}px;

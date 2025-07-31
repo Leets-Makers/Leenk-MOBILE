@@ -46,7 +46,11 @@ export default function MenuModal({
               <MenuItemWrapper onPress={onPressFirst}>
                 {({ pressed }) => (
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
-                    <LeenkIcon width={20 * width} height={20 * width} />
+                    <LeenkIcon
+                      width={20 * width}
+                      height={20 * width}
+                      stroke={colors.primary}
+                    />
                     <MenuText $isWrite={isWrite}>링크 글 쓰기</MenuText>
                   </MenuItem>
                 )}
