@@ -244,8 +244,8 @@ export default function FeedDetailPage() {
       {modalType === 'deleteConfirm' && (
         <PopupModal
           isOpen={modalType === 'deleteConfirm'}
-          onConfirm={handleConfirmDelete}
-          onClose={closeModal}
+          onRightBtn={handleConfirmDelete}
+          onLeftBtn={closeModal}
           isWarning
           mainText="피드를 삭제할거야?"
           subText="삭제하면 복구할 수 없어."

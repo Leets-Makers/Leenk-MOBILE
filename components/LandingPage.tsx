@@ -120,10 +120,10 @@ export default function LandingPage() {
         subText="Leets 활동을 위해 위드는 필수야"
         leftBtnText="닫기"
         rightBtnText="위드 가입하자"
-        onConfirm={() => {
+        onRightBtn={() => {
           Linking.openURL(weethSiteURL);
         }}
-        onClose={() => setNotRegisterModal(false)}
+        onLeftBtn={() => setNotRegisterModal(false)}
       />
       <PopupModal
         isOpen={waitModal}
@@ -131,10 +131,10 @@ export default function LandingPage() {
         subText="승인이 완료될 때까지 조금만 기다려줘."
         leftBtnText="닫기"
         rightBtnText="위드 보러가자"
-        onConfirm={() => {
+        onRightBtn={() => {
           Linking.openURL(weethSiteURL);
         }}
-        onClose={() => setWaitModal(false)}
+        onLeftBtn={() => setWaitModal(false)}
       />
       <LogoWrapper>
         <LogoGif

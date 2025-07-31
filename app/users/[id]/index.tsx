@@ -102,8 +102,8 @@ export default function MyPage() {
       {modalType === 'deleteConfirm' && (
         <PopupModal
           isOpen={modalType === 'deleteConfirm'}
-          onConfirm={handleConfirmBlock}
-          onClose={closeModal}
+          onRightBtn={handleConfirmBlock}
+          onLeftBtn={closeModal}
           isWarning
           mainText={`${profile?.name}을 차단할거야?`}
           subText="차단한 사람의 글을 볼 수 없어."

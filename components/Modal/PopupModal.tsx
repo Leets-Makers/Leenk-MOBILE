@@ -22,8 +22,8 @@ import CustomButton from '../common/Button/CustomButton';
 
 interface PopupModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
+  onLeftBtn: () => void;
+  onRightBtn: () => void;
   mainText: string;
   subText?: string;
   isWarning?: boolean;
@@ -34,8 +34,8 @@ interface PopupModalProps {
 
 export default function PopupModal({
   isOpen,
-  onClose,
-  onConfirm,
+  onLeftBtn,
+  onRightBtn,
   mainText,
   subText,
   isCancel = true,
@@ -48,7 +48,7 @@ export default function PopupModal({
       animationType="none"
       transparent
       visible={isOpen}
-      onRequestClose={onClose}
+      onRequestClose={onLeftBtn}
     >
       <Overlay>
         <Container>
@@ -56,7 +56,7 @@ export default function PopupModal({
           {subText && <SubText $isWarning={isWarning}>{subText}</SubText>}
           <ButtonRow>
             <CustomButton
-              onPress={onClose}
+              onPress={onLeftBtn}
               variant={isCancel ? 'primary' : 'secondary'}
               size="lg"
               rounded="md"
@@ -66,7 +66,7 @@ export default function PopupModal({
             </CustomButton>
 
             <CustomButton
-              onPress={onConfirm}
+              onPress={onRightBtn}
               variant={isCancel ? 'secondary' : 'primary'}
               size="lg"
               rounded="md"

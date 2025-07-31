@@ -189,8 +189,8 @@ export default function FeedWritePage() {
 
           <PopupModal
             isOpen={isModalOpen}
-            onConfirm={handleConfirmUpload}
-            onClose={handleConfirmExit}
+            onRightBtn={handleConfirmUpload}
+            onLeftBtn={handleConfirmExit}
             mainText="이 내용으로 피드에 업로드할까?"
             subText="함께한 사람이 추가되지 않았어."
             isCancel={true}

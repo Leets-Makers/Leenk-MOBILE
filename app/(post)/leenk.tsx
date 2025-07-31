@@ -16,7 +16,8 @@ import { useState } from 'react';
 import styled from 'styled-components/native';
 
 export default function PostLeenkPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBackModalOpen, setIsBackModalOpen] = useState(false);
+  const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [place, setPlace] = useState('');
   const [date, setDate] = useState('');
@@ -24,10 +25,15 @@ export default function PostLeenkPage() {
   const router = useRouter();
 
   const handleBackPress = () => {
-    setIsModalOpen(true);
+    setIsBackModalOpen(true);
   };
   const handleConfirmExit = () => {
-    setIsModalOpen(false);
+    setIsBackModalOpen(false);
+    router.replace('/(page)/leenk');
+  };
+
+  const handleComplete = () => {
+    setCompleteModalOpen(true);
     router.replace('/(page)/leenk');
   };
   return (
@@ -71,14 +77,22 @@ export default function PostLeenkPage() {
       />
 
       <PopupModal
-        isOpen={isModalOpen}
-        onConfirm={() => setIsModalOpen(false)}
-        onClose={handleConfirmExit}
+        isOpen={isBackModalOpen}
+        onRightBtn={() => setIsBackModalOpen(false)}
+        onLeftBtn={handleConfirmExit}
         mainText="글 작성을 그만둘래?"
         subText="작성하던 내용은 저장되지 않아."
         isCancel={true}
         leftBtnText="확인"
         rightBtnText="취소"
+      />
+      <PopupModal
+        isOpen={completeModalOpen}
+        onRightBtn={handleComplete}
+        onLeftBtn={() => setCompleteModalOpen(false)}
+        mainText="모집하러 가볼까?"
+        leftBtnText="취소"
+        rightBtnText="모집하기"
       />
     </Conatiner>
   );
