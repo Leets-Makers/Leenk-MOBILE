@@ -7,9 +7,10 @@ import {
   fontSize,
   height,
   lineHeight,
+  radius,
   width,
 } from '@/theme/globalStyles';
-import { ClockIcon, PeopleIcon } from '@/assets';
+import { CheckerIcon, ClockIcon, PeopleIcon } from '@/assets';
 
 interface LeenkListItemProps {
   title: string;
@@ -30,21 +31,28 @@ export default function LeenkListItem({
 }: LeenkListItemProps) {
   return (
     <Container>
-      <StyledImage source={leenkImageUri} resizeMode="cover" />
+      {leenkImageUri ? (
+        <StyledImage source={{ uri: leenkImageUri }} resizeMode="cover" />
+      ) : (
+        <FallbackWrapper>
+          <CheckerIcon width={width * 80} />
+        </FallbackWrapper>
+      )}
       <ContentWrapper>
-        <TitleText>{title}</TitleText>
+        <TopSection>
+          <TitleText>{title}</TitleText>
+          <Row>
+            <ClockIcon />
+            <TimeText>{date}</TimeText>
+            <PeopleIcon style={{ marginLeft: width * 12 }} />
+            <TimeText style={{ marginLeft: width * 4 }}>{people}</TimeText>
+          </Row>
+        </TopSection>
 
-        <Row>
-          <ClockIcon />
-          <TimeText>{date}</TimeText>
-          <PeopleIcon style={{ marginLeft: width * 12 }} />
-          <TimeText style={{ marginLeft: width * 4 }}>{people}</TimeText>
-        </Row>
-
-        <Row style={{ marginTop: height * 8 }}>
+        <BottomRow>
           <ProfileImageWithFallback uri={profileImageUri} size={20} isDark />
           <NameText>{name}</NameText>
-        </Row>
+        </BottomRow>
       </ContentWrapper>
     </Container>
   );
@@ -55,16 +63,35 @@ const Container = styled.View`
   height: ${height * 104}px;
   padding: ${height * 12}px ${width * 12}px;
   flex-direction: row;
-  align-items: center;
+  background-color: white;
+  border-radius: ${radius.xs}px;
 `;
 
 const StyledImage = styled.Image`
   height: ${height * 80}px;
 `;
 
+const FallbackWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
 const ContentWrapper = styled.View`
   margin-left: ${width * 12}px;
   flex: 1;
+  justify-content: space-between;
+`;
+
+const TopSection = styled.View``;
+
+const Row = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-top: ${height * 4}px;
+`;
+
+const BottomRow = styled(Row)`
+  margin-top: 0;
 `;
 
 const TitleText = styled.Text`
@@ -72,12 +99,6 @@ const TitleText = styled.Text`
   font-family: ${fonts.ExtraBold};
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l}px;
-`;
-
-const Row = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-top: ${height * 4}px;
 `;
 
 const TimeText = styled.Text`

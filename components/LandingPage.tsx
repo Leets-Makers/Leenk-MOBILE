@@ -12,7 +12,7 @@ import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CustomButton } from '@/components';
-import { login } from '@react-native-kakao/user';
+import { login, logout } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
 import { kakaoLogin } from '@/api/login/kakao.api';
@@ -54,6 +54,7 @@ export default function LandingPage() {
   const handleKakaoLogin = async () => {
     //카카오 로그인 로직
     try {
+      await logout();
       const token = await login();
       const accessToken = token?.accessToken;
 

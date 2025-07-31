@@ -1,5 +1,6 @@
 import { Header, Input, PopupModal, Textarea } from '@/components';
 import { Title } from '@/components/common/Input';
+import CalendarButton from '@/components/leenk/CalendarButton';
 import LeenkImagePicker from '@/components/leenk/LeenkImagePicker';
 import Stepper from '@/components/leenk/Stepper';
 import colors from '@/theme/color';
@@ -45,12 +46,8 @@ export default function PostLeenkPage() {
         onChangeText={setPlace}
         maxLength={15}
       />
-      <Input
-        title="일시"
-        placeholder="모임 일시를 선택해줘"
-        value={date}
-        onChangeText={setDate}
-      />
+      <Title>일시</Title>
+      <CalendarButton />
       <Row>
         <Title>모임 인원</Title>
         <SubText>나 포함 최소 3명부터 모임을 만들 수 있어.</SubText>

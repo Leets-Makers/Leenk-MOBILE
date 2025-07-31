@@ -5,45 +5,7 @@ import { width, height } from '@/theme/globalStyles';
 import { Header } from '@/components';
 import TabMenu from '@/components/common/TabMenu';
 import LeenkListItem from '@/components/leenk/LeenkListItem';
-
-const mockData = [
-  {
-    id: '1',
-    title: '전정도에서 모두모여잉',
-    date: '12월 28일 22시',
-    people: '3/20명',
-    name: '김링크',
-    leenkImageUri: null,
-    profileImageUri: null,
-  },
-  {
-    id: '2',
-    title: '카공 할 사람 급구',
-    date: '12월 02일 15시',
-    people: '1/20명',
-    name: '이유진',
-    leenkImageUri: null,
-    profileImageUri: null,
-  },
-  {
-    id: '3',
-    title: '볼링 모임 ㄱ',
-    date: '11월 30일 19시',
-    people: '6/20명',
-    name: '계다현',
-    leenkImageUri: null,
-    profileImageUri: null,
-  },
-  {
-    id: '4',
-    title: '같이 점심 먹장',
-    date: '12월 18일 11시',
-    people: '3/20명',
-    name: '김윙크',
-    leenkImageUri: null,
-    profileImageUri: null,
-  },
-];
+import { mockLeenkData } from '@/constants/mockUserData';
 
 export default function LeenkPage() {
   const [tab, setTab] = useState<'all' | 'recruting' | 'completed'>('all');
@@ -52,6 +14,7 @@ export default function LeenkPage() {
     <Container>
       <Header LeftSection="LOGO" RightSection="BELL" />
       <TabMenu
+        type="leenk"
         activeTab={tab}
         onTabChange={(newTab: string) => {
           if (
@@ -64,7 +27,7 @@ export default function LeenkPage() {
         }}
       />
       <List
-        data={mockData}
+        data={mockLeenkData}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <LeenkListItem
