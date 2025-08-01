@@ -18,6 +18,12 @@ export const mockLeenkData = [
     name: '김링크',
     leenkImageUri: null,
     profileImageUri: null,
+    cotent:
+      '저희 전정도 스터디룸 빌리려는데 2명 이상 모집해요오오오오오오오 일단 2명 빠르게 구하고 더 오실 분들은 참여해주세용!! 1시까지 바로 올 수 있으신 분들 꼭 와주시면 넘 좋겠어요... 다들 친해지고 싶어요! 누구든 오셔서 같이 작업해용!',
+    participantCount: 3,
+    allParticipants: 20,
+    place: '전정도 B1 룸 A',
+    createdAt: '2025-06-30T00:00:00',
   },
   {
     id: '2',

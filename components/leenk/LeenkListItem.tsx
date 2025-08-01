@@ -101,7 +101,7 @@ const TitleText = styled.Text`
   line-height: ${lineHeight.l}px;
 `;
 
-const TimeText = styled.Text`
+export const TimeText = styled.Text`
   color: ${colors.text[3]};
   font-family: ${fonts.Regular};
   font-size: ${fontSize.sm}px;
