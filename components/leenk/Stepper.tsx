@@ -15,7 +15,7 @@ export default function Stepper() {
   const [count, setCount] = useState(3);
 
   const handleIncrement = () => {
-    setCount((prev) => Math.min(prev + 1, 20));
+    setCount((prev) => Math.min(prev + 1, 99));
   };
 
   const handleDecrement = () => {
