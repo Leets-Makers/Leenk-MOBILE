@@ -19,19 +19,19 @@ import { useParticipantStore } from '@/stores/participantStore';
 
 export default function ParticipantsList() {
   const [isKakao, setIsKakao] = useState(true);
-  const { selectedUsers, clear } = useParticipantStore();
+  const { selectedUsers, toggleSelectionMode } = useParticipantStore();
 
   const users = mockLeenkData;
 
-  const handleToggleMode = () => {
+  const handleKick = () => {
     setIsKakao(!isKakao);
-    clear();
+    toggleSelectionMode();
   };
 
   console.log('내보내기 참여자:', selectedUsers);
   return (
     <Container>
-      <Header RightSection="KICK" kebabPress={handleToggleMode}>
+      <Header RightSection="KICK" kebabPress={handleKick}>
         참여자
       </Header>
 

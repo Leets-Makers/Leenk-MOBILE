@@ -22,7 +22,7 @@ export default function UserItem({
   isKakao: boolean;
 }) {
   const { showToast } = useToastStore();
-  const { selectedUsers, toggleUser } = useParticipantStore();
+  const { selectedUsers, toggleUser, isSelectionMode } = useParticipantStore();
 
   const checked = selectedUsers.some((u) => u.id === user.id);
 
@@ -54,7 +54,7 @@ export default function UserItem({
             <CopyIcon width={20} height={20} style={{ marginLeft: 8 }} />
           </KakaoWrapper>
         )}
-        {!user.isWrite && !isKakao && (
+        {!user.isWrite && isSelectionMode && (
           <CheckBox onPress={() => toggleUser(user)} checked={checked} />
         )}
       </RightWrapper>

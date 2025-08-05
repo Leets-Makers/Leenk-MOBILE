@@ -76,8 +76,12 @@ const Side = styled.View`
 `;
 
 const TitleWrapper = styled.View`
+  position: absolute;
+  left: 0;
+  right: 0;
   align-items: center;
   justify-content: center;
+  height: 100%;
 `;
 
 const TitleText = styled.Text`

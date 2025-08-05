@@ -1,24 +1,27 @@
-import { create } from 'zustand';
 import { LeenkDataType } from '@/constants/mockUserData';
+import { create } from 'zustand';
 
 interface ParticipantStore {
   selectedUsers: LeenkDataType[];
+  isSelectionMode: boolean;
   toggleUser: (user: LeenkDataType) => void;
-  clear: () => void;
+  toggleSelectionMode: () => void;
+  resetSelection: () => void;
 }
 
-export const useParticipantStore = create<ParticipantStore>((set, get) => ({
+export const useParticipantStore = create<ParticipantStore>((set) => ({
   selectedUsers: [],
-  toggleUser: (user) => {
-    const { selectedUsers } = get();
-    const exists = selectedUsers.find((u) => u.id === user.id);
-    if (exists) {
-      set({
-        selectedUsers: selectedUsers.filter((u) => u.id !== user.id),
-      });
-    } else {
-      set({ selectedUsers: [...selectedUsers, user] });
-    }
-  },
-  clear: () => set({ selectedUsers: [] }),
+  isSelectionMode: false,
+  toggleUser: (user) =>
+    set((state) => {
+      const exists = state.selectedUsers.some((u) => u.id === user.id);
+      return {
+        selectedUsers: exists
+          ? state.selectedUsers.filter((u) => u.id !== user.id)
+          : [...state.selectedUsers, user],
+      };
+    }),
+  toggleSelectionMode: () =>
+    set((state) => ({ isSelectionMode: !state.isSelectionMode })),
+  resetSelection: () => set({ selectedUsers: [], isSelectionMode: false }),
 }));
