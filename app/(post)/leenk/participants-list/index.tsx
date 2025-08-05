@@ -16,16 +16,17 @@ import { FlatList } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
 import { useParticipantStore } from '@/stores/participantStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ParticipantsList() {
   const { selectedUsers, startSelection, isSelectionMode } =
     useParticipantStore();
 
   const users = mockLeenkData;
+  const insets = useSafeAreaInsets();
 
   const handleKick = () => {
     startSelection();
-    console.log('킥 눌림');
   };
 
   console.log('선택 모드:', isSelectionMode);
@@ -51,7 +52,9 @@ export default function ParticipantsList() {
       <FlatList
         data={users}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ justifyContent: 'flex-start' }}
+        contentContainerStyle={{
+          paddingBottom: insets.bottom,
+        }}
         renderItem={({ item }) => <UserItem user={item} />}
         showsVerticalScrollIndicator={false}
       />
@@ -62,7 +65,6 @@ export default function ParticipantsList() {
 const Container = styled.View`
   flex: 1;
   padding-horizontal: ${CONTAINER_PADDING};
-  padding-bottom: 20px;
 `;
 
 const InfoText = styled.Text`

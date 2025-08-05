@@ -42,7 +42,7 @@ export default function LeenkDetailPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const isAuthor = true;
+  const isAuthor = false;
   const leenkData = mockLeenkData.find((item) => item.id === id);
 
   // 데이터 없을 때 방어처리
@@ -54,6 +54,9 @@ export default function LeenkDetailPage() {
     openModal('deleteConfirm');
   };
 
+  const handleEdit = () => {
+    closeModal();
+  };
   const handleReport = () => {
     closeModal();
     openModal('feedReport');
@@ -154,14 +157,28 @@ export default function LeenkDetailPage() {
           모집 종료할래
         </CustomButton>
       </ButtonContainer>
-      <MenuModal
-        visible={modalType === 'menu'}
-        isWrite={false}
-        onClose={closeModal}
-        onPressFirst={() => {}}
-        secondOptionText={isAuthor ? '삭제하기' : '신고하기'}
-        onPressSecond={isAuthor ? handleDelete : handleReport}
-      />
+      {isAuthor ? (
+        <MenuModal
+          visible={modalType === 'menu'}
+          isWrite={false}
+          onClose={closeModal}
+          onPressFirst={handleEdit}
+          onPressSecond={handleDelete}
+          firstOptionText="수정하기"
+          secondOptionText="삭제하기"
+          isOneOption={false}
+        />
+      ) : (
+        <MenuModal
+          visible={modalType === 'menu'}
+          isWrite={false}
+          onClose={closeModal}
+          onPressFirst={handleReport}
+          firstOptionText="신고하기"
+          isOneOption={true}
+        />
+      )}
+
       {modalType === 'deleteConfirm' && (
         <PopupModal
           isOpen={modalType === 'deleteConfirm'}
