@@ -69,7 +69,7 @@ const InfoText = styled.Text`
 `;
 
 const RowWrapper = styled.View`
-  diplay: flex;
+  display: flex;
   flex-direction: row;
   align-items: end;
 `;

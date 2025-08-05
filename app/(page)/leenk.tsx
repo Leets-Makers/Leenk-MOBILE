@@ -31,6 +31,7 @@ export default function LeenkPage() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <LeenkListItem
+            id={item.id}
             title={item.title}
             date={item.date}
             people={item.people}

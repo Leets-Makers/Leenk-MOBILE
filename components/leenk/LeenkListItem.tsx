@@ -11,26 +11,22 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { CheckerIcon, ClockIcon, PeopleIcon } from '@/assets';
-
-interface LeenkListItemProps {
-  title: string;
-  date: string;
-  people: string;
-  name: string;
-  leenkImageUri?: string | null;
-  profileImageUri?: string | null;
-}
+import { useRouter } from 'expo-router';
+import { LeenkDataType } from '@/constants/mockUserData';
 
 export default function LeenkListItem({
+  id,
   title,
   date,
   people,
   name,
   leenkImageUri,
   profileImageUri,
-}: LeenkListItemProps) {
+}: LeenkDataType) {
+  const router = useRouter();
+  console.log(id);
   return (
-    <Container>
+    <Container onPress={() => router.push(`/leenk/${id}`)}>
       {leenkImageUri ? (
         <StyledImage source={{ uri: leenkImageUri }} resizeMode="cover" />
       ) : (
@@ -58,7 +54,7 @@ export default function LeenkListItem({
   );
 }
 
-const Container = styled.View`
+const Container = styled.Pressable`
   width: 100%;
   height: ${height * 104}px;
   padding: ${height * 12}px ${width * 12}px;

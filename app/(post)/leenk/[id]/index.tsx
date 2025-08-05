@@ -8,6 +8,7 @@ import {
 import {
   CustomButton,
   Header,
+  Loading,
   MenuModal,
   PopupModal,
   ProfileImageWithFallback,
@@ -31,16 +32,23 @@ import { TimeText } from '@/components/leenk/LeenkListItem';
 import { Pressable } from 'react-native';
 import { formatRelativeTime } from '@/utils/format-date';
 import { Image } from 'expo-image';
+import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams();
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const isAuthor = true;
-  const leenkData = mockLeenkData[1];
+  const leenkData = mockLeenkData.find((item) => item.id === id);
 
+  // 데이터 없을 때 방어처리
+  if (!leenkData) {
+    return <Loading />;
+  }
   const handleDelete = () => {
     closeModal();
     openModal('deleteConfirm');
@@ -79,7 +87,6 @@ export default function LeenkDetailPage() {
         kebabPress={() => openModal('menu')}
         style={{
           position: 'absolute',
-          top: 35,
           width: '100%',
           zIndex: 9999,
           paddingHorizontal: width * CONTAINER_PADDING,
@@ -87,12 +94,17 @@ export default function LeenkDetailPage() {
       />
       <ImageContainer>
         {leenkData.leenkImageUri ? (
-          <Image source={{ uri: leenkData.leenkImageUri }} />
+          <Image
+            source={{ uri: leenkData.leenkImageUri }}
+            style={StyleSheet.absoluteFillObject}
+            contentFit="cover"
+          />
         ) : (
-          <CheckerIcon width={width * 80} />
+          <CheckerWrapper>
+            <CheckerIcon width="100%" height="100%" />
+          </CheckerWrapper>
         )}
       </ImageContainer>
-      <CheckerIcon />
       <ContentWrapper>
         <Title>{leenkData.title}</Title>
         <RowWrapper>
@@ -121,29 +133,27 @@ export default function LeenkDetailPage() {
           <TimeText>{leenkData.date}</TimeText>
         </RowWrapper>
         <ContentText>{leenkData.cotent}</ContentText>
-        <ButtonContainer>
-          <CustomButton
-            variant="secondary"
-            textColor="text[2]"
-            onPress={() => router.push('/')}
-            rounded="md"
-            size="lg"
-            style={{ width: 48 * width }}
-          >
-            참여자 관리
-          </CustomButton>
-          <CustomButton
-            variant="primary"
-            onPress={() => router.push('/')}
-            rounded="md"
-            size="lg"
-            fullWidth
-            style={{ marginLeft: 10 * width }}
-          >
-            모집 종료할래
-          </CustomButton>
-        </ButtonContainer>
       </ContentWrapper>
+      <ButtonContainer $insetBottom={insets.bottom}>
+        <CustomButton
+          variant="secondary"
+          textColor="text[2]"
+          onPress={() => router.push('/leenk/paritipants-list')}
+          rounded="md"
+          size="lg"
+        >
+          모임원 관리
+        </CustomButton>
+        <CustomButton
+          variant="primary"
+          onPress={() => router.push('/')}
+          rounded="md"
+          size="lg"
+          style={{ flex: 1, marginLeft: 10 * width }}
+        >
+          모집 종료할래
+        </CustomButton>
+      </ButtonContainer>
       <MenuModal
         visible={modalType === 'menu'}
         isWrite={false}
@@ -171,6 +181,7 @@ export default function LeenkDetailPage() {
 
 const Container = styled.View`
   flex: 1;
+  background-color: ${colors.white};
 `;
 
 const ContentWrapper = styled.View`
@@ -178,8 +189,16 @@ const ContentWrapper = styled.View`
 `;
 
 const ImageContainer = styled.View`
-  width: 100$
+  ${StyleSheet.absoluteFillObject};
+  width: 100%;
   height: ${height * 375}px;
+  position: relative;
+`;
+const CheckerWrapper = styled.View`
+  ${StyleSheet.absoluteFillObject};
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.bg[2]};
 `;
 
 const Title = styled.Text`
@@ -190,7 +209,7 @@ const Title = styled.Text`
 `;
 
 const RowWrapper = styled.View`
-  diplay: flex;
+  display: flex;
   flex-direction: row;
   margin-top: ${12 * height}px;
 `;
@@ -209,11 +228,11 @@ const ContentText = styled.Text`
   font-size: ${fontSize.md};
 `;
 
-const ButtonContainer = styled.View`
-  diplay: flex;
-  flex-direction: row;
+const ButtonContainer = styled.View<{ $insetBottom: number }>`
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  position: fix;
-  padding-vertical: ${height * 10}px;
-  z-index: 999;
+  padding: ${height * 12}px ${width * CONTAINER_PADDING}px;
+  padding-bottom: ${({ $insetBottom }) => $insetBottom + 10 * height}px;
+  flex-direction: row;
 `;

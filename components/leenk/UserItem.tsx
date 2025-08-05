@@ -29,7 +29,7 @@ export default function UserItem({
 
   const handleCopyClick = async () => {
     try {
-      await Clipboard.setStringAsync(user.kakaoTalkId);
+      if (user.kakaoTalkId) await Clipboard.setStringAsync(user.kakaoTalkId);
       showToast('kakao ID를 클립보드에 복사했어', 'success');
     } catch (error) {
       showToast('복사에 실패했어. 다시 시도해줘', 'error');
