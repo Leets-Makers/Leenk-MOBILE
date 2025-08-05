@@ -1,0 +1,84 @@
+import { PeopleIcon } from '@/assets';
+import { Header } from '@/components';
+import UserItem from '@/components/leenk/UserItem';
+import { CONTAINER_PADDING } from '@/constants';
+import { mockLeenkData } from '@/constants/mockUserData';
+import colors from '@/theme/color';
+import {
+  fonts,
+  fontSize,
+  height,
+  lineHeight,
+  width,
+} from '@/theme/globalStyles';
+import { useState } from 'react';
+import { FlatList } from 'react-native-gesture-handler';
+import styled from 'styled-components/native';
+
+import { useParticipantStore } from '@/stores/participantStore';
+
+export default function ParticipantsList() {
+  const [isKakao, setIsKakao] = useState(true);
+  const { selectedUsers, clear } = useParticipantStore();
+
+  const users = mockLeenkData;
+
+  const handleToggleMode = () => {
+    setIsKakao(!isKakao);
+    clear(); // 모드 변경 시 선택 초기화
+  };
+
+  return (
+    <Container>
+      <Header
+      // rightLabel={isKakao ? '내보내기' : `${selectedUsers.length} 내보내기`}
+      // onRightPress={handleToggleMode}
+      >
+        참여자
+      </Header>
+
+      <InfoText>
+        {isKakao ? '카카오톡 ID를 복사할 수 있어' : '내보낼 참여자를 선택해 줘'}
+      </InfoText>
+
+      <RowWrapper>
+        <PeopleIcon width={width * 16} />
+        <CountText>3/4명</CountText>
+      </RowWrapper>
+
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ justifyContent: 'flex-start' }}
+        renderItem={({ item }) => <UserItem user={item} isKakao={isKakao} />}
+        showsVerticalScrollIndicator={false}
+      />
+    </Container>
+  );
+}
+
+const Container = styled.View`
+  flex: 1;
+  padding-horizontal: ${CONTAINER_PADDING};
+`;
+
+const InfoText = styled.Text`
+  margin-top: ${height * 10}px;
+  font-family: ${fonts.Regular};
+  color: ${colors.primary};
+  line-height: ${lineHeight.s};
+  font-size: ${fontSize.sm};
+`;
+
+const RowWrapper = styled.View`
+  diplay: flex;
+  flex-direction: row;
+  align-items: end;
+`;
+
+const CountText = styled.Text`
+  font-family: ${fonts.Regular};
+  color: ${colors.text[3]};
+  line-height: ${lineHeight.s};
+  font-size: ${fontSize.sm};
+`;

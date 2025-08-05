@@ -9,6 +9,18 @@ export const mockUserData = {
   position: 'D',
 };
 
+export interface LeenkDataType {
+  id: string;
+  isWrite?: boolean;
+  title: string;
+  date: string;
+  people: string;
+  name: string;
+  leenkImageUri: null;
+  profileImageUri: null;
+  kakaoTalkId: string;
+}
+
 export const mockLeenkData = [
   {
     id: '1',
@@ -24,6 +36,8 @@ export const mockLeenkData = [
     allParticipants: 20,
     place: '전정도 B1 룸 A',
     createdAt: '2025-06-30T00:00:00',
+    isWrite: true,
+    kakaoTalkId: 'hanbyeol1234',
   },
   {
     id: '2',
@@ -33,6 +47,7 @@ export const mockLeenkData = [
     name: '이유진',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'hansda34',
   },
   {
     id: '3',
@@ -42,6 +57,7 @@ export const mockLeenkData = [
     name: '계다현',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'hawwr3434',
   },
   {
     id: '4',
@@ -51,6 +67,7 @@ export const mockLeenkData = [
     name: '김윙크',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'asdad234',
   },
   {
     id: '5',
@@ -60,6 +77,7 @@ export const mockLeenkData = [
     name: '박찬호',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: '134fsfl4',
   },
   {
     id: '6',
@@ -69,6 +87,7 @@ export const mockLeenkData = [
     name: '정지훈',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'aafsk234',
   },
   {
     id: '7',
@@ -78,6 +97,7 @@ export const mockLeenkData = [
     name: '홍길동',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'afs004',
   },
   {
     id: '8',
@@ -87,6 +107,7 @@ export const mockLeenkData = [
     name: '이민지',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'asdq11234',
   },
   {
     id: '9',
@@ -96,6 +117,7 @@ export const mockLeenkData = [
     name: '최유정',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: '1ad1234',
   },
   {
     id: '10',
@@ -105,6 +127,7 @@ export const mockLeenkData = [
     name: '한지성',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'aaol1234',
   },
   {
     id: '11',
@@ -114,6 +137,7 @@ export const mockLeenkData = [
     name: '오승민',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'byeol1234',
   },
   {
     id: '12',
@@ -123,6 +147,7 @@ export const mockLeenkData = [
     name: '서지후',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'as1234',
   },
   {
     id: '13',
@@ -132,6 +157,7 @@ export const mockLeenkData = [
     name: '장유나',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'yunas2',
   },
   {
     id: '14',
@@ -141,5 +167,6 @@ export const mockLeenkData = [
     name: '윤서빈',
     leenkImageUri: null,
     profileImageUri: null,
+    kakaoTalkId: 'ssk1',
   },
 ];
