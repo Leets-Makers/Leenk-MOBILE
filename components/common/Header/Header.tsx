@@ -9,10 +9,11 @@ import {
   SettingButton,
   KebabButton,
 } from '@/components';
+import UserKickButton from './UserKickButton';
 
 interface HeaderProps extends ViewProps {
   LeftSection?: 'LOGO' | 'BACK' | 'NONE';
-  RightSection?: 'BELL' | 'SETTING' | 'KEBAB' | 'NONE';
+  RightSection?: 'BELL' | 'SETTING' | 'KEBAB' | 'KICK' | 'NONE';
   isBackWhite?: boolean; // 하얀색 뒤로가기
   children?: React.ReactNode;
   signUpBackPress?: () => void;
@@ -53,6 +54,7 @@ export default function Header({
         {RightSection === 'KEBAB' && (
           <KebabButton handleKebab={kebabPress} color={kebabColor} />
         )}
+        {RightSection === 'KICK' && <UserKickButton handleKick={kebabPress} />}
         {RightSection === 'NONE' && <None />}
       </Side>
     </Container>

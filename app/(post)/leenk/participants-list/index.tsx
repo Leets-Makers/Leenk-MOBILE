@@ -25,15 +25,13 @@ export default function ParticipantsList() {
 
   const handleToggleMode = () => {
     setIsKakao(!isKakao);
-    clear(); // 모드 변경 시 선택 초기화
+    clear();
   };
 
+  console.log('내보내기 참여자:', selectedUsers);
   return (
     <Container>
-      <Header
-      // rightLabel={isKakao ? '내보내기' : `${selectedUsers.length} 내보내기`}
-      // onRightPress={handleToggleMode}
-      >
+      <Header RightSection="KICK" kebabPress={handleToggleMode}>
         참여자
       </Header>
 
