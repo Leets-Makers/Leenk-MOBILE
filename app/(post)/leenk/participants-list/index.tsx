@@ -58,10 +58,11 @@ export default function ParticipantsList() {
 const Container = styled.View`
   flex: 1;
   padding-horizontal: ${CONTAINER_PADDING};
+  padding-bottom: 20px;
 `;
 
 const InfoText = styled.Text`
-  margin-top: ${height * 10}px;
+  margin-vertical: ${height * 10}px;
   font-family: ${fonts.Regular};
   color: ${colors.primary};
   line-height: ${lineHeight.s};
@@ -69,14 +70,16 @@ const InfoText = styled.Text`
 `;
 
 const RowWrapper = styled.View`
-  display: flex;
   flex-direction: row;
-  align-items: end;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-bottom: ${height * 8}px;
 `;
 
 const CountText = styled.Text`
+  margin-left: ${width * 4}px;
   font-family: ${fonts.Regular};
   color: ${colors.text[3]};
-  line-height: ${lineHeight.s};
-  font-size: ${fontSize.sm};
+  line-height: ${lineHeight.s}px;
+  font-size: ${fontSize.sm}px;
 `;

@@ -138,7 +138,7 @@ export default function LeenkDetailPage() {
         <CustomButton
           variant="secondary"
           textColor="text[2]"
-          onPress={() => router.push('/leenk/paritipants-list')}
+          onPress={() => router.push('/leenk/participants-list')}
           rounded="md"
           size="lg"
         >

@@ -1,4 +1,3 @@
-// 링크 내보내기 UserItem
 import * as Clipboard from 'expo-clipboard';
 import colors from '@/theme/color';
 import {
@@ -29,9 +28,11 @@ export default function UserItem({
 
   const handleCopyClick = async () => {
     try {
-      if (user.kakaoTalkId) await Clipboard.setStringAsync(user.kakaoTalkId);
-      showToast('kakao ID를 클립보드에 복사했어', 'success');
-    } catch (error) {
+      if (user.kakaoTalkId) {
+        await Clipboard.setStringAsync(user.kakaoTalkId);
+        showToast('kakao ID를 클립보드에 복사했어', 'success');
+      }
+    } catch {
       showToast('복사에 실패했어. 다시 시도해줘', 'error');
     }
   };
@@ -39,19 +40,24 @@ export default function UserItem({
   return (
     <Wrapper>
       <ProfileImageWithFallback uri={user.profileImageUri} />
-      <RowWrapper>
-        <UserName>{user.name}</UserName>
-        {user.isWrite && <Badge label="작성자" profile />}
-      </RowWrapper>
+      <MiddleWrapper>
+        <NameRow>
+          <UserName>{user.name}</UserName>
+          {user.isWrite && <Badge label="작성자" profile />}
+        </NameRow>
+      </MiddleWrapper>
 
-      {isKakao ? (
-        <KakaoWrapper onPress={handleCopyClick}>
-          <CopyIcon />
-          <KakaoIdText>{user.kakaoTalkId}</KakaoIdText>
-        </KakaoWrapper>
-      ) : (
-        <CheckBox onPress={() => toggleUser(user)} checked={checked} />
-      )}
+      <RightWrapper>
+        {!user.isWrite && isKakao && (
+          <KakaoWrapper onPress={handleCopyClick}>
+            <KakaoIdText>{user.kakaoTalkId || 'kakao ID'}</KakaoIdText>
+            <CopyIcon width={20} height={20} style={{ marginLeft: 8 }} />
+          </KakaoWrapper>
+        )}
+        {!user.isWrite && !isKakao && (
+          <CheckBox onPress={() => toggleUser(user)} checked={checked} />
+        )}
+      </RightWrapper>
     </Wrapper>
   );
 }
@@ -59,34 +65,42 @@ export default function UserItem({
 const Wrapper = styled.View`
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  padding: ${14 * height}px 0px;
+  padding: ${height * 14}px 0;
+  width: 100%;
+`;
+
+const MiddleWrapper = styled.View`
+  flex: 1;
+  margin-left: ${width * 12}px;
+`;
+
+const NameRow = styled.View`
+  flex-direction: row;
+  align-items: center;
 `;
 
 const UserName = styled.Text`
-  flex: 1;
-  margin-left: ${12 * width}px;
   font-size: ${fontSize.lg}px;
   font-family: ${fonts.Regular};
   color: ${colors.text[1]};
+  margin-right: ${width * 8}px;
+  line-height: ${lineHeight.l};
 `;
 
-const RowWrapper = styled.View`
+const RightWrapper = styled.View`
   flex-direction: row;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-end;
 `;
 
 const KakaoWrapper = styled.Pressable`
   flex-direction: row;
-  justify-content: center;
   align-items: center;
 `;
 
 const KakaoIdText = styled.Text`
-  font-size: ${fontSize.md}px;
-  font-weight: 700;
-  color: ${colors.text[2]};
-  line-height: ${lineHeight.m}px;
-  font-family: ${fonts.Regular};
+  font-size: ${fontSize.sm}px;
+  color: ${colors.text[3]};
+  line-height: ${lineHeight.s}px;
+  font-family: ${fonts.Bold};
 `;

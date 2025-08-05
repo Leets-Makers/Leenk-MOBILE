@@ -32,7 +32,7 @@ const Container = styled.Pressable`
   flex-direction: row;
   align-items: center;
   padding: ${8 * height}px ${12 * width}px;
-  background-color: ${colors.bg[2]};
+  background-color: ${colors.divider[2]};
   border-radius: 100px;
 `;
 
