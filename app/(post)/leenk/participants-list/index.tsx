@@ -18,15 +18,17 @@ import styled from 'styled-components/native';
 import { useParticipantStore } from '@/stores/participantStore';
 
 export default function ParticipantsList() {
-  const [isKakao, setIsKakao] = useState(true);
-  const { selectedUsers, toggleSelectionMode } = useParticipantStore();
+  const { selectedUsers, startSelection, isSelectionMode } =
+    useParticipantStore();
 
   const users = mockLeenkData;
 
   const handleKick = () => {
-    setIsKakao(!isKakao);
-    toggleSelectionMode();
+    startSelection();
+    console.log('킥 눌림');
   };
+
+  console.log('선택 모드:', isSelectionMode);
 
   console.log('내보내기 참여자:', selectedUsers);
   return (
@@ -36,7 +38,9 @@ export default function ParticipantsList() {
       </Header>
 
       <InfoText>
-        {isKakao ? '카카오톡 ID를 복사할 수 있어' : '내보낼 참여자를 선택해 줘'}
+        {isSelectionMode
+          ? '내보낼 참여자를 선택해 줘'
+          : '카카오톡 ID를 복사할 수 있어'}
       </InfoText>
 
       <RowWrapper>
@@ -48,7 +52,7 @@ export default function ParticipantsList() {
         data={users}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ justifyContent: 'flex-start' }}
-        renderItem={({ item }) => <UserItem user={item} isKakao={isKakao} />}
+        renderItem={({ item }) => <UserItem user={item} />}
         showsVerticalScrollIndicator={false}
       />
     </Container>

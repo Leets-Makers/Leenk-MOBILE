@@ -5,8 +5,8 @@ interface ParticipantStore {
   selectedUsers: LeenkDataType[];
   isSelectionMode: boolean;
   toggleUser: (user: LeenkDataType) => void;
-  toggleSelectionMode: () => void;
   resetSelection: () => void;
+  startSelection: () => void;
 }
 
 export const useParticipantStore = create<ParticipantStore>((set) => ({
@@ -21,7 +21,6 @@ export const useParticipantStore = create<ParticipantStore>((set) => ({
           : [...state.selectedUsers, user],
       };
     }),
-  toggleSelectionMode: () =>
-    set((state) => ({ isSelectionMode: !state.isSelectionMode })),
   resetSelection: () => set({ selectedUsers: [], isSelectionMode: false }),
+  startSelection: () => set({ isSelectionMode: true }),
 }));

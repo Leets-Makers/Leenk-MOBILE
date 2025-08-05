@@ -14,13 +14,7 @@ import { LeenkDataType } from '@/constants/mockUserData';
 import { useToastStore } from '@/stores/toastStore';
 import { useParticipantStore } from '@/stores/participantStore';
 
-export default function UserItem({
-  user,
-  isKakao,
-}: {
-  user: LeenkDataType;
-  isKakao: boolean;
-}) {
+export default function UserItem({ user }: { user: LeenkDataType }) {
   const { showToast } = useToastStore();
   const { selectedUsers, toggleUser, isSelectionMode } = useParticipantStore();
 
@@ -48,7 +42,7 @@ export default function UserItem({
       </MiddleWrapper>
 
       <RightWrapper>
-        {!user.isWrite && isKakao && (
+        {!user.isWrite && !isSelectionMode && (
           <KakaoWrapper onPress={handleCopyClick}>
             <KakaoIdText>{user.kakaoTalkId || 'kakao ID'}</KakaoIdText>
             <CopyIcon width={20} height={20} style={{ marginLeft: 8 }} />

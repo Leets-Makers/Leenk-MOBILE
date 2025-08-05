@@ -16,23 +16,28 @@ interface Props {
 }
 
 export default function UserKickButton({ handleKick }: Props) {
-  const { selectedUsers, isSelectionMode } = useParticipantStore();
+  const { selectedUsers, isSelectionMode, resetSelection } =
+    useParticipantStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isZero = selectedUsers.length === 0;
 
   const handlePress = () => {
-    if (isZero) return;
-    setIsModalOpen(true);
+    if (!isZero) {
+      setIsModalOpen(true);
+    }
+
+    handleKick?.();
   };
 
   const handleKickAPI = () => {
-    handleKick?.();
+    resetSelection();
     setIsModalOpen(false);
   };
 
   const handleExit = () => {
     setIsModalOpen(false);
+    resetSelection();
   };
 
   return (
