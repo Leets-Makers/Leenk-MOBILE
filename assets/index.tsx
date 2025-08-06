@@ -36,6 +36,7 @@ import GalleryIcon from '@/assets/images/ic_gallery.svg';
 import CalendarIcon from '@/assets/images/ic_calendar.svg';
 import CheckerIcon from '@/assets/images/ic_checker_null.svg';
 import LocateIcon from '@/assets/images/ic_locate.svg';
+import ShareIcon from '@/assets/images/ic_share.svg';
 export {
   FeedIcon,
   LeenkIcon,
@@ -75,4 +76,5 @@ export {
   CalendarIcon,
   GalleryIcon,
   LocateIcon,
+  ShareIcon,
 };

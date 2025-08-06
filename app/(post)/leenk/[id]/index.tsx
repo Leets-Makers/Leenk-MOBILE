@@ -4,6 +4,7 @@ import {
   LocateIcon,
   PeopleIcon,
   RightArrowIcon,
+  ShareIcon,
 } from '@/assets';
 import {
   CustomButton,
@@ -34,6 +35,7 @@ import { formatRelativeTime } from '@/utils/format-date';
 import { Image } from 'expo-image';
 import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Share } from 'react-native';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams();
@@ -81,6 +83,16 @@ export default function LeenkDetailPage() {
       closeModal();
     }
   };
+
+  // TODO: 게시물링크 외부 공유 및 링킹 처리
+  const handleShare = async () => {
+    try {
+      await Share.share({ message: leenkData.title });
+    } catch (error) {
+      showToast('공유에 실패했어요', 'error');
+    }
+  };
+
   return (
     <Container>
       <GradientOverlay type="top" heightValue={120 * height} />
@@ -108,8 +120,17 @@ export default function LeenkDetailPage() {
           </CheckerWrapper>
         )}
       </ImageContainer>
-      <ContentWrapper>
-        <Title>{leenkData.title}</Title>
+      <ContentWrapper
+        $insetBottom={insets.bottom}
+        showsVerticalScrollIndicator={false}
+      >
+        <TitleRow>
+          <Title>{leenkData.title}</Title>
+          <Pressable onPress={handleShare}>
+            <ShareIcon width={20 * width} height={20 * width} />
+          </Pressable>
+        </TitleRow>
+
         <RowWrapper>
           <ProfileImageWithFallback uri={leenkData.profileImageUri} size={24} />
           <TimeText>{leenkData.name}</TimeText>
@@ -138,24 +159,39 @@ export default function LeenkDetailPage() {
         <ContentText>{leenkData.cotent}</ContentText>
       </ContentWrapper>
       <ButtonContainer $insetBottom={insets.bottom}>
-        <CustomButton
-          variant="secondary"
-          textColor="text[2]"
-          onPress={() => router.push('/leenk/participants-list')}
-          rounded="md"
-          size="lg"
-        >
-          모임원 관리
-        </CustomButton>
-        <CustomButton
-          variant="primary"
-          onPress={() => router.push('/')}
-          rounded="md"
-          size="lg"
-          style={{ flex: 1, marginLeft: 10 * width }}
-        >
-          모집 종료할래
-        </CustomButton>
+        {isAuthor ? (
+          <>
+            {' '}
+            <CustomButton
+              variant="secondary"
+              textColor="text[2]"
+              onPress={() => router.push('/leenk/participants-list')}
+              rounded="md"
+              size="lg"
+            >
+              모임원 관리
+            </CustomButton>
+            <CustomButton
+              variant="primary"
+              onPress={() => router.push('/')}
+              rounded="md"
+              size="lg"
+              style={{ flex: 1, marginLeft: 10 * width }}
+            >
+              모집 종료할래
+            </CustomButton>
+          </>
+        ) : (
+          <CustomButton
+            variant="primary"
+            onPress={() => router.push('/')}
+            rounded="md"
+            size="lg"
+            fullWidth
+          >
+            참여할래
+          </CustomButton>
+        )}
       </ButtonContainer>
       {isAuthor ? (
         <MenuModal
@@ -201,8 +237,11 @@ const Container = styled.View`
   background-color: ${colors.white};
 `;
 
-const ContentWrapper = styled.View`
-  padding-horizontal: ${width * CONTAINER_PADDING};
+const ContentWrapper = styled.ScrollView<{ $insetBottom: number }>`
+  flex: 1;
+  padding-horizontal: ${width * CONTAINER_PADDING}px;
+  padding-top: ${height * 16}px;
+  padding-bottom: ${({ $insetBottom }) => $insetBottom + 120 * height}px;
 `;
 
 const ImageContainer = styled.View`
@@ -216,6 +255,11 @@ const CheckerWrapper = styled.View`
   justify-content: center;
   align-items: center;
   background-color: ${colors.bg[2]};
+`;
+const TitleRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Title = styled.Text`
@@ -249,7 +293,8 @@ const ButtonContainer = styled.View<{ $insetBottom: number }>`
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: ${height * 12}px ${width * CONTAINER_PADDING}px;
+  padding: ${height * 10}px ${width * CONTAINER_PADDING}px;
   padding-bottom: ${({ $insetBottom }) => $insetBottom + 10 * height}px;
   flex-direction: row;
+  background-color: ${colors.white};
 `;
