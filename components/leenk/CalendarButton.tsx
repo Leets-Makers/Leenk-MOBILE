@@ -13,11 +13,13 @@ import {
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
 import dayjs from 'dayjs';
+import DatePicker from 'react-native-modern-datepicker';
 
 export default function CalendarButton() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+
   const handleChange = (_: any, date?: Date) => {
     setShowPicker(false);
     setIsFocused(false);
@@ -44,13 +46,20 @@ export default function CalendarButton() {
       </Container>
 
       {showPicker && (
-        <DateTimePicker
-          value={selectedDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={handleChange}
-          minimumDate={new Date()}
+        <DatePicker
+          onSelectedChange={(date) => setSelectedDate(date)}
+          options={{
+            mainColor: colors.primary,
+          }}
+          current={dayjs().format('YYYY-MM-DD')}
         />
+        // <DateTimePicker
+        //   value={selectedDate || new Date()}
+        //   mode="date"
+        //   display="default"
+        //   onChange={handleChange}
+        //   minimumDate={new Date()}
+        // />
       )}
     </>
   );

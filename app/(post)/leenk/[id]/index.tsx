@@ -65,7 +65,7 @@ export default function LeenkDetailPage() {
   };
 
   const handleParticipants = () => {
-    router.push('/');
+    router.push('/leenk/participants-list');
   };
 
   const handleConfirmDelete = async () => {
@@ -84,7 +84,7 @@ export default function LeenkDetailPage() {
     }
   };
 
-  // TODO: 게시물링크 외부 공유 및 링킹 처리
+  // TODO: 게시물 링크 외부 공유 및 링킹 처리
   const handleShare = async () => {
     try {
       await Share.share({ message: leenkData.title });

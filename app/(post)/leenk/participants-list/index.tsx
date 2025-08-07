@@ -11,7 +11,6 @@ import {
   lineHeight,
   width,
 } from '@/theme/globalStyles';
-import { useState } from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
@@ -23,6 +22,8 @@ export default function ParticipantsList() {
     useParticipantStore();
 
   const users = mockLeenkData;
+  const isAuthor = false;
+
   const insets = useSafeAreaInsets();
 
   const handleKick = () => {
@@ -34,15 +35,21 @@ export default function ParticipantsList() {
   console.log('내보내기 참여자:', selectedUsers);
   return (
     <Container>
-      <Header RightSection="KICK" kebabPress={handleKick}>
-        참여자
-      </Header>
+      {isAuthor ? (
+        <Header RightSection="KICK" kebabPress={handleKick}>
+          참여자
+        </Header>
+      ) : (
+        <Header>참여자</Header>
+      )}
 
-      <InfoText>
-        {isSelectionMode
-          ? '내보낼 참여자를 선택해 줘'
-          : '카카오톡 ID를 복사할 수 있어'}
-      </InfoText>
+      {isAuthor && (
+        <InfoText>
+          {isSelectionMode
+            ? '내보낼 참여자를 선택해 줘'
+            : '카카오톡 ID를 복사할 수 있어'}
+        </InfoText>
+      )}
 
       <RowWrapper>
         <PeopleIcon width={width * 16} />
