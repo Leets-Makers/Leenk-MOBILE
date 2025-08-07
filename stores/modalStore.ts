@@ -9,6 +9,9 @@ type ModalType =
   | 'popup'
   | 'bottomSheet'
   | 'feedReport'
+  | 'leenkKick'
+  | 'leenkClose'
+  | 'leenkEarlyClose'
   | null;
 
 interface ModalStore {
