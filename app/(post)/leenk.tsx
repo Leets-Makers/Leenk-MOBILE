@@ -6,6 +6,7 @@ import {
   Textarea,
 } from '@/components';
 import { Title } from '@/components/common/Input';
+import { Asterisk } from '@/components/common/Textarea';
 import CalendarButton from '@/components/leenk/CalendarButton';
 import LeenkImagePicker from '@/components/leenk/LeenkImagePicker';
 import Stepper from '@/components/leenk/Stepper';
@@ -67,6 +68,7 @@ export default function PostLeenkPage() {
           value={title}
           onChangeText={setTitle}
           maxLength={36}
+          isRequired
         />
         <Margin />
         <Input
@@ -75,9 +77,14 @@ export default function PostLeenkPage() {
           value={place}
           onChangeText={setPlace}
           maxLength={15}
+          isRequired
         />
         <Margin />
-        <Title>일시</Title>
+        <Row>
+          <Title>일시</Title>
+          <Asterisk>*</Asterisk>
+        </Row>
+
         <CalendarButton />
         <Margin />
         <Row>
@@ -91,6 +98,7 @@ export default function PostLeenkPage() {
           placeholder="자세한 내용을 입력해줘"
           maxLength={200}
           onChangeText={setContent}
+          isRequired
         />
         <Margin />
 
@@ -106,7 +114,6 @@ export default function PostLeenkPage() {
         </CustomButton>
       </ScrollView>
 
-      {/* 모달들 */}
       <PopupModal
         isOpen={isBackModalOpen}
         onRightBtn={() => setIsBackModalOpen(false)}

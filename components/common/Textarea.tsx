@@ -12,6 +12,7 @@ interface TextareaProps extends TextInputProps {
   variant?: 'light' | 'dark'; // 밝은 테마 / 어두운 테마
   minHeight?: number;
   maxHeight?: number;
+  isRequired?: boolean;
 }
 
 export default function Textarea({
@@ -23,6 +24,7 @@ export default function Textarea({
   minHeight,
   maxHeight,
   value,
+  isRequired = false,
   onChangeText,
   ...props
 }: TextareaProps) {
@@ -32,7 +34,12 @@ export default function Textarea({
 
   return (
     <Wrapper>
-      {title && <Title>{title}</Title>}
+      {title && (
+        <Title>
+          {title}
+          {isRequired && <Asterisk>*</Asterisk>}
+        </Title>
+      )}
       <InputBox focused={focused} active={isActive} isDark={isDark}>
         <StyledTextarea
           {...props}
@@ -106,4 +113,9 @@ const CharCount = styled.Text<{ isDark: boolean }>`
   color: ${({ isDark }) => (isDark ? colors.gray[400] : colors.gray[500])};
   text-align: right;
   margin-top: 4px;
+`;
+
+export const Asterisk = styled.Text`
+  color: ${colors.secondary};
+  margin-left: 2px;
 `;
