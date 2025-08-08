@@ -80,10 +80,9 @@ export default function PostLeenkPage() {
           isRequired
         />
         <Margin />
-        <Row>
-          <Title>일시</Title>
-          <Asterisk>*</Asterisk>
-        </Row>
+        <Title>
+          일시<Asterisk>*</Asterisk>
+        </Title>
 
         <CalendarButton />
         <Margin />
