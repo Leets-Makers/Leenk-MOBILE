@@ -1,4 +1,4 @@
-import { CheckerIcon, ShareIcon } from '@/assets';
+import { CheckerIcon, ReivewIcon, ShareIcon } from '@/assets';
 import {
   BottomSheetModal,
   CustomButton,
@@ -32,9 +32,9 @@ export default function LeenkDetailPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [isParticipating, setIsParticipating] = useState(false);
-  const [laterReivew, setLaterReivew] = useState(false);
+  const [isLeenkEnd, setIsLeenkEnd] = useState(false);
 
-  const isAuthor = false;
+  const isAuthor = true;
   const leenkData = mockLeenkData.find((item) => item.id === id);
 
   if (!leenkData) return <Loading />;
@@ -88,6 +88,12 @@ export default function LeenkDetailPage() {
     }
   };
 
+  const handleLeave = () => {
+    setIsParticipating(false);
+    closeModal();
+    // TODO: 유저 나가기 api 추가
+  };
+
   const handleShare = async () => {
     try {
       await Share.share({ message: title });
@@ -116,7 +122,7 @@ export default function LeenkDetailPage() {
         return (
           <PopupModal
             isOpen
-            onRightBtn={handleConfirmDelete}
+            onRightBtn={handleLeave}
             onLeftBtn={closeModal}
             isWarning
             mainText="정말 떠날거야?"
@@ -209,9 +215,11 @@ export default function LeenkDetailPage() {
         isParticipating={isParticipating}
         insetBottom={insets.bottom}
         onLeave={() => openModal('leenkLeave')}
+        onEalryClose={() => openModal('leenkEarlyClose')}
         onClose={handleLeenkCloseModal}
         onJoin={() => setIsParticipating(true)}
         onParticipants={handleParticipants}
+        isLeenkEnd={isLeenkEnd}
       />
 
       <MenuModal
@@ -231,7 +239,7 @@ export default function LeenkDetailPage() {
         <BottomSheetModal visible={true}>
           <TitleText>{'링크가 마무리 됐어 :)'}</TitleText>
           <SubText>수고했어! 후기 남기러 가볼까?</SubText>
-          <ShareIcon
+          <ReivewIcon
             height={200}
             width={200}
             style={{
@@ -242,7 +250,10 @@ export default function LeenkDetailPage() {
           />
           <CustomButton
             fullWidth
-            onPress={() => router.push('/(post)/feed/write')}
+            onPress={() => {
+              router.push('/(post)/feed');
+              closeModal;
+            }}
           >
             후기 쓰러갈래
           </CustomButton>
@@ -250,7 +261,10 @@ export default function LeenkDetailPage() {
             variant="text"
             textColor="text[2]"
             fullWidth
-            onPress={() => setLaterReivew(true)}
+            onPress={() => {
+              setIsLeenkEnd(true);
+              closeModal;
+            }}
           >
             나중에 할래
           </CustomButton>

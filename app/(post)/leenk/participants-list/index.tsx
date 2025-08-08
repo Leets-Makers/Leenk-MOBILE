@@ -22,7 +22,7 @@ export default function ParticipantsList() {
     useParticipantStore();
 
   const users = mockLeenkData;
-  const isAuthor = false;
+  const isAuthor = true;
 
   const insets = useSafeAreaInsets();
 

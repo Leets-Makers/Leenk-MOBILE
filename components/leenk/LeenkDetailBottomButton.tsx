@@ -5,12 +5,15 @@ import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { CustomButton } from '@/components';
 import { useRouter } from 'expo-router';
+import { CONTAINER_PADDING } from '@/constants';
 
 interface Props {
   isAuthor: boolean;
   isParticipating: boolean;
+  isLeenkEnd: boolean;
   insetBottom: number;
   onLeave: () => void;
+  onEalryClose: () => void;
   onClose: () => void;
   onJoin: () => void;
   onParticipants: () => void;
@@ -19,17 +22,30 @@ interface Props {
 export default function LeenkBottomButtonSection({
   isAuthor,
   isParticipating,
+  isLeenkEnd,
   insetBottom,
   onLeave,
+  onEalryClose,
   onClose,
   onJoin,
   onParticipants,
 }: Props) {
   const router = useRouter();
 
+  //TODO: 링크 종료 시간 비교해서 종료할래 버튼에 onClose or onEarlyClose 넣어주기
   return (
     <ButtonContainer $insetBottom={insetBottom}>
-      {isAuthor ? (
+      {isLeenkEnd && (isAuthor || isParticipating) ? (
+        <CustomButton
+          variant="primary"
+          onPress={() => router.push('/(post)/feed')}
+          rounded="md"
+          size="lg"
+          fullWidth
+        >
+          후기 쓰러갈래
+        </CustomButton>
+      ) : isAuthor ? (
         <>
           <CustomButton
             variant="secondary"
@@ -90,7 +106,7 @@ const ButtonContainer = styled.View<{ $insetBottom: number }>`
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: ${height * 10}px ${width * 16}px;
+  padding: ${height * 10}px ${width * CONTAINER_PADDING}px;
   padding-bottom: ${({ $insetBottom }) => $insetBottom + 10 * height}px;
   flex-direction: row;
   background-color: ${colors.white};

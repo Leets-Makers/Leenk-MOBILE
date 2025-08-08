@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Modal } from 'react-native';
 import styled from 'styled-components/native';
 import {
@@ -106,6 +106,7 @@ export const TitleText = styled.Text`
   font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l}px;
   color: ${colors.black};
+  text-align: center;
 `;
 
 export const SubText = styled.Text<{ $isWarning: boolean }>`
