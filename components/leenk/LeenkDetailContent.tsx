@@ -29,7 +29,6 @@ interface Props {
   profileImageUri: string | null;
   participantCount: number;
   allParticipants: number;
-  leenkImageUri?: string | null;
   insetBottom: number;
   onShare: () => void;
   onParticipants: () => void;
@@ -45,7 +44,6 @@ export default function LeenkContentSection({
   profileImageUri,
   participantCount,
   allParticipants,
-  leenkImageUri,
   insetBottom,
   onShare,
   onParticipants,
@@ -88,7 +86,6 @@ export default function LeenkContentSection({
         <TimeText>{date}</TimeText>
       </RowWrapper>
       <ContentWrapper $insetBottom={insetBottom}>
-        {' '}
         <ContentText>{content}</ContentText>
       </ContentWrapper>
     </Container>

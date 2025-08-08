@@ -199,7 +199,6 @@ export default function LeenkDetailPage() {
         profileImageUri={profileImageUri}
         participantCount={participantCount}
         allParticipants={allParticipants}
-        leenkImageUri={leenkImageUri}
         insetBottom={insets.bottom}
         onShare={handleShare}
         onParticipants={handleParticipants}

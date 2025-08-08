@@ -26,43 +26,54 @@ export default function LeenkListItem({
   const router = useRouter();
   console.log(id);
   return (
-    <Container onPress={() => router.push(`/leenk/${id}`)}>
-      {leenkImageUri ? (
-        <StyledImage source={{ uri: leenkImageUri }} resizeMode="cover" />
-      ) : (
-        <FallbackWrapper>
-          <CheckerIcon width={width * 80} />
-        </FallbackWrapper>
-      )}
-      <ContentWrapper>
-        <TopSection>
-          <TitleText>
-            {title.length > 12 ? `${title.slice(0, 12)}...` : title}
-          </TitleText>
-          <Row>
-            <ClockIcon />
-            <TimeText>{date}</TimeText>
-            <PeopleIcon style={{ marginLeft: width * 12 }} />
-            <TimeText style={{ marginLeft: width * 4 }}>{people}</TimeText>
-          </Row>
-        </TopSection>
+    <PressableContainer onPress={() => router.push(`/leenk/${id}`)}>
+      {({ pressed }) => (
+        <StyledContainer $pressed={pressed}>
+          {leenkImageUri ? (
+            <StyledImage source={{ uri: leenkImageUri }} resizeMode="cover" />
+          ) : (
+            <FallbackWrapper>
+              <CheckerIcon width={width * 80} />
+            </FallbackWrapper>
+          )}
+          <ContentWrapper>
+            <TopSection>
+              <TitleText>
+                {title.length > 12 ? `${title.slice(0, 12)}...` : title}
+              </TitleText>
+              <Row>
+                <ClockIcon />
+                <TimeText>{date}</TimeText>
+                <PeopleIcon style={{ marginLeft: width * 12 }} />
+                <TimeText style={{ marginLeft: width * 4 }}>{people}</TimeText>
+              </Row>
+            </TopSection>
 
-        <BottomRow>
-          <ProfileImageWithFallback uri={profileImageUri} size={20} isDark />
-          <NameText>{name}</NameText>
-        </BottomRow>
-      </ContentWrapper>
-    </Container>
+            <BottomRow>
+              <ProfileImageWithFallback
+                uri={profileImageUri}
+                size={20}
+                isDark
+              />
+              <NameText>{name}</NameText>
+            </BottomRow>
+          </ContentWrapper>
+        </StyledContainer>
+      )}
+    </PressableContainer>
   );
 }
 
-const Container = styled.Pressable`
+const PressableContainer = styled.Pressable``;
+
+const StyledContainer = styled.View<{ $pressed: boolean }>`
   width: 100%;
   height: ${height * 104}px;
   padding: ${height * 12}px ${width * 12}px;
   flex-direction: row;
-  background-color: white;
   border-radius: ${radius.xs}px;
+  background-color: ${({ $pressed }) =>
+    $pressed ? colors.bg[3] : colors.white};
 `;
 
 const StyledImage = styled.Image`
