@@ -72,7 +72,7 @@ export default function ImagePicker({
         onEndReached={() => {
           if (hasNextPage) fetchPhotos();
         }}
-        initialNumToRender={20}
+        initialNumToRender={12}
         windowSize={5}
         removeClippedSubviews={true}
         renderItem={({ item }) => (
