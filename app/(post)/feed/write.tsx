@@ -119,9 +119,11 @@ export default function FeedWritePage() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={{ flex: 1 }}>
-          <BackgroundImageSlider mediaUrls={media} />
-          <GradientOverlay type="top" heightValue={120 * height} />
-          <GradientOverlay type="bottom" heightValue={520 * height} />
+          <BackgroundImageSlider
+            mediaUrls={media}
+            gradient={{ top: 120 * height, bottom: 420 * height }}
+          />
+
           <Header
             isBackWhite
             style={{
