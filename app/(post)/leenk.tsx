@@ -67,7 +67,7 @@ export default function PostLeenkPage() {
           placeholder="제목을 입력해줘"
           value={title}
           onChangeText={setTitle}
-          maxLength={36}
+          maxLength={30}
           isRequired
         />
         <Margin />
@@ -76,7 +76,7 @@ export default function PostLeenkPage() {
           placeholder="모임 장소를 입력해줘"
           value={place}
           onChangeText={setPlace}
-          maxLength={15}
+          maxLength={25}
           isRequired
         />
         <Margin />
