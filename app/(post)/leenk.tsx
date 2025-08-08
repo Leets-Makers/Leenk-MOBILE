@@ -10,6 +10,7 @@ import { Asterisk } from '@/components/common/Textarea';
 import CalendarButton from '@/components/leenk/CalendarButton';
 import LeenkImagePicker from '@/components/leenk/LeenkImagePicker';
 import Stepper from '@/components/leenk/Stepper';
+import { useLeenkImageStore } from '@/stores/leenkStore';
 import colors from '@/theme/color';
 import {
   fonts,
@@ -19,7 +20,7 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
@@ -29,10 +30,10 @@ export default function PostLeenkPage() {
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [place, setPlace] = useState('');
-  const [date, setDate] = useState('');
+
   const [content, setContent] = useState('');
   const router = useRouter();
-
+  const { resetLeenkImage } = useLeenkImageStore();
   const handleBackPress = () => setIsBackModalOpen(true);
   const handleConfirmExit = () => {
     setIsBackModalOpen(false);
@@ -42,6 +43,10 @@ export default function PostLeenkPage() {
     setCompleteModalOpen(false);
     router.replace('/(page)/leenk');
   };
+
+  useEffect(() => {
+    resetLeenkImage();
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -61,6 +66,7 @@ export default function PostLeenkPage() {
           <Title>사진선택</Title>
           <SubText>원하는 사진을 선택하거나, 새로운 사진을 올려줘.</SubText>
         </Row>
+        <LeenkImagePicker />
         <Margin />
         <Input
           title="제목"

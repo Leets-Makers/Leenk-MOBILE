@@ -12,11 +12,12 @@ import { Platform } from 'react-native';
 import { updateProfileImage } from '@/api/users/patchUserEachInfo.api';
 import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLeenkImageStore } from '@/stores/leenkStore';
 
 export default function SelectProfileImage({
   mode,
 }: {
-  mode: 'profile' | 'edit';
+  mode: 'profile' | 'edit' | 'leenk';
 }) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -25,27 +26,26 @@ export default function SelectProfileImage({
 
   const [selectedUri, setSelectedUri] = useState<string | null>(null);
 
+  const { setLeenkImage } = useLeenkImageStore();
+
   const handleSelectComplete = async () => {
     if (!selectedUri) return;
 
-    setProfileImage(selectedUri);
+    if (mode === 'leenk') {
+      setLeenkImage(selectedUri);
+    } else {
+      setProfileImage(selectedUri);
+    }
 
     if (mode === 'edit') {
       try {
-        // 1. presigned URL 요청
         const fileName = `profile_${Date.now()}.jpg`;
         const presignedUrls = await getPresignedUrl(fileName);
         if (!presignedUrls || presignedUrls.length === 0) {
           throw new Error('Presigned URL을 받아올 수 없습니다.');
         }
         const mediaUrl = presignedUrls[0].mediaUrl;
-
-        // 2. S3에 업로드
         await uploadImageToS3(mediaUrl, selectedUri);
-
-        console.log('업로드 전 url', mediaUrl);
-
-        // 3. 서버에 profileImage URL 전달
         await updateProfileImage({ profileImage: mediaUrl.split('?')[0] });
       } catch (error) {
         console.error('[SelectProfileImage] 이미지 업로드 실패:', error);
@@ -54,10 +54,11 @@ export default function SelectProfileImage({
 
     router.back();
   };
-  console.log('바닥', insets.bottom);
   return (
     <Container>
-      <Header style={{ marginBottom: 12 * height }}>프로필 사진 선택</Header>
+      <Header style={{ marginBottom: 12 * height }}>
+        {mode === 'leenk' ? '링크 이미지 선택' : '프로필 사진 선택'}
+      </Header>
       <ImagePicker
         maxSelect={1}
         aspectRatio={AspectRatio.SQUARE}
@@ -73,7 +74,7 @@ export default function SelectProfileImage({
           disabled={!selectedUri}
           onPress={handleSelectComplete}
         >
-          {mode === 'profile' ? '선택완료' : '다음'}
+          {mode === 'profile' || mode === 'leenk' ? '선택완료' : '다음'}
         </CustomButton>
       </ButtonContainer>
     </Container>

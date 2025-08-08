@@ -38,6 +38,12 @@ import CheckerIcon from '@/assets/images/ic_checker_null.svg';
 import LocateIcon from '@/assets/images/ic_locate.svg';
 import ShareIcon from '@/assets/images/ic_share.svg';
 import ReivewIcon from '@/assets/images/ic_review.svg';
+import LeenkImg01 from '@/assets/images/default_leenk/leenk_img_01.svg';
+import LeenkImg02 from '@/assets/images/default_leenk/leenk_img_02.svg';
+import LeenkImg03 from '@/assets/images/default_leenk/leenk_img_03.svg';
+import LeenkImg04 from '@/assets/images/default_leenk/leenk_img_04.svg';
+import LeenkImg05 from '@/assets/images/default_leenk/leenk_img_05.svg';
+
 export {
   FeedIcon,
   LeenkIcon,
@@ -79,4 +85,9 @@ export {
   LocateIcon,
   ShareIcon,
   ReivewIcon,
+  LeenkImg01,
+  LeenkImg02,
+  LeenkImg03,
+  LeenkImg04,
+  LeenkImg05,
 };
