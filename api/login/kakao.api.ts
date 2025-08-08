@@ -59,9 +59,6 @@ export const kakaoLogin = async (
 
     // [4] 응답 로그
     console.log('[4] 백엔드 응답 성공:', response.data);
-    console.log('[debug] 백엔드 응답 전체:', JSON.stringify(response.data));
-    console.log('[debug] accessToken 타입:', typeof data?.accessToken);
-    console.log('[debug] refreshToken 타입:', typeof data?.refreshToken);
 
     return {
       success: true,

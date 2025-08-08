@@ -45,22 +45,27 @@ export default function CalendarButton() {
         </Pressable>
       </Container>
 
-      {showPicker && (
-        <DatePicker
-          onSelectedChange={(date) => setSelectedDate(date)}
-          options={{
-            mainColor: colors.primary,
-          }}
-          current={dayjs().format('YYYY-MM-DD')}
-        />
-        // <DateTimePicker
-        //   value={selectedDate || new Date()}
-        //   mode="date"
-        //   display="default"
-        //   onChange={handleChange}
-        //   minimumDate={new Date()}
-        // />
-      )}
+      {showPicker &&
+        (Platform.OS === 'ios' ? (
+          <DatePicker
+            onSelectedChange={(date) => {
+              setSelectedDate(new Date(date));
+            }}
+            options={{
+              mainColor: colors.primary,
+            }}
+            current={dayjs().format('YYYY-MM-DD')}
+            locale="ko"
+          />
+        ) : (
+          <DateTimePicker
+            value={selectedDate || new Date()}
+            mode="datetime"
+            display="default"
+            onChange={handleChange}
+            minimumDate={new Date()}
+          />
+        ))}
     </>
   );
 }

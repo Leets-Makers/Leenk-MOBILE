@@ -62,6 +62,7 @@ export default function LandingPage() {
       // const userInfo = await getKakaoUserInfo(accessToken);
       // console.log('사용자 이메일:', userInfo.kakao_account.email);
       const result = await kakaoLogin(accessToken);
+
       if (result.success) {
         const serverToken = result.data.accessToken;
         const refreshToken = result.data.refreshToken;
@@ -76,8 +77,33 @@ export default function LandingPage() {
           router.push('/signup/terms');
         } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
-          await saveAccessToken(serverToken);
-          await saveRefreshToken(refreshToken);
+          if (__DEV__) {
+            console.log('[secureStore 전에] serverToken:', serverToken);
+            console.log(
+              '[secureStore 전에] typeof serverToken:',
+              typeof serverToken,
+            );
+            console.log('[secureStore 전에] refreshToken:', refreshToken);
+            console.log(
+              '[secureStore 전에] typeof refreshToken:',
+              typeof refreshToken,
+            );
+          }
+
+          // 문자열이 아닐 경우 강제로 stringify하거나 에러 방어
+          if (
+            typeof serverToken === 'string' &&
+            typeof refreshToken === 'string'
+          ) {
+            await saveAccessToken(serverToken);
+            await saveRefreshToken(refreshToken);
+          } else {
+            console.error('❗ serverToken 또는 refreshToken이 문자열이 아님:', {
+              serverToken,
+              refreshToken,
+            });
+          }
+
           await registerFcmToken();
           router.replace('/(page)/feed');
 
