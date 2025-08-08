@@ -1,11 +1,4 @@
-import {
-  CheckerIcon,
-  ClockIcon,
-  LocateIcon,
-  PeopleIcon,
-  RightArrowIcon,
-  ShareIcon,
-} from '@/assets';
+import { CheckerIcon, ShareIcon } from '@/assets';
 import {
   BottomSheetModal,
   CustomButton,
@@ -13,32 +6,24 @@ import {
   Loading,
   MenuModal,
   PopupModal,
-  ProfileImageWithFallback,
 } from '@/components';
 import GradientOverlay from '@/components/feed/GradientOverlay';
 import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import colors from '@/theme/color';
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { mockLeenkData } from '@/constants/mockUserData';
-import { TimeText } from '@/components/leenk/LeenkListItem';
-import { Pressable } from 'react-native';
-import { formatRelativeTime } from '@/utils/format-date';
-import { Image } from 'expo-image';
 import { StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Share } from 'react-native';
 import { SubText, TitleText } from '@/components/OnBoarding';
 import { useState } from 'react';
+import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
+import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams();
@@ -46,33 +31,42 @@ export default function LeenkDetailPage() {
   const { showToast } = useToastStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const [isParticipating, setIsParticipating] = useState(false);
   const [laterReivew, setLaterReivew] = useState(false);
 
   const isAuthor = false;
   const leenkData = mockLeenkData.find((item) => item.id === id);
 
-  // 데이터 없을 때 방어처리
-  if (!leenkData) {
-    return <Loading />;
-  }
+  if (!leenkData) return <Loading />;
+
+  const {
+    title,
+    place,
+    cotent,
+    date,
+    name,
+    createdAt,
+    profileImageUri,
+    participantCount,
+    allParticipants,
+    leenkImageUri,
+  } = leenkData;
+
   const handleDelete = () => {
     closeModal();
     openModal('deleteConfirm');
   };
 
-  const handleEdit = () => {
-    closeModal();
-  };
+  const handleEdit = () => closeModal();
+
   const handleReport = () => {
     closeModal();
     openModal('feedReport');
   };
-  const handleLeenkCloseModal = () => {
-    openModal('leenkClose');
-  };
+
+  const handleLeenkCloseModal = () => openModal('leenkClose');
 
   const handleLeenkClose = () => {
-    console.log('모임 종료');
     openModal('bottomSheet');
   };
 
@@ -82,9 +76,7 @@ export default function LeenkDetailPage() {
 
   const handleConfirmDelete = async () => {
     try {
-      // TODO: 링크 삭제 함수 추가
       showToast('삭제 완료!', 'success');
-
       setTimeout(() => {
         router.replace('/(page)/feed');
       }, 1500);
@@ -96,12 +88,76 @@ export default function LeenkDetailPage() {
     }
   };
 
-  // TODO: 게시물 링크 외부 공유 및 링킹 처리
   const handleShare = async () => {
     try {
-      await Share.share({ message: leenkData.title });
+      await Share.share({ message: title });
     } catch (error) {
       showToast('공유에 실패했어요', 'error');
+    }
+  };
+
+  const renderPopupModal = () => {
+    switch (modalType) {
+      case 'deleteConfirm':
+        return (
+          <PopupModal
+            isOpen
+            onRightBtn={handleConfirmDelete}
+            onLeftBtn={closeModal}
+            isWarning
+            mainText="모집글을 삭제할거야?"
+            subText="삭제하면 복구할 수 없어."
+            isCancel
+            leftBtnText="취소"
+            rightBtnText="삭제할래"
+          />
+        );
+      case 'leenkLeave':
+        return (
+          <PopupModal
+            isOpen
+            onRightBtn={handleConfirmDelete}
+            onLeftBtn={closeModal}
+            isWarning
+            mainText="정말 떠날거야?"
+            subText={
+              title.length > 10
+                ? `${title.slice(0, 10)}...에서 나가지게 돼.`
+                : `${title}에서 나가지게 돼.`
+            }
+            isCancel
+            leftBtnText="취소"
+            rightBtnText="나갈래"
+          />
+        );
+      case 'leenkClose':
+        return (
+          <PopupModal
+            isOpen
+            onRightBtn={handleLeenkClose}
+            onLeftBtn={closeModal}
+            isWarning
+            mainText={`아직 모임 시간이 아니야! \n모집을 종료할까?`}
+            subText="종료하면 다시 모집할 수 없어."
+            isCancel
+            leftBtnText="취소"
+            rightBtnText="종료할래"
+          />
+        );
+      case 'leenkEarlyClose':
+        return (
+          <PopupModal
+            isOpen
+            onRightBtn={handleLeenkClose}
+            onLeftBtn={closeModal}
+            mainText={`링크 시간이 아직 남았어! \n일찍 끝낼거야?`}
+            isCancel
+            leftBtnText="취소"
+            rightBtnText="삭제할래"
+          />
+        );
+      default:
+        return null;
     }
   };
 
@@ -120,9 +176,9 @@ export default function LeenkDetailPage() {
         }}
       />
       <ImageContainer>
-        {leenkData.leenkImageUri ? (
+        {leenkImageUri ? (
           <Image
-            source={{ uri: leenkData.leenkImageUri }}
+            source={{ uri: leenkImageUri }}
             style={StyleSheet.absoluteFillObject}
             contentFit="cover"
           />
@@ -132,79 +188,33 @@ export default function LeenkDetailPage() {
           </CheckerWrapper>
         )}
       </ImageContainer>
-      <ContentWrapper
-        $insetBottom={insets.bottom}
-        showsVerticalScrollIndicator={false}
-      >
-        <TitleRow>
-          <Title>{leenkData.title}</Title>
-          <ShareButton onPress={handleShare}>
-            <ShareIcon width={24 * width} />
-          </ShareButton>
-        </TitleRow>
 
-        <RowWrapper>
-          <ProfileImageWithFallback uri={leenkData.profileImageUri} size={24} />
-          <TimeText style={{ marginLeft: width * 8 }}>
-            {leenkData.name}・
-            {formatRelativeTime(leenkData.createdAt as string)}
-          </TimeText>
-        </RowWrapper>
-        <Line />
-        <RowWrapper>
-          <PeopleIcon width={width * 16} />
-          <TimeText>
-            {leenkData.participantCount}/{leenkData.allParticipants}명
-          </TimeText>
-          <Pressable onPress={handleParticipants}>
-            <RightArrowIcon width={width * 16} />
-          </Pressable>
-        </RowWrapper>
-        <RowWrapper>
-          <LocateIcon width={width * 16} />
-          <TimeText>{leenkData.place}</TimeText>
-        </RowWrapper>
-        <RowWrapper>
-          <ClockIcon width={width * 16} />
-          <TimeText>{leenkData.date}</TimeText>
-        </RowWrapper>
+      <LeenkContentSection
+        title={title}
+        place={place}
+        content={cotent}
+        date={date}
+        name={name}
+        createdAt={createdAt}
+        profileImageUri={profileImageUri}
+        participantCount={participantCount}
+        allParticipants={allParticipants}
+        leenkImageUri={leenkImageUri}
+        insetBottom={insets.bottom}
+        onShare={handleShare}
+        onParticipants={handleParticipants}
+      />
 
-        <ContentText>{leenkData.cotent}</ContentText>
-      </ContentWrapper>
-      <ButtonContainer $insetBottom={insets.bottom}>
-        {isAuthor ? (
-          <>
-            <CustomButton
-              variant="secondary"
-              textColor="text[2]"
-              onPress={() => router.push('/leenk/participants-list')}
-              rounded="md"
-              size="lg"
-            >
-              모임원 관리
-            </CustomButton>
-            <CustomButton
-              variant="primary"
-              onPress={handleLeenkCloseModal}
-              rounded="md"
-              size="lg"
-              style={{ flex: 1, marginLeft: 10 * width }}
-            >
-              모집 종료할래
-            </CustomButton>
-          </>
-        ) : (
-          <CustomButton
-            variant="primary"
-            onPress={() => router.push('/')}
-            rounded="md"
-            size="lg"
-            fullWidth
-          >
-            참여할래
-          </CustomButton>
-        )}
-      </ButtonContainer>
+      <LeenkBottomButtonSection
+        isAuthor={isAuthor}
+        isParticipating={isParticipating}
+        insetBottom={insets.bottom}
+        onLeave={() => openModal('leenkLeave')}
+        onClose={handleLeenkCloseModal}
+        onJoin={() => setIsParticipating(true)}
+        onParticipants={handleParticipants}
+      />
+
       <MenuModal
         visible={modalType === 'menu'}
         isWrite={false}
@@ -216,60 +226,7 @@ export default function LeenkDetailPage() {
         isOneOption={!isAuthor}
       />
 
-      {modalType === 'deleteConfirm' && (
-        <PopupModal
-          isOpen={modalType === 'deleteConfirm'}
-          onRightBtn={handleConfirmDelete}
-          onLeftBtn={closeModal}
-          isWarning
-          mainText="모집글을 삭제할거야?"
-          subText="삭제하면 복구할 수 없어."
-          isCancel={true}
-          leftBtnText="취소"
-          rightBtnText="삭제할래"
-        />
-      )}
-      {modalType === 'leenkLeave' && (
-        <PopupModal
-          isOpen={modalType === 'leenkLeave'}
-          onRightBtn={handleConfirmDelete}
-          onLeftBtn={closeModal}
-          isWarning
-          mainText="정말 떠날거야?"
-          subText={
-            leenkData.title.length > 10
-              ? `${leenkData.title.slice(0, 10)}...에서 나가지게 돼.`
-              : `${leenkData.title}에서 나가지게 돼.`
-          }
-          isCancel={true}
-          leftBtnText="취소"
-          rightBtnText="나갈래"
-        />
-      )}
-      {modalType === 'leenkClose' && (
-        <PopupModal
-          isOpen={modalType === 'leenkClose'}
-          onRightBtn={handleLeenkClose}
-          onLeftBtn={closeModal}
-          isWarning
-          mainText={`아직 모임 시간이 아니야! \n모집을 종료할까?`}
-          subText="종료하면 다시 모집할 수 없어."
-          isCancel={true}
-          leftBtnText="취소"
-          rightBtnText="종료할래"
-        />
-      )}
-      {modalType === 'leenkEarlyClose' && (
-        <PopupModal
-          isOpen={modalType === 'leenkEarlyClose'}
-          onRightBtn={handleLeenkClose}
-          onLeftBtn={closeModal}
-          mainText={`링크 시간이 아직 남았어! \n일찍 끝낼거야?`}
-          isCancel={true}
-          leftBtnText="취소"
-          rightBtnText="삭제할래"
-        />
-      )}
+      {renderPopupModal()}
 
       {modalType === 'bottomSheet' && (
         <BottomSheetModal visible={true}>
@@ -286,9 +243,7 @@ export default function LeenkDetailPage() {
           />
           <CustomButton
             fullWidth
-            onPress={() => {
-              router.push('/(post)/feed/write');
-            }}
+            onPress={() => router.push('/(post)/feed/write')}
           >
             후기 쓰러갈래
           </CustomButton>
@@ -296,9 +251,7 @@ export default function LeenkDetailPage() {
             variant="text"
             textColor="text[2]"
             fullWidth
-            onPress={() => {
-              setLaterReivew(true);
-            }}
+            onPress={() => setLaterReivew(true)}
           >
             나중에 할래
           </CustomButton>
@@ -313,13 +266,6 @@ const Container = styled.View`
   background-color: ${colors.white};
 `;
 
-const ContentWrapper = styled.ScrollView<{ $insetBottom: number }>`
-  flex: 1;
-  padding-horizontal: ${width * CONTAINER_PADDING}px;
-  padding-top: ${height * 16}px;
-  padding-bottom: ${({ $insetBottom }) => $insetBottom + 120 * height}px;
-`;
-
 const ImageContainer = styled.View`
   ${StyleSheet.absoluteFillObject};
   width: 100%;
@@ -331,58 +277,4 @@ const CheckerWrapper = styled.View`
   justify-content: center;
   align-items: center;
   background-color: ${colors.bg[2]};
-`;
-const TitleRow = styled.View`
-  position: relative;
-`;
-
-const Title = styled.Text`
-  font-family: ${fonts.ExtraBold};
-  color: ${colors.black};
-  font-size: ${fontSize.lg};
-  line-height: ${lineHeight.l};
-  padding-right: ${width * 52}px;
-`;
-
-const RowWrapper = styled.View`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: ${12 * height}px;
-`;
-
-const Line = styled.View`
-  height: ${height * 1}px;
-  background-color: ${colors.divider[2]};
-  margin-top: ${16 * height}px;
-`;
-
-const ContentText = styled.Text`
-  margin-top: ${height * 20}px;
-  font-family: ${fonts.Bold};
-  color: ${colors.text[1]};
-  line-height: ${lineHeight.m};
-  font-size: ${fontSize.md};
-`;
-
-const ButtonContainer = styled.View<{ $insetBottom: number }>`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: ${height * 10}px ${width * CONTAINER_PADDING}px;
-  padding-bottom: ${({ $insetBottom }) => $insetBottom + 10 * height}px;
-  flex-direction: row;
-  background-color: ${colors.white};
-`;
-
-const ShareButton = styled.Pressable`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: ${width * 44}px;
-  height: ${height * 44}px;
-  background-color: ${colors.bg[4]};
-  border-radius: 99px;
-  align-items: center;
-  justify-content: center;
 `;

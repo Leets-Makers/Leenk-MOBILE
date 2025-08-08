@@ -36,7 +36,9 @@ export default function LeenkListItem({
       )}
       <ContentWrapper>
         <TopSection>
-          <TitleText>{title}</TitleText>
+          <TitleText>
+            {title.length > 12 ? `${title.slice(0, 12)}...` : title}
+          </TitleText>
           <Row>
             <ClockIcon />
             <TimeText>{date}</TimeText>
