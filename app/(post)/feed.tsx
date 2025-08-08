@@ -13,7 +13,6 @@ import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
 import { Media } from '@/types/feed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useModalStore } from '@/stores/modalStore';
 
 export default function PostFeedPage() {
   const insets = useSafeAreaInsets();
@@ -24,8 +23,6 @@ export default function PostFeedPage() {
   const resetSelectedImages = useFeedWriteStore.getState().reset;
 
   const setMediaUrls = useFeedWriteStore.getState().setMediaUrls;
-
-  const closeModal = useModalStore((state) => state.closeModal);
 
   const router = useRouter();
 
@@ -39,7 +36,7 @@ export default function PostFeedPage() {
   const handleConfirmExit = () => {
     setIsModalOpen(false);
     resetSelectedImages();
-    router.replace('/(page)/feed');
+    router.push('/(page)/feed');
   };
 
   const handleNext = async () => {

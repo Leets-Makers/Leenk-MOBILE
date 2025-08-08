@@ -1,5 +1,5 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs, useFocusEffect, usePathname } from 'expo-router';
+import React, { useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
@@ -27,9 +27,20 @@ const TAB_CONFIG: readonly TabConfigItem[] = [
 
 export default function TabLayout() {
   const router = useRouter();
+  const pathname = usePathname();
   const openWriteMenu = useWriteMenuStore((s) => s.open);
   const isWriteMenuOpen = useWriteMenuStore((s) => s.isVisible);
   const closeWriteMenu = useWriteMenuStore((s) => s.close);
+
+  const isOnTabs = !pathname.startsWith('/(post)'); // (post) 스택일 땐 모달 숨기기
+
+  useFocusEffect(
+    useCallback(() => {
+      // 탭이 다시 보일 때, 혹시 열려 있으면 닫아버림
+      closeWriteMenu();
+      return () => closeWriteMenu(); // 탭에서 벗어날 때도 닫기
+    }, [closeWriteMenu]),
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg[2] }}>
@@ -111,7 +122,7 @@ export default function TabLayout() {
             </StyledSafeArea>
 
             <MenuModal
-              visible={isWriteMenuOpen}
+              visible={isWriteMenuOpen && isOnTabs}
               onClose={closeWriteMenu}
               onPressFirst={() => {
                 closeWriteMenu();
