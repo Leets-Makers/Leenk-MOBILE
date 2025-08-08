@@ -251,8 +251,8 @@ export default function LeenkDetailPage() {
           <CustomButton
             fullWidth
             onPress={() => {
+              closeModal();
               router.push('/(post)/feed');
-              closeModal;
             }}
           >
             후기 쓰러갈래
@@ -262,8 +262,8 @@ export default function LeenkDetailPage() {
             textColor="text[2]"
             fullWidth
             onPress={() => {
+              closeModal();
               setIsLeenkEnd(true);
-              closeModal;
             }}
           >
             나중에 할래
