@@ -5,15 +5,31 @@ import styled from 'styled-components/native';
 import { radius, SCREEN_HEIGHT, SCREEN_WIDTH } from '@/theme/globalStyles';
 import { width as WIDTH, height as HEIGHT } from '@/theme/globalStyles';
 import { Media } from '@/types/feed';
+import GradientOverlay from '@/components/feed/GradientOverlay';
 
 interface BackgroundImageSliderProps {
   mediaUrls: Media[];
+  gradient?: {
+    top?: number; // px (예: 120 * HEIGHT)
+    bottom?: number; // px (예: 520 * HEIGHT)
+    showTop?: boolean; // 기본 true
+    showBottom?: boolean; // 기본 true
+  };
 }
+
+const DEFAULT_TOP = 120 * HEIGHT;
+const DEFAULT_BOTTOM = 520 * HEIGHT;
 
 export default function BackgroundImageSlider({
   mediaUrls,
+  gradient,
 }: BackgroundImageSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const topHeight = gradient?.top ?? DEFAULT_TOP;
+  const bottomHeight = gradient?.bottom ?? DEFAULT_BOTTOM;
+  const showTop = gradient?.showTop ?? true;
+  const showBottom = gradient?.showBottom ?? true;
 
   if (mediaUrls.length === 0) return null;
 
@@ -25,12 +41,27 @@ export default function BackgroundImageSlider({
           width={SCREEN_WIDTH}
           height={SCREEN_HEIGHT}
           data={mediaUrls}
-          onSnapToItem={(index) => setCurrentIndex(index)}
+          onSnapToItem={setCurrentIndex}
           renderItem={({ item }) => (
             <StyledBackground
               source={{ uri: item.mediaUrl }}
               resizeMode="cover"
-            />
+            >
+              {showTop && (
+                <GradientOverlay
+                  type="top"
+                  heightValue={topHeight}
+                  pointerEvents="none"
+                />
+              )}
+              {showBottom && (
+                <GradientOverlay
+                  type="bottom"
+                  heightValue={bottomHeight}
+                  pointerEvents="none"
+                />
+              )}
+            </StyledBackground>
           )}
           autoPlay={false}
           scrollAnimationDuration={500}
@@ -52,7 +83,6 @@ export default function BackgroundImageSlider({
 const Wrapper = styled.View`
   flex: 1;
   position: relative;
-  z-index: 9999;
 `;
 
 const CarouselWrapper = styled.View`
@@ -66,7 +96,6 @@ const CarouselWrapper = styled.View`
 const StyledBackground = styled(ImageBackground)`
   width: 100%;
   height: 100%;
-  z-index: 0;
 `;
 
 const IndicatorContainer = styled.View`

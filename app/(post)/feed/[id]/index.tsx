@@ -32,7 +32,6 @@ import { useUserStore } from '@/stores/userStore';
 import FeedReportModal from '@/components/Modal/FeedReportModal';
 import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
-import GradientOverlay from '@/components/feed/GradientOverlay';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -123,9 +122,11 @@ export default function FeedDetailPage() {
 
   return (
     <View style={{ flex: 1 }}>
-      <BackgroundImageSlider mediaUrls={feed.media} />
-      <GradientOverlay type="top" heightValue={120 * height} />
-      <GradientOverlay type="bottom" heightValue={520 * height} />
+      <BackgroundImageSlider
+        mediaUrls={feed.media}
+        gradient={{ top: 120 * height, bottom: 520 * height }}
+      />
+
       <Header
         isBackWhite
         RightSection="KEBAB"
