@@ -138,16 +138,16 @@ export default function LeenkDetailPage() {
       >
         <TitleRow>
           <Title>{leenkData.title}</Title>
-          <Pressable onPress={handleShare}>
-            <ShareIcon width={20 * width} height={20 * width} />
-          </Pressable>
+          <ShareButton onPress={handleShare}>
+            <ShareIcon width={24 * width} />
+          </ShareButton>
         </TitleRow>
 
         <RowWrapper>
           <ProfileImageWithFallback uri={leenkData.profileImageUri} size={24} />
-          <TimeText>{leenkData.name}</TimeText>
-          <TimeText>
-            ・{formatRelativeTime(leenkData.createdAt as string)}
+          <TimeText style={{ marginLeft: width * 8 }}>
+            {leenkData.name}・
+            {formatRelativeTime(leenkData.createdAt as string)}
           </TimeText>
         </RowWrapper>
         <Line />
@@ -168,6 +168,7 @@ export default function LeenkDetailPage() {
           <ClockIcon width={width * 16} />
           <TimeText>{leenkData.date}</TimeText>
         </RowWrapper>
+
         <ContentText>{leenkData.cotent}</ContentText>
       </ContentWrapper>
       <ButtonContainer $insetBottom={insets.bottom}>
@@ -332,21 +333,21 @@ const CheckerWrapper = styled.View`
   background-color: ${colors.bg[2]};
 `;
 const TitleRow = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  position: relative;
 `;
 
 const Title = styled.Text`
   font-family: ${fonts.ExtraBold};
   color: ${colors.black};
-  line-height: ${lineHeight.l};
   font-size: ${fontSize.lg};
+  line-height: ${lineHeight.l};
+  padding-right: ${width * 52}px;
 `;
 
 const RowWrapper = styled.View`
   display: flex;
   flex-direction: row;
+  align-items: center;
   margin-top: ${12 * height}px;
 `;
 
@@ -372,4 +373,16 @@ const ButtonContainer = styled.View<{ $insetBottom: number }>`
   padding-bottom: ${({ $insetBottom }) => $insetBottom + 10 * height}px;
   flex-direction: row;
   background-color: ${colors.white};
+`;
+
+const ShareButton = styled.Pressable`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: ${width * 44}px;
+  height: ${height * 44}px;
+  background-color: ${colors.bg[4]};
+  border-radius: 99px;
+  align-items: center;
+  justify-content: center;
 `;

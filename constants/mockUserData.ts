@@ -24,7 +24,7 @@ export interface LeenkDataType {
 export const mockLeenkData = [
   {
     id: '1',
-    title: '전정도에서 모두모여잉',
+    title: '전정도에서 모두모여잉전정도에서 모두모여잉전정도에서 모두',
     date: '12월 28일 22시',
     people: '3/20명',
     name: '김링크',
