@@ -8,7 +8,7 @@ import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { mockLeenkData } from '@/constants/mockUserData';
 
 export default function LeenkPage() {
-  const [tab, setTab] = useState<'all' | 'recruting' | 'completed'>('all');
+  const [tab, setTab] = useState<'all' | 'recruiting' | 'completed'>('all');
 
   return (
     <Container>
@@ -19,7 +19,7 @@ export default function LeenkPage() {
         onTabChange={(newTab: string) => {
           if (
             newTab === 'all' ||
-            newTab === 'recruting' ||
+            newTab === 'recruiting' ||
             newTab === 'completed'
           ) {
             setTab(newTab);

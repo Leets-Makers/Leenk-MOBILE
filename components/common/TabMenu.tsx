@@ -22,7 +22,7 @@ export default function TabMenu({
         ]
       : [
           { label: '전체', value: 'all' },
-          { label: '모집중', value: 'recruting' },
+          { label: '모집중', value: 'recruiting' },
           { label: '모집완료', value: 'completed' },
         ];
 

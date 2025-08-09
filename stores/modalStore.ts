@@ -13,6 +13,7 @@ type ModalType =
   | 'leenkClose'
   | 'leenkEarlyClose'
   | 'leenkLeave'
+  | 'leenkReport'
   | null;
 
 interface ModalStore {

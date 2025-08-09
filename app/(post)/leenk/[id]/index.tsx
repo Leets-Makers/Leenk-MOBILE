@@ -1,4 +1,4 @@
-import { CheckerIcon, ReivewIcon, ShareIcon } from '@/assets';
+import { CheckerIcon, ReviewIcon, ShareIcon } from '@/assets';
 import {
   BottomSheetModal,
   CustomButton,
@@ -26,7 +26,8 @@ import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 
 export default function LeenkDetailPage() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string | string[] }>();
+  const leenkId = Array.isArray(id) ? id[0] : id;
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
   const router = useRouter();
@@ -35,14 +36,14 @@ export default function LeenkDetailPage() {
   const [isLeenkEnd, setIsLeenkEnd] = useState(false);
 
   const isAuthor = true;
-  const leenkData = mockLeenkData.find((item) => item.id === id);
+  const leenkData = mockLeenkData.find((item) => item.id === leenkId);
 
   if (!leenkData) return <Loading />;
 
   const {
     title,
     place,
-    cotent,
+    content,
     date,
     name,
     createdAt,
@@ -61,7 +62,7 @@ export default function LeenkDetailPage() {
 
   const handleReport = () => {
     closeModal();
-    openModal('feedReport');
+    openModal('leenkReport');
   };
 
   const handleLeenkCloseModal = () => openModal('leenkClose');
@@ -78,7 +79,7 @@ export default function LeenkDetailPage() {
     try {
       showToast('삭제 완료!', 'success');
       setTimeout(() => {
-        router.replace('/(page)/feed');
+        router.replace('/feed');
       }, 1500);
     } catch (err: any) {
       console.error('링크 삭제 오류:', err);
@@ -162,6 +163,23 @@ export default function LeenkDetailPage() {
             rightBtnText="삭제할래"
           />
         );
+      case 'leenkReport':
+        return (
+          <PopupModal
+            isOpen
+            onRightBtn={() => {
+              closeModal();
+              showToast('신고가 접수됐어', 'success');
+            }}
+            onLeftBtn={closeModal}
+            isWarning
+            mainText="이 글을 신고할까?"
+            subText="허위 신고는 제재될 수 있어."
+            isCancel
+            leftBtnText="취소"
+            rightBtnText="신고할래"
+          />
+        );
       default:
         return null;
     }
@@ -198,7 +216,7 @@ export default function LeenkDetailPage() {
       <LeenkContentSection
         title={title}
         place={place}
-        content={cotent}
+        content={content}
         date={date}
         name={name}
         createdAt={createdAt}
@@ -239,7 +257,7 @@ export default function LeenkDetailPage() {
         <BottomSheetModal visible={true}>
           <TitleText>{'링크가 마무리 됐어 :)'}</TitleText>
           <SubText>수고했어! 후기 남기러 가볼까?</SubText>
-          <ReivewIcon
+          <ReviewIcon
             height={200}
             width={200}
             style={{
@@ -252,7 +270,7 @@ export default function LeenkDetailPage() {
             fullWidth
             onPress={() => {
               closeModal();
-              router.push('/(post)/feed');
+              router.push('/feed');
             }}
           >
             후기 쓰러갈래

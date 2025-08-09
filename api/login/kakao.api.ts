@@ -19,7 +19,9 @@ const validateKakaoToken = async (accessToken: string) => {
     console.log('[2] 카카오 토큰 유효성 OK:', res.data);
   } catch (e: any) {
     console.error('[2] 카카오 토큰 유효성 실패:', e.response?.data || e);
+    return false;
   }
+  return true;
 };
 
 export const kakaoLogin = async (
