@@ -6,11 +6,11 @@ import { height } from '@/theme/globalStyles';
 interface GradientOverlayProps {
   type: 'top' | 'bottom';
   style?: StyleProp<ViewStyle>;
-  colors?: [string, string] | string[];
+  colors?: [string, string];
   heightValue?: number;
   pointerEvents?: 'auto' | 'none' | 'box-none' | 'box-only';
   zIndex?: number;
-  locations?: number[];
+  locations?: [number, number];
 }
 
 const TOP_DEFAULT = ['rgba(0,0,0,0.55)', 'transparent'] as const;
@@ -35,7 +35,7 @@ export default function GradientOverlay({
       colors={gradientColors as [string, string]}
       start={{ x: 0.5, y: isTop ? 0 : 1 }}
       end={{ x: 0.5, y: isTop ? 1 : 0 }}
-      locations={locations as [number, number, ...number[]] | null | undefined}
+      locations={locations}
       style={[
         {
           position: 'absolute',
