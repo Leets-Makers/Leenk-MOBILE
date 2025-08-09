@@ -78,6 +78,7 @@ const StyledContainer = styled.View<{ $pressed: boolean }>`
 
 const StyledImage = styled.Image`
   height: ${height * 80}px;
+  width: ${width * 80}px;
 `;
 
 const FallbackWrapper = styled.View`

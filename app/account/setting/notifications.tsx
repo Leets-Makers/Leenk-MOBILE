@@ -20,14 +20,14 @@ export default function SettingNotificationsPage() {
   useEffect(() => {
     const getSettings = async () => {
       try {
-        const { data } = await getNotificationsSetting();
+        const data = await getNotificationsSetting();
         setToggles({
-          feedLike: data.isNewReactionNotify,
-          newFeedPost: data.isNewFeedNotify,
-          newLeenkPost: data.isNewLeenkNotify,
-          leenkApplyRequest: data.isLeenkStatusNotify,
+          feedLike: !!data?.isNewReactionNotify,
+          newFeedPost: !!data?.isNewFeedNotify,
+          newLeenkPost: !!data?.isNewLeenkNotify,
+          leenkApplyRequest: !!data?.isLeenkStatusNotify,
         });
-        console.log(data);
+        if (__DEV__) console.log('[알림 설정 불러오기]', data);
       } catch (error) {
         if (__DEV__) console.error('알림 설정을 불러오지 못했습니다:', error);
       }

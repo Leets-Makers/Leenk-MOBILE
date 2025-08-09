@@ -54,9 +54,12 @@ export default function LandingPage() {
   const handleKakaoLogin = async () => {
     //카카오 로그인 로직
     try {
-      await logout();
       const token = await login();
       const accessToken = token?.accessToken;
+      if (!accessToken) {
+        if (__DEV__) console.warn('카카오 accessToken 없음(취소/실패)');
+        return;
+      }
 
       // 이메일 정보 조회
       // const userInfo = await getKakaoUserInfo(accessToken);

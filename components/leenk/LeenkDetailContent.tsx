@@ -92,7 +92,7 @@ export default function LeenkContentSection({
   );
 }
 
-const Container = styled.ScrollView<{ $insetBottom: number }>`
+const Container = styled.ScrollView`
   flex: 1;
   padding-horizontal: ${width * 16}px;
   padding-top: ${height * 16}px;

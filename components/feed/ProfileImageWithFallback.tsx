@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { DefaultProfileImage } from '@/assets';
 
@@ -14,7 +14,9 @@ export default function ProfileImageWithFallback({
   isDark = true,
 }: Props) {
   const [error, setError] = useState(false);
-
+  useEffect(() => {
+    setError(false);
+  }, [uri]);
   const showFallback = !uri || error;
   return (
     <ImageContainer width={size}>

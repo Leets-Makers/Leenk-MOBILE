@@ -25,9 +25,9 @@ export default function Stepper() {
   return (
     <Container>
       <RoundBtn onPress={handleDecrement}>
-        <BtnText>
+        <IconWrapper>
           <MinusIcon />
-        </BtnText>
+        </IconWrapper>
       </RoundBtn>
 
       <MemberNumberContainer>
@@ -35,9 +35,9 @@ export default function Stepper() {
       </MemberNumberContainer>
 
       <RoundBtn onPress={handleIncrement}>
-        <BtnText>
+        <IconWrapper>
           <PlusIcon />
-        </BtnText>
+        </IconWrapper>
       </RoundBtn>
     </Container>
   );
@@ -59,11 +59,9 @@ const RoundBtn = styled.Pressable`
   justify-content: center;
 `;
 
-const BtnText = styled.Text`
-  color: ${colors.black};
-  font-family: ${fonts.Bold};
-  font-size: ${fontSize.xl}px;
-  line-height: ${lineHeight.xl}px;
+const IconWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
 `;
 
 const MemberNumberContainer = styled.View`

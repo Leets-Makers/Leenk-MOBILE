@@ -75,7 +75,7 @@ const Side = styled.View`
   justify-content: center;
 `;
 
-const TitleWrapper = styled.View`
+const TitleWrapper = styled.View.attrs({ pointerEvents: 'none' })`
   position: absolute;
   left: 0;
   right: 0;
