@@ -72,6 +72,9 @@ export default function ImagePicker({
         onEndReached={() => {
           if (hasNextPage) fetchPhotos();
         }}
+        initialNumToRender={12}
+        windowSize={5}
+        removeClippedSubviews={true}
         renderItem={({ item }) => (
           <ThumbnailItem
             asset={item}

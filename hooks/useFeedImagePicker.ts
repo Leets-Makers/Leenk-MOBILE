@@ -38,7 +38,7 @@ export default function useFeedImagePicker({
 
     const { assets, endCursor, hasNextPage } =
       await MediaLibrary.getAssetsAsync({
-        first: 50,
+        first: 24,
         after: pageInfo?.endCursor ?? undefined,
         mediaType: MediaLibrary.MediaType.photo,
       });

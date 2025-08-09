@@ -23,12 +23,11 @@ export default function PostFeedPage() {
   const resetSelectedImages = useFeedWriteStore.getState().reset;
 
   const setMediaUrls = useFeedWriteStore.getState().setMediaUrls;
-  const [isUploading, setIsUploading] = useState(false);
 
-  console.log('[🔁 selectedUrisLength]:', selectedUrisLength);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleBackPress = () => {
     setIsModalOpen(true);
@@ -37,7 +36,7 @@ export default function PostFeedPage() {
   const handleConfirmExit = () => {
     setIsModalOpen(false);
     resetSelectedImages();
-    router.replace('/(page)/feed');
+    router.push('/(page)/feed');
   };
 
   const handleNext = async () => {

@@ -19,13 +19,7 @@ import {
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
-import {
-  Pressable,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { StyledText } from '@/app/(post)/feed/write';
 import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
@@ -38,7 +32,6 @@ import { useUserStore } from '@/stores/userStore';
 import FeedReportModal from '@/components/Modal/FeedReportModal';
 import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
-import GradientOverlay from '@/components/feed/GradientOverlay';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -129,9 +122,11 @@ export default function FeedDetailPage() {
 
   return (
     <View style={{ flex: 1 }}>
-      <BackgroundImageSlider mediaUrls={feed.media} />
-      <GradientOverlay type="top" heightValue={120 * height} />
-      <GradientOverlay type="bottom" heightValue={520 * height} />
+      <BackgroundImageSlider
+        mediaUrls={feed.media}
+        gradient={{ top: 120 * height, bottom: 520 * height }}
+      />
+
       <Header
         isBackWhite
         RightSection="KEBAB"
@@ -190,6 +185,7 @@ export default function FeedDetailPage() {
             totalReactionCount={feed.totalReactionCount}
             authorId={feed.author.userId}
             currentUserId={userInfo?.id}
+            flushOnExit
           />
         </RowWrapper>
 

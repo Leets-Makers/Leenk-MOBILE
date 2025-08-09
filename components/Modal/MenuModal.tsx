@@ -111,8 +111,12 @@ const MenuItem = styled.View<{ pressed: boolean; $isWrite: boolean }>`
   flex-direction: row;
   align-items: center;
   justify-content: ${({ $isWrite }) => ($isWrite ? 'flex-start' : 'center')};
-  padding: ${4 * height}px ${4 * width}px;
-  border-radius: ${radius.md}px;
+  justify-content: center;
+  padding: ${({ pressed }) =>
+    pressed
+      ? `${4 * height}px ${12 * width}px`
+      : `${4 * height}px ${4 * width}px`};
+  border-radius: ${({ pressed }) => (pressed ? radius.sm : 0)}px;
   gap: ${({ $isWrite }) => ($isWrite ? 6 * width : 0)}px;
   background-color: ${({ pressed }) =>
     pressed ? colors.bg[3] : 'transparent'};
