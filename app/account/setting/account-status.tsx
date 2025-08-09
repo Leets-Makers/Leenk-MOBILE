@@ -72,8 +72,8 @@ export default function AccountStatusPage() {
       {logoutModalVisible && (
         <PopupModal
           isOpen={logoutModalVisible}
-          onClose={handleLogoutConfirm}
-          onConfirm={() => setLogoutModalVisible(false)}
+          onLeftBtn={handleLogoutConfirm}
+          onRightBtn={() => setLogoutModalVisible(false)}
           mainText="로그아웃 할까?"
           leftBtnText="확인"
           rightBtnText="취소"
@@ -86,8 +86,8 @@ export default function AccountStatusPage() {
           isOpen={deleteModalVisible}
           mainText="회원탈퇴 할까?"
           subText="탈퇴한 계정은 복구할 수 없어."
-          onClose={handleDeleteConfirm}
-          onConfirm={() => setDeleteModalVisible(false)}
+          onLeftBtn={handleDeleteConfirm}
+          onRightBtn={() => setDeleteModalVisible(false)}
           leftBtnText="확인"
           rightBtnText="취소"
           isCancel

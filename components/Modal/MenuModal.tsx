@@ -17,9 +17,11 @@ interface MenuModalProps {
   isWrite?: boolean;
   onClose: () => void;
   onPressFirst: (e: GestureResponderEvent) => void;
-  onPressSecond: (e: GestureResponderEvent) => void;
+  onPressSecond?: (e: GestureResponderEvent) => void;
+  firstOptionText?: string;
   secondOptionText?: string;
   isDanger?: boolean;
+  isOneOption?: boolean;
 }
 
 export default function MenuModal({
@@ -28,8 +30,10 @@ export default function MenuModal({
   onClose,
   onPressFirst,
   onPressSecond,
+  firstOptionText,
   secondOptionText,
   isDanger = false,
+  isOneOption = true,
 }: MenuModalProps) {
   const topPosition = Platform.OS === 'ios' ? 95 * height : 50 * height;
   return (
@@ -43,14 +47,18 @@ export default function MenuModal({
         <MenuContainer $isWrite={isWrite} $topPosition={topPosition}>
           {isWrite ? (
             <>
-              {/* <MenuItemWrapper onPress={onPressFirst}>
+              <MenuItemWrapper onPress={onPressFirst}>
                 {({ pressed }) => (
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
-                    <LeenkIcon width={20 * width} height={20 * width} />
+                    <LeenkIcon
+                      width={20 * width}
+                      height={20 * width}
+                      stroke={colors.primary}
+                    />
                     <MenuText $isWrite={isWrite}>링크 글 쓰기</MenuText>
                   </MenuItem>
                 )}
-              </MenuItemWrapper> */}
+              </MenuItemWrapper>
 
               <MenuItemWrapper onPress={onPressSecond}>
                 {({ pressed }) => (
@@ -66,15 +74,29 @@ export default function MenuModal({
               </MenuItemWrapper>
             </>
           ) : (
-            <MenuItemWrapper onPress={onPressSecond}>
-              {({ pressed }) => (
-                <MenuItem pressed={pressed} $isWrite={isWrite}>
-                  <MenuText $isWrite={isWrite} $isDanger={isDanger}>
-                    {secondOptionText}
-                  </MenuText>
-                </MenuItem>
+            <>
+              <MenuItemWrapper onPress={onPressFirst}>
+                {({ pressed }) => (
+                  <MenuItem pressed={pressed} $isWrite={isWrite}>
+                    <MenuText $isWrite={isWrite} $isDanger={isDanger}>
+                      {firstOptionText}
+                    </MenuText>
+                  </MenuItem>
+                )}
+              </MenuItemWrapper>
+
+              {!isOneOption && (
+                <MenuItemWrapper onPress={onPressSecond}>
+                  {({ pressed }) => (
+                    <MenuItem pressed={pressed} $isWrite={isWrite}>
+                      <MenuText $isWrite={isWrite} $isDanger={isDanger}>
+                        {secondOptionText}
+                      </MenuText>
+                    </MenuItem>
+                  )}
+                </MenuItemWrapper>
               )}
-            </MenuItemWrapper>
+            </>
           )}
         </MenuContainer>
       </Overlay>

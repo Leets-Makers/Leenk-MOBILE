@@ -13,16 +13,21 @@ export default function SettingNotificationsPage() {
   const [toggles, setToggles] = useState({
     feedLike: false,
     newFeedPost: false,
+    newLeenkPost: false,
+    leenkApplyRequest: false,
   });
 
   useEffect(() => {
     const getSettings = async () => {
       try {
-        const settings = await getNotificationsSetting();
+        const data = await getNotificationsSetting();
         setToggles({
-          feedLike: settings.isNewReactionNotify,
-          newFeedPost: settings.isNewFeedNotify,
+          feedLike: !!data?.isNewReactionNotify,
+          newFeedPost: !!data?.isNewFeedNotify,
+          newLeenkPost: !!data?.isNewLeenkNotify,
+          leenkApplyRequest: !!data?.isLeenkStatusNotify,
         });
+        if (__DEV__) console.log('[알림 설정 불러오기]', data);
       } catch (error) {
         if (__DEV__) console.error('알림 설정을 불러오지 못했습니다:', error);
       }
@@ -34,6 +39,12 @@ export default function SettingNotificationsPage() {
   const toggleKeys = [
     { key: 'feedLike', label: '피드 좋아요', apiKey: 'newReactionNotify' },
     { key: 'newFeedPost', label: '피드 새 게시물', apiKey: 'newFeedNotify' },
+    { key: 'newLeenkPost', label: '링크 새 게시물', apiKey: 'newLeenkNotify' },
+    {
+      key: 'leenkApplyRequest',
+      label: '링크 참여자 신청 시',
+      apiKey: 'leenkStatusNotify',
+    },
   ] as const;
 
   const handleToggle = async (key: keyof typeof toggles, apiKey: string) => {
@@ -48,7 +59,6 @@ export default function SettingNotificationsPage() {
       await patchNotificationsSetting({ [apiKey]: newValue });
     } catch (error) {
       console.error('알림 설정 업데이트 실패:', error);
-      // 실패 시 이전 상태로 복구
       setToggles((prev) => ({
         ...prev,
         [key]: !newValue,

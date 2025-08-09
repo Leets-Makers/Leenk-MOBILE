@@ -12,7 +12,7 @@ import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CustomButton } from '@/components';
-import { login } from '@react-native-kakao/user';
+import { login, logout } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
 import { kakaoLogin } from '@/api/login/kakao.api';
@@ -56,11 +56,16 @@ export default function LandingPage() {
     try {
       const token = await login();
       const accessToken = token?.accessToken;
+      if (!accessToken) {
+        if (__DEV__) console.warn('카카오 accessToken 없음(취소/실패)');
+        return;
+      }
 
       // 이메일 정보 조회
       // const userInfo = await getKakaoUserInfo(accessToken);
       // console.log('사용자 이메일:', userInfo.kakao_account.email);
       const result = await kakaoLogin(accessToken);
+
       if (result.success) {
         const serverToken = result.data.accessToken;
         const refreshToken = result.data.refreshToken;
@@ -75,8 +80,33 @@ export default function LandingPage() {
           router.push('/signup/terms');
         } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
-          await saveAccessToken(serverToken);
-          await saveRefreshToken(refreshToken);
+          if (__DEV__) {
+            console.log('[secureStore 전에] serverToken:', serverToken);
+            console.log(
+              '[secureStore 전에] typeof serverToken:',
+              typeof serverToken,
+            );
+            console.log('[secureStore 전에] refreshToken:', refreshToken);
+            console.log(
+              '[secureStore 전에] typeof refreshToken:',
+              typeof refreshToken,
+            );
+          }
+
+          // 문자열이 아닐 경우 강제로 stringify하거나 에러 방어
+          if (
+            typeof serverToken === 'string' &&
+            typeof refreshToken === 'string'
+          ) {
+            await saveAccessToken(serverToken);
+            await saveRefreshToken(refreshToken);
+          } else {
+            console.error('❗ serverToken 또는 refreshToken이 문자열이 아님:', {
+              serverToken,
+              refreshToken,
+            });
+          }
+
           await registerFcmToken();
           router.replace('/(page)/feed');
 
@@ -119,10 +149,10 @@ export default function LandingPage() {
         subText="Leets 활동을 위해 위드는 필수야"
         leftBtnText="닫기"
         rightBtnText="위드 가입하자"
-        onConfirm={() => {
+        onRightBtn={() => {
           Linking.openURL(weethSiteURL);
         }}
-        onClose={() => setNotRegisterModal(false)}
+        onLeftBtn={() => setNotRegisterModal(false)}
       />
       <PopupModal
         isOpen={waitModal}
@@ -130,10 +160,10 @@ export default function LandingPage() {
         subText="승인이 완료될 때까지 조금만 기다려줘."
         leftBtnText="닫기"
         rightBtnText="위드 보러가자"
-        onConfirm={() => {
+        onRightBtn={() => {
           Linking.openURL(weethSiteURL);
         }}
-        onClose={() => setWaitModal(false)}
+        onLeftBtn={() => setWaitModal(false)}
       />
       <LogoWrapper>
         <LogoGif

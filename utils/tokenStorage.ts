@@ -10,7 +10,19 @@ const TEMP_ACCESS_TOKEN_KEY = 'temp_access_token';
 // Access Token
 export const saveAccessToken = async (token: string) => {
   if (Platform.OS === 'web') return;
-  await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, token);
+
+  try {
+    if (__DEV__) {
+      console.log('[SecureStore] saveAccessToken 호출됨');
+      console.log('[SecureStore] token 타입:', typeof token);
+      console.log('[SecureStore] token 값:', token);
+    }
+
+    await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, token);
+  } catch (err) {
+    console.error('[SecureStore] accessToken 저장 중 에러 발생:', err);
+    throw err;
+  }
 };
 
 export const getAccessToken = async () => {
@@ -26,7 +38,19 @@ export const deleteAccessToken = async () => {
 // Refresh Token
 export const saveRefreshToken = async (token: string) => {
   if (Platform.OS === 'web') return;
-  await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, token);
+
+  try {
+    if (__DEV__) {
+      console.log('[SecureStore] saveRefreshToken 호출됨');
+      console.log('[SecureStore] token 타입:', typeof token);
+      console.log('[SecureStore] token 값:', token);
+    }
+
+    await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, token);
+  } catch (err) {
+    console.error('[SecureStore] refreshToken 저장 중 에러 발생:', err);
+    throw err;
+  }
 };
 
 export const getRefreshToken = async () => {

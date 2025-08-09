@@ -3,23 +3,31 @@ import { TextInputProps } from 'react-native';
 import styled from 'styled-components/native';
 import { fontSize, radius, height, width, fonts } from '@/theme/globalStyles';
 import colors from '@/theme/color';
+import { Asterisk } from './Textarea';
 
 interface InputProps extends TextInputProps {
   title?: string;
   subMessage?: string;
+  isRequired?: boolean;
 }
 
 export default function Input({
   title,
   subMessage,
   placeholder,
+  isRequired = false,
   ...textInputProps
 }: InputProps) {
   const [focused, setFocused] = useState(false);
 
   return (
     <Wrapper>
-      {title && <Title>{title}</Title>}
+      {title && (
+        <Title>
+          {title}
+          {isRequired && <Asterisk>*</Asterisk>}
+        </Title>
+      )}
 
       <InputBox focused={focused}>
         <StyledTextInput
@@ -74,6 +82,7 @@ export const StyledTextInput = styled.TextInput`
   width: 100%;
   font-size: ${fontSize.lg}px;
   color: ${colors.black};
+  padding: 0;
 `;
 
 export const SubMessage = styled.Text`

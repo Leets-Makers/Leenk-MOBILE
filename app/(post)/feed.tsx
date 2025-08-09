@@ -115,8 +115,8 @@ export default function PostFeedPage() {
 
       <PopupModal
         isOpen={isModalOpen}
-        onConfirm={() => setIsModalOpen(false)}
-        onClose={handleConfirmExit}
+        onRightBtn={() => setIsModalOpen(false)}
+        onLeftBtn={handleConfirmExit}
         mainText="글 작성을 그만둘래?"
         subText="작성하던 내용은 저장되지 않아."
         isCancel={true}

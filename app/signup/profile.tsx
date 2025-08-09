@@ -162,8 +162,8 @@ export default function ProfilePage() {
             />
             <PopupModal
               isOpen={kakaoModalVisible}
-              onClose={() => setKakaoModalVisible(false)}
-              onConfirm={() => {
+              onLeftBtn={() => setKakaoModalVisible(false)}
+              onRightBtn={() => {
                 setKakaoModalVisible(false);
                 setTimeout(() => {
                   setStep('photo');
@@ -248,8 +248,8 @@ export default function ProfilePage() {
               </CustomButton>
               <PopupModal
                 isOpen={skipModalVisible}
-                onClose={() => setSkipModalVisible(false)}
-                onConfirm={handleSkip}
+                onLeftBtn={() => setSkipModalVisible(false)}
+                onRightBtn={handleSkip}
                 mainText="프로필을 나중에 만들래?"
                 subText="마이페이지에서 마저 설정할 수 있어."
                 leftBtnText="취소"

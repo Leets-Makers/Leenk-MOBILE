@@ -1,6 +1,6 @@
 import { Container } from '@/app/(post)/feed';
 import { FeedCard, Header, Loading } from '@/components';
-import TabMenu from '@/components/feed/TabMenu';
+import TabMenu from '@/components/common/TabMenu';
 import { FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components/native';

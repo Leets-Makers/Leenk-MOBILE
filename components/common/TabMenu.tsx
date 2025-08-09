@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 interface TabMenuProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  type?: 'feed'; // 추후 확장 시 다른 타입 추가
+  type?: 'feed' | 'leenk'; // 추후 확장 시 다른 타입 추가
 }
 
 export default function TabMenu({
@@ -20,7 +20,11 @@ export default function TabMenu({
           { label: '올린 피드', value: 'uploaded' },
           { label: '함께한 피드', value: 'joined' },
         ]
-      : [];
+      : [
+          { label: '전체', value: 'all' },
+          { label: '모집중', value: 'recruiting' },
+          { label: '모집완료', value: 'completed' },
+        ];
 
   return (
     <TabContainer>
