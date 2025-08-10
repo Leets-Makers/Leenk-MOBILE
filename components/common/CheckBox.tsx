@@ -1,9 +1,9 @@
 import { CheckBoxIcon, ToastCheckIcon, CheckIcon, NoCheckIcon } from '@/assets';
-import { Pressable } from 'react-native';
+import { GestureResponderEvent, Pressable } from 'react-native';
 
 interface CheckBoxProps {
   checked: boolean;
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
   noBox?: boolean; // 박스 없는 체크 표시 여부
 }
 
@@ -13,7 +13,13 @@ export default function CheckBox({
   noBox = false,
 }: CheckBoxProps) {
   return (
-    <Pressable onPress={onPress} hitSlop={10}>
+    <Pressable
+      hitSlop={10}
+      onPress={(e) => {
+        e.stopPropagation(); // 부모 Wrapper onPress로 전파 방지
+        onPress?.(e);
+      }}
+    >
       {noBox ? (
         checked ? (
           <CheckIcon />

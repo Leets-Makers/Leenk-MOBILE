@@ -21,7 +21,7 @@ import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { StyledText } from '@/app/(post)/feed/write';
-import { CONTAINER_PADDING } from '@/constants';
+import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -143,8 +143,7 @@ export default function FeedDetailPage() {
       {/* 본문 */}
       <View
         style={{
-          paddingHorizontal: CONTAINER_PADDING * width,
-          marginBottom: 24 * width,
+          paddingHorizontal: FEED_PADDING * width,
           minHeight: 220 * height,
           zIndex: 9999,
         }}
@@ -154,7 +153,6 @@ export default function FeedDetailPage() {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginBottom: 16,
             }}
           >
             <Link href={`/users/${feed.author.userId}`} asChild>
@@ -191,8 +189,8 @@ export default function FeedDetailPage() {
 
         <View
           style={{
-            paddingHorizontal: 18 * width,
-            paddingBottom: 40 * height,
+            paddingHorizontal: 15 * width,
+            paddingBottom: 76 * height,
           }}
         >
           <Text
@@ -200,8 +198,8 @@ export default function FeedDetailPage() {
               color: colors.white,
               fontSize: fontSize.md,
               fontFamily: fonts.Bold,
-              marginBottom: 8,
-              minHeight: 126 * height,
+              paddingBottom: 8 * height,
+              minHeight: 90 * height,
               maxHeight: 126 * height,
             }}
           >
@@ -210,7 +208,7 @@ export default function FeedDetailPage() {
 
           <Text
             style={{
-              color: colors.text[4],
+              color: colors.white,
               fontSize: fontSize.md,
               fontFamily: fonts.Light,
               lineHeight: lineHeight.s,
@@ -232,9 +230,17 @@ export default function FeedDetailPage() {
         visible={modalType === 'menu'}
         isWrite={false}
         onClose={closeModal}
-        onPressFirst={() => {}}
-        secondOptionText={isAuthor ? '삭제하기' : '신고하기'}
-        onPressSecond={isAuthor ? handleDelete : handleReport}
+        isOneOption={!isAuthor}
+        firstOptionText={isAuthor ? '수정하기' : '신고하기'}
+        secondOptionText={isAuthor ? '삭제하기' : undefined}
+        onPressFirst={
+          isAuthor
+            ? () => {
+                /* TODO: 수정하기 */
+              }
+            : handleReport
+        }
+        onPressSecond={isAuthor ? handleDelete : undefined}
       />
 
       {modalType === 'deleteConfirm' && (

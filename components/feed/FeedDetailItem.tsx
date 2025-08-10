@@ -174,6 +174,7 @@ export default function FeedDetailItem({ feed }: Props) {
         isWrite={false}
         onClose={closeModal}
         onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
+        firstOptionText={isAuthor ? '수정하기' : ''}
         secondOptionText={isAuthor ? '삭제하기' : '신고하기'}
         onPressSecond={isAuthor ? handleDelete : handleReport}
       />

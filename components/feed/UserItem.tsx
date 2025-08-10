@@ -23,7 +23,7 @@ export default function UserItem({ user, checked, onToggle }: UserItemProps) {
     >
       <ProfileImageWithFallback uri={user.profileImage} />
       <UserName>{user.name}</UserName>
-      <CheckBox checked={checked} />
+      <CheckBox checked={checked} onPress={onToggle} />
     </Wrapper>
   );
 }
