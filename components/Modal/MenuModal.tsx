@@ -37,7 +37,7 @@ export default function MenuModal({
 }: MenuModalProps) {
   const topPosition = Platform.OS === 'ios' ? 95 * height : 50 * height;
 
-  const DANGER_LABELS = ['신고하기', '삭제하기'] as const;
+  const DANGER_LABELS = ['신고하기', '삭제하기', '차단하기'] as const;
 
   return (
     <Modal
@@ -84,7 +84,7 @@ export default function MenuModal({
                     <MenuText
                       $isWrite={isWrite}
                       $isDanger={DANGER_LABELS.includes(
-                        firstOptionText as '신고하기' | '삭제하기',
+                        firstOptionText as '신고하기' | '삭제하기' | '차단하기',
                       )}
                     >
                       {firstOptionText}
@@ -100,7 +100,10 @@ export default function MenuModal({
                       <MenuText
                         $isWrite={isWrite}
                         $isDanger={DANGER_LABELS.includes(
-                          secondOptionText as '신고하기' | '삭제하기',
+                          secondOptionText as
+                            | '신고하기'
+                            | '삭제하기'
+                            | '차단하기',
                         )}
                       >
                         {secondOptionText}

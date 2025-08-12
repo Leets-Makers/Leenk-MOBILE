@@ -16,13 +16,26 @@ import dayjs from 'dayjs';
 import DatePicker from 'react-native-modern-datepicker';
 import { getFormatedDate } from 'react-native-modern-datepicker';
 
-export default function CalendarButton() {
+interface CalendarButtonProps {
+  value?: Date | null;
+  onChange?: (date: Date | null) => void;
+}
+
+export default function CalendarButton({
+  value,
+  onChange,
+}: CalendarButtonProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [step, setStep] = useState<'date' | 'time' | null>(null); // Android 전용
   const [tempDate, setTempDate] = useState<string>(''); // YYYY-MM-DD
 
+  const handleSelectDate = (date: Date | null) => {
+    setSelectedDate(date);
+    onChange?.(date); // 부모로 전달
+  };
+
   const handleIOSChange = (_: any, date?: Date) => {
-    if (date) setSelectedDate(date);
+    if (date) handleSelectDate(date);
     setStep(null);
   };
 
@@ -33,7 +46,7 @@ export default function CalendarButton() {
 
   const handleAndroidTime = (timeStr: string) => {
     const date = new Date(`${tempDate}T${timeStr}`);
-    setSelectedDate(date);
+    handleSelectDate(date);
     setStep(null);
   };
 
@@ -120,7 +133,7 @@ const Container = styled.View<{ $isFocused: boolean }>`
   border-radius: ${radius.sm}px;
   padding: ${height * 12}px ${width * 12}px;
   margin-top: ${height * 8}px;
-  border-width: 2px;
+  border-width: ${({ $isFocused }) => ($isFocused ? 2 : 1)}px;
   border-color: ${({ $isFocused }) =>
     $isFocused ? colors.primaryLight : colors.divider[2]};
   background-color: transparent;
@@ -130,7 +143,7 @@ const Container = styled.View<{ $isFocused: boolean }>`
 `;
 
 const StyledText = styled.Text<{ selected: boolean }>`
-  font-size: ${fontSize.md}px;
+  font-size: ${fontSize.lg}px;
   line-height: ${lineHeight.l};
   font-family: ${fonts.Regular};
   color: ${({ selected }) => (selected ? colors.black : '#B0B0B0')};

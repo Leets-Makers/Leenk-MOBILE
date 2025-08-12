@@ -86,18 +86,16 @@ export default function MyPage() {
           });
         }}
       />
-      {/* <MyPageButton
+      <MyPageButton
         text="참여한 모임"
         onPress={() => router.push('/account/my-leenk')}
-      /> */}
+      />
       <MenuModal
         visible={modalType === 'menu'}
         isWrite={false}
         onClose={closeModal}
-        onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
-        onPressSecond={handleBlock}
-        secondOptionText="차단하기"
-        isDanger
+        onPressFirst={handleBlock}
+        firstOptionText="차단하기"
       />
       {modalType === 'deleteConfirm' && (
         <PopupModal

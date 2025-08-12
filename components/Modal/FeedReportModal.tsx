@@ -30,7 +30,7 @@ export default function FeedReportModal({ feedId }: FeedReportModalProps) {
   const handleSubmit = async () => {
     try {
       await reportFeed(feedId, report);
-      showToast('해당 피드를 신고했어!', 'success');
+      showToast('해당 피드를 신고했어', 'success');
     } catch (error) {
       console.error('피드 신고 실패:', error);
       showToast('신고 실패!', 'error');

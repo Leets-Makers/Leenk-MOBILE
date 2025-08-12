@@ -26,9 +26,9 @@ import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 import { uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
-import GradientOverlay from '@/components/feed/GradientOverlay';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FEED_PADDING } from '@/constants';
 
 export default function FeedWritePage() {
   const selectedImages = useFeedWriteStore((state) => state.selectedImages);
@@ -135,7 +135,11 @@ export default function FeedWritePage() {
             }}
           />
           <View
-            style={{ paddingHorizontal: 16, marginBottom: 24, zIndex: 9999 }}
+            style={{
+              paddingHorizontal: FEED_PADDING * width,
+              marginBottom: 24,
+              zIndex: 9999,
+            }}
           >
             <Animated.View
               style={{
@@ -178,7 +182,7 @@ export default function FeedWritePage() {
                 size="lg"
                 onPress={handleUpload}
                 style={{
-                  marginTop: 16 * height,
+                  marginTop: 20 * height,
                   marginBottom:
                     Platform.OS === 'android' ? insets.bottom : 8 * height,
                 }}

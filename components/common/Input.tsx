@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { TextInputProps } from 'react-native';
 import styled from 'styled-components/native';
-import { fontSize, radius, height, width, fonts } from '@/theme/globalStyles';
+import {
+  fontSize,
+  radius,
+  height,
+  width,
+  fonts,
+  lineHeight,
+} from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { Asterisk } from './Textarea';
 
@@ -25,7 +32,7 @@ export default function Input({
       {title && (
         <Title>
           {title}
-          {isRequired && <Asterisk>*</Asterisk>}
+          {isRequired && <Asterisk> *</Asterisk>}
         </Title>
       )}
 
@@ -65,9 +72,12 @@ export const Title = styled.Text`
 export const InputBox = styled.View<{ focused: boolean }>`
   width: 100%;
   border-radius: ${radius.sm}px;
+  justify-content: center;
   padding-vertical: ${12 * height}px;
+  height: ${48 * height}px;
   padding-horizontal: ${12 * width}px;
-  border-width: 2px;
+  border-width: ${({ focused }) => (focused ? 2 : 1)}px;
+
   border-color: ${({ focused }) =>
     focused ? colors.primaryLight : colors.gray[300]};
   border-style: solid;
@@ -80,8 +90,13 @@ export const InputBox = styled.View<{ focused: boolean }>`
 
 export const StyledTextInput = styled.TextInput`
   width: 100%;
+  height: ${24 * height}px;
   font-size: ${fontSize.lg}px;
+  font-family: ${fonts.Regular};
   color: ${colors.black};
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0;
 `;
 
