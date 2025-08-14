@@ -32,6 +32,7 @@ import { useUserStore } from '@/stores/userStore';
 import FeedReportModal from '@/components/Modal/FeedReportModal';
 import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -47,6 +48,21 @@ export default function FeedDetailPage() {
   const [showOnBoarding, setShowOnBoarding] = useState(false);
 
   const isAuthor = feed?.author.userId === userInfo?.id;
+
+  const handleEdit = () => {
+    if (!feed) return;
+
+    closeModal();
+
+    const store = useFeedWriteStore.getState();
+    store.reset(); // 이전 편집 상태  초기화
+    store.startEditFromDetail(feed); // 현재 상세의 데이터를 프리필
+
+    router.push({
+      pathname: '/(post)/feed/write',
+      params: { mode: 'edit', feedId: String(feed?.feedId) },
+    });
+  };
 
   const handleDelete = () => {
     closeModal();
@@ -233,13 +249,7 @@ export default function FeedDetailPage() {
         isOneOption={!isAuthor}
         firstOptionText={isAuthor ? '수정하기' : '신고하기'}
         secondOptionText={isAuthor ? '삭제하기' : undefined}
-        onPressFirst={
-          isAuthor
-            ? () => {
-                /* TODO: 수정하기 */
-              }
-            : handleReport
-        }
+        onPressFirst={isAuthor ? handleEdit : handleReport}
         onPressSecond={isAuthor ? handleDelete : undefined}
       />
 

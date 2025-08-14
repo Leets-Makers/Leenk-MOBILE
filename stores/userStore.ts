@@ -1,15 +1,5 @@
 import { create } from 'zustand';
-
-export interface UserInfo {
-  id: number;
-  cardinal: number;
-  name: string;
-  position: 'FE' | 'BE' | 'D' | 'PM';
-  profileImage: string;
-  kakaoTalkId: string;
-  introduction: string;
-  mbti: string;
-}
+import { UserInfo } from '@/hooks/useUserInfo';
 
 interface UserStoreState {
   userInfo: UserInfo | null;
