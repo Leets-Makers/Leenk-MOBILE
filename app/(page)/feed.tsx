@@ -59,7 +59,6 @@ export default function FeedPage() {
       style={{
         flex: 1,
         backgroundColor: colors.bg[2],
-        // paddingHorizontal: 20 * width,
       }}
     >
       <Header

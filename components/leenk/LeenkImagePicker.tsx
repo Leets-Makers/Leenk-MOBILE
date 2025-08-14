@@ -92,7 +92,7 @@ const ImageGrid = styled.View`
 
 const SquareImage = styled.Pressable<{ $selected: boolean }>`
   background-color: ${colors.gray[10]};
-  border-radius: ${radius.lg}px;
+  border-radius: ${radius.md}px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
