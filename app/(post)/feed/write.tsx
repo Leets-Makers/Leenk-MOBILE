@@ -101,6 +101,11 @@ export default function FeedWritePage() {
 
   // 업로드 로직 분리
   const handleUploadFeed = async () => {
+    if (isEditParam) {
+      setIsModalOpen(true);
+      return;
+    }
+
     setIsUploading(true);
 
     try {
@@ -115,6 +120,14 @@ export default function FeedWritePage() {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleConfirmEdit = async () => {
+    setIsModalOpen(false);
+    // TODO: 수정 API 연결.
+
+    showToast('수정 완료!', 'success');
+    router.back();
   };
 
   const handleConfirmExit = () => {
@@ -135,32 +148,40 @@ export default function FeedWritePage() {
 
     (async () => {
       if (!isEditParam) {
-        // create 모드
-        if (
-          mediaUrls.length > 0 ||
-          useFeedWriteStore.getState().isEdit ||
-          useFeedWriteStore.getState().feedId
-        ) {
-          useFeedWriteStore.setState({
-            isEdit: false,
-            feedId: undefined,
-            mediaUrls: [],
-          });
+        // ------- 생성 모드 -------
+        const s = useFeedWriteStore.getState();
+
+        const hasDraft =
+          s.selectedImages.length > 0 ||
+          !!s.description?.trim() ||
+          s.users.length > 0;
+
+        const hasEditResidue = s.isEdit || !!s.feedId || s.mediaUrls.length > 0;
+
+        if (hasEditResidue) {
+          if (hasDraft) {
+            // 초안은 유지하고, 수정 전용 잔상만 제거
+            useFeedWriteStore.setState({
+              isEdit: false,
+              feedId: undefined,
+              mediaUrls: [],
+            });
+          } else {
+            // 초안이 없으면 완전 초기화
+            startCreate(); // selectedImages/users/description도 비움
+          }
         }
         return;
       }
 
-      if (
-        useFeedWriteStore.getState().feedId === Number(feedId) &&
-        mediaUrls.length > 0
-      )
-        return;
+      // ------- 수정 모드 보강 -------
+      if (storeFeedId === Number(feedId) && mediaUrls.length > 0) return;
 
       reset();
       try {
         const detail = await getFeedDetail(Number(feedId));
         if (!cancelled) startEditFromDetail(detail);
-      } catch (e) {
+      } catch {
         if (!cancelled) {
           showToast('피드 정보를 불러오지 못했어!', 'error');
           router.back();
@@ -175,8 +196,10 @@ export default function FeedWritePage() {
     isEditParam,
     feedId,
     mediaUrls.length,
-    reset,
+    storeFeedId,
+    startCreate,
     startEditFromDetail,
+    reset,
     showToast,
   ]);
 
@@ -260,20 +283,24 @@ export default function FeedWritePage() {
                 }}
                 disabled={description.trim().length === 0}
               >
-                업로드할래
+                {isEditParam ? '수정할래' : '업로드할래'}
               </CustomButton>
             </Animated.View>
           </View>
 
           <PopupModal
             isOpen={isModalOpen}
-            onRightBtn={handleConfirmUpload}
-            onLeftBtn={handleConfirmExit}
-            mainText="이 내용으로 피드에 업로드할까?"
-            subText="함께한 사람이 추가되지 않았어."
-            isCancel={true}
-            leftBtnText="추가할래"
-            rightBtnText="그냥 업로드할래"
+            onRightBtn={isEditParam ? handleConfirmEdit : handleConfirmUpload}
+            onLeftBtn={
+              isEditParam ? () => setIsModalOpen(false) : handleConfirmExit
+            }
+            mainText={
+              isEditParam ? '수정할까?' : '이 내용으로 피드에 업로드할까?'
+            }
+            subText={isEditParam ? undefined : '함께한 사람이 추가되지 않았어.'}
+            isCancel={!isEditParam}
+            leftBtnText={isEditParam ? '취소' : '추가할래'}
+            rightBtnText={isEditParam ? '수정할래' : '그냥 업로드할래'}
           />
         </View>
 

@@ -42,7 +42,7 @@ export default function Textarea({
           {isRequired && <Asterisk> *</Asterisk>}
         </Title>
       )}
-      <InputBox focused={focused} active={isActive} isDark={isDark}>
+      <InputBox focused={focused} isDark={isDark}>
         <StyledTextarea
           {...props}
           placeholder={placeholder}
@@ -83,14 +83,9 @@ const InputBox = styled.View<{
   border-radius: ${radius.sm}px;
   padding-vertical: ${12 * height}px;
   padding-horizontal: ${12 * width}px;
-  border-width: ${({ focused, active, isDark }) => {
-    if (focused) return 2;
-    return isDark ? (active ? 1 : 0) : 1;
-  }}px;
-  border-color: ${({ focused, active, isDark }) => {
-    if (focused || active) return colors.primaryLight;
-    return isDark ? 'transparent' : colors.gray[300];
-  }};
+  border-width: ${({ focused, isDark }) => (focused ? 2 : isDark ? 0 : 1)}px;
+  border-color: ${({ focused, isDark }) =>
+    focused ? colors.primaryLight : isDark ? 'transparent' : colors.gray[300]};
   border-style: solid;
   background-color: ${({ isDark }) =>
     isDark ? 'rgba(255, 255, 255, 0.2)' : 'transparent'};
