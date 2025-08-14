@@ -24,6 +24,7 @@ import { SubText, TitleText } from '@/components/OnBoarding';
 import { useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
+import ReportModal from '@/components/Modal/ReportModal';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
@@ -164,22 +165,7 @@ export default function LeenkDetailPage() {
           />
         );
       case 'leenkReport':
-        return (
-          <PopupModal
-            isOpen
-            onRightBtn={() => {
-              closeModal();
-              showToast('신고가 접수됐어', 'success');
-            }}
-            onLeftBtn={closeModal}
-            isWarning
-            mainText="이 글을 신고할까?"
-            subText="허위 신고는 제재될 수 있어."
-            isCancel
-            leftBtnText="취소"
-            rightBtnText="신고할래"
-          />
-        );
+        return <ReportModal type="link" />; // TODO : 신고하기 api 연결 시 linkId 추가
       default:
         return null;
     }

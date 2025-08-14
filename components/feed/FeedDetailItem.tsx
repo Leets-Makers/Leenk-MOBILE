@@ -20,7 +20,7 @@ import colors from '@/theme/color';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
-import FeedReportModal from '@/components/Modal/FeedReportModal';
+import FeedReportModal from '@/components/Modal/ReportModal';
 import {
   fonts,
   fontSize,
@@ -250,7 +250,7 @@ export default function FeedDetailItem({ feed }: Props) {
         />
       )}
 
-      <FeedReportModal feedId={feed.feedId} />
+      <FeedReportModal feedId={feed.feedId} type="feed" />
     </Wrapper>
   );
 }

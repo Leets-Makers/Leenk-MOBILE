@@ -29,7 +29,7 @@ import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
 import { useEffect, useState } from 'react';
 import { useUserStore } from '@/stores/userStore';
-import FeedReportModal from '@/components/Modal/FeedReportModal';
+import FeedReportModal from '@/components/Modal/ReportModal';
 import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
@@ -267,7 +267,7 @@ export default function FeedDetailPage() {
         />
       )}
 
-      <FeedReportModal feedId={feed.feedId} />
+      <FeedReportModal type="feed" feedId={feed.feedId} />
 
       {/* 온보딩 */}
       {showOnBoarding && (
