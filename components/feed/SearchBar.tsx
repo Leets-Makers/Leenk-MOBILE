@@ -41,7 +41,7 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
 const SearchBarWrapper = styled.View`
   flex-direction: row;
   align-items: center;
-  width: ${335 * width}px;
+  width: 100%;
   height: ${38 * height}px;
   background-color: ${colors.gray[100]};
   border-radius: ${radius.xs}px;

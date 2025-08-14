@@ -4,6 +4,7 @@ import useFeedList from '@/hooks/useFeedList';
 import styled from 'styled-components/native';
 import { height } from '@/theme/globalStyles';
 import { useEffect } from 'react';
+import { FEED_PADDING } from '@/constants';
 
 interface FeedListProps {
   type: 'myFeed' | 'myJoined';
@@ -46,9 +47,10 @@ export default function ProfileFeedList({
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         contentContainerStyle={{
           paddingBottom: 100 * height,
+          paddingHorizontal: FEED_PADDING,
         }}
         renderItem={({ item }) => <FeedCard item={item} />}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         refreshing={isRefreshing}

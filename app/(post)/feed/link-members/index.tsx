@@ -15,7 +15,7 @@ import MemberBadgeList from '@/components/feed/MemberBadgeList';
 import { height, width } from '@/theme/globalStyles';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getAllUsers } from '@/api/feed/feed.api';
-import { CONTAINER_PADDING } from '@/constants';
+import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import {
@@ -127,6 +127,6 @@ export default function LinkMembersPage() {
 
 const Container = styled(SafeAreaView)`
   flex: 1;
-  padding: 0 ${CONTAINER_PADDING * width}px;
+  padding: 0 ${FEED_PADDING * width}px;
   background-color: ${colors.gray[50]};
 `;

@@ -295,7 +295,9 @@ export default function FeedWritePage() {
               isEditParam ? () => setIsModalOpen(false) : handleConfirmExit
             }
             mainText={
-              isEditParam ? '수정할까?' : '이 내용으로 피드에 업로드할까?'
+              isEditParam
+                ? '피드를 수정할까?'
+                : '이 내용으로 피드에 업로드할까?'
             }
             subText={isEditParam ? undefined : '함께한 사람이 추가되지 않았어.'}
             isCancel={!isEditParam}
