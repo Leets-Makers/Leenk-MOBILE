@@ -158,11 +158,13 @@ export default function PostLeenkPage() {
 
 const Row = styled.View`
   flex-direction: row;
+  margin-bottom: ${6 * height}px;
 `;
 
 const Margin = styled.View`
   height: ${height * 32}px;
 `;
+
 export const SubText = styled.Text`
   font-size: ${fontSize.sm}px;
   color: ${colors.primary};

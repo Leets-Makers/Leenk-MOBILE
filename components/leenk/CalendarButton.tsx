@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Platform, Pressable } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Pressable } from 'react-native';
+import DatePicker, { getFormatedDate } from 'react-native-modern-datepicker';
+import dayjs from 'dayjs';
+import styled from 'styled-components/native';
 import { CalendarIcon } from '@/assets';
 import colors from '@/theme/color';
 import {
@@ -11,42 +13,48 @@ import {
   radius,
   width,
 } from '@/theme/globalStyles';
-import styled from 'styled-components/native';
-import dayjs from 'dayjs';
-import DatePicker from 'react-native-modern-datepicker';
-import { getFormatedDate } from 'react-native-modern-datepicker';
 
 interface CalendarButtonProps {
   value?: Date | null;
   onChange?: (date: Date | null) => void;
 }
 
+type Step = 'date' | 'time' | null;
+
 export default function CalendarButton({
   value,
   onChange,
 }: CalendarButtonProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [step, setStep] = useState<'date' | 'time' | null>(null); // Android 전용
-  const [tempDate, setTempDate] = useState<string>(''); // YYYY-MM-DD
+  const [selectedDate, setSelectedDate] = useState<Date | null>(value ?? null);
+  const [step, setStep] = useState<Step>(null);
+  const [tempDateStr, setTempDateStr] = useState<string>('');
+  const minDateStr = useMemo(
+    () => getFormatedDate(new Date(), 'YYYY/MM/DD'),
+    [],
+  );
 
-  const handleSelectDate = (date: Date | null) => {
+  useEffect(() => {
+    if (value?.getTime() !== selectedDate?.getTime()) {
+      setSelectedDate(value ?? null);
+    }
+  }, [value]);
+
+  const commit = (date: Date | null) => {
     setSelectedDate(date);
-    onChange?.(date); // 부모로 전달
+    onChange?.(date);
   };
 
-  const handleIOSChange = (_: any, date?: Date) => {
-    if (date) handleSelectDate(date);
-    setStep(null);
-  };
-
-  const handleAndroidDate = (dateStr: string) => {
-    setTempDate(dateStr);
+  const handleSelectDate = (dateStr: string) => {
+    setTempDateStr(dateStr); // YYYY/MM/DD
     setStep('time');
   };
 
-  const handleAndroidTime = (timeStr: string) => {
-    const date = new Date(`${tempDate}T${timeStr}`);
-    handleSelectDate(date);
+  const handleSelectTime = (timeStr: string) => {
+    const result = dayjs(
+      `${tempDateStr} ${timeStr}`,
+      'YYYY/MM/DD HH:mm',
+    ).toDate();
+    commit(result);
     setStep(null);
   };
 
@@ -55,84 +63,59 @@ export default function CalendarButton({
       <Container $isFocused={!!step}>
         <StyledText selected={!!selectedDate}>
           {selectedDate
-            ? dayjs(selectedDate).format('MM월 DD일 HH시')
+            ? dayjs(selectedDate).format('MM월 DD일 HH시 mm분')
             : '모임 일시를 선택해줘'}
         </StyledText>
-
-        <Pressable
-          onPress={() => {
-            if (Platform.OS === 'ios') {
-              setStep('date');
-            } else {
-              setStep('date');
-            }
-          }}
-        >
+        <Pressable onPress={() => setStep('date')}>
           <CalendarIcon />
         </Pressable>
       </Container>
 
-      {/* iOS: native datetime picker */}
-      {Platform.OS === 'ios' && step === 'date' && (
-        <DateTimePicker
-          value={selectedDate || new Date()}
-          mode="datetime"
-          display="default"
-          onChange={handleIOSChange}
-          minimumDate={new Date()}
-        />
-      )}
-
-      {/* Android: modern-datepicker date -> time */}
-      {Platform.OS === 'android' && step === 'date' && (
+      {/* 날짜 선택 */}
+      {step === 'date' && (
         <DatePicker
           mode="calendar"
+          minimumDate={minDateStr}
+          onSelectedChange={handleSelectDate} // YYYY/MM/DD
           onDateChange={() => {}}
           onMonthYearChange={() => {}}
-          onSelectedChange={handleAndroidDate}
-          minimumDate={getFormatedDate(new Date(), 'YYYY/MM/DD')}
           options={{
             mainColor: colors.primary,
             defaultFont: fonts.Regular,
             headerFont: fonts.Bold,
           }}
           locale="en"
-          isGregorian={true}
+          isGregorian
         />
       )}
 
-      {Platform.OS === 'android' && step === 'time' && (
+      {/* 시간 선택 */}
+      {step === 'time' && (
         <DatePicker
           mode="time"
-          onTimeChange={(timeStr) => {
-            const date = dayjs(
-              `${tempDate} ${timeStr}`,
-              'YYYY-MM-DD HH:mm',
-            ).toDate();
-            setSelectedDate(date);
-            setStep(null);
-          }}
-          onDateChange={() => {}}
-          onSelectedChange={handleAndroidTime}
+          onTimeChange={handleSelectTime} // HH:mm
           minuteInterval={30}
+          onDateChange={() => {}}
+          onSelectedChange={() => {}}
           options={{
             mainColor: colors.primary,
             defaultFont: fonts.Regular,
             headerFont: fonts.Bold,
           }}
           locale="en"
-          isGregorian={true}
+          isGregorian
         />
       )}
     </>
   );
 }
 
+/* styled */
 const Container = styled.View<{ $isFocused: boolean }>`
   width: 100%;
   border-radius: ${radius.sm}px;
   padding: ${height * 12}px ${width * 12}px;
-  margin-top: ${height * 8}px;
+  margin-top: ${height * 12}px;
   border-width: ${({ $isFocused }) => ($isFocused ? 2 : 1)}px;
   border-color: ${({ $isFocused }) =>
     $isFocused ? colors.primaryLight : colors.divider[2]};

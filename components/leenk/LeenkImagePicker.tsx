@@ -87,12 +87,12 @@ const Container = styled.View`
 const ImageGrid = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
-  gap: ${width * 8}px;
+  gap: ${width * 4}px;
 `;
 
 const SquareImage = styled.Pressable<{ $selected: boolean }>`
   background-color: ${colors.gray[10]};
-  border-radius: ${radius.md}px;
+  border-radius: ${radius.lg}px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
