@@ -40,7 +40,7 @@ export default function Badge({
       {/* 왼쪽 아이콘: plus */}
       {iconType === 'plus' && (
         <IconWrapper style={{ marginRight: 4 }}>
-          <PlusIcon width={18} height={18} />
+          <PlusIcon width={18} height={18} color={colors.white} />
         </IconWrapper>
       )}
 

@@ -87,7 +87,7 @@ const Container = styled.View`
 const ImageGrid = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
-  gap: ${width * 8}px;
+  gap: ${width * 4}px;
 `;
 
 const SquareImage = styled.Pressable<{ $selected: boolean }>`

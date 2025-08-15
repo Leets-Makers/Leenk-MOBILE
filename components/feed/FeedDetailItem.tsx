@@ -1,13 +1,7 @@
-// 상세 피드에서 수직 스크롤을 위해 분리한 컴포넌트
-// TODO: 상세 피드에서 위아래 스크롤 시 이전/다음 피드로 넘어가도록 해야함
-
-import {
-  fonts,
-  fontSize,
-  height,
-  lineHeight,
-  width,
-} from '@/theme/globalStyles';
+import React, { useCallback, useMemo } from 'react';
+import styled from 'styled-components/native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Link, router } from 'expo-router';
 import {
   Header,
   BackgroundImageSlider,
@@ -18,20 +12,25 @@ import {
   MenuModal,
   PopupModal,
 } from '@/components';
-import colors from '@/theme/color';
-import { formatDate } from '@/utils/format-date';
-import { Text, View } from 'react-native';
-import { StyledText } from '@/app/(post)/feed/write';
-import { CONTAINER_PADDING } from '@/constants';
-import { useModalStore } from '@/stores/modalStore';
-import { useToastStore } from '@/stores/toastStore';
-import { router } from 'expo-router';
+
 import { deleteFeed } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
+import { formatDate } from '@/utils/format-date';
+import colors from '@/theme/color';
+import { useModalStore } from '@/stores/modalStore';
+import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
-import styled from 'styled-components/native';
-import { useCallback } from 'react';
-import FeedReportModal from '../Modal/FeedReportModal';
+import FeedReportModal from '@/components/Modal/ReportModal';
+import {
+  fonts,
+  fontSize,
+  height,
+  lineHeight,
+  width,
+} from '@/theme/globalStyles';
+import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
+import { StyledText } from '@/app/(post)/feed/write';
+import { Media } from '@/types/feed';
 
 interface Props {
   feed: FeedDetail;
@@ -42,8 +41,77 @@ export default function FeedDetailItem({ feed }: Props) {
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
 
-  const isAuthor = feed.author.userId === userInfo?.id;
+  // ─────────────────────────────────────────────
+  // 1) media 안전 폴백 + BackgroundImageSlider 타입 맞추기
+  //    - 컴포넌트가 Media[] (ex: {url, type}) 를 기대하는 경우를 맞춰줌
+  // ─────────────────────────────────────────────
 
+  const media: Media[] = useMemo(() => {
+    // 서버/목록/상세에 따라 키가 다를 수 있음 → 가능한 모든 후보에서 수집
+    const raw =
+      (feed as any)?.media ??
+      (feed as any)?.mediaUrls ??
+      (feed as any)?.images ??
+      (feed as any)?.files ??
+      [];
+
+    // 문자열 배열이면 { url } 객체로 매핑
+    if (typeof raw[0] === 'string') {
+      return (raw as string[]).filter(Boolean).map<Media>((url, idx) => ({
+        mediaUrl: url,
+        position: idx,
+        mediaId: `${feed?.feedId ?? 'tmp'}_${idx}`,
+        type: 'IMAGE',
+        mediaType: 'IMAGE', // mediaType 필드 추가 (필수)
+      }));
+    }
+
+    return [];
+  }, [feed]);
+
+  // ─────────────────────────────────────────────
+  // 2) 작성자 정보 안전 폴백
+  // ─────────────────────────────────────────────
+  const authorId = feed?.author?.userId ?? 0;
+  const authorName = feed?.author?.name ?? '사용자';
+  const authorProfile = feed?.author?.profileImage ?? undefined;
+  const isAuthor = authorId === userInfo?.id;
+
+  // ─────────────────────────────────────────────
+  // 3) 연결 배지 라벨 (널가드)
+  // ─────────────────────────────────────────────
+  const linkedCount = feed?.linkedUserCount ?? 0;
+  const linkedUser = Array.isArray(feed?.linkedUser) ? feed.linkedUser : [];
+  const linkedLabel = useMemo(() => {
+    const nonAuthor = linkedUser.filter((u) => !u.isAuthor);
+    const first = nonAuthor[0]?.name ?? '사용자';
+    const others = Math.max(linkedCount - 1, 0);
+    return others > 0 ? `${first} 외 ${others}명` : first;
+  }, [linkedUser, linkedCount]);
+
+  // ─────────────────────────────────────────────
+  // 4) 날짜 표시 안전 처리
+  //    - NaN년 NaN월 NaN일 방지: createdAt 존재/파싱 가능할 때만 formatDate
+  // ─────────────────────────────────────────────
+  const createdAtText = useMemo(() => {
+    const raw =
+      (feed as any)?.createdAt ??
+      (feed as any)?.created_at ??
+      (feed as any)?.createdDate ??
+      null;
+
+    if (!raw) return ''; // 값이 없으면 빈 문자열
+
+    // formatDate가 문자열/Date 모두 받는다면 그대로 전달,
+    // 아니라면 new Date로 검증 후 전달
+    const d = new Date(raw);
+    if (isNaN(d.getTime())) return '';
+    return formatDate(raw);
+  }, [feed]);
+
+  // ─────────────────────────────────────────────
+  // 5) 메뉴/삭제/신고 로직
+  // ─────────────────────────────────────────────
   const handleDelete = useCallback(() => {
     closeModal();
     openModal('deleteConfirm');
@@ -59,10 +127,9 @@ export default function FeedDetailItem({ feed }: Props) {
       await deleteFeed(feed.feedId);
       showToast('삭제 완료!', 'success');
       setTimeout(() => {
-        router.replace('/(page)/feed'); // 삭제 후 목록으로 이동
-      }, 1500);
-    } catch (err: any) {
-      console.error('피드 삭제 오류:', err);
+        router.replace('/(page)/feed');
+      }, 1200);
+    } catch {
       showToast('삭제 실패!', 'error');
     } finally {
       closeModal();
@@ -70,8 +137,11 @@ export default function FeedDetailItem({ feed }: Props) {
   }, [feed.feedId, closeModal, showToast]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <BackgroundImageSlider mediaUrls={feed.media} />
+    <Wrapper>
+      <BackgroundImageSlider
+        mediaUrls={media}
+        gradient={{ top: 120 * height, bottom: 520 * height }}
+      />
 
       <Header
         isBackWhite
@@ -79,7 +149,7 @@ export default function FeedDetailItem({ feed }: Props) {
         kebabPress={() => openModal('menu')}
         style={{
           position: 'absolute',
-          top: 0,
+          top: 35,
           width: '100%',
           zIndex: 20,
           paddingHorizontal: CONTAINER_PADDING * width,
@@ -87,125 +157,116 @@ export default function FeedDetailItem({ feed }: Props) {
       />
 
       {/* 본문 */}
-      <View
-        style={{
-          paddingHorizontal: CONTAINER_PADDING * width,
-          marginBottom: 52 * width,
-          minHeight: 220 * height,
-        }}
-      >
-        {/* 작성자 정보 + 배지 */}
-        <RowWrapper>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 16,
-            }}
-          >
-            <View style={{ marginRight: 8 * width }}>
-              <ProfileImageWithFallback
-                uri={feed.author.profileImage}
-                size={36}
-              />
-            </View>
-            <StyledText>{feed.author.name}</StyledText>
+      <Body>
+        <TopRow>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Link href={`/users/${authorId}`} asChild>
+              <TouchableOpacity
+                style={{ flexDirection: 'row', alignItems: 'center' }}
+              >
+                <ProfileImageWithFallback uri={authorProfile} size={36} />
+                <StyledText>{authorName}</StyledText>
+              </TouchableOpacity>
+            </Link>
 
-            {feed.linkedUserCount > 1 && (
+            {linkedCount > 1 && (
               <Badge
                 variant="gray"
-                label={`${feed.author.name} 외 ${feed.linkedUserCount - 1}명`}
+                label={linkedLabel}
                 onPress={() => openModal('feedLinked')}
               />
             )}
           </View>
+
           <HeartButton
             feedId={Number(feed.feedId)}
-            totalReactionCount={feed.totalReactionCount}
-            authorId={feed.author.userId}
+            totalReactionCount={feed.totalReactionCount ?? 0}
+            authorId={authorId}
             currentUserId={userInfo?.id}
+            flushOnExit
           />
-        </RowWrapper>
+        </TopRow>
 
-        {/* 게시물 내용 */}
         <View
-          style={{
-            paddingHorizontal: 18 * width,
-            paddingBottom: 48 * height,
-          }}
+          style={{ paddingHorizontal: 15 * width, paddingBottom: 76 * height }}
         >
           <Text
             style={{
-              color: colors.gray[400],
+              color: colors.white,
               fontSize: fontSize.md,
               fontFamily: fonts.Bold,
-              marginBottom: 8,
-              minHeight: 126 * height,
+              paddingBottom: 8 * height,
+              minHeight: 90 * height,
               maxHeight: 126 * height,
             }}
+            numberOfLines={5}
           >
-            {feed.description}
+            {feed?.description ?? ''}
           </Text>
 
-          {/* 작성 날짜 */}
           <Text
             style={{
-              color: colors.text[3],
+              color: colors.white,
               fontSize: fontSize.md,
               fontFamily: fonts.Light,
               lineHeight: lineHeight.s,
             }}
           >
-            {formatDate(feed.createdAt)}
+            {createdAtText}
           </Text>
         </View>
-      </View>
+      </Body>
 
-      {/* 유저리스트 모달 */}
+      {/* 모달들 */}
       <UserListModal
         visible={modalType === 'feedLinked'}
         title="함께 연결된 Leets"
-        list={feed.linkedUser}
+        list={linkedUser}
         onClose={closeModal}
       />
-      {/* 삭제 메뉴 모달 */}
+
       <MenuModal
         visible={modalType === 'menu'}
         isWrite={false}
         onClose={closeModal}
-        onPressFirst={() => {}} // 추후 수정하기 옵션 추가 시 사용
-        secondOptionText={isAuthor ? '삭제하기' : '신고하기'}
-        onPressSecond={isAuthor ? handleDelete : handleReport}
+        isOneOption={!isAuthor}
+        firstOptionText={isAuthor ? '수정하기' : '신고하기'}
+        secondOptionText={isAuthor ? '삭제하기' : undefined}
+        onPressFirst={isAuthor ? () => {} : handleReport}
+        onPressSecond={isAuthor ? handleDelete : undefined}
       />
+
       {modalType === 'deleteConfirm' && (
         <PopupModal
-          isOpen={modalType === 'deleteConfirm'}
+          isOpen
           onRightBtn={handleConfirmDelete}
           onLeftBtn={closeModal}
           isWarning
           mainText="피드를 삭제할거야?"
           subText="삭제하면 복구할 수 없어."
-          isCancel={true}
+          isCancel
           leftBtnText="취소"
           rightBtnText="삭제할래"
         />
       )}
-      {/* {modalType === 'feedReport' && (
-        <FeedReportModal
-          isOpen={modalType === 'feedReport'}
-          onClose={closeModal}
-          onSubmit={(reason) => {
-            console.log(`신고 사유: ${reason}`);
-            closeModal();
-            showToast('신고 완료!', 'success');
-          }}
-        />
-      )} */}
-    </View>
+
+      <FeedReportModal feedId={feed.feedId} type="feed" />
+    </Wrapper>
   );
 }
 
-const RowWrapper = styled.View`
+const Wrapper = styled.View`
+  width: 100%;
+  height: 100%;
+`;
+
+const Body = styled.View`
+  padding: 0 ${FEED_PADDING * width}px;
+  min-height: ${220 * height}px;
+  z-index: 10;
+`;
+
+const TopRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

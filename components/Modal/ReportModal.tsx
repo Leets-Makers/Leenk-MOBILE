@@ -16,27 +16,46 @@ import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { reportFeed } from '@/api/feed/feed.api';
 
-interface FeedReportModalProps {
-  feedId: number;
+interface ReportModalProps {
+  type: 'feed' | 'leenk';
+  feedId?: number;
+  leenkId?: number;
 }
 
-export default function FeedReportModal({ feedId }: FeedReportModalProps) {
-  const [report, setreport] = useState('');
+export default function ReportModal({
+  type = 'feed',
+  feedId,
+  leenkId,
+}: ReportModalProps) {
+  const [report, setReport] = useState('');
   const { modalType, closeModal } = useModalStore();
   const { showToast } = useToastStore();
 
-  const isOpen = modalType === 'feedReport';
+  const isOpen = modalType === `${type}Report`;
+  const targetId = type === 'feed' ? feedId : leenkId;
 
   const handleSubmit = async () => {
+    if (!targetId) {
+      console.error('신고할 ID가 없습니다.');
+      return;
+    }
+
     try {
-      await reportFeed(feedId, report);
-      showToast('해당 피드를 신고했어!', 'success');
+      if (type === 'feed') {
+        await reportFeed(targetId, report);
+      } else {
+        // TODO: 링크 신고 API
+      }
+      showToast(
+        `해당 ${type === 'feed' ? '피드' : '링크'}를 신고했어`,
+        'success',
+      );
     } catch (error) {
-      console.error('피드 신고 실패:', error);
+      console.error(`${type} 신고 실패:`, error);
       showToast('신고 실패!', 'error');
     } finally {
       closeModal();
-      setreport('');
+      setReport('');
     }
   };
 
@@ -58,13 +77,16 @@ export default function FeedReportModal({ feedId }: FeedReportModalProps) {
           >
             <SheetContainer>
               <SheetBox>
-                <Title>해당 피드를 신고하는 이유를 알려줘</Title>
+                <Title>
+                  해당 {type === 'feed' ? '피드' : '링크'}를 신고하는 이유를
+                  알려줘
+                </Title>
                 <SubText>빠르게 확인하고 조치를 취해줄게!</SubText>
 
                 <Textarea
                   placeholder="텍스트를 입력해 주세요"
                   value={report}
-                  onChangeText={setreport}
+                  onChangeText={setReport}
                   maxLength={100}
                   minHeight={30}
                   maxHeight={40}

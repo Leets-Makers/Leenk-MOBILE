@@ -26,27 +26,37 @@ import { ScrollView } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
 export default function PostLeenkPage() {
+  const router = useRouter();
+
   const [isBackModalOpen, setIsBackModalOpen] = useState(false);
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [place, setPlace] = useState('');
-
+  const [date, setDate] = useState<Date | null>(null);
   const [content, setContent] = useState('');
-  const router = useRouter();
+
   const { resetLeenkImage } = useLeenkImageStore();
   const handleBackPress = () => setIsBackModalOpen(true);
+
   const handleConfirmExit = () => {
     setIsBackModalOpen(false);
-    router.replace('/(page)/leenk');
+    router.push('/(page)/leenk');
   };
+
   const handleComplete = () => {
     setCompleteModalOpen(false);
-    router.replace('/(page)/leenk');
+    router.push('/(page)/leenk');
   };
 
   useEffect(() => {
     resetLeenkImage();
   }, []);
+
+  const isFormValid =
+    title.trim().length > 0 &&
+    place.trim().length > 0 &&
+    content.trim().length > 0 &&
+    date !== null;
 
   return (
     <KeyboardAvoidingView
@@ -87,10 +97,10 @@ export default function PostLeenkPage() {
         />
         <Margin />
         <Title>
-          일시<Asterisk>*</Asterisk>
+          일시<Asterisk> *</Asterisk>
         </Title>
 
-        <CalendarButton />
+        <CalendarButton value={date} onChange={setDate} />
         <Margin />
         <Row>
           <Title>모임 인원</Title>
@@ -102,7 +112,11 @@ export default function PostLeenkPage() {
           title="내용"
           placeholder="자세한 내용을 입력해줘"
           maxLength={200}
+          minHeight={40}
+          maxHeight={50}
+          value={content}
           onChangeText={setContent}
+          fontSizeKey="lg"
           isRequired
         />
         <Margin />
@@ -113,7 +127,7 @@ export default function PostLeenkPage() {
           fullWidth
           rounded="md"
           size="lg"
-          disabled={place.trim() === '' || title.trim() === ''}
+          disabled={!isFormValid}
         >
           모집하자
         </CustomButton>
@@ -121,19 +135,20 @@ export default function PostLeenkPage() {
 
       <PopupModal
         isOpen={isBackModalOpen}
-        onRightBtn={() => setIsBackModalOpen(false)}
-        onLeftBtn={handleConfirmExit}
+        onRightBtn={handleConfirmExit}
+        onLeftBtn={() => setIsBackModalOpen(false)}
         mainText="글 작성을 그만둘래?"
         subText="작성하던 내용은 저장되지 않아."
         isCancel={true}
-        leftBtnText="확인"
-        rightBtnText="취소"
+        leftBtnText="취소"
+        rightBtnText="그만두기"
       />
       <PopupModal
         isOpen={completeModalOpen}
         onRightBtn={handleComplete}
         onLeftBtn={() => setCompleteModalOpen(false)}
         mainText="모집하러 가볼까?"
+        isCancel={false}
         leftBtnText="취소"
         rightBtnText="모집하기"
       />
@@ -143,11 +158,13 @@ export default function PostLeenkPage() {
 
 const Row = styled.View`
   flex-direction: row;
+  margin-bottom: ${6 * height}px;
 `;
 
 const Margin = styled.View`
   height: ${height * 32}px;
 `;
+
 export const SubText = styled.Text`
   font-size: ${fontSize.sm}px;
   color: ${colors.primary};

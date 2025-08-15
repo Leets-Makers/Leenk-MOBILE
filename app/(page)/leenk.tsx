@@ -6,26 +6,31 @@ import { Header } from '@/components';
 import TabMenu from '@/components/common/TabMenu';
 import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { mockLeenkData } from '@/constants/mockUserData';
+import { ContainerWithNoPadding } from '../account/my-feed';
+import { View } from 'react-native';
+import { FEED_PADDING } from '@/constants';
 
 export default function LeenkPage() {
   const [tab, setTab] = useState<'all' | 'recruiting' | 'completed'>('all');
 
   return (
-    <Container>
-      <Header LeftSection="LOGO" RightSection="BELL" />
-      <TabMenu
-        type="leenk"
-        activeTab={tab}
-        onTabChange={(newTab: string) => {
-          if (
-            newTab === 'all' ||
-            newTab === 'recruiting' ||
-            newTab === 'completed'
-          ) {
-            setTab(newTab);
-          }
-        }}
-      />
+    <ContainerWithNoPadding>
+      <View style={{ paddingHorizontal: FEED_PADDING * width }}>
+        <Header LeftSection="LOGO" RightSection="BELL" />
+        <TabMenu
+          type="leenk"
+          activeTab={tab}
+          onTabChange={(newTab: string) => {
+            if (
+              newTab === 'all' ||
+              newTab === 'recruiting' ||
+              newTab === 'completed'
+            ) {
+              setTab(newTab);
+            }
+          }}
+        />
+      </View>
       <List
         data={mockLeenkData}
         keyExtractor={(item) => item.id}
@@ -41,21 +46,16 @@ export default function LeenkPage() {
           />
         )}
         ItemSeparatorComponent={() => <Separator />}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator
       />
-    </Container>
+    </ContainerWithNoPadding>
   );
 }
-
-const Container = styled.View`
-  flex: 1;
-  padding: 0 ${20 * width}px;
-  background-color: ${colors.bg[2]};
-`;
 
 const List = styled.FlatList.attrs({
   contentContainerStyle: {
     paddingBottom: height * 20,
+    paddingHorizontal: FEED_PADDING * width,
   },
 })``;
 
