@@ -17,22 +17,22 @@ import { useToastStore } from '@/stores/toastStore';
 import { reportFeed } from '@/api/feed/feed.api';
 
 interface ReportModalProps {
-  type: 'feed' | 'link';
+  type: 'feed' | 'leenk';
   feedId?: number;
-  linkId?: number;
+  leenkId?: number;
 }
 
 export default function ReportModal({
   type = 'feed',
   feedId,
-  linkId,
+  leenkId,
 }: ReportModalProps) {
   const [report, setReport] = useState('');
   const { modalType, closeModal } = useModalStore();
   const { showToast } = useToastStore();
 
   const isOpen = modalType === `${type}Report`;
-  const targetId = type === 'feed' ? feedId : linkId;
+  const targetId = type === 'feed' ? feedId : leenkId;
 
   const handleSubmit = async () => {
     if (!targetId) {

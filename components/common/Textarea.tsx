@@ -32,7 +32,6 @@ export default function Textarea({
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
   const isDark = variant === 'dark';
-  const isActive = !!value && value.length > 0;
 
   return (
     <Wrapper>
@@ -76,7 +75,6 @@ export default function Textarea({
 
 const InputBox = styled.View<{
   focused: boolean;
-  active: boolean;
   isDark: boolean;
 }>`
   width: 100%;

@@ -165,7 +165,7 @@ export default function LeenkDetailPage() {
           />
         );
       case 'leenkReport':
-        return <ReportModal type="link" />; // TODO : 신고하기 api 연결 시 linkId 추가
+        return <ReportModal type="leenk" />; // TODO : 신고하기 api 연결 시 linkId 추가
       default:
         return null;
     }

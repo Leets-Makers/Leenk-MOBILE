@@ -2,7 +2,7 @@ import { FlatList } from 'react-native';
 import { FeedCard, Loading } from '@/components';
 import useFeedList from '@/hooks/useFeedList';
 import styled from 'styled-components/native';
-import { height } from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { useEffect } from 'react';
 import { FEED_PADDING } from '@/constants';
 
@@ -47,7 +47,7 @@ export default function ProfileFeedList({
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         contentContainerStyle={{
           paddingBottom: 100 * height,
-          paddingHorizontal: FEED_PADDING,
+          paddingHorizontal: FEED_PADDING * width,
         }}
         renderItem={({ item }) => <FeedCard item={item} />}
         showsVerticalScrollIndicator

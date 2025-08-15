@@ -13,6 +13,7 @@ import {
   radius,
   width,
 } from '@/theme/globalStyles';
+import { useToastStore } from '@/stores/toastStore';
 
 interface CalendarButtonProps {
   value?: Date | null;
@@ -25,6 +26,8 @@ export default function CalendarButton({
   value,
   onChange,
 }: CalendarButtonProps) {
+  const { showToast } = useToastStore();
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(value ?? null);
   const [step, setStep] = useState<Step>(null);
   const [tempDateStr, setTempDateStr] = useState<string>('');
@@ -50,11 +53,20 @@ export default function CalendarButton({
   };
 
   const handleSelectTime = (timeStr: string) => {
-    const result = dayjs(
-      `${tempDateStr} ${timeStr}`,
-      'YYYY/MM/DD HH:mm',
-    ).toDate();
-    commit(result);
+    const selected = dayjs(`${tempDateStr} ${timeStr}`, 'YYYY/MM/DD HH:mm');
+    const now = dayjs();
+    if (selected.isSame(now, 'day') && selected.isBefore(now)) {
+      const minutesToAdd = 30 - (now.minute() % 30);
+      const rounded = now
+        .add(minutesToAdd === 30 ? 0 : minutesToAdd, 'minute')
+        .second(0)
+        .millisecond(0);
+
+      showToast('현재 시간 이후로 선택해줘!', 'error');
+      commit(rounded.toDate());
+    } else {
+      commit(selected.toDate());
+    }
     setStep(null);
   };
 

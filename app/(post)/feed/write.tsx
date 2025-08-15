@@ -52,7 +52,6 @@ export default function FeedWritePage() {
     users,
     description,
     setDescription,
-    reset: resetFeedWrite,
     feedId: storeFeedId,
   } = useFeedWriteStore();
 
@@ -112,7 +111,7 @@ export default function FeedWritePage() {
       const res = await uploadFeed(requestBody);
       console.log('[피드 업로드 성공]:', res);
 
-      resetFeedWrite();
+      reset();
       router.push('/(page)/feed');
     } catch (error) {
       console.error('업로드 실패:', error);

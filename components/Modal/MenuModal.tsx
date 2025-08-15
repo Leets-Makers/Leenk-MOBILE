@@ -83,9 +83,15 @@ export default function MenuModal({
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
                     <MenuText
                       $isWrite={isWrite}
-                      $isDanger={DANGER_LABELS.includes(
-                        firstOptionText as '신고하기' | '삭제하기' | '차단하기',
-                      )}
+                      $isDanger={
+                        isDanger ||
+                        DANGER_LABELS.includes(
+                          firstOptionText as
+                            | '신고하기'
+                            | '삭제하기'
+                            | '차단하기',
+                        )
+                      }
                     >
                       {firstOptionText}
                     </MenuText>

@@ -3,7 +3,7 @@ import { GestureResponderEvent, Pressable } from 'react-native';
 
 interface CheckBoxProps {
   checked: boolean;
-  onPress?: (e: GestureResponderEvent) => void;
+  onPress?: (e?: GestureResponderEvent) => void;
   noBox?: boolean; // 박스 없는 체크 표시 여부
 }
 
