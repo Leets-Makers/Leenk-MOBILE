@@ -47,3 +47,12 @@ export interface LeenkParticipantItem {
 export interface LeenkParticipantsData {
   participants: LeenkParticipantItem[];
 }
+
+export interface UpdateLeenkPayload {
+  title?: string;
+  content?: string;
+  placeName?: string;
+  startTime?: string;
+  maxParticipants?: number;
+  mediaUrl?: string;
+}
