@@ -43,19 +43,25 @@ export default function FeedWritePage() {
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
 
-  const {
-    startCreate,
-    startEditFromDetail,
-    reset,
-    mediaUrls,
-    selectedImages,
-    users,
-    description,
-    setDescription,
-    feedId: storeFeedId,
-  } = useFeedWriteStore();
+  const selectedImages = useFeedWriteStore((state) => state.selectedImages);
+  const connectedUsers = useFeedWriteStore((state) => state.users);
+  const description = useFeedWriteStore((state) => state.description);
+  const setDescription = useFeedWriteStore((state) => state.setDescription);
+  const mediaUrls = useFeedWriteStore((state) => state.mediaUrls);
 
-  const connectedUsers = users;
+  // const {
+  //   startCreate,
+  //   startEditFromDetail,
+  //   reset,
+  //   mediaUrls,
+  //   selectedImages,
+  //   users,
+  //   description,
+  //   setDescription,
+  //   feedId: storeFeedId,
+  // } = useFeedWriteStore();
+
+  // const connectedUsers = users;
 
   const buttonTranslateY = useKeyboardAnimation(
     Platform.OS === 'ios' ? -390 * height : -85,
@@ -63,28 +69,41 @@ export default function FeedWritePage() {
 
   const insets = useSafeAreaInsets();
 
-  // 기존 서버 이미지 + 로컬 새 이미지 합쳐서 슬라이더에 전달
-  const previewMedia: Media[] = [
-    ...mediaUrls.map((m) => ({
-      position: m.position,
-      mediaUrl: m.mediaUrl,
-      mediaType: m.mediaType,
-    })),
-    ...selectedImages.map((img, i) => ({
-      position: mediaUrls.length + i, // 뒤에 이어붙이기
-      mediaUrl: img.uri, // 로컬 uri
-      mediaType: 'IMAGE' as const,
-    })),
-  ];
+  const hasAnyImage = mediaUrls.length > 0 || selectedImages.length > 0;
+
+  const media: Media[] = selectedImages.map((img, index) => ({
+    position: index + 1,
+    mediaUrl: img.uri,
+    mediaType: 'IMAGE' as const,
+  }));
+
+  // // 기존 서버 이미지 + 로컬 새 이미지 합쳐서 슬라이더에 전달
+  // const previewMedia: Media[] = [
+  //   ...mediaUrls.map((m) => ({
+  //     position: m.position,
+  //     mediaUrl: m.mediaUrl,
+  //     mediaType: m.mediaType,
+  //   })),
+  //   ...selectedImages.map((img, i) => ({
+  //     position: mediaUrls.length + i, // 뒤에 이어붙이기
+  //     mediaUrl: img.uri, // 로컬 uri
+  //     mediaType: 'IMAGE' as const,
+  //   })),
+  // ];
 
   const requestBody = {
     description,
-    media: previewMedia,
+    media: mediaUrls,
     userId: connectedUsers.map((user) => user.userId),
   };
 
   const handleUpload = async () => {
     if (!description.trim()) return;
+
+    if (!hasAnyImage) {
+      showToast('이미지를 최소 1장 선택해줘!', 'error');
+      return;
+    }
 
     if (connectedUsers.length === 0) {
       setIsModalOpen(true);
@@ -107,18 +126,21 @@ export default function FeedWritePage() {
 
     setIsUploading(true);
 
-    try {
-      const res = await uploadFeed(requestBody);
-      console.log('[피드 업로드 성공]:', res);
+    console.log('피드 데이터: ', requestBody);
+    // try {
 
-      reset();
-      router.push('/(page)/feed');
-    } catch (error) {
-      console.error('업로드 실패:', error);
-      showToast('피드 업로드에 실패했어!', 'error');
-    } finally {
-      setIsUploading(false);
-    }
+    //   const res = await uploadFeed(requestBody);
+    //   console.log('[피드 업로드 성공]:', res);
+
+    //   // reset();
+    //   router.push('/(page)/feed');
+    // } catch (error) {
+    //   console.error('업로드 실패:', error);
+    //   console.log('피드 업로드 요청 : ', requestBody);
+    //   showToast('피드 업로드에 실패했어!', 'error');
+    // } finally {
+    //   setIsUploading(false);
+    // }
   };
 
   const handleConfirmEdit = async () => {
@@ -142,65 +164,64 @@ export default function FeedWritePage() {
     return <Loading />;
   }
 
-  useEffect(() => {
-    let cancelled = false;
+  // useEffect(() => {
+  //   let cancelled = false;
 
-    (async () => {
-      if (!isEditParam) {
-        // ------- 생성 모드 -------
-        const s = useFeedWriteStore.getState();
+  //   (async () => {
+  //     if (!isEditParam) {
+  //       // ------- 생성 모드 -------
+  //       const s = useFeedWriteStore.getState();
 
-        const hasDraft =
-          s.selectedImages.length > 0 ||
-          !!s.description?.trim() ||
-          s.users.length > 0;
+  //       const hasDraft =
+  //         s.selectedImages.length > 0 ||
+  //         !!s.description?.trim() ||
+  //         s.users.length > 0;
 
-        const hasEditResidue = s.isEdit || !!s.feedId || s.mediaUrls.length > 0;
+  //       const hasEditResidue = s.isEdit || !!s.feedId;
 
-        if (hasEditResidue) {
-          if (hasDraft) {
-            // 초안은 유지하고, 수정 전용 잔상만 제거
-            useFeedWriteStore.setState({
-              isEdit: false,
-              feedId: undefined,
-              mediaUrls: [],
-            });
-          } else {
-            // 초안이 없으면 완전 초기화
-            startCreate(); // selectedImages/users/description도 비움
-          }
-        }
-        return;
-      }
+  //       if (hasEditResidue) {
+  //         if (hasDraft) {
+  //           // 초안은 유지하고, 수정 전용 잔상만 제거
+  //           useFeedWriteStore.setState({
+  //             isEdit: false,
+  //             feedId: undefined,
+  //           });
+  //         } else {
+  //           // 초안이 없으면 완전 초기화
+  //           startCreate(); // selectedImages/users/description도 비움
+  //         }
+  //       }
+  //       return;
+  //     }
 
-      // ------- 수정 모드 보강 -------
-      if (storeFeedId === Number(feedId) && mediaUrls.length > 0) return;
+  //     // ------- 수정 모드 보강 -------
+  //     if (storeFeedId === Number(feedId) && mediaUrls.length > 0) return;
 
-      reset();
-      try {
-        const detail = await getFeedDetail(Number(feedId));
-        if (!cancelled) startEditFromDetail(detail);
-      } catch {
-        if (!cancelled) {
-          showToast('피드 정보를 불러오지 못했어!', 'error');
-          router.back();
-        }
-      }
-    })();
+  //     reset();
+  //     try {
+  //       const detail = await getFeedDetail(Number(feedId));
+  //       if (!cancelled) startEditFromDetail(detail);
+  //     } catch {
+  //       if (!cancelled) {
+  //         showToast('피드 정보를 불러오지 못했어!', 'error');
+  //         router.back();
+  //       }
+  //     }
+  //   })();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    isEditParam,
-    feedId,
-    mediaUrls.length,
-    storeFeedId,
-    startCreate,
-    startEditFromDetail,
-    reset,
-    showToast,
-  ]);
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [
+  //   isEditParam,
+  //   feedId,
+  //   mediaUrls.length,
+  //   storeFeedId,
+  //   startCreate,
+  //   startEditFromDetail,
+  //   reset,
+  //   showToast,
+  // ]);
 
   return (
     <KeyboardAvoidingView
@@ -214,7 +235,7 @@ export default function FeedWritePage() {
       >
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider
-            mediaUrls={previewMedia}
+            mediaUrls={media}
             gradient={{ top: 120 * height, bottom: 420 * height }}
           />
 
