@@ -3,13 +3,8 @@ import {
   LeenkListResponse,
   LeenkParticipantsData,
 } from '@/types/leenk';
-import api from '../api';
-
-interface ApiResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
+import api from '@/api/api';
+import { ApiResponse } from '@/api/api-type';
 
 export const getLeenkList = async (
   pageNumber: number,
