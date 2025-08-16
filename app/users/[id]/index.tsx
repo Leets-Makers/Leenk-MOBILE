@@ -11,6 +11,7 @@ import { UserProfile } from '@/types/user';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { blockUser } from '@/api/users/deleteUser.api';
+import { useUserStore } from '@/stores/userStore';
 
 export default function MyPage() {
   const router = useRouter();
@@ -19,6 +20,12 @@ export default function MyPage() {
   const [isLoading, setIsLoading] = useState(true);
   const { openModal, closeModal, modalType } = useModalStore();
   const { showToast } = useToastStore();
+
+  const viewedId = Number(id);
+  const { userInfo } = useUserStore();
+  const myId = userInfo?.id;
+  const isMyProfile = !!myId && viewedId === myId;
+
   const handleBlock = useCallback(() => {
     closeModal();
     openModal('deleteConfirm');
@@ -61,9 +68,13 @@ export default function MyPage() {
   return (
     <Container>
       <Header
-        RightSection="KEBAB"
-        kebabColor="black"
-        kebabPress={() => openModal('menu')}
+        {...(!isMyProfile
+          ? {
+              RightSection: 'KEBAB',
+              kebabColor: 'black',
+              kebabPress: () => openModal('menu'),
+            }
+          : {})}
       >
         프로필
       </Header>
@@ -90,14 +101,16 @@ export default function MyPage() {
         text="참여한 모임"
         onPress={() => router.push('/account/my-leenk')}
       />
-      <MenuModal
-        visible={modalType === 'menu'}
-        isWrite={false}
-        onClose={closeModal}
-        onPressFirst={handleBlock}
-        firstOptionText="차단하기"
-      />
-      {modalType === 'deleteConfirm' && (
+      {!isMyProfile && (
+        <MenuModal
+          visible={modalType === 'menu'}
+          isWrite={false}
+          onClose={closeModal}
+          onPressFirst={handleBlock}
+          firstOptionText="차단하기"
+        />
+      )}
+      {!isMyProfile && modalType === 'deleteConfirm' && (
         <PopupModal
           isOpen={modalType === 'deleteConfirm'}
           onRightBtn={handleConfirmBlock}

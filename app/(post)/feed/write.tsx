@@ -35,7 +35,7 @@ export default function FeedWritePage() {
     mode?: 'edit' | 'create';
     feedId?: string;
   }>();
-  const isEditParam = mode === 'edit' && !!feedId;
+  const isEditParam = mode === 'edit';
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -44,10 +44,13 @@ export default function FeedWritePage() {
   const { userInfo } = useUserStore();
 
   const selectedImages = useFeedWriteStore((state) => state.selectedImages);
+  const setSelectedImages = useFeedWriteStore((s) => s.setSelectedImages);
   const connectedUsers = useFeedWriteStore((state) => state.users);
   const description = useFeedWriteStore((state) => state.description);
   const setDescription = useFeedWriteStore((state) => state.setDescription);
   const mediaUrls = useFeedWriteStore((state) => state.mediaUrls);
+
+  const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
   // const {
   //   startCreate,
@@ -63,18 +66,30 @@ export default function FeedWritePage() {
 
   // const connectedUsers = users;
 
+  // ✅ edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
+  useEffect(() => {
+    if (isEditParam && selectedImages.length > 0) {
+      setSelectedImages([]);
+    }
+  }, [isEditParam, selectedImages.length, setSelectedImages]);
+
   const buttonTranslateY = useKeyboardAnimation(
     Platform.OS === 'ios' ? -390 * height : -85,
   );
 
   const insets = useSafeAreaInsets();
 
-  const hasAnyImage = mediaUrls.length > 0 || selectedImages.length > 0;
+  const hasAnyImage = mediaUrls.length > 0;
+  // const media: Media[] = selectedImages.map((img, index) => ({
+  //   position: index + 1,
+  //   mediaUrl: img.uri,
+  //   mediaType: 'IMAGE' as const,
+  // }));
 
-  const media: Media[] = selectedImages.map((img, index) => ({
-    position: index + 1,
-    mediaUrl: img.uri,
-    mediaType: 'IMAGE' as const,
+  const previewMedia: Media[] = mediaUrls.map((m, idx) => ({
+    position: idx + 1,
+    mediaUrl: m.mediaUrl,
+    mediaType: m.mediaType,
   }));
 
   // // 기존 서버 이미지 + 로컬 새 이미지 합쳐서 슬라이더에 전달
@@ -91,21 +106,34 @@ export default function FeedWritePage() {
   //   })),
   // ];
 
-  const requestBody = {
+  // const requestBody = {
+  //   description,
+  //   media: mediaUrls,
+  //   userId: connectedUsers.map((user) => user.userId),
+  // };
+
+  const requestBodyCreate = {
     description,
-    media: mediaUrls,
-    userId: connectedUsers.map((user) => user.userId),
+    media: mediaUrls, // create는 이미지 포함
+    userId: connectedUsers.map((u) => u.userId),
+  };
+
+  const requestBodyEdit = {
+    feedId: Number(feedId),
+    description,
+    userId: connectedUsers.map((u) => u.userId),
+    // 이미지 수정 없음: media 안 보냄
   };
 
   const handleUpload = async () => {
     if (!description.trim()) return;
 
-    if (!hasAnyImage) {
+    if (!isEditParam && !hasAnyImage) {
       showToast('이미지를 최소 1장 선택해줘!', 'error');
       return;
     }
 
-    if (connectedUsers.length === 0) {
+    if (connectedUsers.length === 0 && !isEditParam) {
       setIsModalOpen(true);
     } else {
       handleUploadFeed(); // 함께한 사람이 있는 경우 바로 업로드
@@ -117,30 +145,60 @@ export default function FeedWritePage() {
     handleUploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
   };
 
-  // 업로드 로직 분리
+  // // 업로드 로직 분리
+  // const handleUploadFeed = async () => {
+  //   if (isEditParam) {
+  //     setIsModalOpen(true);
+  //     return;
+  //   }
+
+  //   setIsUploading(true);
+
+  //   console.log('피드 데이터: ', requestBody);
+  //   try {
+  //     const res = await uploadFeed(requestBody);
+  //     console.log('[피드 업로드 성공]:', res);
+
+  //     resetFeedWrite();
+  //     router.push('/(page)/feed');
+  //   } catch (error) {
+  //     console.error('업로드 실패:', error);
+  //     console.log('피드 업로드 요청 : ', requestBody);
+  //     showToast('피드 업로드에 실패했어!', 'error');
+  //   } finally {
+  //     setIsUploading(false);
+  //   }
+  // };
+
+  // 2) 업로드 로직: 분기에 맞춰 올바른 바디 사용
   const handleUploadFeed = async () => {
-    if (isEditParam) {
-      setIsModalOpen(true);
-      return;
-    }
-
     setIsUploading(true);
+    try {
+      if (isEditParam) {
+        // ✅ 수정 모드: 이미지 수정 없음 → description, userId만 PATCH/PUT
+        // await updateFeed(requestBodyEdit);  // 실제 API로 교체
+        setIsModalOpen(true); // 모달 닫기
+        showToast('수정 완료!', 'success');
+        router.back();
+        return;
+      }
 
-    console.log('피드 데이터: ', requestBody);
-    // try {
+      // ✅ 생성 모드: 이미지 포함해서 업로드
+      console.log('피드 데이터: ', requestBodyCreate);
+      // const res = await uploadFeed(requestBodyCreate);
+      // console.log('[피드 업로드 성공]:', res);
 
-    //   const res = await uploadFeed(requestBody);
-    //   console.log('[피드 업로드 성공]:', res);
-
-    //   // reset();
-    //   router.push('/(page)/feed');
-    // } catch (error) {
-    //   console.error('업로드 실패:', error);
-    //   console.log('피드 업로드 요청 : ', requestBody);
-    //   showToast('피드 업로드에 실패했어!', 'error');
-    // } finally {
-    //   setIsUploading(false);
-    // }
+      resetFeedWrite();
+      router.push('/(page)/feed');
+    } catch (error) {
+      console.error('업로드 실패:', error);
+      showToast(
+        isEditParam ? '수정에 실패했어!' : '피드 업로드에 실패했어!',
+        'error',
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleConfirmEdit = async () => {
@@ -164,65 +222,6 @@ export default function FeedWritePage() {
     return <Loading />;
   }
 
-  // useEffect(() => {
-  //   let cancelled = false;
-
-  //   (async () => {
-  //     if (!isEditParam) {
-  //       // ------- 생성 모드 -------
-  //       const s = useFeedWriteStore.getState();
-
-  //       const hasDraft =
-  //         s.selectedImages.length > 0 ||
-  //         !!s.description?.trim() ||
-  //         s.users.length > 0;
-
-  //       const hasEditResidue = s.isEdit || !!s.feedId;
-
-  //       if (hasEditResidue) {
-  //         if (hasDraft) {
-  //           // 초안은 유지하고, 수정 전용 잔상만 제거
-  //           useFeedWriteStore.setState({
-  //             isEdit: false,
-  //             feedId: undefined,
-  //           });
-  //         } else {
-  //           // 초안이 없으면 완전 초기화
-  //           startCreate(); // selectedImages/users/description도 비움
-  //         }
-  //       }
-  //       return;
-  //     }
-
-  //     // ------- 수정 모드 보강 -------
-  //     if (storeFeedId === Number(feedId) && mediaUrls.length > 0) return;
-
-  //     reset();
-  //     try {
-  //       const detail = await getFeedDetail(Number(feedId));
-  //       if (!cancelled) startEditFromDetail(detail);
-  //     } catch {
-  //       if (!cancelled) {
-  //         showToast('피드 정보를 불러오지 못했어!', 'error');
-  //         router.back();
-  //       }
-  //     }
-  //   })();
-
-  //   return () => {
-  //     cancelled = true;
-  //   };
-  // }, [
-  //   isEditParam,
-  //   feedId,
-  //   mediaUrls.length,
-  //   storeFeedId,
-  //   startCreate,
-  //   startEditFromDetail,
-  //   reset,
-  //   showToast,
-  // ]);
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -235,7 +234,7 @@ export default function FeedWritePage() {
       >
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider
-            mediaUrls={media}
+            mediaUrls={previewMedia}
             gradient={{ top: 120 * height, bottom: 420 * height }}
           />
 
@@ -301,7 +300,10 @@ export default function FeedWritePage() {
                   marginBottom:
                     Platform.OS === 'android' ? insets.bottom : 8 * height,
                 }}
-                disabled={description.trim().length === 0}
+                disabled={
+                  description.trim().length === 0 ||
+                  (!isEditParam && !hasAnyImage)
+                }
               >
                 {isEditParam ? '수정할래' : '업로드할래'}
               </CustomButton>
