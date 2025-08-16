@@ -10,15 +10,26 @@ import {
 import styled from 'styled-components/native';
 import { useParticipantStore } from '@/stores/participantStore';
 import PopupModal from '@/components/Modal/PopupModal';
+import { kickLeenkParticipants } from '@/api/leenk/leenk.del.api';
+import { useToastStore } from '@/stores/toastStore';
+import Loading from '../Loading';
 
 interface Props {
+  leenkId: number;
   handleKick?: () => void;
+  disabled?: boolean;
 }
 
-export default function UserKickButton({ handleKick }: Props) {
+export default function UserKickButton({
+  leenkId,
+  handleKick,
+  disabled,
+}: Props) {
   const { selectedUsers, isSelectionMode, resetSelection } =
     useParticipantStore();
+  const { showToast } = useToastStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const isZero = selectedUsers.length === 0;
 
@@ -26,13 +37,27 @@ export default function UserKickButton({ handleKick }: Props) {
     if (!isZero) {
       setIsModalOpen(true);
     }
-
     handleKick?.();
   };
 
-  const handleKickAPI = () => {
-    resetSelection();
-    setIsModalOpen(false);
+  const handleKickAPI = async () => {
+    try {
+      setLoading(true);
+
+      // 선택된 참여자들을 순회하며 내보내기 API 호출
+      for (const user of selectedUsers) {
+        await kickLeenkParticipants(leenkId, user.participant.userId);
+      }
+
+      showToast('참여자를 내보냈어.', 'success');
+    } catch (e) {
+      console.error('참여자 내보내기 실패:', e);
+      showToast('내보내기에 실패했어.', 'error');
+    } finally {
+      resetSelection();
+      setIsModalOpen(false);
+      setLoading(false);
+    }
   };
 
   const handleExit = () => {
@@ -40,15 +65,17 @@ export default function UserKickButton({ handleKick }: Props) {
     resetSelection();
   };
 
+  if (loading) return <Loading />;
+
   return (
     <>
-      <Container onPress={handlePress}>
+      <Container onPress={handlePress} disabled={disabled}>
         {(isSelectionMode || selectedUsers.length > 0) && (
           <CountBadge $isZero={isZero}>
             <CountText>{selectedUsers.length}</CountText>
           </CountBadge>
         )}
-        <ButtonText>내보내기</ButtonText>
+        <ButtonText disabled={disabled}>내보내기</ButtonText>
       </Container>
 
       <PopupModal
@@ -69,13 +96,14 @@ const Container = styled.Pressable`
   flex-direction: row;
   align-items: center;
   padding: ${8 * height}px ${12 * width}px;
-  background-color: ${colors.divider[2]};
+  background-color: ${({ disabled }) =>
+    disabled ? colors.gray[100] : colors.divider[2]};
   border-radius: 100px;
 `;
 
 const ButtonText = styled.Text`
   font-size: ${fontSize.sm}px;
-  color: ${colors.text[1]};
+  color: ${({ disabled }) => (disabled ? colors.gray[400] : colors.text[1])};
   font-family: ${fonts.Bold};
   line-height: ${lineHeight.s}px;
 `;

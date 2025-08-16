@@ -42,7 +42,6 @@ export default function ParticipantsList() {
   const [participants, setParticipants] = useState<LeenkParticipantItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
   const load = useCallback(async () => {
     try {
       if (!Number.isFinite(parsedId)) throw new Error('Invalid leenkId');
@@ -75,7 +74,6 @@ export default function ParticipantsList() {
     }
   };
 
-  // 첫 항목 기준으로 인원수 표시, 없으면 0/0
   const { currentCount } = useMemo(() => {
     const first = participants[0];
     return {
@@ -88,13 +86,26 @@ export default function ParticipantsList() {
     startSelection();
   };
 
+  const isKickDisabled = useMemo(() => {
+    return (
+      userIsAuthor &&
+      participants.length === 1 &&
+      participants[0]?.isHost === true
+    );
+  }, [userIsAuthor, participants]);
+
   const keyExtractor = (item: LeenkParticipantItem) =>
     String(item.participant.userId);
 
   return (
     <Container>
       {userIsAuthor ? (
-        <Header RightSection="KICK" kebabPress={handleKick}>
+        <Header
+          RightSection="KICK"
+          kebabPress={handleKick}
+          rightDisabled={isKickDisabled}
+          leenkId={parsedId}
+        >
           참여자
         </Header>
       ) : (
