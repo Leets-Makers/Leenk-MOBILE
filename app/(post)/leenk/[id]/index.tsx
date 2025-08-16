@@ -29,6 +29,7 @@ import ReportModal from '@/components/Modal/ReportModal';
 import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
 import { LeenkDetail } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
+import { deleteLeenk } from '@/api/leenk/leenk.del.api';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
@@ -44,6 +45,7 @@ export default function LeenkDetailPage() {
 
   const [leenkDetail, setLeenkDetail] = useState<LeenkDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   const { userInfo } = useUserStore();
 
@@ -71,7 +73,7 @@ export default function LeenkDetailPage() {
 
   const isAuthor = leenkDetail?.author.userId === userInfo?.id;
 
-  if (loading || !leenkDetail) {
+  if (loading || !leenkDetail || deleting) {
     return <Loading />;
   }
 
@@ -99,16 +101,20 @@ export default function LeenkDetailPage() {
 
   const handleConfirmDelete = async () => {
     try {
-      // TODO: 삭제 API 연동
+      if (!leenkDetail) return;
+      setDeleting(true);
+
+      await deleteLeenk(leenkDetail.id);
+
       showToast('삭제 완료!', 'success');
-      setTimeout(() => {
-        router.replace('/feed');
-      }, 1500);
+      closeModal();
+
+      router.replace('/feed');
     } catch (err: any) {
       console.error('링크 삭제 오류:', err);
-      showToast('삭제 실패!', 'error');
+      showToast('삭제에 실패했어요. 잠시 후 다시 시도해 주세요.', 'error');
     } finally {
-      closeModal();
+      setDeleting(false);
     }
   };
 
