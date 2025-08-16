@@ -1,5 +1,3 @@
-// components/leenk/LeenkBottomButtonSection.tsx
-
 import { width, height } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
@@ -49,7 +47,7 @@ export default function LeenkBottomButtonSection({
           <CustomButton
             variant="secondary"
             textColor="text[2]"
-            onPress={() => router.push('/leenk/participants-list')}
+            onPress={onParticipants}
             rounded="md"
             size="lg"
           >

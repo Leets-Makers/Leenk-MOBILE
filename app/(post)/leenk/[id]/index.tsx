@@ -85,7 +85,10 @@ export default function LeenkDetailPage() {
     openModal('deleteConfirm');
   };
 
-  const handleEdit = () => closeModal();
+  const handleEdit = () => {
+    //TODO:수정하기 로직 추가
+    closeModal();
+  };
 
   const handleReport = () => {
     closeModal();
@@ -99,7 +102,16 @@ export default function LeenkDetailPage() {
   };
 
   const handleParticipants = () => {
-    router.push('/leenk/participants-list');
+    if (!leenkDetail) return;
+
+    router.push({
+      pathname: '/leenk/participants-list',
+      params: {
+        leenkId: String(leenkDetail.id),
+        isAuthor: String(isAuthor),
+        maxParticipants: String(leenkDetail.maxParticipants),
+      },
+    });
   };
 
   const handleConfirmDelete = async () => {
