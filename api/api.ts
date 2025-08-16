@@ -22,13 +22,19 @@ const refreshAccessToken = async () => {
   const refreshToken = await getRefreshToken();
   if (!refreshToken) throw new Error('No refresh token');
 
-  const response = await axios.post(`${BASE_URL}/refresh`, { refreshToken });
-  const { access_token, refresh_token } = response.data.data;
+  try {
+    const response = await axios.post(`${BASE_URL}/refresh`, { refreshToken });
+    const { access_token, refresh_token } = response.data.data;
 
-  await saveAccessToken(access_token);
-  await saveRefreshToken(refresh_token);
+    await saveAccessToken(access_token);
+    await saveRefreshToken(refresh_token);
 
-  return access_token;
+    return access_token;
+  } catch (error: any) {
+    console.error('[refreshAccessToken] 토큰 갱신 실패:', error.response?.data);
+    await clearAllTokens();
+    throw error;
+  }
 };
 
 // 요청 인터셉터
