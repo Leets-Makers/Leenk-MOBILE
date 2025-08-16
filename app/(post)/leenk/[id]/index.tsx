@@ -29,7 +29,8 @@ import ReportModal from '@/components/Modal/ReportModal';
 import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
 import { LeenkDetail } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
-import { deleteLeenk } from '@/api/leenk/leenk.del.api';
+import { deleteLeenk, leaveLeenk } from '@/api/leenk/leenk.del.api';
+import { participantLeenk } from '@/api/leenk/leenk.post.api';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
@@ -46,6 +47,8 @@ export default function LeenkDetailPage() {
   const [leenkDetail, setLeenkDetail] = useState<LeenkDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [joining, setJoining] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   const { userInfo } = useUserStore();
 
@@ -73,7 +76,7 @@ export default function LeenkDetailPage() {
 
   const isAuthor = leenkDetail?.author.userId === userInfo?.id;
 
-  if (loading || !leenkDetail || deleting) {
+  if (loading || !leenkDetail || deleting || joining || leaving) {
     return <Loading />;
   }
 
@@ -112,21 +115,57 @@ export default function LeenkDetailPage() {
       router.replace('/feed');
     } catch (err: any) {
       console.error('링크 삭제 오류:', err);
-      showToast('삭제에 실패했어요. 잠시 후 다시 시도해 주세요.', 'error');
+      showToast('삭제에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
     } finally {
       setDeleting(false);
     }
   };
 
-  const handleLeave = () => {
-    setIsParticipating(false);
-    closeModal();
-    // TODO: 유저 나가기 api 추가
+  const handleLeave = async () => {
+    if (!leenkDetail || leaving || !isParticipating) {
+      closeModal();
+      return;
+    }
+    try {
+      setLeaving(true);
+      await leaveLeenk(leenkDetail.id);
+
+      setIsParticipating(false);
+      setLeenkDetail((prev) =>
+        prev
+          ? {
+              ...prev,
+              currentParticipants: Math.max(prev.currentParticipants - 1, 0),
+            }
+          : prev,
+      );
+      showToast('모임에서 나갔어.', 'success');
+    } catch (e) {
+      showToast('나가기에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
+    } finally {
+      setLeaving(false);
+      closeModal();
+    }
   };
 
-  const handleJoinLeenk = () => {
-    // TODO: 링크 참여하기 api 연결
-    setIsParticipating(true);
+  const handleJoinLeenk = async () => {
+    if (!leenkDetail || joining || isParticipating) return;
+    try {
+      setJoining(true);
+      await participantLeenk(leenkDetail.id);
+
+      setIsParticipating(true);
+      setLeenkDetail((prev) =>
+        prev
+          ? { ...prev, currentParticipants: prev.currentParticipants + 1 }
+          : prev,
+      );
+      showToast('참여했어!', 'success');
+    } catch (e) {
+      showToast('참여에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
+    } finally {
+      setJoining(false);
+    }
   };
 
   const handleShare = async () => {
