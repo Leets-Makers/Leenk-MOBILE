@@ -14,8 +14,13 @@ export const createLeenk = async (payload: UpdateLeenkPayload) => {
 };
 
 // 링크 신고하기
-export const reportLeenk = async (leenkId: number) => {
-  const res = await api.post<ApiResponse<string>>(`/leenks/${leenkId}/reports`);
+export const reportLeenk = async (leenkId: number, report: string) => {
+  const res = await api.post<ApiResponse<string>>(
+    `/leenks/${leenkId}/reports`,
+    {
+      report,
+    },
+  );
 
   if (__DEV__) {
     console.log(`링크 신고(${leenkId}):`, res.data.data);

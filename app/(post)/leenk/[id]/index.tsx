@@ -1,4 +1,4 @@
-import { CheckerIcon, ReviewIcon, ShareIcon } from '@/assets';
+import { CheckerIcon, ReviewIcon } from '@/assets';
 import {
   BottomSheetModal,
   CustomButton,
@@ -15,8 +15,7 @@ import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import styled from 'styled-components/native';
-// ❌ mock 삭제
-// import { mockLeenkData } from '@/constants/mockUserData';
+
 import { StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,8 +26,7 @@ import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 import ReportModal from '@/components/Modal/ReportModal';
 
-// ⬇️ API & 타입 import
-import { getLeenkDetail } from '@/api/leenk/leenk.get.api'; // 경로는 프로젝트 구조에 맞게
+import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
 import { LeenkDetail } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
 
@@ -44,13 +42,11 @@ export default function LeenkDetailPage() {
   const [isParticipating, setIsParticipating] = useState(false);
   const [isLeenkEnd, setIsLeenkEnd] = useState(false);
 
-  // ⬇️ detail state
   const [leenkDetail, setLeenkDetail] = useState<LeenkDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
   const { userInfo } = useUserStore();
 
-  // fetch detail
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -59,11 +55,10 @@ export default function LeenkDetailPage() {
         if (!Number.isFinite(leenkId)) {
           throw new Error('Invalid leenk id');
         }
-        const data = await getLeenkDetail(leenkId); // returns LeenkDetail
+        const data = await getLeenkDetail(leenkId);
         if (mounted) setLeenkDetail(data);
       } catch (e) {
         showToast('상세 정보를 불러오지 못했어.', 'error');
-        // 뒤로 이동하거나 적절한 fallback
         router.back();
       } finally {
         if (mounted) setLoading(false);
@@ -76,7 +71,6 @@ export default function LeenkDetailPage() {
 
   const isAuthor = leenkDetail?.author.userId === userInfo?.id;
 
-  // early return while fetching
   if (loading || !leenkDetail) {
     return <Loading />;
   }
@@ -122,6 +116,11 @@ export default function LeenkDetailPage() {
     setIsParticipating(false);
     closeModal();
     // TODO: 유저 나가기 api 추가
+  };
+
+  const handleJoinLeenk = () => {
+    // TODO: 링크 참여하기 api 연결
+    setIsParticipating(true);
   };
 
   const handleShare = async () => {
@@ -214,7 +213,6 @@ export default function LeenkDetailPage() {
         }}
       />
 
-      {/* top image uses API mediaUrl */}
       <ImageContainer>
         {leenkDetail.mediaUrl ? (
           <Image
@@ -243,7 +241,7 @@ export default function LeenkDetailPage() {
         onLeave={() => openModal('leenkLeave')}
         onEalryClose={() => openModal('leenkEarlyClose')}
         onClose={handleLeenkCloseModal}
-        onJoin={() => setIsParticipating(true)}
+        onJoin={handleJoinLeenk}
         onParticipants={handleParticipants}
         isLeenkEnd={isLeenkEnd}
       />

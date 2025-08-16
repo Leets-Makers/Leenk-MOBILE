@@ -32,7 +32,6 @@ export default function LeenkBottomButtonSection({
 }: Props) {
   const router = useRouter();
 
-  //TODO: 링크 종료 시간 비교해서 종료할래 버튼에 onClose or onEarlyClose 넣어주기
   return (
     <ButtonContainer $insetBottom={insetBottom}>
       {isLeenkEnd && (isAuthor || isParticipating) ? (

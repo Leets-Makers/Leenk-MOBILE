@@ -15,6 +15,7 @@ import { Textarea } from '@/components';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { reportFeed } from '@/api/feed/feed.api';
+import { reportLeenk } from '@/api/leenk/leenk.post.api';
 
 interface ReportModalProps {
   type: 'feed' | 'leenk';
@@ -44,7 +45,7 @@ export default function ReportModal({
       if (type === 'feed') {
         await reportFeed(targetId, report);
       } else {
-        // TODO: 링크 신고 API
+        await reportLeenk(targetId, report);
       }
       showToast(
         `해당 ${type === 'feed' ? '피드' : '링크'}를 신고했어`,
