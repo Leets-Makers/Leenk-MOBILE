@@ -17,6 +17,7 @@ import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
 import { kakaoLogin } from '@/api/login/kakao.api';
 import {
+  clearAllTokens,
   getFcmToken,
   saveAccessToken,
   saveRefreshToken,
@@ -52,6 +53,7 @@ export default function LandingPage() {
   useBlockBackHandler({ block: shouldBlock });
 
   const handleKakaoLogin = async () => {
+    await clearAllTokens();
     //카카오 로그인 로직
     try {
       const token = await login();

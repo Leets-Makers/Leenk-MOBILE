@@ -12,50 +12,51 @@ import {
 } from '@/theme/globalStyles';
 import { CheckerIcon, ClockIcon, PeopleIcon } from '@/assets';
 import { useRouter } from 'expo-router';
-import { LeenkDataType } from '@/constants/mockUserData';
 
-export default function LeenkListItem({
-  id,
-  title,
-  date,
-  people,
-  name,
-  leenkImageUri,
-  profileImageUri,
-}: LeenkDataType) {
+import { Leenk } from '@/types/leenk';
+
+interface Props {
+  item: Leenk;
+}
+
+export default function LeenkListItem({ item }: Props) {
   const router = useRouter();
-  console.log(id);
   return (
-    <PressableContainer onPress={() => router.push(`/leenk/${id}`)}>
+    <PressableContainer onPress={() => router.push(`/leenk/${item.leenkId}`)}>
       {({ pressed }) => (
         <StyledContainer $pressed={pressed}>
-          {leenkImageUri ? (
-            <StyledImage source={{ uri: leenkImageUri }} resizeMode="cover" />
+          {item.thumbNail ? (
+            <StyledImage source={{ uri: item.thumbNail }} resizeMode="cover" />
           ) : (
             <FallbackWrapper>
               <CheckerIcon width={width * 80} />
             </FallbackWrapper>
           )}
+
           <ContentWrapper>
             <TopSection>
               <TitleText>
-                {title.length > 12 ? `${title.slice(0, 12)}...` : title}
+                {item.title.length > 12
+                  ? `${item.title.slice(0, 12)}...`
+                  : item.title}
               </TitleText>
               <Row>
                 <ClockIcon />
-                <TimeText>{date}</TimeText>
+                <TimeText>{item.startTime}</TimeText>
                 <PeopleIcon style={{ marginLeft: width * 12 }} />
-                <TimeText style={{ marginLeft: width * 4 }}>{people}</TimeText>
+                <TimeText style={{ marginLeft: width * 4 }}>
+                  {item.currentParticipants}/{item.maxParticipants}
+                </TimeText>
               </Row>
             </TopSection>
 
             <BottomRow>
               <ProfileImageWithFallback
-                uri={profileImageUri}
+                uri={item.author.profileImage}
                 size={20}
                 isDark
               />
-              <NameText>{name}</NameText>
+              <NameText>{item.author.name}</NameText>
             </BottomRow>
           </ContentWrapper>
         </StyledContainer>
