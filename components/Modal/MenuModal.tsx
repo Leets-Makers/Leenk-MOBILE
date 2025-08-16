@@ -36,6 +36,9 @@ export default function MenuModal({
   isOneOption = true,
 }: MenuModalProps) {
   const topPosition = Platform.OS === 'ios' ? 95 * height : 50 * height;
+
+  const DANGER_LABELS = ['신고하기', '삭제하기', '차단하기'] as const;
+
   return (
     <Modal
       transparent
@@ -78,18 +81,37 @@ export default function MenuModal({
               <MenuItemWrapper onPress={onPressFirst}>
                 {({ pressed }) => (
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
-                    <MenuText $isWrite={isWrite} $isDanger={isDanger}>
+                    <MenuText
+                      $isWrite={isWrite}
+                      $isDanger={
+                        isDanger ||
+                        DANGER_LABELS.includes(
+                          firstOptionText as
+                            | '신고하기'
+                            | '삭제하기'
+                            | '차단하기',
+                        )
+                      }
+                    >
                       {firstOptionText}
                     </MenuText>
                   </MenuItem>
                 )}
               </MenuItemWrapper>
 
-              {!isOneOption && (
+              {secondOptionText && !isOneOption && (
                 <MenuItemWrapper onPress={onPressSecond}>
                   {({ pressed }) => (
                     <MenuItem pressed={pressed} $isWrite={isWrite}>
-                      <MenuText $isWrite={isWrite} $isDanger={isDanger}>
+                      <MenuText
+                        $isWrite={isWrite}
+                        $isDanger={DANGER_LABELS.includes(
+                          secondOptionText as
+                            | '신고하기'
+                            | '삭제하기'
+                            | '차단하기',
+                        )}
+                      >
                         {secondOptionText}
                       </MenuText>
                     </MenuItem>

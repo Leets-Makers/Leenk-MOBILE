@@ -10,10 +10,11 @@ import {
 import { RefreshControl } from 'react-native-gesture-handler';
 import { ModalData, Notification } from '@/types/notification';
 import NotificationListItem from '@/components/NotificationListItem';
-import { width } from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import NotificationModal from '@/components/Modal/NotificationModal';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
+import { FEED_PADDING } from '@/constants';
 
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
@@ -69,11 +70,15 @@ export default function NotificationListPage() {
 
   return (
     <Container>
-      <Header />
+      <Header style={{ paddingHorizontal: FEED_PADDING * width }} />
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator
+        contentContainerStyle={{
+          paddingHorizontal: FEED_PADDING * width,
+          marginTop: 8 * height,
+        }}
         renderItem={({ item }) => (
           <NotificationListItem
             item={item}
@@ -109,5 +114,5 @@ export default function NotificationListPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[1]};
-  padding-horizontal: ${20 * width}px;
+  /* padding-horizontal: ${20 * width}px; */
 `;

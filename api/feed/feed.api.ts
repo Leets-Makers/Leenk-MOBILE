@@ -128,6 +128,14 @@ export const deleteFeed = async (feedId: number) => {
   return res.data.data;
 };
 
+// PATCH
+// 피드 수정
+export const patchFeed = async (feedId: number) => {
+  const res = await api.patch<ApiResponse<string>>(`/feeds/${feedId}`, {});
+  if (__DEV__) console.log('피드 수정 조회: ', res.data);
+  return res.data.data;
+};
+
 // ----------------------------------
 // 마이페이지
 // 내가 작성한 피드 목록 조회

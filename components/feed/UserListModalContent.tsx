@@ -25,7 +25,7 @@ export default function UserListModalContent({
       data={sortedList}
       keyExtractor={(item, index) => `${item.userId}-${index}`}
       contentContainerStyle={{ paddingBottom: 32 }}
-      showsVerticalScrollIndicator={true}
+      showsVerticalScrollIndicator={false}
       renderItem={({ item }) => (
         <View onStartShouldSetResponder={() => true}>
           <Pressable

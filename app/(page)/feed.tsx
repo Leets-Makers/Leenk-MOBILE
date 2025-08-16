@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Header, FeedCard, CustomButton, Loading } from '@/components';
 import colors from '@/theme/color';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Platform } from 'react-native';
 import { width, height } from '@/theme/globalStyles';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import { SubText, TitleText } from '@/components/OnBoarding';
@@ -11,6 +11,7 @@ import useFeedList from '@/hooks/useFeedList';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
+import { FEED_PADDING } from '@/constants';
 
 export default function FeedPage() {
   const firstLaunch = useFirstLaunch();
@@ -58,10 +59,13 @@ export default function FeedPage() {
       style={{
         flex: 1,
         backgroundColor: colors.bg[2],
-        paddingHorizontal: 20 * width,
       }}
     >
-      <Header LeftSection="LOGO" RightSection="BELL" />
+      <Header
+        LeftSection="LOGO"
+        RightSection="BELL"
+        style={{ paddingHorizontal: FEED_PADDING * width }}
+      />
       <FlatList
         data={feeds}
         numColumns={2}
@@ -70,9 +74,10 @@ export default function FeedPage() {
         contentContainerStyle={{
           paddingBottom: 100 * height,
           paddingTop: 12 * height,
+          paddingHorizontal: FEED_PADDING * width,
         }}
         renderItem={({ item }) => <FeedCard item={item} />}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator
         onEndReached={loadMore} // 스크롤 끝 도달 시 loadMore 실행
         onEndReachedThreshold={0.5} // 50% 스크롤 시점부터 호출
         refreshing={isRefreshing} // Pull to Refresh

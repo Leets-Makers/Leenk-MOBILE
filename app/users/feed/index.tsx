@@ -4,9 +4,12 @@ import TabMenu from '@/components/common/TabMenu';
 import { FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { height } from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import useFeedList from '@/hooks/useFeedList';
 import { useLocalSearchParams } from 'expo-router';
+import { ContainerWithNoPadding } from '@/app/account/my-feed';
+import { FEED_PADDING } from '@/constants';
+import { View } from 'react-native';
 
 export default function OtherUserProfilePage() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -32,16 +35,18 @@ export default function OtherUserProfilePage() {
   if (!feeds) return null;
 
   return (
-    <Container>
-      <Header />
-      <TabMenu
-        activeTab={tab}
-        onTabChange={(newTab: string) => {
-          if (newTab === 'uploaded' || newTab === 'joined') {
-            setTab(newTab);
-          }
-        }}
-      />
+    <ContainerWithNoPadding>
+      <View style={{ paddingHorizontal: FEED_PADDING * width }}>
+        <Header />
+        <TabMenu
+          activeTab={tab}
+          onTabChange={(newTab: string) => {
+            if (newTab === 'uploaded' || newTab === 'joined') {
+              setTab(newTab);
+            }
+          }}
+        />
+      </View>
       <Content>
         <FlatList
           data={feeds}
@@ -50,9 +55,10 @@ export default function OtherUserProfilePage() {
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           contentContainerStyle={{
             paddingBottom: 100 * height,
+            paddingHorizontal: FEED_PADDING * width,
           }}
           renderItem={({ item }) => <FeedCard item={item} />}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
           refreshing={isRefreshing}
@@ -62,7 +68,7 @@ export default function OtherUserProfilePage() {
           }
         />
       </Content>
-    </Container>
+    </ContainerWithNoPadding>
   );
 }
 

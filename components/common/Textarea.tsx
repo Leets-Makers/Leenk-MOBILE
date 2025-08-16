@@ -13,6 +13,7 @@ interface TextareaProps extends TextInputProps {
   minHeight?: number;
   maxHeight?: number;
   isRequired?: boolean;
+  fontSizeKey?: keyof typeof fontSize;
 }
 
 export default function Textarea({
@@ -26,21 +27,21 @@ export default function Textarea({
   value,
   isRequired = false,
   onChangeText,
+  fontSizeKey = 'md',
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
   const isDark = variant === 'dark';
-  const isActive = !!value && value.length > 0;
 
   return (
     <Wrapper>
       {title && (
         <Title>
           {title}
-          {isRequired && <Asterisk>*</Asterisk>}
+          {isRequired && <Asterisk> *</Asterisk>}
         </Title>
       )}
-      <InputBox focused={focused} active={isActive} isDark={isDark}>
+      <InputBox focused={focused} isDark={isDark}>
         <StyledTextarea
           {...props}
           placeholder={placeholder}
@@ -52,6 +53,7 @@ export default function Textarea({
           minHeight={minHeight}
           maxHeight={maxHeight}
           onChangeText={onChangeText}
+          fontSizeKey={fontSizeKey}
           onFocus={(e) => {
             setFocused(true);
             props.onFocus?.(e);
@@ -73,19 +75,15 @@ export default function Textarea({
 
 const InputBox = styled.View<{
   focused: boolean;
-  active: boolean;
   isDark: boolean;
 }>`
   width: 100%;
   border-radius: ${radius.sm}px;
   padding-vertical: ${12 * height}px;
   padding-horizontal: ${12 * width}px;
-  border-width: ${({ focused, active, isDark }) =>
-    isDark ? (focused || active ? '1px' : '0px') : '1px'};
-  border-color: ${({ focused, active, isDark }) => {
-    if (focused || active) return colors.violet[400];
-    return isDark ? 'transparent' : colors.gray[300];
-  }};
+  border-width: ${({ focused, isDark }) => (focused ? 2 : isDark ? 0 : 1)}px;
+  border-color: ${({ focused, isDark }) =>
+    focused ? colors.primaryLight : isDark ? 'transparent' : colors.gray[300]};
   border-style: solid;
   background-color: ${({ isDark }) =>
     isDark ? 'rgba(255, 255, 255, 0.2)' : 'transparent'};
@@ -95,13 +93,14 @@ const StyledTextarea = styled.TextInput<{
   isDark: boolean;
   minHeight?: number;
   maxHeight?: number;
+  fontSizeKey: keyof typeof fontSize;
 }>`
   width: 100%;
   min-height: ${({ minHeight }) =>
     minHeight ? `${minHeight * height}px` : `${74 * height}px`};
   max-height: ${({ maxHeight }) =>
     maxHeight ? `${maxHeight * height}px` : `${85 * height}px`};
-  font-size: ${fontSize.md}px;
+  font-size: ${({ fontSizeKey }) => fontSize[fontSizeKey]}px;
   font-family: ${fonts.Bold};
   color: ${({ isDark }) => (isDark ? colors.white : colors.black)};
   text-align-vertical: top;
