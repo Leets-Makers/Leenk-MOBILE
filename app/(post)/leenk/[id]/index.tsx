@@ -15,44 +15,71 @@ import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import styled from 'styled-components/native';
-import { mockLeenkData } from '@/constants/mockUserData';
+// ❌ mock 삭제
+// import { mockLeenkData } from '@/constants/mockUserData';
 import { StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Share } from 'react-native';
 import { SubText, TitleText } from '@/components/OnBoarding';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 import ReportModal from '@/components/Modal/ReportModal';
 
+// ⬇️ API & 타입 import
+import { getLeenkDetail } from '@/api/leenk/leenk.get.api'; // 경로는 프로젝트 구조에 맞게
+import { LeenkDetail } from '@/types/leenk';
+import { useUserStore } from '@/stores/userStore';
+
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
-  const leenkId = Array.isArray(id) ? id[0] : id;
+  const leenkId = useMemo(() => Number(Array.isArray(id) ? id[0] : id), [id]);
+
   const { modalType, openModal, closeModal } = useModalStore();
   const { showToast } = useToastStore();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+
   const [isParticipating, setIsParticipating] = useState(false);
   const [isLeenkEnd, setIsLeenkEnd] = useState(false);
 
-  const isAuthor = true;
-  const leenkData = mockLeenkData.find((item) => item.id === leenkId);
+  // ⬇️ detail state
+  const [leenkDetail, setLeenkDetail] = useState<LeenkDetail | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!leenkData) return <Loading />;
+  const { userInfo } = useUserStore();
 
-  const {
-    title,
-    place,
-    content,
-    date,
-    name,
-    createdAt,
-    profileImageUri,
-    participantCount,
-    allParticipants,
-    leenkImageUri,
-  } = leenkData;
+  // fetch detail
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        setLoading(true);
+        if (!Number.isFinite(leenkId)) {
+          throw new Error('Invalid leenk id');
+        }
+        const data = await getLeenkDetail(leenkId); // returns LeenkDetail
+        if (mounted) setLeenkDetail(data);
+      } catch (e) {
+        showToast('상세 정보를 불러오지 못했어.', 'error');
+        // 뒤로 이동하거나 적절한 fallback
+        router.back();
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [leenkId]);
+
+  const isAuthor = leenkDetail?.author.userId === userInfo?.id;
+
+  // early return while fetching
+  if (loading || !leenkDetail) {
+    return <Loading />;
+  }
 
   const handleDelete = () => {
     closeModal();
@@ -78,6 +105,7 @@ export default function LeenkDetailPage() {
 
   const handleConfirmDelete = async () => {
     try {
+      // TODO: 삭제 API 연동
       showToast('삭제 완료!', 'success');
       setTimeout(() => {
         router.replace('/feed');
@@ -98,7 +126,7 @@ export default function LeenkDetailPage() {
 
   const handleShare = async () => {
     try {
-      await Share.share({ message: title });
+      await Share.share({ message: leenkDetail.title });
     } catch (error) {
       showToast('공유에 실패했어요', 'error');
     }
@@ -129,9 +157,9 @@ export default function LeenkDetailPage() {
             isWarning
             mainText="정말 떠날거야?"
             subText={
-              title.length > 10
-                ? `${title.slice(0, 10)}...에서 나가지게 돼.`
-                : `${title}에서 나가지게 돼.`
+              leenkDetail.title.length > 10
+                ? `${leenkDetail.title.slice(0, 10)}...에서 나가지게 돼.`
+                : `${leenkDetail.title}에서 나가지게 돼.`
             }
             isCancel
             leftBtnText="취소"
@@ -165,7 +193,7 @@ export default function LeenkDetailPage() {
           />
         );
       case 'leenkReport':
-        return <ReportModal type="leenk" />; // TODO : 신고하기 api 연결 시 linkId 추가
+        return <ReportModal type="leenk" />;
       default:
         return null;
     }
@@ -185,10 +213,12 @@ export default function LeenkDetailPage() {
           paddingHorizontal: width * CONTAINER_PADDING,
         }}
       />
+
+      {/* top image uses API mediaUrl */}
       <ImageContainer>
-        {leenkImageUri ? (
+        {leenkDetail.mediaUrl ? (
           <Image
-            source={{ uri: leenkImageUri }}
+            source={{ uri: leenkDetail.mediaUrl }}
             style={StyleSheet.absoluteFillObject}
             contentFit="cover"
           />
@@ -199,16 +229,9 @@ export default function LeenkDetailPage() {
         )}
       </ImageContainer>
 
+      {/* pass API object directly (we refactored Section to accept { data: LeenkDetail } ) */}
       <LeenkContentSection
-        title={title}
-        place={place}
-        content={content}
-        date={date}
-        name={name}
-        createdAt={createdAt}
-        profileImageUri={profileImageUri}
-        participantCount={participantCount}
-        allParticipants={allParticipants}
+        data={leenkDetail}
         insetBottom={insets.bottom}
         onShare={handleShare}
         onParticipants={handleParticipants}

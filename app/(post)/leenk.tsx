@@ -45,7 +45,6 @@ export default function PostLeenkPage() {
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToastStore();
 
-  // ⬇️ 이미지 URL (Zustand)
   const { leenkImage, resetLeenkImage } = useLeenkImageStore();
 
   const handleBackPress = () => setIsBackModalOpen(true);
@@ -55,19 +54,15 @@ export default function PostLeenkPage() {
     router.push('/(page)/leenk');
   };
 
-  // is remote s3/http(s) url?
   const isRemoteUrl = (uri: string) => /^https?:\/\//i.test(uri);
-
-  // ensure pure object URL without query params
   const stripQuery = (url: string) => url.split('?')[0];
 
-  // ⬇️ 실제 제출 로직 (PATCH/POST)
   const handleSubmitCreate = async () => {
     if (!isFormValid || submitting) return;
     try {
       setSubmitting(true);
 
-      // 1) build ISO string like "YYYY-MM-DDTHH:mm:ss"
+      // 1) 시간 형식 ISO로 포멧팅
       const startTime = date
         ? [
             date.getFullYear(),
@@ -82,36 +77,35 @@ export default function PostLeenkPage() {
           ].join(':')
         : '';
 
-      // 2) resolve mediaUrl (upload if local)
+      // 2) s3 url 준비
       let finalMediaUrl = '';
       if (leenkImage) {
         if (isRemoteUrl(leenkImage)) {
-          // already remote; reuse
           finalMediaUrl = stripQuery(leenkImage);
         } else {
-          // local file -> get presigned, upload, then use object URL
+          // file S3에 등록
           const fileName = `leenk_${Date.now()}.jpg`;
           const presignedUrls = await getPresignedUrl(fileName);
           if (!presignedUrls || presignedUrls.length === 0) {
             throw new Error('Failed to get presigned URL.');
           }
-          const signed = presignedUrls[0].mediaUrl; // PUT url with query
-          await uploadImageToS3(signed, leenkImage /* local uri */);
-          finalMediaUrl = stripQuery(signed); // pure object url
+          const signed = presignedUrls[0].mediaUrl;
+          await uploadImageToS3(signed, leenkImage);
+          finalMediaUrl = stripQuery(signed);
         }
       }
 
-      // 3) build payload
+      // 3) payload 빌드
       const payload: UpdateLeenkPayload = {
         title: title.trim(),
         content: content.trim(),
         placeName: place.trim(),
         startTime,
         maxParticipants,
-        mediaUrl: finalMediaUrl, // <— use the S3 object URL (no query)
+        mediaUrl: finalMediaUrl,
       };
 
-      // 4) call API
+      // 4) API 호출
       const res = await createLeenk(payload);
 
       setCompleteModalOpen(false);
@@ -125,12 +119,10 @@ export default function PostLeenkPage() {
     }
   };
 
-  if (submitting) return <Loading />;
-
   const handleCompleteOpen = () => setCompleteModalOpen(true);
 
+  // 게시물 작성 시 이전에 선택한 이미지 삭제
   useEffect(() => {
-    // reset selected image when opening this page
     resetLeenkImage();
   }, [resetLeenkImage]);
 
@@ -242,6 +234,7 @@ export default function PostLeenkPage() {
         isCancel={false}
         leftBtnText="취소"
         rightBtnText="모집하기"
+        isLoading={submitting}
       />
     </KeyboardAvoidingView>
   );

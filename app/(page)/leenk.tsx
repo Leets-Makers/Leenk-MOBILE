@@ -19,25 +19,24 @@ const tabToStatus = (tab: 'all' | 'open' | 'close') =>
 export default function LeenkPage() {
   const [tab, setTab] = useState<'all' | 'open' | 'close'>('all');
 
-  // list / paging states
   const [data, setData] = useState<Leenk[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // prevent duplicated calls on momentum
+  // 중복 호출 방지
   const onEndReachedCalledDuringMomentum = useRef(false);
 
-  // fetch one page
+  // 첫 페이지 로드
   const loadPage = async (nextPage: number, replace = false) => {
     if (loading) return;
     setLoading(true);
     try {
       const status = tabToStatus(tab);
-      const res = await getLeenkList(nextPage, PAGE_SIZE, status); // LeenkListResponse
+      const res = await getLeenkList(nextPage, PAGE_SIZE, status);
       const pageItems = res.data.leenks ?? [];
-      const reachedEnd = pageItems.length < PAGE_SIZE; // infer end by size
+      const reachedEnd = pageItems.length < PAGE_SIZE;
 
       setData((prev) => (replace ? pageItems : [...prev, ...pageItems]));
       setHasMore(!reachedEnd);
@@ -50,23 +49,22 @@ export default function LeenkPage() {
     }
   };
 
-  // initial + tab change -> reset & fetch first page
+  // 초기화 및 탭 관리
   useEffect(() => {
     setData([]);
     setHasMore(true);
     setPage(0);
     loadPage(0, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
-  // pull-to-refresh
+  // 스크롤 당겨서 재호출
   const onRefresh = async () => {
     setRefreshing(true);
     setHasMore(true);
     await loadPage(0, true);
   };
 
-  // infinite scroll
+  // 무한스크롤
   const onEndReached = () => {
     if (onEndReachedCalledDuringMomentum.current) return;
     if (!loading && hasMore) {
@@ -126,6 +124,7 @@ const Separator = styled.View`
   height: ${height * 8}px;
 `;
 
+// TODO: 마지막 게시물 표시 변경
 const FooterLoading = styled.ActivityIndicator.attrs({
   size: 'small',
   color: colors.primary ?? '#888',
