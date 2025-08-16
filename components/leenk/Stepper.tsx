@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import {
@@ -11,20 +11,39 @@ import {
 } from '@/theme/globalStyles';
 import { MinusIcon, PlusIcon } from '@/assets';
 
-export default function Stepper() {
-  const [count, setCount] = useState(3);
+interface StepperProps {
+  value?: number;
+  onChange?: (next: number) => void;
+  min?: number;
+  max?: number;
+}
 
-  const handleIncrement = () => {
-    setCount((prev) => Math.min(prev + 1, 99));
+export default function Stepper({
+  value,
+  onChange,
+  min = 3,
+  max = 99,
+}: StepperProps) {
+  const [count, setCount] = useState(value ?? min);
+
+  useEffect(() => {
+    if (value !== undefined && value !== count) {
+      setCount(value);
+    }
+  }, [value]);
+
+  const update = (next: number) => {
+    const clamped = Math.min(Math.max(next, min), max);
+    setCount(clamped);
+    onChange?.(clamped);
   };
 
-  const handleDecrement = () => {
-    setCount((prev) => Math.max(prev - 1, 3));
-  };
+  const handleIncrement = () => update(count + 1);
+  const handleDecrement = () => update(count - 1);
 
   return (
     <Container>
-      <RoundBtn onPress={handleDecrement}>
+      <RoundBtn onPress={handleDecrement} disabled={count <= min}>
         <IconWrapper>
           <MinusIcon />
         </IconWrapper>
@@ -34,7 +53,7 @@ export default function Stepper() {
         <CountText>{count.toString().padStart(2, '0')}</CountText>
       </MemberNumberContainer>
 
-      <RoundBtn onPress={handleIncrement}>
+      <RoundBtn onPress={handleIncrement} disabled={count >= max}>
         <IconWrapper>
           <PlusIcon />
         </IconWrapper>
@@ -50,11 +69,12 @@ const Container = styled.View`
   margin-top: ${height * 8}px;
 `;
 
-const RoundBtn = styled.Pressable`
+const RoundBtn = styled.Pressable<{ disabled?: boolean }>`
   height: ${height * 48}px;
   width: ${width * 48}px;
   border-radius: 999px;
-  background-color: ${colors.divider[2]};
+  background-color: ${({ disabled }) =>
+    disabled ? colors.divider[1] : colors.divider[2]};
   align-items: center;
   justify-content: center;
 `;

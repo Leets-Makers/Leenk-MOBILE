@@ -11,7 +11,7 @@ export const getLeenkList = async (
   pageSize: number,
   status: 'ALL' | 'OPEN' | 'CLOSED' = 'ALL',
 ) => {
-  const res = await api.get<LeenkListResponse>('/leenks', {
+  const res = await api.get<ApiResponse<LeenkListResponse>>('/leenks', {
     params: {
       status,
       pageNumber,
@@ -21,6 +21,7 @@ export const getLeenkList = async (
 
   if (__DEV__) {
     console.log('링크 전체 조회:', res.data);
+    console.log('first leenk:', res.data.data.leenks[0]);
   }
 
   return res.data;

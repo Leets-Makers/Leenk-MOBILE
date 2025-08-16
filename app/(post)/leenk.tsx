@@ -2,6 +2,7 @@ import {
   CustomButton,
   Header,
   Input,
+  Loading,
   PopupModal,
   Textarea,
 } from '@/components';
@@ -21,9 +22,15 @@ import {
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
+
+import { createLeenk } from '@/api/leenk/leenk.post.api';
+import { UpdateLeenkPayload } from '@/types/leenk';
+import { uploadImageToS3 } from '@/api/file/s3Upload';
+import { getPresignedUrl } from '@/api/file/s3Upload';
+import { useToastStore } from '@/stores/toastStore';
 
 export default function PostLeenkPage() {
   const router = useRouter();
@@ -34,8 +41,13 @@ export default function PostLeenkPage() {
   const [place, setPlace] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [content, setContent] = useState('');
+  const [maxParticipants, setMaxParticipants] = useState<number>(3);
+  const [submitting, setSubmitting] = useState(false);
+  const { showToast } = useToastStore();
 
-  const { resetLeenkImage } = useLeenkImageStore();
+  // ⬇️ 이미지 URL (Zustand)
+  const { leenkImage, resetLeenkImage } = useLeenkImageStore();
+
   const handleBackPress = () => setIsBackModalOpen(true);
 
   const handleConfirmExit = () => {
@@ -43,14 +55,84 @@ export default function PostLeenkPage() {
     router.push('/(page)/leenk');
   };
 
-  const handleComplete = () => {
-    setCompleteModalOpen(false);
-    router.push('/(page)/leenk');
+  // is remote s3/http(s) url?
+  const isRemoteUrl = (uri: string) => /^https?:\/\//i.test(uri);
+
+  // ensure pure object URL without query params
+  const stripQuery = (url: string) => url.split('?')[0];
+
+  // ⬇️ 실제 제출 로직 (PATCH/POST)
+  const handleSubmitCreate = async () => {
+    if (!isFormValid || submitting) return;
+    try {
+      setSubmitting(true);
+
+      // 1) build ISO string like "YYYY-MM-DDTHH:mm:ss"
+      const startTime = date
+        ? [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, '0'),
+            String(date.getDate()).padStart(2, '0'),
+          ].join('-') +
+          'T' +
+          [
+            String(date.getHours()).padStart(2, '0'),
+            String(date.getMinutes()).padStart(2, '0'),
+            '00',
+          ].join(':')
+        : '';
+
+      // 2) resolve mediaUrl (upload if local)
+      let finalMediaUrl = '';
+      if (leenkImage) {
+        if (isRemoteUrl(leenkImage)) {
+          // already remote; reuse
+          finalMediaUrl = stripQuery(leenkImage);
+        } else {
+          // local file -> get presigned, upload, then use object URL
+          const fileName = `leenk_${Date.now()}.jpg`;
+          const presignedUrls = await getPresignedUrl(fileName);
+          if (!presignedUrls || presignedUrls.length === 0) {
+            throw new Error('Failed to get presigned URL.');
+          }
+          const signed = presignedUrls[0].mediaUrl; // PUT url with query
+          await uploadImageToS3(signed, leenkImage /* local uri */);
+          finalMediaUrl = stripQuery(signed); // pure object url
+        }
+      }
+
+      // 3) build payload
+      const payload: UpdateLeenkPayload = {
+        title: title.trim(),
+        content: content.trim(),
+        placeName: place.trim(),
+        startTime,
+        maxParticipants,
+        mediaUrl: finalMediaUrl, // <— use the S3 object URL (no query)
+      };
+
+      // 4) call API
+      const res = await createLeenk(payload);
+
+      setCompleteModalOpen(false);
+      //TODO: 링크 상세 게시물 페이지로 바로 이동
+      router.push('/(page)/leenk');
+    } catch (e: any) {
+      if (__DEV__) console.log('createLeenk error:', e?.response ?? e);
+      showToast('등록에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
+  if (submitting) return <Loading />;
+
+  const handleCompleteOpen = () => setCompleteModalOpen(true);
+
   useEffect(() => {
+    // reset selected image when opening this page
     resetLeenkImage();
-  }, []);
+  }, [resetLeenkImage]);
 
   const isFormValid =
     title.trim().length > 0 &&
@@ -77,6 +159,7 @@ export default function PostLeenkPage() {
           <SubText>원하는 사진을 선택하거나, 새로운 사진을 올려줘.</SubText>
         </Row>
         <LeenkImagePicker />
+
         <Margin />
         <Input
           title="제목"
@@ -86,6 +169,7 @@ export default function PostLeenkPage() {
           maxLength={30}
           isRequired
         />
+
         <Margin />
         <Input
           title="장소"
@@ -95,18 +179,22 @@ export default function PostLeenkPage() {
           maxLength={25}
           isRequired
         />
+
         <Margin />
         <Title>
           일시<Asterisk> *</Asterisk>
         </Title>
 
         <CalendarButton value={date} onChange={setDate} />
+
         <Margin />
         <Row>
           <Title>모임 인원</Title>
           <SubText>나 포함 최소 3명부터 모임을 만들 수 있어.</SubText>
         </Row>
-        <Stepper />
+
+        <Stepper value={maxParticipants} onChange={setMaxParticipants} />
+
         <Margin />
         <Textarea
           title="내용"
@@ -119,11 +207,11 @@ export default function PostLeenkPage() {
           fontSizeKey="lg"
           isRequired
         />
-        <Margin />
 
+        <Margin />
         <CustomButton
           variant="primary"
-          onPress={() => setCompleteModalOpen(true)}
+          onPress={handleCompleteOpen}
           fullWidth
           rounded="md"
           size="lg"
@@ -133,6 +221,7 @@ export default function PostLeenkPage() {
         </CustomButton>
       </ScrollView>
 
+      {/* 뒤로가기 확인 */}
       <PopupModal
         isOpen={isBackModalOpen}
         onRightBtn={handleConfirmExit}
@@ -143,9 +232,11 @@ export default function PostLeenkPage() {
         leftBtnText="취소"
         rightBtnText="그만두기"
       />
+
+      {/* 최종 제출 확인 → 실제 API 호출 */}
       <PopupModal
         isOpen={completeModalOpen}
-        onRightBtn={handleComplete}
+        onRightBtn={handleSubmitCreate}
         onLeftBtn={() => setCompleteModalOpen(false)}
         mainText="모집하러 가볼까?"
         isCancel={false}

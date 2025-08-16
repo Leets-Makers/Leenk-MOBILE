@@ -36,7 +36,7 @@ export default function LeenkPage() {
     try {
       const status = tabToStatus(tab);
       const res = await getLeenkList(nextPage, PAGE_SIZE, status); // LeenkListResponse
-      const pageItems = res.leenks ?? [];
+      const pageItems = res.data.leenks ?? [];
       const reachedEnd = pageItems.length < PAGE_SIZE; // infer end by size
 
       setData((prev) => (replace ? pageItems : [...prev, ...pageItems]));
@@ -120,7 +120,6 @@ const List = styled.FlatList.attrs({
     paddingBottom: height * 20,
     paddingHorizontal: FEED_PADDING * width,
   },
-  // NOTE: keep default styles
 })`` as unknown as typeof import('react-native').FlatList<Leenk>;
 
 const Separator = styled.View`
