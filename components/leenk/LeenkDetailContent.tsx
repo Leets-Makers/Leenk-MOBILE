@@ -16,7 +16,7 @@ import {
 import colors from '@/theme/color';
 import { Pressable } from 'react-native';
 import styled from 'styled-components/native';
-import { formatRelativeTime } from '@/utils/format-date';
+import { formatMonthDayHour, formatRelativeTime } from '@/utils/format-date';
 import { TimeText } from '@/components/leenk/LeenkListItem';
 import { LeenkDetail } from '@/types/leenk';
 
@@ -68,7 +68,7 @@ export default function LeenkContentSection({
 
       <RowWrapper>
         <ClockIcon width={width * 16} />
-        <TimeText>{data.startTime}</TimeText>
+        <TimeText>{formatMonthDayHour(data.startTime)}</TimeText>
       </RowWrapper>
 
       <ContentWrapper $insetBottom={insetBottom}>

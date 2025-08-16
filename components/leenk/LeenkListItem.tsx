@@ -14,6 +14,7 @@ import { CheckerIcon, ClockIcon, PeopleIcon } from '@/assets';
 import { useRouter } from 'expo-router';
 
 import { Leenk } from '@/types/leenk';
+import { formatMonthDayHour } from '@/utils/format-date';
 
 interface Props {
   item: Leenk;
@@ -42,7 +43,7 @@ export default function LeenkListItem({ item }: Props) {
               </TitleText>
               <Row>
                 <ClockIcon />
-                <TimeText>{item.startTime}</TimeText>
+                <TimeText>{formatMonthDayHour(item.startTime)}</TimeText>
                 <PeopleIcon style={{ marginLeft: width * 12 }} />
                 <TimeText style={{ marginLeft: width * 4 }}>
                   {item.currentParticipants}/{item.maxParticipants}

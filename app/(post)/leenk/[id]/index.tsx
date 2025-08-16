@@ -229,7 +229,6 @@ export default function LeenkDetailPage() {
         )}
       </ImageContainer>
 
-      {/* pass API object directly (we refactored Section to accept { data: LeenkDetail } ) */}
       <LeenkContentSection
         data={leenkDetail}
         insetBottom={insets.bottom}
