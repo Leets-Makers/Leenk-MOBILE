@@ -33,6 +33,8 @@ export default function BackgroundImageSlider({
 
   if (mediaUrls.length === 0) return null;
 
+  const isSingle = mediaUrls.length === 1;
+
   return (
     <Wrapper>
       <CarouselWrapper>

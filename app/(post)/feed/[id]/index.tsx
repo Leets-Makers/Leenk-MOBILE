@@ -137,7 +137,7 @@ export default function FeedDetailPage() {
   if (!feed) return null;
 
   return (
-    <View style={{ flex: 1 }}>
+    <View pointerEvents="box-none" style={{ flex: 1 }}>
       <BackgroundImageSlider
         mediaUrls={feed.media}
         gradient={{ top: 120 * height, bottom: 520 * height }}
