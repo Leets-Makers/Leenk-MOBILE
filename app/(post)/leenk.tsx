@@ -24,6 +24,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styled from 'styled-components/native';
 
 import { createLeenk } from '@/api/leenk/leenk.post.api';
@@ -133,9 +134,15 @@ export default function PostLeenkPage() {
     date !== null;
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
+    <KeyboardAwareScrollView
+      style={{ flex: 1, backgroundColor: colors.bg[2] }}
+      contentContainerStyle={{
+        paddingBottom: 60 * height,
+        flexGrow: 1,
+      }}
+      enableOnAndroid={true}
+      extraScrollHeight={180 * height}
+      keyboardShouldPersistTaps="handled"
     >
       <ScrollView
         style={{ flex: 1, backgroundColor: colors.bg[2] }}
@@ -236,7 +243,7 @@ export default function PostLeenkPage() {
         rightBtnText="모집하기"
         isLoading={submitting}
       />
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 
