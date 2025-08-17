@@ -99,7 +99,6 @@ export default function AccountEdit() {
     (type === 'mbti' &&
       (edituserInfo.trim() === '' || edituserInfo.length !== 4));
 
-  // iOS: 키보드 열릴 때는 padding 거의 0, 닫히면 푸터 높이만큼 여유
   const contentPaddingBottom = isIOS
     ? kbVisible
       ? 4

@@ -15,6 +15,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Animated,
+  Keyboard,
 } from 'react-native';
 import { Media } from '@/types/feed';
 import { fonts, fontSize, height, width } from '@/theme/globalStyles';
@@ -66,18 +67,35 @@ export default function FeedWritePage() {
 
   // const connectedUsers = users;
 
+  const androidTranslateY = useKeyboardAnimation(-85);
+
+  const insets = useSafeAreaInsets();
+
+  const IOS_TEXTAREA_GAP = 4;
+
+  const [iosKeyboardBottom, setIosKeyboardBottom] = useState(0);
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    const show = Keyboard.addListener('keyboardWillShow', (e) => {
+      const h = e.endCoordinates?.height ?? 0;
+      // 홈 인디케이터(insets.bottom)만큼은 빼고 약간의 여유(8)
+      setIosKeyboardBottom(Math.max(0, h - insets.bottom - IOS_TEXTAREA_GAP));
+    });
+    const hide = Keyboard.addListener('keyboardWillHide', () => {
+      setIosKeyboardBottom(0);
+    });
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, [insets.bottom]);
+
   // ✅ edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
   useEffect(() => {
     if (isEditParam && selectedImages.length > 0) {
       setSelectedImages([]);
     }
   }, [isEditParam, selectedImages.length, setSelectedImages]);
-
-  const buttonTranslateY = useKeyboardAnimation(
-    Platform.OS === 'ios' ? -390 * height : -85,
-  );
-
-  const insets = useSafeAreaInsets();
 
   const hasAnyImage = mediaUrls.length > 0;
   // const media: Media[] = selectedImages.map((img, index) => ({
@@ -225,7 +243,7 @@ export default function FeedWritePage() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? undefined : undefined}
       keyboardVerticalOffset={0}
     >
       <ScrollView
@@ -255,59 +273,72 @@ export default function FeedWritePage() {
               zIndex: 9999,
             }}
           >
-            <Animated.View
+            <View
               style={{
-                transform: [{ translateY: buttonTranslateY }],
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: 16,
               }}
             >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 16,
-                }}
-              >
-                <ProfileImageWithFallback
-                  uri={userInfo?.profileImage}
-                  size={36}
-                />
-                <StyledText>{userInfo?.name}</StyledText>
-                <Badge
-                  variant="gray"
-                  iconType="plus"
-                  label={
-                    connectedUsers.length > 0
-                      ? `${userInfo?.name} 외 ${connectedUsers.length}명`
-                      : '함께한 사람 추가'
-                  }
-                  onPress={onClickToAddMember}
+              <ProfileImageWithFallback
+                uri={userInfo?.profileImage}
+                size={36}
+              />
+              <StyledText>{userInfo?.name}</StyledText>
+              <Badge
+                variant="gray"
+                iconType="plus"
+                label={
+                  connectedUsers.length > 0
+                    ? `${userInfo?.name} 외 ${connectedUsers.length - 1}명`
+                    : '함께한 사람 추가'
+                }
+                onPress={onClickToAddMember}
+              />
+            </View>
+
+            {/*  Textarea만 키보드에 반응하도록 분리 */}
+            {Platform.OS === 'ios' ? (
+              <View style={{ marginBottom: iosKeyboardBottom }}>
+                <Textarea
+                  variant="dark"
+                  placeholder="텍스트를 입력해주세요"
+                  maxLength={100}
+                  value={description}
+                  onChangeText={setDescription}
                 />
               </View>
-
-              <Textarea
-                variant="dark"
-                placeholder="텍스트를 입력해주세요"
-                maxLength={100}
-                value={description}
-                onChangeText={setDescription}
-              />
-
-              <CustomButton
-                size="lg"
-                onPress={handleUpload}
+            ) : (
+              <Animated.View
                 style={{
-                  marginTop: 20 * height,
-                  marginBottom:
-                    Platform.OS === 'android' ? insets.bottom : 8 * height,
+                  transform: [{ translateY: androidTranslateY }],
                 }}
-                disabled={
-                  description.trim().length === 0 ||
-                  (!isEditParam && !hasAnyImage)
-                }
               >
-                {isEditParam ? '수정할래' : '업로드할래'}
-              </CustomButton>
-            </Animated.View>
+                <Textarea
+                  variant="dark"
+                  placeholder="텍스트를 입력해주세요"
+                  maxLength={100}
+                  value={description}
+                  onChangeText={setDescription}
+                />
+              </Animated.View>
+            )}
+
+            <CustomButton
+              size="lg"
+              onPress={handleUpload}
+              style={{
+                marginTop: 20 * height,
+                marginBottom:
+                  Platform.OS === 'android' ? insets.bottom : 8 * height,
+              }}
+              disabled={
+                description.trim().length === 0 ||
+                (!isEditParam && !hasAnyImage)
+              }
+            >
+              {isEditParam ? '수정할래' : '업로드할래'}
+            </CustomButton>
           </View>
 
           <PopupModal
