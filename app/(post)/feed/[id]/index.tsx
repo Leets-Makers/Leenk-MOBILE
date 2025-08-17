@@ -216,7 +216,7 @@ export default function FeedDetailPage() {
               fontFamily: fonts.Bold,
               paddingBottom: 8 * height,
               minHeight: 90 * height,
-              maxHeight: 126 * height,
+              maxHeight: 134 * height,
             }}
           >
             {feed.description}

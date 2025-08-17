@@ -71,14 +71,13 @@ export default function FeedWritePage() {
 
   const insets = useSafeAreaInsets();
 
-  const IOS_TEXTAREA_GAP = 4;
+  const IOS_TEXTAREA_GAP = 50 * height;
 
   const [iosKeyboardBottom, setIosKeyboardBottom] = useState(0);
   useEffect(() => {
     if (Platform.OS !== 'ios') return;
     const show = Keyboard.addListener('keyboardWillShow', (e) => {
       const h = e.endCoordinates?.height ?? 0;
-      // 홈 인디케이터(insets.bottom)만큼은 빼고 약간의 여유(8)
       setIosKeyboardBottom(Math.max(0, h - insets.bottom - IOS_TEXTAREA_GAP));
     });
     const hide = Keyboard.addListener('keyboardWillHide', () => {
