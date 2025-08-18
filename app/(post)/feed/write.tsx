@@ -1,9 +1,9 @@
 import { Header, BackgroundImageSlider, Loading } from '@/components';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Media } from '@/types/feed';
 import { height, width } from '@/theme/globalStyles';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
@@ -48,6 +48,8 @@ export default function FeedWritePage() {
   const IOS_TEXTAREA_GAP = 50 * height;
   const iosKeyboardBottom = useIOSKeyboardSpacer(IOS_TEXTAREA_GAP);
 
+  const didInitRef = useRef(false);
+
   // edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
   useEffect(() => {
     if (isEditParam && selectedImages.length > 0) {
@@ -55,12 +57,15 @@ export default function FeedWritePage() {
     }
   }, [isEditParam]);
 
-  // 글쓰기 페이지 진입시
-  useEffect(() => {
-    if (!isEditParam) {
-      useFeedWriteStore.getState().startCreate();
-    }
-  }, [isEditParam]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!isEditParam && !didInitRef.current) {
+        useFeedWriteStore.getState().startCreate();
+        didInitRef.current = true; // 이후부터는 재초기화 방지
+      }
+      return () => {};
+    }, [isEditParam]),
+  );
 
   const hasAnyImage = mediaUrls.length > 0;
 
@@ -106,7 +111,7 @@ export default function FeedWritePage() {
     handleUploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
   };
 
-  // 2) 업로드 로직: 분기에 맞춰 올바른 바디 사용
+  // 피드 업로드 함수
   const handleUploadFeed = async () => {
     setIsUploading(true);
     try {
@@ -116,6 +121,7 @@ export default function FeedWritePage() {
       console.log('[피드 업로드 성공]:', res);
 
       resetFeedWrite();
+      didInitRef.current = false;
       router.push('/(page)/feed');
     } catch (error) {
       console.error('업로드 실패:', error);
@@ -128,6 +134,7 @@ export default function FeedWritePage() {
     }
   };
 
+  // 피드 수정
   const handleConfirmEdit = async () => {
     setIsModalOpen(false);
     setIsUploading(true);
