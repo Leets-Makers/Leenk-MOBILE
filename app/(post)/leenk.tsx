@@ -175,10 +175,7 @@ export default function PostLeenkPage() {
         await updateLeenk(leenkId, payload);
         showToast('수정 완료!', 'success');
         setCompleteModalOpen(false);
-        router.replace({
-          pathname: '/leenk/[id]',
-          params: { id: String(leenkId) },
-        });
+        router.back();
       } else {
         // 작성 API
         const res = await createLeenk(payload);
@@ -284,7 +281,7 @@ export default function PostLeenkPage() {
           size="lg"
           disabled={!isFormValid}
         >
-          {isEdit ? '수정하기' : '모집하자'}
+          {isEdit ? '수정할래' : '모집하자'}
         </CustomButton>
       </ScrollView>
 
@@ -304,10 +301,10 @@ export default function PostLeenkPage() {
         isOpen={completeModalOpen}
         onRightBtn={handleSubmit}
         onLeftBtn={() => setCompleteModalOpen(false)}
-        mainText={isEdit ? '이대로 수정할까?' : '모집하러 가볼까?'}
+        mainText={isEdit ? '수정할까?' : '모집하러 가볼까?'}
         isCancel={false}
         leftBtnText="취소"
-        rightBtnText={isEdit ? '수정하기' : '모집하기'}
+        rightBtnText={isEdit ? '수정할래' : '모집하기'}
         isLoading={submitting}
       />
     </KeyboardAwareScrollView>

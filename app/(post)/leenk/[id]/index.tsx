@@ -138,7 +138,7 @@ export default function LeenkDetailPage() {
       await deleteLeenk(leenkDetail.id);
       showToast('삭제 완료!', 'success');
       closeModal();
-      router.replace('/feed');
+      router.replace('/leenk');
     } catch (err) {
       console.error('링크 삭제 오류:', err);
       showToast('삭제에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
@@ -202,7 +202,7 @@ export default function LeenkDetailPage() {
         await Share.share({ message: leenkDetail.title });
       }
     } catch {
-      showToast('공유에 실패했어요', 'error');
+      showToast('공유에 실패했어', 'error');
     }
   }, [leenkDetail?.title, showToast]);
 
