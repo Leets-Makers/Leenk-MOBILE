@@ -31,8 +31,8 @@ export function getLinkedUserBadgeLabel<T>(
   // 총원은 서버 total(예: linkedUserCount) 우선, 없으면 unique 길이
   const total = totalCountOverride ?? unique.length;
 
-  // 배지는 "총원 > 1"일 때만 노출
-  if (total <= 1 || nonAuthors.length === 0) return null;
+  // 배지는 "총원 >= 1"일 때만 노출
+  if (total <= 0 || nonAuthors.length === 0) return null;
 
   const first = name(nonAuthors[0]) || '사용자';
   const others = total - 1; // 첫 번째 비작성자를 대표로 쓰므로 나머지 인원 수
