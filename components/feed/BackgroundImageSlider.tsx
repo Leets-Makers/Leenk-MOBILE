@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground } from 'react-native';
+import { ImageBackground, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import styled from 'styled-components/native';
 import { radius, SCREEN_HEIGHT, SCREEN_WIDTH } from '@/theme/globalStyles';
@@ -71,6 +71,13 @@ export default function BackgroundImageSlider({
         />
       </CarouselWrapper>
 
+      {isSingle && (
+        <TouchBlocker
+          onStartShouldSetResponder={() => true}
+          onMoveShouldSetResponder={() => true}
+        />
+      )}
+
       {mediaUrls.length > 1 && (
         <IndicatorContainer>
           {mediaUrls.map((_, index) => (
@@ -98,6 +105,14 @@ const CarouselWrapper = styled.View`
 const StyledBackground = styled(ImageBackground)`
   width: 100%;
   height: 100%;
+`;
+
+const TouchBlocker = styled.View`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 `;
 
 const IndicatorContainer = styled.View`

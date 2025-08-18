@@ -97,10 +97,10 @@ export default function MyPage() {
           });
         }}
       />
-      <MyPageButton
+      {/* <MyPageButton
         text="참여한 모임"
         onPress={() => router.push('/account/my-leenk')}
-      />
+      /> */}
       {!isMyProfile && (
         <MenuModal
           visible={modalType === 'menu'}

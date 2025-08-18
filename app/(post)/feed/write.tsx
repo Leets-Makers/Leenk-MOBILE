@@ -268,7 +268,7 @@ export default function FeedWritePage() {
           <View
             style={{
               paddingHorizontal: FEED_PADDING * width,
-              marginBottom: 24,
+              marginBottom: 36 * height,
               zIndex: 9999,
             }}
           >
