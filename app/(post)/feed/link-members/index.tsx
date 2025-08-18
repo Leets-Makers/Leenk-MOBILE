@@ -9,7 +9,7 @@ import {
 } from '@/app/(post)/feed';
 import SearchBar from '@/components/feed/SearchBar';
 import UserList from '@/components/feed/UserList';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FeedConnectedUser } from '@/types/feed';
 import MemberBadgeList from '@/components/feed/MemberBadgeList';
 import { height, width } from '@/theme/globalStyles';
@@ -24,6 +24,11 @@ import {
 } from 'react-native-safe-area-context';
 
 export default function LinkMembersPage() {
+  const { mode, feedId } = useLocalSearchParams<{
+    mode?: 'edit' | 'create';
+    feedId?: string;
+  }>();
+
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -49,7 +54,10 @@ export default function LinkMembersPage() {
   const handleComplete = () => {
     setUsers(tempSelectedUsers); // 전역 상태에 저장
     console.log('추가된 사람: ', tempSelectedUsers);
-    router.push('/(post)/feed/write'); // 글쓰기 페이지로 이동
+    router.push({
+      pathname: '/(post)/feed/write',
+      params: { mode, feedId },
+    });
   };
 
   const isSearching = searchUser.trim().length > 0;

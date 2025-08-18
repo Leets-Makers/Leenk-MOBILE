@@ -1,31 +1,15 @@
-import {
-  Header,
-  BackgroundImageSlider,
-  CustomButton,
-  Textarea,
-  Loading,
-} from '@/components';
-import colors from '@/theme/color';
+import { Header, BackgroundImageSlider, Loading } from '@/components';
 import { router, useLocalSearchParams } from 'expo-router';
-import {
-  View,
-  ScrollView,
-  Platform,
-  KeyboardAvoidingView,
-  Animated,
-  Keyboard,
-} from 'react-native';
+import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Media } from '@/types/feed';
-import { fonts, fontSize, height, width } from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { useEffect, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
-import styled from 'styled-components/native';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
-import { getFeedDetail, uploadFeed } from '@/api/feed/feed.api';
+import { patchMyFeed, uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
-import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FEED_PADDING } from '@/constants';
 import { getLinkedUserBadgeLabel } from '@/utils/getLinkedUserBadgeLabel';
@@ -56,20 +40,6 @@ export default function FeedWritePage() {
 
   const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
-  // const {
-  //   startCreate,
-  //   startEditFromDetail,
-  //   reset,
-  //   mediaUrls,
-  //   selectedImages,
-  //   users,
-  //   description,
-  //   setDescription,
-  //   feedId: storeFeedId,
-  // } = useFeedWriteStore();
-
-  // const connectedUsers = users;
-
   const label = getLinkedUserBadgeLabel(connectedUsers, {
     id: (u) => u.userId,
     name: (u) => u.name,
@@ -89,11 +59,6 @@ export default function FeedWritePage() {
   }, [isEditParam, selectedImages.length, setSelectedImages]);
 
   const hasAnyImage = mediaUrls.length > 0;
-  // const media: Media[] = selectedImages.map((img, index) => ({
-  //   position: index + 1,
-  //   mediaUrl: img.uri,
-  //   mediaType: 'IMAGE' as const,
-  // }));
 
   const previewMedia: Media[] = mediaUrls.map((m, idx) => ({
     position: idx + 1,
@@ -101,37 +66,15 @@ export default function FeedWritePage() {
     mediaType: m.mediaType,
   }));
 
-  // // 기존 서버 이미지 + 로컬 새 이미지 합쳐서 슬라이더에 전달
-  // const previewMedia: Media[] = [
-  //   ...mediaUrls.map((m) => ({
-  //     position: m.position,
-  //     mediaUrl: m.mediaUrl,
-  //     mediaType: m.mediaType,
-  //   })),
-  //   ...selectedImages.map((img, i) => ({
-  //     position: mediaUrls.length + i, // 뒤에 이어붙이기
-  //     mediaUrl: img.uri, // 로컬 uri
-  //     mediaType: 'IMAGE' as const,
-  //   })),
-  // ];
-
-  // const requestBody = {
-  //   description,
-  //   media: mediaUrls,
-  //   userId: connectedUsers.map((user) => user.userId),
-  // };
-
   const requestBodyCreate = {
     description,
     media: mediaUrls, // create는 이미지 포함
-    userId: connectedUsers.map((u) => u.userId),
+    userIds: connectedUsers.map((u) => u.userId),
   };
 
   const requestBodyEdit = {
-    feedId: Number(feedId),
     description,
     userId: connectedUsers.map((u) => u.userId),
-    // 이미지 수정 없음: media 안 보냄
   };
 
   const handleUpload = async () => {
@@ -139,6 +82,11 @@ export default function FeedWritePage() {
 
     if (!isEditParam && !hasAnyImage) {
       showToast('이미지를 최소 1장 선택해줘!', 'error');
+      return;
+    }
+
+    if (isEditParam) {
+      setIsModalOpen(true);
       return;
     }
 
@@ -154,45 +102,11 @@ export default function FeedWritePage() {
     handleUploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
   };
 
-  // // 업로드 로직 분리
-  // const handleUploadFeed = async () => {
-  //   if (isEditParam) {
-  //     setIsModalOpen(true);
-  //     return;
-  //   }
-
-  //   setIsUploading(true);
-
-  //   console.log('피드 데이터: ', requestBody);
-  //   try {
-  //     const res = await uploadFeed(requestBody);
-  //     console.log('[피드 업로드 성공]:', res);
-
-  //     resetFeedWrite();
-  //     router.push('/(page)/feed');
-  //   } catch (error) {
-  //     console.error('업로드 실패:', error);
-  //     console.log('피드 업로드 요청 : ', requestBody);
-  //     showToast('피드 업로드에 실패했어!', 'error');
-  //   } finally {
-  //     setIsUploading(false);
-  //   }
-  // };
-
   // 2) 업로드 로직: 분기에 맞춰 올바른 바디 사용
   const handleUploadFeed = async () => {
     setIsUploading(true);
     try {
-      if (isEditParam) {
-        // ✅ 수정 모드: 이미지 수정 없음 → description, userId만 PATCH/PUT
-        // await updateFeed(requestBodyEdit);  // 실제 API로 교체
-        setIsModalOpen(true); // 모달 닫기
-        showToast('수정 완료!', 'success');
-        router.back();
-        return;
-      }
-
-      // ✅ 생성 모드: 이미지 포함해서 업로드
+      // 생성 api 호출
       console.log('피드 데이터: ', requestBodyCreate);
       const res = await uploadFeed(requestBodyCreate);
       console.log('[피드 업로드 성공]:', res);
@@ -212,10 +126,18 @@ export default function FeedWritePage() {
 
   const handleConfirmEdit = async () => {
     setIsModalOpen(false);
-    // TODO: 수정 API 연결.
-
-    showToast('수정 완료!', 'success');
-    router.back();
+    setIsUploading(true);
+    try {
+      await patchMyFeed(Number(feedId), requestBodyEdit);
+      showToast('수정 완료!', 'success');
+      resetFeedWrite();
+      router.push('/(page)/feed');
+    } catch (e) {
+      console.error(e);
+      showToast('수정에 실패했어!', 'error');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleConfirmExit = () => {
@@ -224,7 +146,10 @@ export default function FeedWritePage() {
   };
 
   const onClickToAddMember = () => {
-    router.push('/feed/link-members');
+    router.push({
+      pathname: '/feed/link-members',
+      params: { mode, feedId },
+    });
   };
 
   if (!userInfo) {
@@ -310,7 +235,7 @@ export default function FeedWritePage() {
           />
         </View>
 
-        <FeedUploadModal isOpen={isUploading} />
+        <FeedUploadModal isOpen={isUploading && !isEditParam} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
