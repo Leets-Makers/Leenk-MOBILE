@@ -86,8 +86,11 @@ export default function LeenkDetailPage() {
   };
 
   const handleEdit = () => {
-    //TODO:수정하기 로직 추가
     closeModal();
+    router.push({
+      pathname: '/(post)/leenk',
+      params: { mode: 'edit', leenkId: String(leenkDetail?.id ?? '') },
+    });
   };
 
   const handleReport = () => {

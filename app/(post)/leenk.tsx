@@ -20,21 +20,29 @@ import {
   lineHeight,
   width,
 } from '@/theme/globalStyles';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styled from 'styled-components/native';
 
 import { createLeenk } from '@/api/leenk/leenk.post.api';
-import { UpdateLeenkPayload } from '@/types/leenk';
+import { LeenkDetail, UpdateLeenkPayload } from '@/types/leenk';
 import { uploadImageToS3 } from '@/api/file/s3Upload';
 import { getPresignedUrl } from '@/api/file/s3Upload';
 import { useToastStore } from '@/stores/toastStore';
+import { updateLeenk } from '@/api/leenk/leenk.patch.api';
+import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
 
 export default function PostLeenkPage() {
   const router = useRouter();
+  const { mode, leenkId: leenkIdParam } = useLocalSearchParams<{
+    mode?: string;
+    leenkId?: string;
+  }>();
+
+  const isEdit = mode === 'edit';
+  const leenkId = Number(leenkIdParam);
 
   const [isBackModalOpen, setIsBackModalOpen] = useState(false);
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
@@ -44,9 +52,76 @@ export default function PostLeenkPage() {
   const [content, setContent] = useState('');
   const [maxParticipants, setMaxParticipants] = useState<number>(3);
   const [submitting, setSubmitting] = useState(false);
+  const [hydrating, setHydrating] = useState(isEdit);
   const { showToast } = useToastStore();
 
-  const { leenkImage, resetLeenkImage } = useLeenkImageStore();
+  const { leenkImage, resetLeenkImage, setLeenkImage } = useLeenkImageStore();
+  // setLeenkImage가 없다면 leenkStore에 아래 setter 하나만 추가:
+  // setLeenkImage: (uri: string | null) => set({ leenkImage: uri })
+
+  // ISO 문자열로 변환
+  const toISODateTime = (d: Date) =>
+    [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, '0'),
+      String(d.getDate()).padStart(2, '0'),
+    ].join('-') +
+    'T' +
+    [
+      String(d.getHours()).padStart(2, '0'),
+      String(d.getMinutes()).padStart(2, '0'),
+      '00',
+    ].join(':');
+
+  const isRemoteUrl = (uri: string) => /^https?:\/\//i.test(uri);
+  const stripQuery = (url: string) => url.split('?')[0];
+
+  // 수정 모드일 때 기존 데이터로 폼 채우기
+  useEffect(() => {
+    // 새 글쓰기일 때만 이전 선택 이미지 초기화
+    if (!isEdit) resetLeenkImage();
+  }, [isEdit, resetLeenkImage]);
+
+  useEffect(() => {
+    if (!isEdit || !Number.isFinite(leenkId)) return;
+
+    let mounted = true;
+    (async () => {
+      try {
+        setHydrating(true);
+        const detail: LeenkDetail = await getLeenkDetail(leenkId);
+        if (!mounted) return;
+
+        setTitle(detail.title ?? '');
+        setPlace(detail.placeName ?? '');
+        setContent(detail.content ?? '');
+        setMaxParticipants(detail.maxParticipants ?? 3);
+
+        // startTime(예: '2025-08-17T12:30:00')을 Date로 변환
+        if (detail.startTime) {
+          const d = new Date(detail.startTime);
+          if (!isNaN(d.getTime())) setDate(d);
+        }
+
+        // 이미지 셋
+        if (detail.mediaUrl) {
+          // 편집 시 기존 이미지 유지
+          setLeenkImage(stripQuery(detail.mediaUrl));
+        } else {
+          setLeenkImage(null);
+        }
+      } catch (e) {
+        showToast('수정 정보를 불러오지 못했어.', 'error');
+        router.back();
+      } finally {
+        setHydrating(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [isEdit, leenkId]);
 
   const handleBackPress = () => setIsBackModalOpen(true);
 
@@ -55,48 +130,37 @@ export default function PostLeenkPage() {
     router.push('/(page)/leenk');
   };
 
-  const isRemoteUrl = (uri: string) => /^https?:\/\//i.test(uri);
-  const stripQuery = (url: string) => url.split('?')[0];
+  const isFormValid =
+    title.trim().length > 0 &&
+    place.trim().length > 0 &&
+    content.trim().length > 0 &&
+    date !== null;
 
-  const handleSubmitCreate = async () => {
+  // 공통: S3 업로드 or 기존 URL 재사용
+  const prepareMediaUrl = async (): Promise<string> => {
+    if (!leenkImage) return '';
+    if (isRemoteUrl(leenkImage)) return stripQuery(leenkImage);
+
+    const fileName = `leenk_${Date.now()}.jpg`;
+    const presignedUrls = await getPresignedUrl(fileName);
+    if (!presignedUrls || presignedUrls.length === 0) {
+      throw new Error('Failed to get presigned URL.');
+    }
+    const signed = presignedUrls[0].mediaUrl;
+    await uploadImageToS3(signed, leenkImage);
+    return stripQuery(signed);
+  };
+
+  // 작성 / 수정 분기
+  const handleSubmit = async () => {
     if (!isFormValid || submitting) return;
+
     try {
       setSubmitting(true);
 
-      // 1) 시간 형식 ISO로 포멧팅
-      const startTime = date
-        ? [
-            date.getFullYear(),
-            String(date.getMonth() + 1).padStart(2, '0'),
-            String(date.getDate()).padStart(2, '0'),
-          ].join('-') +
-          'T' +
-          [
-            String(date.getHours()).padStart(2, '0'),
-            String(date.getMinutes()).padStart(2, '0'),
-            '00',
-          ].join(':')
-        : '';
+      const startTime = date ? toISODateTime(date) : '';
+      const finalMediaUrl = await prepareMediaUrl();
 
-      // 2) s3 url 준비
-      let finalMediaUrl = '';
-      if (leenkImage) {
-        if (isRemoteUrl(leenkImage)) {
-          finalMediaUrl = stripQuery(leenkImage);
-        } else {
-          // file S3에 등록
-          const fileName = `leenk_${Date.now()}.jpg`;
-          const presignedUrls = await getPresignedUrl(fileName);
-          if (!presignedUrls || presignedUrls.length === 0) {
-            throw new Error('Failed to get presigned URL.');
-          }
-          const signed = presignedUrls[0].mediaUrl;
-          await uploadImageToS3(signed, leenkImage);
-          finalMediaUrl = stripQuery(signed);
-        }
-      }
-
-      // 3) payload 빌드
       const payload: UpdateLeenkPayload = {
         title: title.trim(),
         content: content.trim(),
@@ -106,15 +170,26 @@ export default function PostLeenkPage() {
         mediaUrl: finalMediaUrl,
       };
 
-      // 4) API 호출
-      const res = await createLeenk(payload);
-
-      setCompleteModalOpen(false);
-      //TODO: 링크 상세 게시물 페이지로 바로 이동
-      router.push('/(page)/leenk');
+      if (isEdit) {
+        // 수정 API
+        await updateLeenk(leenkId, payload);
+        showToast('수정 완료!', 'success');
+        setCompleteModalOpen(false);
+        router.replace({
+          pathname: '/leenk/[id]',
+          params: { id: String(leenkId) },
+        });
+      } else {
+        // 작성 API
+        const res = await createLeenk(payload);
+        console.log('링크 등록 응답: ', res);
+        showToast('등록 완료!', 'success');
+        setCompleteModalOpen(false);
+        router.push('/(page)/leenk');
+      }
     } catch (e: any) {
-      if (__DEV__) console.log('createLeenk error:', e?.response ?? e);
-      showToast('등록에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
+      if (__DEV__) console.log('submit error:', e?.response ?? e);
+      showToast(isEdit ? '수정에 실패했어.' : '등록에 실패했어.', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -122,16 +197,9 @@ export default function PostLeenkPage() {
 
   const handleCompleteOpen = () => setCompleteModalOpen(true);
 
-  // 게시물 작성 시 이전에 선택한 이미지 삭제
-  useEffect(() => {
-    resetLeenkImage();
-  }, [resetLeenkImage]);
-
-  const isFormValid =
-    title.trim().length > 0 &&
-    place.trim().length > 0 &&
-    content.trim().length > 0 &&
-    date !== null;
+  if (hydrating) {
+    return <Loading />;
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -216,7 +284,7 @@ export default function PostLeenkPage() {
           size="lg"
           disabled={!isFormValid}
         >
-          모집하자
+          {isEdit ? '수정하기' : '모집하자'}
         </CustomButton>
       </ScrollView>
 
@@ -225,22 +293,21 @@ export default function PostLeenkPage() {
         isOpen={isBackModalOpen}
         onRightBtn={handleConfirmExit}
         onLeftBtn={() => setIsBackModalOpen(false)}
-        mainText="글 작성을 그만둘래?"
+        mainText={isEdit ? '수정을 그만둘래?' : '글 작성을 그만둘래?'}
         subText="작성하던 내용은 저장되지 않아."
-        isCancel={true}
+        isCancel
         leftBtnText="취소"
         rightBtnText="그만두기"
       />
-
-      {/* 최종 제출 확인 → 실제 API 호출 */}
+      {/* 최종 제출 확인 */}
       <PopupModal
         isOpen={completeModalOpen}
-        onRightBtn={handleSubmitCreate}
+        onRightBtn={handleSubmit}
         onLeftBtn={() => setCompleteModalOpen(false)}
-        mainText="모집하러 가볼까?"
+        mainText={isEdit ? '이대로 수정할까?' : '모집하러 가볼까?'}
         isCancel={false}
         leftBtnText="취소"
-        rightBtnText="모집하기"
+        rightBtnText={isEdit ? '수정하기' : '모집하기'}
         isLoading={submitting}
       />
     </KeyboardAwareScrollView>
