@@ -20,7 +20,7 @@ import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { StyledText } from '@/app/(post)/feed/write';
+import { StyledText } from '@/components/feed/write/AuthorContent';
 import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';

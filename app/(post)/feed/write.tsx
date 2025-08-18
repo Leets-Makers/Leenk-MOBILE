@@ -3,8 +3,6 @@ import {
   BackgroundImageSlider,
   CustomButton,
   Textarea,
-  Badge,
-  ProfileImageWithFallback,
   Loading,
 } from '@/components';
 import colors from '@/theme/color';
@@ -31,6 +29,10 @@ import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FEED_PADDING } from '@/constants';
 import { getLinkedUserBadgeLabel } from '@/utils/getLinkedUserBadgeLabel';
+import AuthorContent from '@/components/feed/write/AuthorContent';
+import DescriptionContent from '@/components/feed/write/DescriptionContent';
+import useIOSKeyboardSpacer from '@/hooks/useIOSKeyboardSpacer';
+import ButtonContent from '@/components/feed/write/ButtonContent';
 
 export default function FeedWritePage() {
   const { mode, feedId } = useLocalSearchParams<{
@@ -74,27 +76,10 @@ export default function FeedWritePage() {
     authorId: userInfo?.id,
   });
 
-  const androidTranslateY = useKeyboardAnimation(-85);
-
   const insets = useSafeAreaInsets();
 
   const IOS_TEXTAREA_GAP = 50 * height;
-
-  const [iosKeyboardBottom, setIosKeyboardBottom] = useState(0);
-  useEffect(() => {
-    if (Platform.OS !== 'ios') return;
-    const show = Keyboard.addListener('keyboardWillShow', (e) => {
-      const h = e.endCoordinates?.height ?? 0;
-      setIosKeyboardBottom(Math.max(0, h - insets.bottom - IOS_TEXTAREA_GAP));
-    });
-    const hide = Keyboard.addListener('keyboardWillHide', () => {
-      setIosKeyboardBottom(0);
-    });
-    return () => {
-      show.remove();
-      hide.remove();
-    };
-  }, [insets.bottom]);
+  const iosKeyboardBottom = useIOSKeyboardSpacer(IOS_TEXTAREA_GAP);
 
   // ✅ edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
   useEffect(() => {
@@ -262,6 +247,7 @@ export default function FeedWritePage() {
             gradient={{ top: 120 * height, bottom: 420 * height }}
           />
 
+          {/* 헤더  */}
           <Header
             isBackWhite
             style={{
@@ -272,6 +258,7 @@ export default function FeedWritePage() {
               paddingHorizontal: 16 * width,
             }}
           />
+
           <View
             style={{
               paddingHorizontal: FEED_PADDING * width,
@@ -279,68 +266,30 @@ export default function FeedWritePage() {
               zIndex: 9999,
             }}
           >
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 16,
-              }}
-            >
-              <ProfileImageWithFallback
-                uri={userInfo?.profileImage}
-                size={36}
-              />
-              <StyledText>{userInfo?.name}</StyledText>
-              <Badge
-                variant="gray"
-                iconType="plus"
-                label={label ?? '함께한 사람 추가'}
-                onPress={onClickToAddMember}
-              />
-            </View>
+            {/* 작성자 관련 영역 */}
+            <AuthorContent
+              profileImage={userInfo?.profileImage}
+              name={userInfo?.name}
+              label={label}
+              onPressBadge={onClickToAddMember}
+            />
 
-            {/*  Textarea만 키보드에 반응하도록 분리 */}
-            {Platform.OS === 'ios' ? (
-              <View style={{ marginBottom: iosKeyboardBottom }}>
-                <Textarea
-                  variant="dark"
-                  placeholder="텍스트를 입력해주세요"
-                  maxLength={100}
-                  value={description}
-                  onChangeText={setDescription}
-                />
-              </View>
-            ) : (
-              <Animated.View
-                style={{
-                  transform: [{ translateY: androidTranslateY }],
-                }}
-              >
-                <Textarea
-                  variant="dark"
-                  placeholder="텍스트를 입력해주세요"
-                  maxLength={100}
-                  value={description}
-                  onChangeText={setDescription}
-                />
-              </Animated.View>
-            )}
+            {/*  내용 영역 */}
+            <DescriptionContent
+              value={description}
+              onChange={setDescription}
+              iosBottomGap={iosKeyboardBottom}
+            />
 
-            <CustomButton
-              size="lg"
+            {/* 버튼 영역 */}
+            <ButtonContent
+              isEditMode={isEditParam}
               onPress={handleUpload}
-              style={{
-                marginTop: 20 * height,
-                marginBottom:
-                  Platform.OS === 'android' ? insets.bottom : 8 * height,
-              }}
               disabled={
                 description.trim().length === 0 ||
                 (!isEditParam && !hasAnyImage)
               }
-            >
-              {isEditParam ? '수정할래' : '업로드할래'}
-            </CustomButton>
+            />
           </View>
 
           <PopupModal
@@ -366,11 +315,3 @@ export default function FeedWritePage() {
     </KeyboardAvoidingView>
   );
 }
-
-export const StyledText = styled.Text`
-  color: ${colors.white};
-  font-family: ${fonts.ExtraBold};
-  font-size: ${fontSize.lg};
-  margin-right: ${12 * width}px;
-  margin-left: ${8 * width}px;
-`;
