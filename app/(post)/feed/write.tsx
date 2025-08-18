@@ -30,6 +30,7 @@ import { useUserStore } from '@/stores/userStore';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FEED_PADDING } from '@/constants';
+import { getLinkedUserBadgeLabel } from '@/utils/getLinkedUserBadgeLabel';
 
 export default function FeedWritePage() {
   const { mode, feedId } = useLocalSearchParams<{
@@ -66,6 +67,12 @@ export default function FeedWritePage() {
   // } = useFeedWriteStore();
 
   // const connectedUsers = users;
+
+  const label = getLinkedUserBadgeLabel(connectedUsers, {
+    id: (u) => u.userId,
+    name: (u) => u.name,
+    authorId: userInfo?.id,
+  });
 
   const androidTranslateY = useKeyboardAnimation(-85);
 
@@ -202,8 +209,8 @@ export default function FeedWritePage() {
 
       // ✅ 생성 모드: 이미지 포함해서 업로드
       console.log('피드 데이터: ', requestBodyCreate);
-      // const res = await uploadFeed(requestBodyCreate);
-      // console.log('[피드 업로드 성공]:', res);
+      const res = await uploadFeed(requestBodyCreate);
+      console.log('[피드 업로드 성공]:', res);
 
       resetFeedWrite();
       router.push('/(page)/feed');
@@ -287,11 +294,7 @@ export default function FeedWritePage() {
               <Badge
                 variant="gray"
                 iconType="plus"
-                label={
-                  connectedUsers.length > 0
-                    ? `${userInfo?.name} 외 ${connectedUsers.length - 1}명`
-                    : '함께한 사람 추가'
-                }
+                label={label ?? '함께한 사람 추가'}
                 onPress={onClickToAddMember}
               />
             </View>
