@@ -143,7 +143,7 @@ export default function FeedWritePage() {
       await patchMyFeed(Number(feedId), requestBodyEdit);
       showToast('수정 완료!', 'success');
       resetFeedWrite();
-      router.dismiss(2);
+      router.dismissAll();
 
       router.replace({
         pathname: '/(post)/feed/[id]',
