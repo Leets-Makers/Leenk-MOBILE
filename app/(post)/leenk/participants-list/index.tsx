@@ -23,8 +23,13 @@ import { getLeenkParticipants } from '@/api/leenk/leenk.get.api';
 import { LeenkParticipantItem } from '@/types/leenk';
 
 export default function ParticipantsList() {
-  const { startSelection, isSelectionMode, resetSelection } =
-    useParticipantStore();
+  const {
+    startSelection,
+    isSelectionMode,
+    participants,
+    setParticipants,
+    resetSelection,
+  } = useParticipantStore();
   const { leenkId, isAuthor, maxParticipants } = useLocalSearchParams<{
     leenkId: string;
     isAuthor?: string;
@@ -39,7 +44,6 @@ export default function ParticipantsList() {
   const insets = useSafeAreaInsets();
   const { showToast } = useToastStore();
 
-  const [participants, setParticipants] = useState<LeenkParticipantItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const load = useCallback(async () => {
@@ -74,12 +78,8 @@ export default function ParticipantsList() {
     }
   };
 
-  const { currentCount } = useMemo(() => {
-    const first = participants[0];
-    return {
-      currentCount: first?.currentParticipants ?? 0,
-    };
-  }, [participants]);
+  // 서버 필드가 정확 카운트가 아니라면 일단 길이 사용
+  const currentCount = participants.length;
 
   const handleKick = () => {
     if (!userIsAuthor) return;

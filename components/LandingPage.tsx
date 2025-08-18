@@ -76,11 +76,11 @@ export default function LandingPage() {
           // 최초 로그인: 약관 페이지로 이동
           router.push('/signup/terms');
         } else if (result.code === 1003) {
-          // 일반 로그인: 바로 피드로 이동
+          // 일반 로그인: 바로 링크로 이동
           await saveAccessToken(serverToken);
           await saveRefreshToken(refreshToken);
           await registerFcmToken();
-          router.replace('/(page)/feed');
+          router.replace('/(page)/leenk');
         }
       } else {
         switch (result.code) {

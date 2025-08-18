@@ -25,8 +25,12 @@ export default function UserKickButton({
   handleKick,
   disabled,
 }: Props) {
-  const { selectedUsers, isSelectionMode, resetSelection } =
-    useParticipantStore();
+  const {
+    selectedUsers,
+    isSelectionMode,
+    resetSelection,
+    removeParticipantsByIds,
+  } = useParticipantStore();
   const { showToast } = useToastStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,10 +48,16 @@ export default function UserKickButton({
     try {
       setLoading(true);
 
-      // 선택된 참여자들을 순회하며 내보내기 API 호출
-      for (const user of selectedUsers) {
-        await kickLeenkParticipants(leenkId, user.participant.userId);
-      }
+      // resetSelection 전에 userIds 확보
+      const kickedIds = selectedUsers.map((u) => u.participant.userId);
+
+      // 여러 명 병렬 처리
+      await Promise.all(
+        kickedIds.map((id) => kickLeenkParticipants(leenkId, id)),
+      );
+
+      // 화면 즉시 반영 (옵티미스틱)
+      removeParticipantsByIds(kickedIds);
 
       showToast('참여자를 내보냈어.', 'success');
     } catch (e) {
@@ -59,7 +69,6 @@ export default function UserKickButton({
       setLoading(false);
     }
   };
-
   const handleExit = () => {
     setIsModalOpen(false);
     resetSelection();
