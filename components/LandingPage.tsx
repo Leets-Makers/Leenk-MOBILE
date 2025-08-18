@@ -21,7 +21,6 @@ import {
   getFcmToken,
   saveAccessToken,
   saveRefreshToken,
-  saveTempAccessToken,
 } from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
@@ -69,7 +68,7 @@ export default function LandingPage() {
         const refreshToken = result.data.refreshToken;
 
         if (result.code === 1002) {
-          await saveTempAccessToken(result.data.accessToken);
+          await saveAccessToken(serverToken);
           await saveRefreshToken(refreshToken);
           setName(result.data.name);
           setPosition(result.data.position);
@@ -78,21 +77,8 @@ export default function LandingPage() {
           router.push('/signup/terms');
         } else if (result.code === 1003) {
           // 일반 로그인: 바로 피드로 이동
-
-          // 문자열이 아닐 경우 강제로 stringify하거나 에러 방어
-          if (
-            typeof serverToken === 'string' &&
-            typeof refreshToken === 'string'
-          ) {
-            await saveAccessToken(serverToken);
-            await saveRefreshToken(refreshToken);
-          } else {
-            console.error('❗ serverToken 또는 refreshToken이 문자열이 아님:', {
-              serverToken,
-              refreshToken,
-            });
-          }
-
+          await saveAccessToken(serverToken);
+          await saveRefreshToken(refreshToken);
           await registerFcmToken();
           router.replace('/(page)/feed');
         }

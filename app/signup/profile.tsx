@@ -49,13 +49,13 @@ export default function ProfilePage() {
 
   const { showToast } = useToastStore();
 
-  const commitTempAccessToken = async () => {
-    const tempToken = await getTempAccessToken();
-    if (!tempToken) return;
+  // const commitTempAccessToken = async () => {
+  //   const tempToken = await getTempAccessToken();
+  //   if (!tempToken) return;
 
-    await saveAccessToken(tempToken);
-    await deleteTempAccessToken();
-  };
+  //   await saveAccessToken(tempToken);
+  //   await deleteTempAccessToken();
+  // };
 
   // 프로필 저장 함수
   const saveProfile = async () => {
@@ -110,7 +110,7 @@ export default function ProfilePage() {
     } else {
       try {
         await saveProfile();
-        await commitTempAccessToken();
+        // await commitTempAccessToken();
         await registerFcmToken();
         router.replace('/(page)/feed');
       } catch (e) {
@@ -133,7 +133,7 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('[handleSkip] 실패:', error);
     }
-    await commitTempAccessToken();
+    // await commitTempAccessToken();
     await registerFcmToken();
     router.replace('/(page)/feed');
   };

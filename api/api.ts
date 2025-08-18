@@ -24,14 +24,15 @@ const refreshAccessToken = async () => {
 
   try {
     const response = await axios.post(`${BASE_URL}/refresh`, { refreshToken });
-    const { access_token, refresh_token } = response.data.data;
 
-    await saveAccessToken(access_token);
-    await saveRefreshToken(refresh_token);
+    const { accessToken, refreshToken: newRefreshToken } = response.data.data;
 
-    return access_token;
-  } catch (error: any) {
-    console.error('[refreshAccessToken] 토큰 갱신 실패:', error.response?.data);
+    await saveAccessToken(accessToken);
+    await saveRefreshToken(newRefreshToken);
+
+    return accessToken;
+  } catch (error) {
+    console.error('[refreshAccessToken] 토큰 갱신 실패:', error);
     await clearAllTokens();
     throw error;
   }
@@ -66,7 +67,6 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
-
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
