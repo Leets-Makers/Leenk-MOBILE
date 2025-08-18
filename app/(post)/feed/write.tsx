@@ -55,6 +55,13 @@ export default function FeedWritePage() {
     }
   }, [isEditParam]);
 
+  // 글쓰기 페이지 진입시
+  useEffect(() => {
+    if (!isEditParam) {
+      useFeedWriteStore.getState().startCreate();
+    }
+  }, [isEditParam]);
+
   const hasAnyImage = mediaUrls.length > 0;
 
   const previewMedia: Media[] = mediaUrls.map((m, idx) => ({
