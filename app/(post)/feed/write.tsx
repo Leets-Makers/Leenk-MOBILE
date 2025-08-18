@@ -10,7 +10,6 @@ import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
 import { patchMyFeed, uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FEED_PADDING } from '@/constants';
 import { getLinkedUserBadgeLabel } from '@/utils/getLinkedUserBadgeLabel';
 import AuthorContent from '@/components/feed/write/AuthorContent';
@@ -46,17 +45,15 @@ export default function FeedWritePage() {
     authorId: userInfo?.id,
   });
 
-  const insets = useSafeAreaInsets();
-
   const IOS_TEXTAREA_GAP = 50 * height;
   const iosKeyboardBottom = useIOSKeyboardSpacer(IOS_TEXTAREA_GAP);
 
-  // ✅ edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
+  // edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
   useEffect(() => {
     if (isEditParam && selectedImages.length > 0) {
       setSelectedImages([]);
     }
-  }, [isEditParam, selectedImages.length, setSelectedImages]);
+  }, [isEditParam]);
 
   const hasAnyImage = mediaUrls.length > 0;
 
@@ -74,7 +71,7 @@ export default function FeedWritePage() {
 
   const requestBodyEdit = {
     description,
-    userId: connectedUsers.map((u) => u.userId),
+    userIds: connectedUsers.map((u) => u.userId),
   };
 
   const handleUpload = async () => {
@@ -128,10 +125,16 @@ export default function FeedWritePage() {
     setIsModalOpen(false);
     setIsUploading(true);
     try {
+      console.log('수정 내용 : ', requestBodyEdit);
       await patchMyFeed(Number(feedId), requestBodyEdit);
       showToast('수정 완료!', 'success');
       resetFeedWrite();
-      router.push('/(page)/feed');
+      router.dismiss(2);
+
+      router.replace({
+        pathname: '/(post)/feed/[id]',
+        params: { id: String(feedId), rev: Date.now().toString() },
+      });
     } catch (e) {
       console.error(e);
       showToast('수정에 실패했어!', 'error');
