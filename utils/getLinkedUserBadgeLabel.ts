@@ -28,8 +28,8 @@ export function getLinkedUserBadgeLabel<T>(
     return byFlag && byId;
   });
 
-  // 총원은 서버 total(예: linkedUserCount) 우선, 없으면 unique 길이
-  const total = totalCountOverride ?? unique.length;
+  // 총원은 서버 total(예: linkedUserCount) 우선, 없으면 "작성자 제외" 길이
+  const total = totalCountOverride ?? nonAuthors.length;
 
   // 배지는 "총원 >= 1"일 때만 노출
   if (total <= 0 || nonAuthors.length === 0) return null;

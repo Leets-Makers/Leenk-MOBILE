@@ -39,11 +39,10 @@ export default function FeedWritePage() {
 
   const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
-  const label = getLinkedUserBadgeLabel(connectedUsers, {
-    id: (u) => u.userId,
-    name: (u) => u.name,
-    authorId: userInfo?.id,
-  });
+  const writeBadgeLabel =
+    connectedUsers.length > 0
+      ? `${userInfo?.name} 외 ${connectedUsers.length}명`
+      : null;
 
   const IOS_TEXTAREA_GAP = 50 * height;
   const iosKeyboardBottom = useIOSKeyboardSpacer(IOS_TEXTAREA_GAP);
@@ -139,7 +138,14 @@ export default function FeedWritePage() {
     setIsModalOpen(false);
     setIsUploading(true);
     try {
-      console.log('수정 내용 : ', requestBodyEdit);
+      if (__DEV__) console.log('수정 내용 : ', requestBodyEdit);
+
+      const idNum = typeof feedId === 'string' ? Number(feedId) : NaN;
+      if (Number.isNaN(idNum) || idNum <= 0) {
+        showToast('잘못된 피드 아이디야!', 'error');
+        return;
+      }
+
       await patchMyFeed(Number(feedId), requestBodyEdit);
       showToast('수정 완료!', 'success');
       resetFeedWrite();
@@ -176,7 +182,7 @@ export default function FeedWritePage() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? undefined : undefined}
+      behavior={Platform.OS === 'ios' ? undefined : 'height'}
       keyboardVerticalOffset={0}
     >
       <ScrollView
@@ -212,7 +218,7 @@ export default function FeedWritePage() {
             <AuthorContent
               profileImage={userInfo?.profileImage}
               name={userInfo?.name}
-              label={label}
+              label={writeBadgeLabel}
               onPressBadge={onClickToAddMember}
             />
 
@@ -228,6 +234,7 @@ export default function FeedWritePage() {
               isEditMode={isEditParam}
               onPress={handleUpload}
               disabled={
+                isUploading ||
                 description.trim().length === 0 ||
                 (!isEditParam && !hasAnyImage)
               }
