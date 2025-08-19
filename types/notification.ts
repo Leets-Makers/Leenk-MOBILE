@@ -11,12 +11,28 @@ interface FeedReactionCount {
   reactionCount: number;
 }
 
+interface LeenkDetail {
+  title: string;
+  body: string;
+  place: string;
+  date: string;
+}
+
+interface LeenkParticipants {
+  title: string;
+  body: string;
+  name: string;
+}
+
 interface NotificationContent {
   title: string | null;
   body: string | null;
   feedId?: number;
+  leenkId?: number;
   feedFirstReactions?: FeedFirstReaction[];
   feedReactionCounts?: FeedReactionCount[];
+  leenkParticipants?: LeenkParticipants[];
+  leenkDetail?: LeenkDetail[];
   authorUserId?: number;
   authorName?: string;
 }
@@ -26,6 +42,11 @@ type NotificationType =
   | 'FEED_REACTION_COUNT'
   | 'NEW_FEED'
   | 'FEED_TAG'
+  | 'NEW_LEENK'
+  | 'NEW_LEENK_JOIN'
+  | 'LEENK_DETAIL'
+  | 'LEENK_CLOSE'
+  | 'LEENK_NEW_PARTICIPANTS'
   | string;
 
 interface Notification {
@@ -44,7 +65,7 @@ interface GetNotificationsResponse {
     notificationResponses: Notification[];
   };
 }
-type ModalData = FeedReactionCount | FeedFirstReaction;
+type ModalData = FeedReactionCount | FeedFirstReaction | LeenkParticipants;
 
 export type {
   GetNotificationsResponse,

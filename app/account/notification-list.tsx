@@ -81,6 +81,7 @@ export default function NotificationListPage() {
         }}
         renderItem={({ item }) => (
           <NotificationListItem
+            type="feed"
             item={item}
             onPress={() => handlePress(item.id)}
             onMorePress={() => {
@@ -89,7 +90,9 @@ export default function NotificationListPage() {
                   ? item.content.feedReactionCounts
                   : item.notificationType === 'FEED_FIRST_REACTION'
                     ? item.content.feedFirstReactions
-                    : [];
+                    : item.notificationType === 'LEENK_NEW_PARTICIPANTS'
+                      ? item.content.leenkParticipants
+                      : [];
 
               openDetailModal(detailData ?? []);
             }}
@@ -106,6 +109,7 @@ export default function NotificationListPage() {
         isOpen={modalVisible}
         onClose={() => setModalVisible(false)}
         data={selectedDetails}
+        type="feed"
       />
     </Container>
   );

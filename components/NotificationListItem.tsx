@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import { FeedIcon } from '@/assets';
+import { ClockIcon, FeedIcon, LocateIcon } from '@/assets';
 import {
   fonts,
   fontSize,
@@ -18,10 +18,12 @@ export default function NotificationListItem({
   item,
   onPress,
   onMorePress,
+  type,
 }: {
   item: Notification;
   onPress: () => void;
   onMorePress?: () => void;
+  type: string;
 }) {
   const renderContent = () => {
     switch (item.notificationType) {
@@ -58,6 +60,62 @@ export default function NotificationListItem({
           </>
         );
       }
+      case 'LEENK_NEW_PARTICIPANTS': {
+        const participants = item.content.leenkParticipants || [];
+        const newParticipants = participants[0];
+        return (
+          <>
+            <TitleText>
+              {newParticipants?.title ?? '모임 이름'}에 새로운 참여자가 들어왔어
+            </TitleText>
+            <TitleText>{newParticipants?.name ?? '참여자 이름'}</TitleText>
+            {participants.length > 1 && (
+              <MoreTextWrapper onPress={onMorePress}>
+                <MoreText>{participants.length - 1}개 더보기</MoreText>
+              </MoreTextWrapper>
+            )}
+          </>
+        );
+      }
+      case 'NEW_LEENK':
+        return (
+          <>
+            <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
+            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
+          </>
+        );
+
+      case 'NEW_LEENK_JOIN':
+        return (
+          <>
+            <TitleText>
+              {item.content.title ?? '모임 이름'} 에 참여했어
+            </TitleText>
+          </>
+        );
+      case 'LEENK_CLOSE':
+        return (
+          <>
+            <TitleText>
+              {item.content.title ?? '모임 이름'} 의 모집이 종료됐어
+            </TitleText>
+            <TitleText>모임원들을 확인해 봐!</TitleText>
+          </>
+        );
+      case 'LEENK_DETAIL':
+        return (
+          <>
+            <TitleText>
+              {item.content.title ?? '모임 이름'} 시작 n분 전이야
+            </TitleText>
+            <LeftSection>
+              <LocateIcon /> <TimeText>장소</TimeText>
+            </LeftSection>
+            <LeftSection>
+              <ClockIcon /> <TimeText>시간</TimeText>
+            </LeftSection>
+          </>
+        );
 
       case 'NEW_FEED':
         return (
@@ -95,7 +153,7 @@ export default function NotificationListItem({
           <Row>
             <LeftSection>
               <FeedIcon width={16} stroke={colors.primary} />
-              <TypeText>피드</TypeText>
+              <TypeText>{type === 'feed' ? '피드' : '링크'}</TypeText>
             </LeftSection>
             <TimeText>{formatRelativeTime(item.updateDate)}</TimeText>
           </Row>

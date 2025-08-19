@@ -15,10 +15,12 @@ export default function NotificationModal({
   isOpen,
   onClose,
   data,
+  type,
 }: {
   isOpen: boolean;
   onClose: () => void;
   data: ModalData[];
+  type: string;
 }) {
   const isFirstReaction = (item: ModalData): item is FeedFirstReaction =>
     (item as FeedFirstReaction).name !== undefined;
@@ -49,7 +51,7 @@ export default function NotificationModal({
                     <Row>
                       <LeftSection>
                         <FeedIcon width={16} stroke={colors.primary} />
-                        <TypeText>피드</TypeText>
+                        <TypeText>{type === 'feed' ? '피드' : '링크'}</TypeText>
                       </LeftSection>
                       <TimeText>방금</TimeText>
                     </Row>
@@ -63,7 +65,7 @@ export default function NotificationModal({
                     <Row>
                       <LeftSection>
                         <FeedIcon width={16} stroke={colors.primary} />
-                        <TypeText>피드</TypeText>
+                        <TypeText>{type === 'feed' ? '피드' : '링크'}</TypeText>
                       </LeftSection>
                       <TimeText>방금</TimeText>
                     </Row>
