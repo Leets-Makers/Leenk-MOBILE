@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInputProps } from 'react-native';
+import { Platform, TextInputProps } from 'react-native';
 import styled from 'styled-components/native';
 import { fontSize, radius, height, width, fonts } from '@/theme/globalStyles';
 import colors from '@/theme/color';
@@ -14,6 +14,7 @@ interface TextareaProps extends TextInputProps {
   maxHeight?: number;
   isRequired?: boolean;
   fontSizeKey?: keyof typeof fontSize;
+  accessoryID?: string;
 }
 
 export default function Textarea({
@@ -28,6 +29,7 @@ export default function Textarea({
   isRequired = false,
   onChangeText,
   fontSizeKey = 'md',
+  accessoryID,
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
@@ -62,6 +64,9 @@ export default function Textarea({
             setFocused(false);
             props.onBlur?.(e);
           }}
+          {...(Platform.OS === 'ios'
+            ? { inputAccessoryViewID: accessoryID }
+            : {})}
         />
         <CharCount
           isDark={isDark}

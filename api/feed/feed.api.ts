@@ -1,5 +1,5 @@
 import api from '@/api/api';
-import { Author, FeedItem, FeedReactedUser } from '@/types/feed';
+import { Author, FeedItem, FeedReactedUser, Media } from '@/types/feed';
 import { FeedDetail, UploadFeedPayload } from '@/types/feed';
 import { ApiResponse } from '@/api/api-type';
 import { Pageable } from '@/types/pageable';
@@ -13,6 +13,12 @@ export interface MyFeedListData {
   totalReactionCount: number;
   feeds: FeedItem[];
   pageable: Pageable;
+}
+
+export interface PatchFeedBody {
+  description?: string;
+  media?: Media[];
+  userIds?: number[];
 }
 
 // GET
@@ -130,8 +136,13 @@ export const deleteFeed = async (feedId: number) => {
 
 // PATCH
 // 피드 수정
-export const patchFeed = async (feedId: number) => {
-  const res = await api.patch<ApiResponse<string>>(`/feeds/${feedId}`, {});
+export const patchMyFeed = async (feedId: number, body: PatchFeedBody) => {
+  // 빈 키 제거
+  const payload = Object.fromEntries(
+    Object.entries(body).filter(([, v]) => v !== undefined),
+  ) as PatchFeedBody;
+
+  const res = await api.patch<ApiResponse<string>>(`/feeds/${feedId}`, payload);
   if (__DEV__) console.log('피드 수정 조회: ', res.data);
   return res.data.data;
 };

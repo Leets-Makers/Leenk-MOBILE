@@ -20,7 +20,7 @@ import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import { formatDate } from '@/utils/format-date';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { StyledText } from '@/app/(post)/feed/write';
+import { StyledText } from '@/components/feed/write/AuthorContent';
 import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
@@ -33,6 +33,7 @@ import FeedReportModal from '@/components/Modal/ReportModal';
 import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
+import { getLinkedUserBadgeLabel } from '@/utils/getLinkedUserBadgeLabel';
 
 export default function FeedDetailPage() {
   const { id } = useLocalSearchParams();
@@ -90,16 +91,12 @@ export default function FeedDetailPage() {
     }
   };
 
-  const getLinkedUserBadgeLabel = (
-    linkedUser: FeedDetail['linkedUser'],
-    totalCount: number,
-  ) => {
-    const nonAuthorUsers = linkedUser.filter((u) => !u.isAuthor);
-    const firstName = nonAuthorUsers[0]?.name ?? '사용자';
-    const othersCount = totalCount - 1;
-
-    return `${firstName} 외 ${othersCount}명`;
-  };
+  const label = getLinkedUserBadgeLabel(feed?.linkedUser ?? [], {
+    id: (u) => u.userId,
+    name: (u) => u.name,
+    isAuthor: (u) => !!u.isAuthor, // 응답에 isAuthor 존재
+    totalCountOverride: feed?.linkedUserCount, // 서버 total이 따로 있을 때 반영
+  });
 
   useEffect(() => {
     console.log('firstLaunch', firstLaunch);
@@ -137,7 +134,7 @@ export default function FeedDetailPage() {
   if (!feed) return null;
 
   return (
-    <View style={{ flex: 1 }}>
+    <View pointerEvents="box-none" style={{ flex: 1 }}>
       <BackgroundImageSlider
         mediaUrls={feed.media}
         gradient={{ top: 120 * height, bottom: 520 * height }}
@@ -183,13 +180,10 @@ export default function FeedDetailPage() {
               </TouchableOpacity>
             </Link>
 
-            {feed.linkedUserCount > 1 && (
+            {feed.linkedUserCount > 1 && label && (
               <Badge
                 variant="gray"
-                label={getLinkedUserBadgeLabel(
-                  feed.linkedUser,
-                  feed.linkedUserCount,
-                )}
+                label={label}
                 onPress={() => openModal('feedLinked')}
               />
             )}
@@ -216,7 +210,7 @@ export default function FeedDetailPage() {
               fontFamily: fonts.Bold,
               paddingBottom: 8 * height,
               minHeight: 90 * height,
-              maxHeight: 126 * height,
+              maxHeight: 134 * height,
             }}
           >
             {feed.description}

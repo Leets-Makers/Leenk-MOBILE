@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInputProps } from 'react-native';
+import { Platform, TextInputProps } from 'react-native';
 import styled from 'styled-components/native';
 import {
   fontSize,
@@ -16,6 +16,7 @@ interface InputProps extends TextInputProps {
   title?: string;
   subMessage?: string;
   isRequired?: boolean;
+  accessoryID?: string;
 }
 
 export default function Input({
@@ -23,6 +24,7 @@ export default function Input({
   subMessage,
   placeholder,
   isRequired = false,
+  accessoryID,
   ...textInputProps
 }: InputProps) {
   const [focused, setFocused] = useState(false);
@@ -49,6 +51,9 @@ export default function Input({
             setFocused(false);
             textInputProps.onBlur?.(e);
           }}
+          {...(Platform.OS === 'ios'
+            ? { inputAccessoryViewID: accessoryID }
+            : {})}
         />
       </InputBox>
 
