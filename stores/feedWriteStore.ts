@@ -95,9 +95,7 @@ export const useFeedWriteStore = create<FeedWriteStore>((set, get) => ({
     set({
       isEdit: false,
       feedId: undefined,
-      selectedImages: [],
       users: [],
-      mediaUrls: [],
       description: '',
     }),
 

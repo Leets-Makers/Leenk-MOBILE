@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Pageable, PageableResponse } from '@/types/pageable';
+import { isAxiosError } from 'axios';
 
 interface UseInfiniteScrollProps<T> {
   fetchFunction: (

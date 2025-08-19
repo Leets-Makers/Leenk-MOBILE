@@ -1,41 +1,28 @@
-import {
-  Header,
-  BackgroundImageSlider,
-  CustomButton,
-  Textarea,
-  Badge,
-  ProfileImageWithFallback,
-  Loading,
-} from '@/components';
-import colors from '@/theme/color';
-import { router, useLocalSearchParams } from 'expo-router';
-import {
-  View,
-  ScrollView,
-  Platform,
-  KeyboardAvoidingView,
-  Animated,
-} from 'react-native';
+import { Header, BackgroundImageSlider, Loading } from '@/components';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Media } from '@/types/feed';
-import { fonts, fontSize, height, width } from '@/theme/globalStyles';
-import { useEffect, useState } from 'react';
+import { height, width } from '@/theme/globalStyles';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import PopupModal from '@/components/Modal/PopupModal';
-import styled from 'styled-components/native';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import FeedUploadModal from '@/components/Modal/FeedUploadingModal';
-import { getFeedDetail, uploadFeed } from '@/api/feed/feed.api';
+import { patchMyFeed, uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
-import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FEED_PADDING } from '@/constants';
+import { getLinkedUserBadgeLabel } from '@/utils/getLinkedUserBadgeLabel';
+import AuthorContent from '@/components/feed/write/AuthorContent';
+import DescriptionContent from '@/components/feed/write/DescriptionContent';
+import useIOSKeyboardSpacer from '@/hooks/useIOSKeyboardSpacer';
+import ButtonContent from '@/components/feed/write/ButtonContent';
 
 export default function FeedWritePage() {
   const { mode, feedId } = useLocalSearchParams<{
     mode?: 'edit' | 'create';
     feedId?: string;
   }>();
-  const isEditParam = mode === 'edit' && !!feedId;
+  const isEditParam = mode === 'edit';
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -43,50 +30,75 @@ export default function FeedWritePage() {
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
 
-  const {
-    startCreate,
-    startEditFromDetail,
-    reset,
-    mediaUrls,
-    selectedImages,
-    users,
-    description,
-    setDescription,
-    feedId: storeFeedId,
-  } = useFeedWriteStore();
+  const selectedImages = useFeedWriteStore((state) => state.selectedImages);
+  const setSelectedImages = useFeedWriteStore((s) => s.setSelectedImages);
+  const connectedUsers = useFeedWriteStore((state) => state.users);
+  const description = useFeedWriteStore((state) => state.description);
+  const setDescription = useFeedWriteStore((state) => state.setDescription);
+  const mediaUrls = useFeedWriteStore((state) => state.mediaUrls);
 
-  const connectedUsers = users;
+  const resetFeedWrite = useFeedWriteStore((state) => state.reset);
 
-  const buttonTranslateY = useKeyboardAnimation(
-    Platform.OS === 'ios' ? -390 * height : -85,
+  const writeBadgeLabel =
+    connectedUsers.length > 0
+      ? `${userInfo?.name} 외 ${connectedUsers.length}명`
+      : null;
+
+  const IOS_TEXTAREA_GAP = 50 * height;
+  const iosKeyboardBottom = useIOSKeyboardSpacer(IOS_TEXTAREA_GAP);
+
+  const didInitRef = useRef(false);
+
+  // edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
+  useEffect(() => {
+    if (isEditParam && selectedImages.length > 0) {
+      setSelectedImages([]);
+    }
+  }, [isEditParam]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!isEditParam && !didInitRef.current) {
+        useFeedWriteStore.getState().startCreate();
+        didInitRef.current = true; // 이후부터는 재초기화 방지
+      }
+      return () => {};
+    }, [isEditParam]),
   );
 
-  const insets = useSafeAreaInsets();
+  const hasAnyImage = mediaUrls.length > 0;
 
-  // 기존 서버 이미지 + 로컬 새 이미지 합쳐서 슬라이더에 전달
-  const previewMedia: Media[] = [
-    ...mediaUrls.map((m) => ({
-      position: m.position,
-      mediaUrl: m.mediaUrl,
-      mediaType: m.mediaType,
-    })),
-    ...selectedImages.map((img, i) => ({
-      position: mediaUrls.length + i, // 뒤에 이어붙이기
-      mediaUrl: img.uri, // 로컬 uri
-      mediaType: 'IMAGE' as const,
-    })),
-  ];
+  const previewMedia: Media[] = mediaUrls.map((m, idx) => ({
+    position: idx + 1,
+    mediaUrl: m.mediaUrl,
+    mediaType: m.mediaType,
+  }));
 
-  const requestBody = {
+  const requestBodyCreate = {
     description,
-    media: previewMedia,
-    userId: connectedUsers.map((user) => user.userId),
+    media: mediaUrls, // create는 이미지 포함
+    userIds: connectedUsers.map((u) => u.userId),
+  };
+
+  const requestBodyEdit = {
+    description,
+    userIds: connectedUsers.map((u) => u.userId),
   };
 
   const handleUpload = async () => {
     if (!description.trim()) return;
 
-    if (connectedUsers.length === 0) {
+    if (!isEditParam && !hasAnyImage) {
+      showToast('이미지를 최소 1장 선택해줘!', 'error');
+      return;
+    }
+
+    if (isEditParam) {
+      setIsModalOpen(true);
+      return;
+    }
+
+    if (connectedUsers.length === 0 && !isEditParam) {
       setIsModalOpen(true);
     } else {
       handleUploadFeed(); // 함께한 사람이 있는 경우 바로 업로드
@@ -98,35 +110,57 @@ export default function FeedWritePage() {
     handleUploadFeed(); // 함께한 사람 없는 경우 모달에서 확인 후 업로드
   };
 
-  // 업로드 로직 분리
+  // 피드 업로드 함수
   const handleUploadFeed = async () => {
-    if (isEditParam) {
-      setIsModalOpen(true);
-      return;
-    }
-
     setIsUploading(true);
-
     try {
-      const res = await uploadFeed(requestBody);
+      // 생성 api 호출
+      console.log('피드 데이터: ', requestBodyCreate);
+      const res = await uploadFeed(requestBodyCreate);
       console.log('[피드 업로드 성공]:', res);
 
-      reset();
+      resetFeedWrite();
+      didInitRef.current = false;
       router.push('/(page)/feed');
     } catch (error) {
       console.error('업로드 실패:', error);
-      showToast('피드 업로드에 실패했어!', 'error');
+      showToast(
+        isEditParam ? '수정에 실패했어!' : '피드 업로드에 실패했어!',
+        'error',
+      );
     } finally {
       setIsUploading(false);
     }
   };
 
+  // 피드 수정
   const handleConfirmEdit = async () => {
     setIsModalOpen(false);
-    // TODO: 수정 API 연결.
+    setIsUploading(true);
+    try {
+      if (__DEV__) console.log('수정 내용 : ', requestBodyEdit);
 
-    showToast('수정 완료!', 'success');
-    router.back();
+      const idNum = typeof feedId === 'string' ? Number(feedId) : NaN;
+      if (Number.isNaN(idNum) || idNum <= 0) {
+        showToast('잘못된 피드 아이디야!', 'error');
+        return;
+      }
+
+      await patchMyFeed(Number(feedId), requestBodyEdit);
+      showToast('수정 완료!', 'success');
+      resetFeedWrite();
+      router.dismissAll();
+
+      router.replace({
+        pathname: '/(post)/feed/[id]',
+        params: { id: String(feedId), rev: Date.now().toString() },
+      });
+    } catch (e) {
+      console.error(e);
+      showToast('수정에 실패했어!', 'error');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleConfirmExit = () => {
@@ -135,77 +169,20 @@ export default function FeedWritePage() {
   };
 
   const onClickToAddMember = () => {
-    router.push('/feed/link-members');
+    router.push({
+      pathname: '/feed/link-members',
+      params: { mode, feedId },
+    });
   };
 
   if (!userInfo) {
     return <Loading />;
   }
 
-  useEffect(() => {
-    let cancelled = false;
-
-    (async () => {
-      if (!isEditParam) {
-        // ------- 생성 모드 -------
-        const s = useFeedWriteStore.getState();
-
-        const hasDraft =
-          s.selectedImages.length > 0 ||
-          !!s.description?.trim() ||
-          s.users.length > 0;
-
-        const hasEditResidue = s.isEdit || !!s.feedId || s.mediaUrls.length > 0;
-
-        if (hasEditResidue) {
-          if (hasDraft) {
-            // 초안은 유지하고, 수정 전용 잔상만 제거
-            useFeedWriteStore.setState({
-              isEdit: false,
-              feedId: undefined,
-              mediaUrls: [],
-            });
-          } else {
-            // 초안이 없으면 완전 초기화
-            startCreate(); // selectedImages/users/description도 비움
-          }
-        }
-        return;
-      }
-
-      // ------- 수정 모드 보강 -------
-      if (storeFeedId === Number(feedId) && mediaUrls.length > 0) return;
-
-      reset();
-      try {
-        const detail = await getFeedDetail(Number(feedId));
-        if (!cancelled) startEditFromDetail(detail);
-      } catch {
-        if (!cancelled) {
-          showToast('피드 정보를 불러오지 못했어!', 'error');
-          router.back();
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    isEditParam,
-    feedId,
-    mediaUrls.length,
-    storeFeedId,
-    startCreate,
-    startEditFromDetail,
-    reset,
-    showToast,
-  ]);
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? undefined : 'height'}
       keyboardVerticalOffset={0}
     >
       <ScrollView
@@ -218,6 +195,7 @@ export default function FeedWritePage() {
             gradient={{ top: 120 * height, bottom: 420 * height }}
           />
 
+          {/* 헤더  */}
           <Header
             isBackWhite
             style={{
@@ -228,63 +206,39 @@ export default function FeedWritePage() {
               paddingHorizontal: 16 * width,
             }}
           />
+
           <View
             style={{
               paddingHorizontal: FEED_PADDING * width,
-              marginBottom: 24,
+              marginBottom: 36 * height,
               zIndex: 9999,
             }}
           >
-            <Animated.View
-              style={{
-                transform: [{ translateY: buttonTranslateY }],
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 16,
-                }}
-              >
-                <ProfileImageWithFallback
-                  uri={userInfo?.profileImage}
-                  size={36}
-                />
-                <StyledText>{userInfo?.name}</StyledText>
-                <Badge
-                  variant="gray"
-                  iconType="plus"
-                  label={
-                    connectedUsers.length > 0
-                      ? `${userInfo?.name} 외 ${connectedUsers.length}명`
-                      : '함께한 사람 추가'
-                  }
-                  onPress={onClickToAddMember}
-                />
-              </View>
+            {/* 작성자 관련 영역 */}
+            <AuthorContent
+              profileImage={userInfo?.profileImage}
+              name={userInfo?.name}
+              label={writeBadgeLabel}
+              onPressBadge={onClickToAddMember}
+            />
 
-              <Textarea
-                variant="dark"
-                placeholder="텍스트를 입력해주세요"
-                maxLength={100}
-                value={description}
-                onChangeText={setDescription}
-              />
+            {/*  내용 영역 */}
+            <DescriptionContent
+              value={description}
+              onChange={setDescription}
+              iosBottomGap={iosKeyboardBottom}
+            />
 
-              <CustomButton
-                size="lg"
-                onPress={handleUpload}
-                style={{
-                  marginTop: 20 * height,
-                  marginBottom:
-                    Platform.OS === 'android' ? insets.bottom : 8 * height,
-                }}
-                disabled={description.trim().length === 0}
-              >
-                {isEditParam ? '수정할래' : '업로드할래'}
-              </CustomButton>
-            </Animated.View>
+            {/* 버튼 영역 */}
+            <ButtonContent
+              isEditMode={isEditParam}
+              onPress={handleUpload}
+              disabled={
+                isUploading ||
+                description.trim().length === 0 ||
+                (!isEditParam && !hasAnyImage)
+              }
+            />
           </View>
 
           <PopupModal
@@ -305,16 +259,8 @@ export default function FeedWritePage() {
           />
         </View>
 
-        <FeedUploadModal isOpen={isUploading} />
+        <FeedUploadModal isOpen={isUploading && !isEditParam} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
-
-export const StyledText = styled.Text`
-  color: ${colors.white};
-  font-family: ${fonts.ExtraBold};
-  font-size: ${fontSize.lg};
-  margin-right: ${12 * width}px;
-  margin-left: ${8 * width}px;
-`;
