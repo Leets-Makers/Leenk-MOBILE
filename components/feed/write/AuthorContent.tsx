@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import { fonts, fontSize, height, width } from '@/theme/globalStyles';
+import { fonts, fontSize, width } from '@/theme/globalStyles';
 import { Badge, ProfileImageWithFallback } from '@/components';
 
 interface Props {
@@ -31,7 +31,7 @@ export default function AuthorContent({
 
       <Badge
         variant="gray"
-        iconType={label ? undefined : 'plus'} // 선택 전엔 + 아이콘
+        iconType="plus"
         label={label ?? '함께한 사람 추가'}
         onPress={onPressBadge}
       />
