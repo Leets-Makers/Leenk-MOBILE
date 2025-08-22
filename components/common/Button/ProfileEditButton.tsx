@@ -61,6 +61,7 @@ const BoxText = styled.Text`
   color: ${colors.black};
   font-family: ${fonts.Regular};
 `;
+
 const TextareaWrapper = styled.Pressable`
   width: 100%;
   height: ${76 * height}px;
@@ -85,10 +86,11 @@ const TextareaText = styled.Text`
 `;
 
 const CharCount = styled.Text`
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.sm}px;
   position: absolute;
   bottom: ${12 * height}px;
   right: ${12 * width}px;
-  font-size: ${fontSize.xs}px;
   color: ${colors.gray[500]};
   margin-top: ${12 * height}px;
 `;
