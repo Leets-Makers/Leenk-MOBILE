@@ -103,6 +103,7 @@ export default function PostFeedPage() {
         style={{
           paddingBottom: 10 * height + insets.bottom,
           paddingTop: 16 * height,
+          paddingHorizontal: CONTAINER_PADDING * width,
         }}
       >
         <SubmitButton disabled={selectedUrisLength === 0} onPress={handleNext}>

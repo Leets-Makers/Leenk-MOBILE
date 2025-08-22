@@ -98,5 +98,6 @@ const ButtonContainer = styled.View<{ $bottomInset: number }>`
   bottom: ${(props) => props.$bottomInset + 10 * height}px;
   align-self: center;
   width: 100%;
-  ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
+  padding: 0 ${CONTAINER_PADDING * width}px;
+  /* ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''} */
 `;
