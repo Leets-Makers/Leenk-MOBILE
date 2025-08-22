@@ -4,6 +4,7 @@ import {
   fonts,
   height,
   lineHeight,
+  radius,
   width,
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
@@ -49,16 +50,16 @@ const Title = styled.Text`
 
 const Box = styled.Pressable`
   width: 100%;
-  border-radius: 8px;
-  padding: ${12 * height}px ${14 * width}px;
+  border-radius: ${radius.sm}px;
+  padding: ${14 * height}px ${14 * width}px;
   background-color: transparent;
   border: 1px solid ${colors.gray[300]};
 `;
 
 const BoxText = styled.Text`
+  font-family: ${fonts.Regular};
   font-size: ${fontSize.md}px;
   color: ${colors.black};
-  font-family: ${fonts.Regular};
 `;
 
 const TextareaWrapper = styled.Pressable`

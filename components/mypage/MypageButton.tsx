@@ -46,9 +46,8 @@ const Container = styled.Pressable`
 
 const Title = styled.Text<{ onlyText: boolean }>`
   font-size: ${fontSize.md}px;
-  font-weight: 700;
+  font-family: ${fonts.Bold};
   color: ${colors.text[1]};
-  font-family: ${fonts.Regular};
   text-align: ${({ onlyText }) => (onlyText ? 'left' : 'auto')};
   flex: 1;
 `;
