@@ -53,6 +53,8 @@ export default function LeenkDetailPage() {
     () => (leenkDetail ? leenkDetail.author.userId === userInfo?.id : false),
     [leenkDetail, userInfo?.id],
   );
+
+  // console.log(isAuthor, leenkDetail?.author.userId, userInfo?.id);
   const isBusy = loading || deleting || joining || leaving;
 
   const fetchDetail = useCallback(async () => {
