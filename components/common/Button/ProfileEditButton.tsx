@@ -41,11 +41,10 @@ const EditWrapper = styled.View`
 `;
 
 const Title = styled.Text`
-  font-size: ${fontSize.sm}px;
+  font-family: ${fonts.Bold};
+  font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
-  font-family: ${fonts.Regular};
-  margin-bottom: ${6 * height}px;
-  font-weight: 700;
+  margin-bottom: ${12 * height}px;
 `;
 
 const Box = styled.Pressable`
