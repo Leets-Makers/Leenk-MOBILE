@@ -1,4 +1,4 @@
-import { CheckerIcon, ReviewIcon, ShareIcon } from '@/assets';
+import { CheckerIcon, ReviewIcon } from '@/assets';
 import {
   BottomSheetModal,
   CustomButton,
@@ -16,7 +16,7 @@ import { height, width } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 import { mockLeenkData } from '@/constants/mockUserData';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Share } from 'react-native';
@@ -25,6 +25,8 @@ import { useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 import ReportModal from '@/components/Modal/ReportModal';
+import * as Linking from 'expo-linking';
+import * as Clipboard from 'expo-clipboard';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
@@ -98,9 +100,31 @@ export default function LeenkDetailPage() {
 
   const handleShare = async () => {
     try {
-      await Share.share({ message: title });
-    } catch (error) {
-      showToast('공유에 실패했어요', 'error');
+      if (!leenkId) {
+        showToast('공유할 링크를 만들 수 없어요.', 'error');
+        return;
+      }
+
+      // ✅ 커스텀 스킴 딥링크 생성 (app.json의 scheme와 동일해야 함: 예 "leenk")
+      //    path는 expo-router 라우트와 일치: /leenk/[id]
+      const deepLink = Linking.createURL(`/leenk/${leenkId}`, {
+        scheme: 'leenk',
+      });
+      // 예: "leenk://leenk/123"
+
+      // iOS는 url 필드를 더 잘 인식
+      if (Platform.OS === 'ios') {
+        await Share.share({ url: deepLink, message: title });
+      } else {
+        await Share.share({ message: `${title}\n${deepLink}` });
+      }
+    } catch {
+      // 실패 시 클립보드 복사 폴백
+      const fallback = Linking.createURL(`/leenk/${leenkId}`, {
+        scheme: 'leenk',
+      });
+      await Clipboard.setStringAsync(fallback);
+      showToast('링크를 클립보드에 복사했어요', 'success');
     }
   };
 

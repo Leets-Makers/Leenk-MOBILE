@@ -36,7 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         action: 'VIEW',
         autoVerify: false,
-        data: [{ scheme: 'leenk', host: '*' }],
+        data: [{ scheme: 'leenk' }],
         category: ['BROWSABLE', 'DEFAULT'],
       },
     ],

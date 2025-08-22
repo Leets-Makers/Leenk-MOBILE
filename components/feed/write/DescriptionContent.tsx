@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform, Animated, View } from 'react-native';
 import { Textarea } from '@/components';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
+import { height } from '@/theme/globalStyles';
 
 interface Props {
   value: string;
@@ -14,7 +15,7 @@ export default function DescriptionContent({
   onChange,
   iosBottomGap,
 }: Props) {
-  const androidTranslateY = useKeyboardAnimation(-85);
+  const androidTranslateY = useKeyboardAnimation(-300 * height);
 
   if (Platform.OS === 'ios') {
     return (
