@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { FlatList, Platform, View } from 'react-native';
 import { ThumbnailItem } from '@/components';
 import useFeedImagePicker from '@/hooks/useFeedImagePicker';
-import { NUM_COLUMNS } from '@/constants';
+import { CONTAINER_PADDING, NUM_COLUMNS } from '@/constants';
 import { AspectRatio } from '@/types/aspect-ratio';
 import { width } from '@/theme/globalStyles';
 import useProfileImagePicker from '@/hooks/useProfileImagePicker';
@@ -66,7 +66,11 @@ export default function ImagePicker({
           justifyContent: 'flex-start',
           gap: 4 * width,
         }}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{
+          paddingBottom: 100,
+          paddingHorizontal: CONTAINER_PADDING * width,
+        }}
+        showsVerticalScrollIndicator
         style={{ flexGrow: 1 }}
         onEndReachedThreshold={0.5}
         onEndReached={() => {

@@ -11,7 +11,6 @@ import { patchMyFeed, uploadFeed } from '@/api/feed/feed.api';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
 import { FEED_PADDING } from '@/constants';
-import { getLinkedUserBadgeLabel } from '@/utils/getLinkedUserBadgeLabel';
 import AuthorContent from '@/components/feed/write/AuthorContent';
 import DescriptionContent from '@/components/feed/write/DescriptionContent';
 import useIOSKeyboardSpacer from '@/hooks/useIOSKeyboardSpacer';
