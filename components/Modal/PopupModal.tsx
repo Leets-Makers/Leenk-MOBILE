@@ -116,6 +116,7 @@ export const SubText = styled.Text<{ $isWarning: boolean }>`
   margin-top: ${4 * height}px;
   color: ${({ $isWarning }) =>
     $isWarning ? colors.secondary : colors.text[1]};
+  text-align: center;
 `;
 
 const ButtonRow = styled.View`
