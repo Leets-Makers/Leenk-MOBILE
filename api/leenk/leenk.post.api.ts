@@ -42,23 +42,23 @@ export const participantLeenk = async (leenkId: number) => {
   return res.data.data;
 };
 
-// 링크 모집 종료
+// 링크 모임 종료(링크 종료)
 export const finishLeenk = async (leenkId: number) => {
   const res = await api.post<ApiResponse<string>>(`/leenks/${leenkId}/finish`);
 
   if (__DEV__) {
-    console.log(`링크 모집 종료(${leenkId}):`, res.data.data);
+    console.log(`링크 모임 종료(${leenkId}):`, res.data.data);
   }
 
   return res.data.data;
 };
 
-// 링크 마감(모집 완료)
+// 링크 모집 종료
 export const closeLeenk = async (leenkId: number) => {
   const res = await api.post<ApiResponse<string>>(`/leenks/${leenkId}/close`);
 
   if (__DEV__) {
-    console.log(`링크 마감(${leenkId}):`, res.data.data);
+    console.log(`링크 모집 종료(${leenkId}):`, res.data.data);
   }
 
   return res.data.data;

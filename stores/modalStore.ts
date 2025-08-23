@@ -11,7 +11,7 @@ type ModalType =
   | 'feedReport'
   | 'leenkKick'
   | 'leenkClose'
-  | 'leenkEarlyClose'
+  | 'leenkFinish'
   | 'leenkLeave'
   | 'leenkReport'
   | null;

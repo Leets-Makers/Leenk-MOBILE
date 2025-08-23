@@ -11,6 +11,8 @@ import { FEED_PADDING } from '@/constants';
 
 import { getLeenkList } from '@/api/leenk/leenk.get.api';
 import { Leenk } from '@/types/leenk';
+import { useUserStore } from '@/stores/userStore';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 const PAGE_SIZE = 10;
 const tabToStatus = (tab: 'all' | 'open' | 'close') =>
@@ -24,6 +26,15 @@ export default function LeenkPage() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+
+  const { userInfo: fetchedUserInfo } = useUserInfo();
+  const { userInfo, setUserInfo } = useUserStore();
+
+  useEffect(() => {
+    if (fetchedUserInfo && !userInfo) {
+      setUserInfo(fetchedUserInfo);
+    }
+  }, [fetchedUserInfo, userInfo, setUserInfo]);
 
   // 중복 호출 방지
   const onEndReachedCalledDuringMomentum = useRef(false);

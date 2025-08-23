@@ -22,6 +22,7 @@ export interface LeenkListResponse {
 
 export interface LeenkDetail {
   id: number;
+  status: 'RECRUITING' | 'CLOSED' | 'FINISHED';
   author: Author;
   kakaoId: string;
   title: string;

@@ -7,7 +7,7 @@ type ModalType =
   | 'deleteConfirm'
   | 'leenkLeave'
   | 'leenkClose'
-  | 'leenkEarlyClose'
+  | 'leenkFinish'
   | 'leenkReport'
   | undefined;
 
@@ -19,7 +19,8 @@ interface Props {
   // actions
   onConfirmDelete: () => Promise<void> | void;
   onConfirmLeave: () => Promise<void> | void;
-  onConfirmClose: () => void;
+  onConfirmClose: () => Promise<void> | void;
+  onConfirmFinish: () => Promise<void> | void;
 }
 
 function LeenkDetailModals({
@@ -29,6 +30,7 @@ function LeenkDetailModals({
   onConfirmDelete,
   onConfirmLeave,
   onConfirmClose,
+  onConfirmFinish,
 }: Props) {
   const leaveSubText = useMemo(
     () =>
@@ -81,16 +83,16 @@ function LeenkDetailModals({
           rightBtnText="종료할래"
         />
       );
-    case 'leenkEarlyClose':
+    case 'leenkFinish':
       return (
         <PopupModal
           isOpen
-          onRightBtn={onConfirmClose}
+          onRightBtn={onConfirmFinish}
           onLeftBtn={onClose}
-          mainText={`링크 시간이 아직 남았어! \n일찍 끝낼거야?`}
+          mainText={`링크를 끝낼거야?`}
           isCancel
           leftBtnText="취소"
-          rightBtnText="삭제할래"
+          rightBtnText="종료할래"
         />
       );
     case 'leenkReport':

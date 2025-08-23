@@ -15,7 +15,7 @@ import { height, width } from '@/theme/globalStyles';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import styled from 'styled-components/native';
 
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Share } from 'react-native';
@@ -28,9 +28,14 @@ import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
 import { LeenkDetail } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
 import { deleteLeenk, leaveLeenk } from '@/api/leenk/leenk.del.api';
-import { participantLeenk } from '@/api/leenk/leenk.post.api';
+import {
+  closeLeenk,
+  finishLeenk,
+  participantLeenk,
+} from '@/api/leenk/leenk.post.api';
 import LeenkDetailModals from '@/components/leenk/LeenkDetailModals';
-
+import * as Linking from 'expo-linking';
+import * as Clipboard from 'expo-clipboard';
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
   const leenkId = useMemo(() => Number(Array.isArray(id) ? id[0] : id), [id]);
@@ -47,6 +52,7 @@ export default function LeenkDetailPage() {
   const [joining, setJoining] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [isParticipating, setIsParticipating] = useState(false);
+  const [leenkStatus, setLeenkStatus] = useState('');
   const [isLeenkEnd, setIsLeenkEnd] = useState(false);
 
   const isAuthor = useMemo(
@@ -54,7 +60,6 @@ export default function LeenkDetailPage() {
     [leenkDetail, userInfo?.id],
   );
 
-  // console.log(isAuthor, leenkDetail?.author.userId, userInfo?.id);
   const isBusy = loading || deleting || joining || leaving;
 
   const fetchDetail = useCallback(async () => {
@@ -68,7 +73,11 @@ export default function LeenkDetailPage() {
     setLoading(true);
     try {
       const data = await getLeenkDetail(leenkId);
-      if (active) setLeenkDetail(data);
+      if (active) {
+        setLeenkDetail(data);
+        setLeenkStatus(data.status);
+        console.log('링크의 상태:', data.status);
+      }
     } catch (e) {
       if (active) {
         showToast('상세 정보를 불러오지 못했어.', 'error');
@@ -94,33 +103,38 @@ export default function LeenkDetailPage() {
     }, [fetchDetail]),
   );
 
-  const handleDelete = useCallback(() => {
-    closeModal();
-    openModal('deleteConfirm');
-  }, [closeModal, openModal]);
-
-  const handleEdit = useCallback(() => {
-    closeModal();
-    router.push({
-      pathname: '/(post)/leenk',
-      params: { mode: 'edit', leenkId: String(leenkDetail?.id ?? '') },
-    });
-  }, [closeModal, router, leenkDetail?.id]);
-
+  // 링크 신고 함수
   const handleReport = useCallback(() => {
     closeModal();
     openModal('leenkReport');
   }, [closeModal, openModal]);
 
-  const handleLeenkCloseModal = useCallback(
-    () => openModal('leenkClose'),
-    [openModal],
-  );
-  const handleLeenkClose = useCallback(
-    () => openModal('bottomSheet'),
-    [openModal],
-  );
+  // 링크 모집 종료 함수
+  const handleLeenkClose = async (leenkId: number) => {
+    try {
+      await closeLeenk(leenkId);
+      closeModal();
+      showToast('링크 모집을 종료했어요.');
+    } catch (err) {
+      console.error('링크 모집 종료 실패:', err);
+      showToast('링크 모집 종료에 실패했어요.');
+    }
+  };
+  // 링크 모임 종료 함수
+  const handleLeenkFinish = async (leenkId: number) => {
+    try {
+      await finishLeenk(leenkId);
+      closeModal();
+      showToast('링크 모임을 종료했어요.');
+      // 종료 후 바텀시트 띄우기
+      openModal('bottomSheet');
+    } catch (err) {
+      console.error('링크 모임 종료 실패:', err);
+      showToast('링크 모임 종료에 실패했어요.');
+    }
+  };
 
+  // 참여자 페이지 이동
   const handleParticipants = useCallback(() => {
     if (!leenkDetail) return;
     router.push({
@@ -133,6 +147,7 @@ export default function LeenkDetailPage() {
     });
   }, [leenkDetail, isAuthor, router]);
 
+  // 링크 삭제하기 버튼(작성자)
   const handleConfirmDelete = useCallback(async () => {
     if (!leenkDetail || deleting) return;
     try {
@@ -149,6 +164,22 @@ export default function LeenkDetailPage() {
     }
   }, [leenkDetail, deleting, closeModal, router, showToast]);
 
+  // 삭제하기 모달(작성자)
+  const handleDelete = useCallback(() => {
+    closeModal();
+    openModal('deleteConfirm');
+  }, [closeModal, openModal]);
+
+  // 수정하기 페이지 이동(작성자)
+  const handleEdit = useCallback(() => {
+    closeModal();
+    router.push({
+      pathname: '/(post)/leenk',
+      params: { mode: 'edit', leenkId: String(leenkDetail?.id ?? '') },
+    });
+  }, [closeModal, router, leenkDetail?.id]);
+
+  // 링크 떠나기(참여자)
   const handleLeave = useCallback(async () => {
     if (!leenkDetail || leaving || !isParticipating) {
       closeModal();
@@ -177,6 +208,7 @@ export default function LeenkDetailPage() {
     }
   }, [leenkDetail, leaving, isParticipating, closeModal, showToast]);
 
+  // 링크 참여하기(참여자)
   const handleJoinLeenk = useCallback(async () => {
     if (!leenkDetail || joining || isParticipating) return;
     try {
@@ -198,15 +230,36 @@ export default function LeenkDetailPage() {
     }
   }, [leenkDetail, joining, isParticipating, showToast]);
 
-  const handleShare = useCallback(async () => {
+  // 공유하기(작성자,침여자)
+  const handleShare = async () => {
     try {
-      if (leenkDetail?.title) {
-        await Share.share({ message: leenkDetail.title });
+      if (!leenkId) {
+        showToast('공유할 링크를 만들 수 없어요.', 'error');
+        return;
+      }
+
+      // 커스텀 스킴 딥링크 생성 (app.json의 scheme와 동일해야 함: 예 "leenk")
+      //    path는 expo-router 라우트와 일치: /leenk/[id]
+      const deepLink = Linking.createURL(`/leenk/${leenkId}`, {
+        scheme: 'leenk',
+      });
+      // 예: "leenk://leenk/123"
+
+      // iOS는 url 필드를 더 잘 인식
+      if (Platform.OS === 'ios') {
+        await Share.share({ url: deepLink, message: leenkDetail?.title });
+      } else {
+        await Share.share({ message: `${leenkDetail?.title}\n${deepLink}` });
       }
     } catch {
-      showToast('공유에 실패했어', 'error');
+      // 실패 시 클립보드 복사 폴백
+      const fallback = Linking.createURL(`/leenk/${leenkId}`, {
+        scheme: 'leenk',
+      });
+      await Clipboard.setStringAsync(fallback);
+      showToast('링크를 클립보드에 복사했어요', 'success');
     }
-  }, [leenkDetail?.title, showToast]);
+  };
 
   if (isBusy || !leenkDetail) {
     return <Loading />;
@@ -249,11 +302,11 @@ export default function LeenkDetailPage() {
         isParticipating={isParticipating}
         insetBottom={insets.bottom}
         onLeave={() => openModal('leenkLeave')}
-        onEalryClose={() => openModal('leenkEarlyClose')}
-        onClose={handleLeenkCloseModal}
+        onFinish={() => openModal('leenkFinish')}
+        onClose={() => openModal('leenkClose')}
         onJoin={handleJoinLeenk}
         onParticipants={handleParticipants}
-        isLeenkEnd={isLeenkEnd}
+        leenkStatus={leenkStatus}
       />
 
       <MenuModal
@@ -273,7 +326,8 @@ export default function LeenkDetailPage() {
         onClose={closeModal}
         onConfirmDelete={handleConfirmDelete}
         onConfirmLeave={handleLeave}
-        onConfirmClose={handleLeenkClose}
+        onConfirmClose={() => handleLeenkClose(leenkDetail.id)}
+        onConfirmFinish={() => handleLeenkFinish(leenkDetail.id)}
       />
 
       {modalType === 'bottomSheet' && (
