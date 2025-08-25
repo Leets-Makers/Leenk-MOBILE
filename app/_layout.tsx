@@ -1,16 +1,12 @@
 import 'react-native-reanimated';
 import { FontAwesome } from '@expo/vector-icons';
 
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, usePathname, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useRef } from 'react';
-import { useColorScheme, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from '@/components/Toast';
@@ -78,7 +74,6 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
   const pathname = usePathname();
 
   // 일부 페이지는 상단 SafeAreaView 배경을 제외하기 위한 패턴
@@ -156,13 +151,11 @@ function RootLayoutNav() {
         | undefined;
       navigateFromData(data);
     })();
-    // 주의: 의존성 배열 비우기 (앱 시작 시 한 번만 체크)
   }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        {/* 권한/채널 등의 초기화 훅 (이미 사용 중) */}
         <NotificationInitializer />
 
         <StatusBar

@@ -137,10 +137,11 @@ export default function NotificationListItem({
               &#91;{item.content.leenkTitle ?? '모임 이름'}&#93;
               {item.content.body ?? '시작 30분 전이야'}
             </TitleText>
-            {/* <LeftSection style={{ marginTop: height * 6 }}>
-              <LocateIcon /> <TimeText>{item.content.placeName}</TimeText>
-            </LeftSection> */}
-            <LeftSection>
+            <LeftSection style={{ marginTop: height * 6 }}>
+              <LocateIcon />
+              <TimeText>{item.content.placeName}</TimeText>
+            </LeftSection>
+            <LeftSection style={{ marginTop: height * 8 }}>
               <ClockIcon />
 
               <TimeText>
