@@ -1,6 +1,12 @@
 import React, { useMemo } from 'react';
 import ReportModal from '@/components/Modal/ReportModal';
 import PopupModal from '@/components/Modal/PopupModal';
+import BottomSheetModal from '../Modal/BottomSheetModal';
+import CustomButton from '../common/Button/CustomButton';
+import { router } from 'expo-router';
+import { height } from '@/theme/globalStyles';
+import { SubText, TitleText } from '@/components/OnBoarding';
+import { ReviewIcon } from '@/assets';
 
 type ModalType =
   | 'menu'
@@ -9,6 +15,7 @@ type ModalType =
   | 'leenkClose'
   | 'leenkFinish'
   | 'leenkReport'
+  | 'bottomSheet'
   | undefined;
 
 interface Props {
@@ -97,6 +104,42 @@ function LeenkDetailModals({
       );
     case 'leenkReport':
       return <ReportModal type="leenk" />;
+
+    case 'bottomSheet':
+      return (
+        <BottomSheetModal visible>
+          <TitleText>{'링크가 마무리 됐어 :)'}</TitleText>
+          <SubText>수고했어! 후기 남기러 가볼까?</SubText>
+          <ReviewIcon
+            style={{
+              alignSelf: 'center',
+              marginTop: 16 * height,
+              marginBottom: 40 * height,
+            }}
+            height={200}
+            width={200}
+          />
+          <CustomButton
+            fullWidth
+            onPress={() => {
+              onClose();
+              router.push('/feed');
+            }}
+          >
+            후기 쓰러갈래
+          </CustomButton>
+          <CustomButton
+            variant="text"
+            textColor="text[2]"
+            fullWidth
+            onPress={() => {
+              onClose();
+            }}
+          >
+            나중에 할래
+          </CustomButton>
+        </BottomSheetModal>
+      );
     default:
       return null;
   }

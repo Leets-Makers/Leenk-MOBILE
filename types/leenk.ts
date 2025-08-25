@@ -22,7 +22,7 @@ export interface LeenkListResponse {
 
 export interface LeenkDetail {
   id: number;
-  status: 'RECRUITING' | 'CLOSED' | 'FINISHED';
+  status: LeenkStatus;
   author: Author;
   kakaoId: string;
   title: string;
@@ -58,3 +58,5 @@ export interface UpdateLeenkPayload {
   maxParticipants?: number;
   mediaUrl?: string;
 }
+
+export type LeenkStatus = 'RECRUITING' | 'CLOSED' | 'FINISHED';

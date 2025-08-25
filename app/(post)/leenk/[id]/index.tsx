@@ -1,11 +1,5 @@
-import { CheckerIcon, ReviewIcon } from '@/assets';
-import {
-  BottomSheetModal,
-  CustomButton,
-  Header,
-  Loading,
-  MenuModal,
-} from '@/components';
+import { CheckerIcon } from '@/assets';
+import { Header, Loading, MenuModal } from '@/components';
 import GradientOverlay from '@/components/feed/GradientOverlay';
 import { CONTAINER_PADDING } from '@/constants';
 import { useModalStore } from '@/stores/modalStore';
@@ -19,13 +13,13 @@ import { Platform, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Share } from 'react-native';
-import { SubText, TitleText } from '@/components/OnBoarding';
+
 import { useCallback, useMemo, useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 
 import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
-import { LeenkDetail } from '@/types/leenk';
+import { LeenkDetail, LeenkStatus } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
 import { deleteLeenk, leaveLeenk } from '@/api/leenk/leenk.del.api';
 import {
@@ -36,6 +30,7 @@ import {
 import LeenkDetailModals from '@/components/leenk/LeenkDetailModals';
 import * as Linking from 'expo-linking';
 import * as Clipboard from 'expo-clipboard';
+
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
   const leenkId = useMemo(() => Number(Array.isArray(id) ? id[0] : id), [id]);
@@ -50,47 +45,52 @@ export default function LeenkDetailPage() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
+  const [pendingAction, setPendingAction] = useState<null | 'close' | 'finish'>(
+    null,
+  );
+
+  // 부분 패치 헬퍼
+  const patchDetail = useCallback((patch: Partial<LeenkDetail>) => {
+    setLeenkDetail((prev) => (prev ? { ...prev, ...patch } : prev));
+  }, []);
+
   const isAuthor = useMemo(
     () => (leenkDetail ? leenkDetail.author.userId === userInfo?.id : false),
     [leenkDetail, userInfo?.id],
   );
 
-  const fetchDetail = useCallback(async () => {
-    if (!Number.isFinite(leenkId)) {
-      showToast('잘못된 링크야.', 'error');
-      router.back();
-      return;
-    }
+  const fetchDetail = useCallback(
+    async (signal?: { canceled: boolean }) => {
+      setLoading(true);
+      try {
+        const data = await getLeenkDetail(leenkId);
+        if (!signal?.canceled) {
+          setLeenkDetail(data);
+          console.log('링크의 상태:', data.status);
+        }
+      } catch (e) {
+        if (!signal?.canceled) {
+          showToast('상세 정보를 불러오지 못했어.', 'error');
+          router.back();
+        }
+      } finally {
+        if (!signal?.canceled) setLoading(false);
+      }
+    },
+    [leenkId, router, showToast],
+  );
 
-    let active = true;
-    setLoading(true);
-    try {
-      const data = await getLeenkDetail(leenkId);
-      if (active) {
-        setLeenkDetail(data);
-        console.log('링크의 상태:', data.status);
-      }
-    } catch (e) {
-      if (active) {
-        showToast('상세 정보를 불러오지 못했어.', 'error');
-        router.back();
-      }
-    } finally {
-      if (active) setLoading(false);
-    }
-    return () => {
-      active = false;
-    };
-  }, [leenkId, router, showToast]);
+  const refetchDetail = useCallback(async () => {
+    const fresh = await getLeenkDetail(leenkId);
+    setLeenkDetail(fresh);
+  }, [leenkId]);
 
   useFocusEffect(
     useCallback(() => {
-      let cleanup: (() => void) | undefined;
-      (async () => {
-        cleanup = await fetchDetail();
-      })();
+      const signal = { canceled: false };
+      fetchDetail(signal);
       return () => {
-        cleanup?.();
+        signal.canceled = true;
       };
     }, [fetchDetail]),
   );
@@ -103,27 +103,52 @@ export default function LeenkDetailPage() {
 
   // 링크 모집 종료 함수(작성자)
   const handleLeenkClose = async (leenkId: number) => {
+    if (!leenkDetail || pendingAction) return;
+    setPendingAction('close');
+
+    // 스냅샷 저장
+    const snapshot = leenkDetail;
+
+    // 낙관적 업데이트: 상태만 최소 변경
+    patchDetail({ status: 'CLOSED' as LeenkStatus });
+
     try {
       await closeLeenk(leenkId);
       closeModal();
-      showToast('링크 모집을 종료했어요.');
+      showToast('링크 모집을 종료했어!');
     } catch (err) {
+      // 실패 롤백
+      setLeenkDetail(snapshot);
       console.error('링크 모집 종료 실패:', err);
-      showToast('링크 모집 종료에 실패했어요.');
+      showToast('링크 모집 종료에 실패했어!', 'error');
+    } finally {
+      setPendingAction(null);
     }
   };
 
   // 링크 모임 종료 함수(작성자)
   const handleLeenkFinish = async (leenkId: number) => {
+    if (!leenkDetail || pendingAction) return;
+    setPendingAction('finish');
+
+    const snapshot = leenkDetail;
+
+    // 낙관적 업데이트
+    patchDetail({ status: 'FINISHED' as LeenkStatus });
+
     try {
       await finishLeenk(leenkId);
       closeModal();
-      showToast('링크 모임을 종료했어요.');
-      // 종료 후 바텀시트 띄우기
+      showToast('링크 모임을 종료했어!');
+
+      // 성공 후 바텀시트 오픈 (성공 시점에만!)
       openModal('bottomSheet');
     } catch (err) {
+      setLeenkDetail(snapshot);
       console.error('링크 모임 종료 실패:', err);
-      showToast('링크 모임 종료에 실패했어요.');
+      showToast('링크 모임 종료에 실패했어!', 'error');
+    } finally {
+      setPendingAction(null);
     }
   };
 
@@ -172,34 +197,28 @@ export default function LeenkDetailPage() {
     });
   }, [closeModal, router, leenkDetail?.id]);
 
-  // 링크 떠나기(참여자)
-  const handleLeave = async () => {
-    if (!leenkDetail) return;
+  const applyParticipatePatch = (delta: 1 | -1, flag: boolean) => {
     setLeenkDetail((prev) =>
       prev
         ? {
             ...prev,
-            isParticipated: false,
-            currentParticipants: Math.max(prev.currentParticipants - 1, 0),
+            isParticipated: flag,
+            currentParticipants: Math.max(prev.currentParticipants + delta, 0),
           }
         : prev,
     );
+  };
 
+  // 링크 떠나기(참여자)
+  const handleLeave = async () => {
+    if (!leenkDetail) return;
+    applyParticipatePatch(-1, false);
     try {
       await leaveLeenk(leenkDetail.id);
       closeModal();
-      const fresh = await getLeenkDetail(leenkDetail.id);
-      setLeenkDetail(fresh);
-    } catch (e) {
-      setLeenkDetail((prev) =>
-        prev
-          ? {
-              ...prev,
-              isParticipated: true,
-              currentParticipants: prev.currentParticipants + 1,
-            }
-          : prev,
-      );
+      await refetchDetail();
+    } catch {
+      applyParticipatePatch(+1, true);
       showToast('나가기에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
     }
   };
@@ -207,31 +226,13 @@ export default function LeenkDetailPage() {
   // 링크 참여하기(참여자)
   const handleJoin = async () => {
     if (!leenkDetail) return;
-    setLeenkDetail((prev) =>
-      prev
-        ? {
-            ...prev,
-            isParticipated: true,
-            currentParticipants: prev.currentParticipants + 1,
-          }
-        : prev,
-    );
-
+    applyParticipatePatch(+1, true);
     try {
       await participantLeenk(leenkDetail.id);
       closeModal();
-      const fresh = await getLeenkDetail(leenkDetail.id);
-      setLeenkDetail(fresh);
-    } catch (e) {
-      setLeenkDetail((prev) =>
-        prev
-          ? {
-              ...prev,
-              isParticipated: false,
-              currentParticipants: Math.max(prev.currentParticipants - 1, 0),
-            }
-          : prev,
-      );
+      await refetchDetail();
+    } catch {
+      applyParticipatePatch(-1, false);
       showToast('참여에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
     }
   };
@@ -279,7 +280,12 @@ export default function LeenkDetailPage() {
         isBackWhite
         RightSection="KEBAB"
         kebabPress={() => openModal('menu')}
-        style={styles.header}
+        style={{
+          position: 'absolute',
+          width: '100%',
+          zIndex: 9999,
+          paddingHorizontal: width * CONTAINER_PADDING,
+        }}
       />
 
       <ImageContainer>
@@ -333,50 +339,9 @@ export default function LeenkDetailPage() {
         onConfirmClose={() => handleLeenkClose(leenkDetail.id)}
         onConfirmFinish={() => handleLeenkFinish(leenkDetail.id)}
       />
-
-      {modalType === 'bottomSheet' && (
-        <BottomSheetModal visible>
-          <TitleText>{'링크가 마무리 됐어 :)'}</TitleText>
-          <SubText>수고했어! 후기 남기러 가볼까?</SubText>
-          <ReviewIcon style={styles.reviewIcon} height={200} width={200} />
-          <CustomButton
-            fullWidth
-            onPress={() => {
-              closeModal();
-              router.push('/feed');
-            }}
-          >
-            후기 쓰러갈래
-          </CustomButton>
-          <CustomButton
-            variant="text"
-            textColor="text[2]"
-            fullWidth
-            onPress={() => {
-              closeModal();
-            }}
-          >
-            나중에 할래
-          </CustomButton>
-        </BottomSheetModal>
-      )}
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    position: 'absolute',
-    width: '100%',
-    zIndex: 9999,
-    paddingHorizontal: width * CONTAINER_PADDING,
-  },
-  reviewIcon: {
-    alignSelf: 'center',
-    marginTop: 16 * height,
-    marginBottom: 40 * height,
-  },
-});
 
 const Container = styled.View`
   flex: 1;

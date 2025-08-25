@@ -13,6 +13,7 @@ import { getLeenkList } from '@/api/leenk/leenk.get.api';
 import { Leenk } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { useFocusEffect } from 'expo-router';
 
 const PAGE_SIZE = 10;
 const tabToStatus = (tab: 'all' | 'open' | 'close') =>
@@ -27,6 +28,8 @@ export default function LeenkPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
+  const didMountRef = useRef(false);
+
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
 
@@ -39,6 +42,22 @@ export default function LeenkPage() {
       setUserInfo(fetchedUserInfo);
     }
   }, [fetchedUserInfo, userInfo, setUserInfo]);
+
+  // 페이지 변경 시 정보 업데이트
+  useFocusEffect(
+    React.useCallback(() => {
+      if (didMountRef.current) {
+        // 화면으로 복귀 시: 목록 리프레시
+        setHasMore(true);
+        setPage(0);
+        onEndReachedCalledDuringMomentum.current = false;
+        onRefresh(); // loadPage(0, true) 호출됨
+      } else {
+        // 첫 포커스(초기 진입)는 건너뛰기
+        didMountRef.current = true;
+      }
+    }, [tab]),
+  );
 
   // 중복 호출 방지
   const onEndReachedCalledDuringMomentum = useRef(false);
@@ -120,7 +139,7 @@ export default function LeenkPage() {
           loading ? (
             <FooterLoading />
           ) : !hasMore ? (
-            <FooterEnd>끝이에요</FooterEnd>
+            <FooterEnd></FooterEnd>
           ) : null
         }
       />
