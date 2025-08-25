@@ -56,6 +56,9 @@ export const useParticipantStore = create<ParticipantStore>((set, get) => ({
       participants: state.participants.filter(
         (p) => !ids.includes(p.participant.userId),
       ),
+      selectedUsers: state.selectedUsers.filter(
+        (u) => !ids.includes(u.participant.userId),
+      ),
     })),
 
   isSelected: (userId) =>

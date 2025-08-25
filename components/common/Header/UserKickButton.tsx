@@ -51,15 +51,26 @@ export default function UserKickButton({
       // resetSelection 전에 userIds 확보
       const kickedIds = selectedUsers.map((u) => u.participant.userId);
 
-      // 여러 명 병렬 처리
-      await Promise.all(
+      // 여러 명 병렬 처리(부분 성공 허용)
+      const results = await Promise.allSettled(
         kickedIds.map((id) => kickLeenkParticipants(leenkId, id)),
       );
+      const successIds: number[] = [];
+      const failed = results.filter((r, idx) => {
+        const ok = r.status === 'fulfilled';
+        if (ok) successIds.push(kickedIds[idx]);
+        return r.status === 'rejected';
+      });
 
-      // 화면 즉시 반영 (옵티미스틱)
-      removeParticipantsByIds(kickedIds);
+      if (successIds.length) {
+        removeParticipantsByIds(successIds);
+      }
 
-      showToast('참여자를 내보냈어.', 'success');
+      if (failed.length) {
+        showToast(`일부 내보내기 실패(${failed.length}명)`, 'error');
+      } else {
+        showToast('참여자를 내보냈어.', 'success');
+      }
     } catch (e) {
       console.error('참여자 내보내기 실패:', e);
       showToast('내보내기에 실패했어.', 'error');
