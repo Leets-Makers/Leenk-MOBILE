@@ -17,6 +17,9 @@ interface Props {
   onParticipants: () => void;
 }
 
+import dayjs from 'dayjs';
+import { useMemo } from 'react';
+
 export default function LeenkBottomButtonSection({
   isAuthor,
   leenkDetail,
@@ -27,6 +30,13 @@ export default function LeenkBottomButtonSection({
   onJoin,
   onParticipants,
 }: Props) {
+  // 링크 시작 시간 계산
+  const isBeforeStart = useMemo(() => {
+    return leenkDetail?.startTime
+      ? dayjs().isBefore(dayjs(leenkDetail.startTime))
+      : false;
+  }, [leenkDetail?.startTime]);
+
   const renderButtons = () => {
     // 1. 작성자일 경우
     if (isAuthor) {
@@ -55,6 +65,7 @@ export default function LeenkBottomButtonSection({
           </>
         );
       }
+
       if (leenkDetail.status === 'CLOSED') {
         // 1-2 CLOSED
         return (
@@ -74,12 +85,14 @@ export default function LeenkBottomButtonSection({
               rounded="md"
               size="lg"
               style={{ flex: 1, marginLeft: 10 * width }}
+              disabled={isBeforeStart}
             >
               링크 종료할래
             </CustomButton>
           </>
         );
       }
+
       if (leenkDetail.status === 'FINISHED') {
         // 1-3 FINISHED
         return (
@@ -100,7 +113,6 @@ export default function LeenkBottomButtonSection({
 
     // 2. 참여자(작성자 아님)일 경우
     if (!isAuthor) {
-      // 참여하지 않은 경우
       if (!leenkDetail.isParticipated) {
         const isJoinDisabled =
           leenkDetail.status === 'CLOSED' || leenkDetail.status === 'FINISHED';
@@ -119,7 +131,6 @@ export default function LeenkBottomButtonSection({
         );
       }
 
-      // "참여 중" 사용자
       if (leenkDetail.status === 'RECRUITING') {
         return (
           <>
@@ -185,25 +196,9 @@ export default function LeenkBottomButtonSection({
           </CustomButton>
         );
       }
-
-      if (leenkDetail.status === 'FINISHED') {
-        return (
-          <CustomButton
-            variant="primary"
-            onPress={() => {
-              router.push('/(post)/feed');
-            }}
-            rounded="md"
-            size="lg"
-            fullWidth
-          >
-            후기 쓰러가자
-          </CustomButton>
-        );
-      }
     }
 
-    // 예외 상황(알 수 없는 상태) 대비: 참가 버튼만 노출
+    // Fallback
     return (
       <CustomButton
         variant="primary"

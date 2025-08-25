@@ -215,6 +215,7 @@ export default function LeenkDetailPage() {
     applyParticipatePatch(-1, false);
     try {
       await leaveLeenk(leenkDetail.id);
+      showToast('링크를 떠났어!');
       closeModal();
       await refetchDetail();
     } catch {
@@ -229,6 +230,7 @@ export default function LeenkDetailPage() {
     applyParticipatePatch(+1, true);
     try {
       await participantLeenk(leenkDetail.id);
+      showToast('링크에 참여했어!');
       closeModal();
       await refetchDetail();
     } catch {
