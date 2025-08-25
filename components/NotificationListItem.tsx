@@ -23,7 +23,10 @@ export default function NotificationListItem({
   onPress: () => void;
   onMorePress?: () => void;
 }) {
-  console.log('알림', item.notificationType);
+  console.log(
+    item.notificationType,
+    item.notificationType === 'LEENK_STARTING_SOON' ? item.content : '',
+  );
   const renderContent = () => {
     switch (item.notificationType) {
       case 'FEED_FIRST_REACTION': {
@@ -101,7 +104,7 @@ export default function NotificationListItem({
             <TitleText>
               {item.content.body ?? '새로운 모임을 확인해 봐.'}
             </TitleText>
-            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
+            <SubText>[{item.content.leenkTitle ?? '링크 제목'}]</SubText>
           </>
         );
 
@@ -109,7 +112,7 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>
-              {item.content.leenkTitle ?? '모임 이름'}
+              [{item.content.leenkTitle ?? '모임 이름'}]
               {item.content.body ?? '에 참여했어.'}
             </TitleText>
           </>
@@ -118,7 +121,7 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>
-              {item.content.leenkTitle ?? '모임 이름'}
+              [{item.content.leenkTitle ?? '모임 이름'}]
               {item.content.body ?? '의 모집이 종료됐어\n모임원들을 확인해 봐!'}
             </TitleText>
           </>
@@ -127,7 +130,7 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>
-              {item.content.leenkTitle ?? '모임 이름'}
+              [{item.content.leenkTitle ?? '모임 이름'}]
               {item.content.body ?? '시작 30분 전이야'}
             </TitleText>
             <LeftSection>

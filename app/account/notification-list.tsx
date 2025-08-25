@@ -120,7 +120,6 @@ export default function NotificationListPage() {
         isOpen={modalVisible}
         onClose={() => setModalVisible(false)}
         data={selectedDetails}
-        type="feed"
       />
     </Container>
   );

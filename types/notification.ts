@@ -81,6 +81,7 @@ export type {
   Notification,
   NotificationContent,
   FeedFirstReaction,
+  FeedReactionCount,
   NotificationType,
   NewLeenkParticipantDetails,
   ModalData,
