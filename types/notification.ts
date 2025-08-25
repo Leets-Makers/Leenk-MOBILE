@@ -18,10 +18,9 @@ interface LeenkDetail {
   date: string;
 }
 
-interface LeenkParticipants {
-  title: string;
-  body: string;
-  name: string;
+interface NewLeenkParticipantDetails {
+  participantId: number;
+  participantName: string;
 }
 
 interface NotificationContent {
@@ -31,10 +30,13 @@ interface NotificationContent {
   leenkId?: number;
   feedFirstReactions?: FeedFirstReaction[];
   feedReactionCounts?: FeedReactionCount[];
-  leenkParticipants?: LeenkParticipants[];
+  newLeenkParticipantDetails?: NewLeenkParticipantDetails[];
   leenkDetail?: LeenkDetail[];
   authorUserId?: number;
   authorName?: string;
+  leenkTitle?: string;
+  newParticipantId?: number;
+  newParticipantName?: string;
 }
 
 type NotificationType =
@@ -43,15 +45,19 @@ type NotificationType =
   | 'NEW_FEED'
   | 'FEED_TAG'
   | 'NEW_LEENK'
-  | 'NEW_LEENK_JOIN'
-  | 'LEENK_DETAIL'
-  | 'LEENK_CLOSE'
-  | 'LEENK_NEW_PARTICIPANTS'
+  | 'NEW_LEENK_PARTICIPANT'
+  | 'LEENK_JOIN_COMPLETED'
+  | 'LEENK_STARTING_SOON'
+  | 'LEENK_CLOSED'
+  | 'KICKED_FROM_LEENK'
+  | 'LEENK_FINISHED'
+  | 'LEENK_STARTED_HOST_REMINDER'
   | string;
 
 interface Notification {
   id: string;
   userId: number;
+  path: string;
   notificationType: NotificationType;
   isRead: boolean;
   content: NotificationContent;
@@ -65,7 +71,10 @@ interface GetNotificationsResponse {
     notificationResponses: Notification[];
   };
 }
-type ModalData = FeedReactionCount | FeedFirstReaction | LeenkParticipants;
+type ModalData =
+  | FeedReactionCount
+  | FeedFirstReaction
+  | NewLeenkParticipantDetails;
 
 export type {
   GetNotificationsResponse,
@@ -73,5 +82,6 @@ export type {
   NotificationContent,
   FeedFirstReaction,
   NotificationType,
+  NewLeenkParticipantDetails,
   ModalData,
 };

@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import { ClockIcon, FeedIcon, LocateIcon } from '@/assets';
+import { ClockIcon, FeedIcon, LeenkIcon, LocateIcon } from '@/assets';
 import {
   fonts,
   fontSize,
@@ -18,13 +18,12 @@ export default function NotificationListItem({
   item,
   onPress,
   onMorePress,
-  type,
 }: {
   item: Notification;
   onPress: () => void;
   onMorePress?: () => void;
-  type: string;
 }) {
+  console.log('알림', item.notificationType);
   const renderContent = () => {
     switch (item.notificationType) {
       case 'FEED_FIRST_REACTION': {
@@ -60,15 +59,34 @@ export default function NotificationListItem({
           </>
         );
       }
-      case 'LEENK_NEW_PARTICIPANTS': {
-        const participants = item.content.leenkParticipants || [];
+      case 'NEW_FEED':
+        return (
+          <>
+            <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
+            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
+          </>
+        );
+
+      case 'FEED_TAG': {
+        return (
+          <>
+            <TitleText>{item.content.body ?? '내용 없음'}</TitleText>
+          </>
+        );
+      }
+
+      case 'NEW_LEENK_PARTICIPANT': {
+        const participants = item.content.newLeenkParticipantDetails || [];
         const newParticipants = participants[0];
         return (
           <>
             <TitleText>
-              {newParticipants?.title ?? '모임 이름'}에 새로운 참여자가 들어왔어
+              {item.content.leenkTitle ?? '모임 이름'}
+              {item.content.body ?? '에 새로운 참여자가 들어왔어.'}
             </TitleText>
-            <TitleText>{newParticipants?.name ?? '참여자 이름'}</TitleText>
+            <SubText>
+              {newParticipants?.participantName ?? '참여자 이름'}
+            </SubText>
             {participants.length > 1 && (
               <MoreTextWrapper onPress={onMorePress}>
                 <MoreText>{participants.length - 1}개 더보기</MoreText>
@@ -80,33 +98,37 @@ export default function NotificationListItem({
       case 'NEW_LEENK':
         return (
           <>
-            <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
-            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
+            <TitleText>
+              {item.content.body ?? '새로운 모임을 확인해 봐.'}
+            </TitleText>
+            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
           </>
         );
 
-      case 'NEW_LEENK_JOIN':
+      case 'LEENK_JOIN_COMPLETED':
         return (
           <>
             <TitleText>
-              {item.content.title ?? '모임 이름'} 에 참여했어
+              {item.content.leenkTitle ?? '모임 이름'}
+              {item.content.body ?? '에 참여했어.'}
             </TitleText>
           </>
         );
-      case 'LEENK_CLOSE':
+      case 'LEENK_CLOSED':
         return (
           <>
             <TitleText>
-              {item.content.title ?? '모임 이름'} 의 모집이 종료됐어
+              {item.content.leenkTitle ?? '모임 이름'}
+              {item.content.body ?? '의 모집이 종료됐어\n모임원들을 확인해 봐!'}
             </TitleText>
-            <TitleText>모임원들을 확인해 봐!</TitleText>
           </>
         );
-      case 'LEENK_DETAIL':
+      case 'LEENK_STARTING_SOON':
         return (
           <>
             <TitleText>
-              {item.content.title ?? '모임 이름'} 시작 n분 전이야
+              {item.content.leenkTitle ?? '모임 이름'}
+              {item.content.body ?? '시작 30분 전이야'}
             </TitleText>
             <LeftSection>
               <LocateIcon /> <TimeText>장소</TimeText>
@@ -117,24 +139,33 @@ export default function NotificationListItem({
           </>
         );
 
-      case 'NEW_FEED':
+      case 'KICKED_FROM_LEENK':
         return (
           <>
-            <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
-            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
+            <TitleText>{item.content.body ?? '모임에서 내보내졌어.'}</TitleText>
+            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
+          </>
+        );
+      case 'LEENK_FINISHED':
+        return (
+          <>
+            <TitleText>
+              {item.content.body ?? '모임이 끝났어. 후기 쓰러 가볼까?'}
+            </TitleText>
+            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
           </>
         );
 
-      case 'FEED_TAG': {
-        const name = item.content.authorName ?? '내용 없음';
-        const josa = getSubjectJosa(name);
+      case 'LEENK_STARTED_HOST_REMINDER':
         return (
           <>
-            <TitleText>{`${name}${josa} 나를 게시글에 언급했어`}</TitleText>
-            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
+            {' '}
+            <TitleText>
+              {item.content.body ?? '모임이 시작됐어! 모집을 종료할까?'}
+            </TitleText>
+            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
           </>
         );
-      }
 
       default:
         return (
@@ -152,8 +183,17 @@ export default function NotificationListItem({
         <StyledItemContent pressed={pressed}>
           <Row>
             <LeftSection>
-              <FeedIcon width={16} stroke={colors.primary} />
-              <TypeText>{type === 'feed' ? '피드' : '링크'}</TypeText>
+              {item.path === 'leenks' ? (
+                <>
+                  <LeenkIcon width={16} stroke={colors.primary} />
+                  <TypeText>링크</TypeText>
+                </>
+              ) : (
+                <>
+                  <FeedIcon width={16} stroke={colors.primary} />
+                  <TypeText>피드</TypeText>
+                </>
+              )}
             </LeftSection>
             <TimeText>{formatRelativeTime(item.updateDate)}</TimeText>
           </Row>
@@ -202,7 +242,7 @@ export const ContentContainer = styled.View`
 `;
 
 export const TitleText = styled.Text`
-  font-family: ${fonts.Regular};
+  font-family: ${fonts.Bold};
   color: ${colors.text[2]};
   line-height: ${lineHeight.m};
   font-size: ${fontSize.md};

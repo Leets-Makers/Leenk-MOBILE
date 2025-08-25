@@ -15,6 +15,7 @@ import NotificationModal from '@/components/Modal/NotificationModal';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
 import { FEED_PADDING } from '@/constants';
+import { router } from 'expo-router';
 
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
@@ -35,6 +36,7 @@ export default function NotificationListPage() {
   const fetchNotifications = useCallback(async () => {
     try {
       const notifications = await getNotifications(0, 20);
+      console.log(notifications);
       setData([...notifications.notificationResponses]);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
@@ -62,6 +64,7 @@ export default function NotificationListPage() {
           item.id === notificationId ? { ...item, isRead: true } : item,
         ),
       );
+      router.push;
     } catch (error) {
       if (__DEV__) console.error('Failed to mark notification as read:', error);
       showToast('알림을 불러오는데 실패했습니다.', 'error');
@@ -81,7 +84,6 @@ export default function NotificationListPage() {
         }}
         renderItem={({ item }) => (
           <NotificationListItem
-            type="feed"
             item={item}
             onPress={() => handlePress(item.id)}
             onMorePress={() => {
@@ -90,8 +92,8 @@ export default function NotificationListPage() {
                   ? item.content.feedReactionCounts
                   : item.notificationType === 'FEED_FIRST_REACTION'
                     ? item.content.feedFirstReactions
-                    : item.notificationType === 'LEENK_NEW_PARTICIPANTS'
-                      ? item.content.leenkParticipants
+                    : item.notificationType === 'NEW_LEENK_PARTICIPANT'
+                      ? item.content.newLeenkParticipantDetails
                       : [];
 
               openDetailModal(detailData ?? []);
