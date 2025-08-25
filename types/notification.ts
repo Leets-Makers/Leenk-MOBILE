@@ -37,6 +37,8 @@ interface NotificationContent {
   leenkTitle?: string;
   newParticipantId?: number;
   newParticipantName?: string;
+  placeName?: string;
+  startTime?: string;
 }
 
 type NotificationType =

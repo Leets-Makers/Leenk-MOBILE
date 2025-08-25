@@ -10,7 +10,7 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { Notification } from '@/types/notification';
-import { formatRelativeTime } from '@/utils/format-date';
+import { formatMonthDayHour, formatRelativeTime } from '@/utils/format-date';
 import { getSubjectJosa } from '@/utils/KoreanEndingCheck';
 import { Pressable } from 'react-native';
 
@@ -23,10 +23,10 @@ export default function NotificationListItem({
   onPress: () => void;
   onMorePress?: () => void;
 }) {
-  console.log(
-    item.notificationType,
-    item.notificationType === 'LEENK_STARTING_SOON' ? item.content : '',
-  );
+  // console.log(
+  //   item.notificationType,
+  //   item.notificationType === 'LEENK_STARTING_SOON' ? item.content : '',
+  // );
   const renderContent = () => {
     switch (item.notificationType) {
       case 'FEED_FIRST_REACTION': {
@@ -66,7 +66,9 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
-            <SubText>{item.content.authorName ?? '내용 없음'}</SubText>
+            <SubText>
+              &#91;{item.content.authorName ?? '내용 없음'}&#93;
+            </SubText>
           </>
         );
 
@@ -84,11 +86,11 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>
-              {item.content.leenkTitle ?? '모임 이름'}
+              &#91;{item.content.leenkTitle ?? '모임 이름'}&#93;
               {item.content.body ?? '에 새로운 참여자가 들어왔어.'}
             </TitleText>
             <SubText>
-              {newParticipants?.participantName ?? '참여자 이름'}
+              &#91;{newParticipants?.participantName ?? '참여자 이름'}&#93;
             </SubText>
             {participants.length > 1 && (
               <MoreTextWrapper onPress={onMorePress}>
@@ -104,7 +106,9 @@ export default function NotificationListItem({
             <TitleText>
               {item.content.body ?? '새로운 모임을 확인해 봐.'}
             </TitleText>
-            <SubText>[{item.content.leenkTitle ?? '링크 제목'}]</SubText>
+            <SubText>
+              &#91;{item.content.leenkTitle ?? '링크 제목'} &#93;
+            </SubText>
           </>
         );
 
@@ -112,7 +116,7 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>
-              [{item.content.leenkTitle ?? '모임 이름'}]
+              &#91;{item.content.leenkTitle ?? '모임 이름'}&#93;
               {item.content.body ?? '에 참여했어.'}
             </TitleText>
           </>
@@ -121,7 +125,7 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>
-              [{item.content.leenkTitle ?? '모임 이름'}]
+              &#91;{item.content.leenkTitle ?? '모임 이름'}&#93;
               {item.content.body ?? '의 모집이 종료됐어\n모임원들을 확인해 봐!'}
             </TitleText>
           </>
@@ -130,14 +134,20 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>
-              [{item.content.leenkTitle ?? '모임 이름'}]
+              &#91;{item.content.leenkTitle ?? '모임 이름'}&#93;
               {item.content.body ?? '시작 30분 전이야'}
             </TitleText>
+            {/* <LeftSection style={{ marginTop: height * 6 }}>
+              <LocateIcon /> <TimeText>{item.content.placeName}</TimeText>
+            </LeftSection> */}
             <LeftSection>
-              <LocateIcon /> <TimeText>장소</TimeText>
-            </LeftSection>
-            <LeftSection>
-              <ClockIcon /> <TimeText>시간</TimeText>
+              <ClockIcon />
+
+              <TimeText>
+                {item.content.startTime
+                  ? formatMonthDayHour(item.content.startTime)
+                  : ''}
+              </TimeText>
             </LeftSection>
           </>
         );
@@ -146,7 +156,9 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>{item.content.body ?? '모임에서 내보내졌어.'}</TitleText>
-            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
+            <SubText>
+              &#91;{item.content.leenkTitle ?? '링크 제목'}&#93;
+            </SubText>
           </>
         );
       case 'LEENK_FINISHED':
@@ -155,18 +167,21 @@ export default function NotificationListItem({
             <TitleText>
               {item.content.body ?? '모임이 끝났어. 후기 쓰러 가볼까?'}
             </TitleText>
-            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
+            <SubText>
+              &#91;{item.content.leenkTitle ?? '링크 제목'}&#93;
+            </SubText>
           </>
         );
 
       case 'LEENK_STARTED_HOST_REMINDER':
         return (
           <>
-            {' '}
             <TitleText>
               {item.content.body ?? '모임이 시작됐어! 모집을 종료할까?'}
             </TitleText>
-            <SubText>{item.content.leenkTitle ?? '링크 제목'}</SubText>
+            <SubText>
+              &#91;{item.content.leenkTitle ?? '링크 제목'}&#93;
+            </SubText>
           </>
         );
 
@@ -174,7 +189,7 @@ export default function NotificationListItem({
         return (
           <>
             <TitleText>{item.content.title ?? '알림'}</TitleText>
-            {item.content.body && <SubText>{item.content.body}</SubText>}
+            <SubText>{item.content.body}</SubText>
           </>
         );
     }
@@ -223,7 +238,7 @@ export const Row = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${6 * height};
+  margin-bottom: ${6 * height}px;
 `;
 
 export const LeftSection = styled.View`
@@ -241,7 +256,7 @@ export const TypeText = styled.Text`
 
 export const ContentContainer = styled.View`
   flex: 1;
-  margin-left: ${28 * width};
+  margin-left: ${28 * width}px;
 `;
 
 export const TitleText = styled.Text`
@@ -256,7 +271,7 @@ export const SubText = styled.Text`
   color: ${colors.black};
   font-size: ${fontSize.md};
   line-height: ${lineHeight.m};
-  margin-top: ${2 * height};
+  margin-top: ${2 * height}px;
 `;
 
 const MoreTextWrapper = styled.Pressable``;
@@ -273,4 +288,5 @@ export const TimeText = styled.Text`
   font-size: ${fontSize.sm};
   color: ${colors.text[3]};
   line-height: ${lineHeight.s};
+  margin-left: ${width * 4}px;
 `;

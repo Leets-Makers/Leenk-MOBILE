@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, TouchableWithoutFeedback } from 'react-native';
+import { Modal, Platform, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
 import { width, height, radius } from '@/theme/globalStyles';
 import colors from '@/theme/color';
@@ -42,11 +42,11 @@ export default function NotificationModal({
 
   return (
     <Modal
-      transparent
+      transparent={Platform.OS !== 'ios'}
       visible={isOpen}
       onRequestClose={onClose}
       animationType="slide"
-      presentationStyle="pageSheet"
+      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
     >
       <Overlay>
         <TouchableWithoutFeedback onPress={onClose}>

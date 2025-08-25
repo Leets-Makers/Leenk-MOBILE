@@ -16,6 +16,7 @@ import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
 import { FEED_PADDING } from '@/constants';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
@@ -35,7 +36,7 @@ export default function NotificationListPage() {
   // 알림 목록 불러오기
   const fetchNotifications = useCallback(async () => {
     try {
-      const notifications = await getNotifications(0, 20);
+      const notifications = await getNotifications(0, 30);
       console.log(notifications);
       setData([...notifications.notificationResponses]);
     } catch (error) {
@@ -83,38 +84,40 @@ export default function NotificationListPage() {
   return (
     <Container>
       <Header style={{ paddingHorizontal: FEED_PADDING * width }} />
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator
-        contentContainerStyle={{
-          paddingHorizontal: FEED_PADDING * width,
-          marginTop: 8 * height,
-        }}
-        renderItem={({ item }) => (
-          <NotificationListItem
-            item={item}
-            onPress={() => handlePress(item)}
-            onMorePress={() => {
-              const detailData =
-                item.notificationType === 'FEED_REACTION_COUNT'
-                  ? item.content.feedReactionCounts
-                  : item.notificationType === 'FEED_FIRST_REACTION'
-                    ? item.content.feedFirstReactions
-                    : item.notificationType === 'NEW_LEENK_PARTICIPANT'
-                      ? item.content.newLeenkParticipantDetails
-                      : [];
+      <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator
+          contentContainerStyle={{
+            paddingHorizontal: FEED_PADDING * width,
+            marginTop: 8 * height,
+          }}
+          renderItem={({ item }) => (
+            <NotificationListItem
+              item={item}
+              onPress={() => handlePress(item)}
+              onMorePress={() => {
+                const detailData =
+                  item.notificationType === 'FEED_REACTION_COUNT'
+                    ? item.content.feedReactionCounts
+                    : item.notificationType === 'FEED_FIRST_REACTION'
+                      ? item.content.feedFirstReactions
+                      : item.notificationType === 'NEW_LEENK_PARTICIPANT'
+                        ? item.content.newLeenkParticipantDetails
+                        : [];
 
-              openDetailModal(detailData ?? []);
-            }}
-          />
-        )}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-        initialNumToRender={data.length}
-        removeClippedSubviews={false}
-      />
+                openDetailModal(detailData ?? []);
+              }}
+            />
+          )}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+          initialNumToRender={data.length}
+          removeClippedSubviews={false}
+        />
+      </SafeAreaView>
 
       <NotificationModal
         isOpen={modalVisible}
