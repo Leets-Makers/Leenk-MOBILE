@@ -34,7 +34,7 @@ export async function requestNotificationPermission() {
   // FCM 토큰 가져오기
   const token = await messaging().getToken();
   await saveFcmToken(token);
-  console.log(token, 'fcmToken');
+  // console.log(token, 'fcmToken');
 
   // 프로필 페이지 없이 시작할 경우 해당 코드 활성화 시키기
   // const registerFcmToken = async () => {

@@ -34,6 +34,7 @@ export interface LeenkDetail {
   mediaUrl: string;
   createdAt: string;
   updatedAt: string;
+  isParticipated: boolean;
 }
 
 export interface LeenkParticipantItem {

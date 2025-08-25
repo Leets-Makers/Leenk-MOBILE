@@ -27,8 +27,12 @@ export default function LeenkPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const { userInfo: fetchedUserInfo } = useUserInfo();
+  const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   useEffect(() => {
     if (fetchedUserInfo && !userInfo) {

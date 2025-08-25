@@ -4,12 +4,12 @@ import colors from '@/theme/color';
 import { CustomButton } from '@/components';
 import { CONTAINER_PADDING } from '@/constants';
 import { router } from 'expo-router';
+import { LeenkDetail } from '@/types/leenk';
 
 interface Props {
   isAuthor: boolean;
-  isParticipating: boolean;
   insetBottom: number;
-  leenkStatus: 'RECRUITING' | 'CLOSED' | 'FINISHED' | string;
+  leenkDetail: LeenkDetail;
   onLeave: () => void;
   onFinish: () => void;
   onClose: () => void;
@@ -19,9 +19,8 @@ interface Props {
 
 export default function LeenkBottomButtonSection({
   isAuthor,
-  isParticipating,
+  leenkDetail,
   insetBottom,
-  leenkStatus,
   onLeave,
   onFinish,
   onClose,
@@ -31,7 +30,7 @@ export default function LeenkBottomButtonSection({
   const renderButtons = () => {
     // 1. 작성자일 경우
     if (isAuthor) {
-      if (leenkStatus === 'RECRUITING') {
+      if (leenkDetail.status === 'RECRUITING') {
         // 1-1 RECRUITING
         return (
           <>
@@ -56,7 +55,7 @@ export default function LeenkBottomButtonSection({
           </>
         );
       }
-      if (leenkStatus === 'CLOSED') {
+      if (leenkDetail.status === 'CLOSED') {
         // 1-2 CLOSED
         return (
           <>
@@ -81,7 +80,7 @@ export default function LeenkBottomButtonSection({
           </>
         );
       }
-      if (leenkStatus === 'FINISHED') {
+      if (leenkDetail.status === 'FINISHED') {
         // 1-3 FINISHED
         return (
           <CustomButton
@@ -101,8 +100,11 @@ export default function LeenkBottomButtonSection({
 
     // 2. 참여자(작성자 아님)일 경우
     if (!isAuthor) {
-      if (leenkStatus === 'RECRUITING') {
-        // 2-1 RECRUITING
+      // 참여하지 않은 경우
+      if (!leenkDetail.isParticipated) {
+        const isJoinDisabled =
+          leenkDetail.status === 'CLOSED' || leenkDetail.status === 'FINISHED';
+
         return (
           <CustomButton
             variant="primary"
@@ -110,13 +112,15 @@ export default function LeenkBottomButtonSection({
             rounded="md"
             size="lg"
             fullWidth
+            disabled={isJoinDisabled}
           >
             참여할래
           </CustomButton>
         );
       }
-      if (leenkStatus === 'CLOSED') {
-        // 2-2 CLOSED
+
+      // "참여 중" 사용자
+      if (leenkDetail.status === 'RECRUITING') {
         return (
           <>
             <CustomButton
@@ -140,8 +144,49 @@ export default function LeenkBottomButtonSection({
           </>
         );
       }
-      if (leenkStatus === 'FINISHED') {
-        // 2-3 FINISHED
+
+      if (leenkDetail.status === 'CLOSED') {
+        return (
+          <>
+            <CustomButton
+              variant="secondary"
+              textColor="text[2]"
+              onPress={onParticipants}
+              rounded="md"
+              size="lg"
+            >
+              모임원 보기
+            </CustomButton>
+            <CustomButton
+              variant="primary"
+              onPress={onLeave}
+              rounded="md"
+              size="lg"
+              style={{ flex: 1, marginLeft: 10 * width }}
+            >
+              링크 나갈래
+            </CustomButton>
+          </>
+        );
+      }
+
+      if (leenkDetail.status === 'FINISHED') {
+        return (
+          <CustomButton
+            variant="primary"
+            onPress={() => {
+              router.push('/(post)/feed');
+            }}
+            rounded="md"
+            size="lg"
+            fullWidth
+          >
+            후기 쓰러가자
+          </CustomButton>
+        );
+      }
+
+      if (leenkDetail.status === 'FINISHED') {
         return (
           <CustomButton
             variant="primary"

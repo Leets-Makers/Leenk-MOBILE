@@ -51,9 +51,10 @@ export default function LeenkDetailPage() {
   const [deleting, setDeleting] = useState(false);
   const [joining, setJoining] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const [isParticipating, setIsParticipating] = useState(false);
+  const [isParticipated, setIsParticipated] = useState(
+    leenkDetail?.isParticipated,
+  );
   const [leenkStatus, setLeenkStatus] = useState('');
-  const [isLeenkEnd, setIsLeenkEnd] = useState(false);
 
   const isAuthor = useMemo(
     () => (leenkDetail ? leenkDetail.author.userId === userInfo?.id : false),
@@ -181,7 +182,7 @@ export default function LeenkDetailPage() {
 
   // 링크 떠나기(참여자)
   const handleLeave = useCallback(async () => {
-    if (!leenkDetail || leaving || !isParticipating) {
+    if (!leenkDetail || leaving || !isParticipated) {
       closeModal();
       return;
     }
@@ -190,7 +191,7 @@ export default function LeenkDetailPage() {
       await leaveLeenk(leenkDetail.id);
 
       // Optimistic local update
-      setIsParticipating(false);
+      setIsParticipated(false);
       setLeenkDetail((prev) =>
         prev
           ? {
@@ -206,17 +207,17 @@ export default function LeenkDetailPage() {
       setLeaving(false);
       closeModal();
     }
-  }, [leenkDetail, leaving, isParticipating, closeModal, showToast]);
+  }, [leenkDetail, leaving, isParticipated, closeModal, showToast]);
 
   // 링크 참여하기(참여자)
   const handleJoinLeenk = useCallback(async () => {
-    if (!leenkDetail || joining || isParticipating) return;
+    if (!leenkDetail || joining || isParticipated) return;
     try {
       setJoining(true);
       await participantLeenk(leenkDetail.id);
 
       // Optimistic local update
-      setIsParticipating(true);
+      setIsParticipated(true);
       setLeenkDetail((prev) =>
         prev
           ? { ...prev, currentParticipants: prev.currentParticipants + 1 }
@@ -228,7 +229,7 @@ export default function LeenkDetailPage() {
     } finally {
       setJoining(false);
     }
-  }, [leenkDetail, joining, isParticipating, showToast]);
+  }, [leenkDetail, joining, isParticipated, showToast]);
 
   // 공유하기(작성자,침여자)
   const handleShare = async () => {
@@ -296,17 +297,15 @@ export default function LeenkDetailPage() {
         onShare={handleShare}
         onParticipants={handleParticipants}
       />
-
       <LeenkBottomButtonSection
         isAuthor={isAuthor}
-        isParticipating={isParticipating}
+        leenkDetail={leenkDetail}
         insetBottom={insets.bottom}
         onLeave={() => openModal('leenkLeave')}
         onFinish={() => openModal('leenkFinish')}
         onClose={() => openModal('leenkClose')}
         onJoin={handleJoinLeenk}
         onParticipants={handleParticipants}
-        leenkStatus={leenkStatus}
       />
 
       <MenuModal
@@ -350,7 +349,6 @@ export default function LeenkDetailPage() {
             fullWidth
             onPress={() => {
               closeModal();
-              setIsLeenkEnd(true);
             }}
           >
             나중에 할래
