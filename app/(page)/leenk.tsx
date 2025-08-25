@@ -69,7 +69,7 @@ export default function LeenkPage() {
     try {
       const status = tabToStatus(tab);
       const res = await getLeenkList(nextPage, PAGE_SIZE, status);
-      const pageItems = res.data.leenks ?? [];
+      const pageItems = res.leenks ?? [];
       const reachedEnd = pageItems.length < PAGE_SIZE;
 
       setData((prev) => (replace ? pageItems : [...prev, ...pageItems]));

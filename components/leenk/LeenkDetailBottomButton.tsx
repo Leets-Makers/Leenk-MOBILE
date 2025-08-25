@@ -37,6 +37,11 @@ export default function LeenkBottomButtonSection({
       : false;
   }, [leenkDetail?.startTime]);
 
+  // 정원 계산
+  const isFull = useMemo(() => {
+    return leenkDetail.currentParticipants >= leenkDetail.maxParticipants;
+  }, [leenkDetail.currentParticipants, leenkDetail.maxParticipants]);
+
   const renderButtons = () => {
     // 1. 작성자일 경우
     if (isAuthor) {
@@ -115,7 +120,9 @@ export default function LeenkBottomButtonSection({
     if (!isAuthor) {
       if (!leenkDetail.isParticipated) {
         const isJoinDisabled =
-          leenkDetail.status === 'CLOSED' || leenkDetail.status === 'FINISHED';
+          isFull ||
+          leenkDetail.status === 'CLOSED' ||
+          leenkDetail.status === 'FINISHED';
 
         return (
           <CustomButton

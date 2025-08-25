@@ -25,7 +25,7 @@ export const getLeenkList = async (
   //   console.log('first leenk:', res.data.data.leenks[0]);
   // }
 
-  return res.data;
+  return res.data.data;
 };
 
 // 내가 참여한 링크 조회
@@ -44,7 +44,7 @@ export const getMyLeenkList = async (pageNumber: number, pageSize: number) => {
   //   console.log('참여한 링크 조회:', res.data);
   // }
 
-  return res.data;
+  return res.data.data;
 };
 
 // 링크 상세 조회
