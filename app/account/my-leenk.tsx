@@ -2,13 +2,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { ContainerWithNoPadding } from './my-feed';
-import { Header, Loading } from '@/components';
+import { Header } from '@/components';
 import { FEED_PADDING } from '@/constants';
-import { width } from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import { LeenkList, Separator } from '../(page)/leenk';
 import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { getMyLeenkList } from '@/api/leenk/leenk.get.api';
 import { Leenk } from '@/types/leenk';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PAGE_SIZE = 10;
 
@@ -83,24 +84,25 @@ export default function MyLeenkPage() {
         <Header>참여한 모임</Header>
       </View>
 
-      <LeenkList
-        data={data}
-        keyExtractor={(item) => String(item.leenkId)}
-        renderItem={({ item }) => <LeenkListItem item={item} />}
-        ItemSeparatorComponent={() => <Separator />}
-        showsVerticalScrollIndicator
-        // 새로고침
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        // 무한 스크롤
-        onEndReachedThreshold={0.6}
-        onEndReached={onEndReached}
-        onMomentumScrollBegin={() => {
-          onEndReachedCalledDuringMomentum.current = false;
-        }}
-        // 푸터 (로딩 중, 더 이상 데이터 없음 표시를 필요에 맞게 교체 가능)
-        ListFooterComponent={loading ? <Loading /> : !hasMore ? <View /> : null}
-      />
+      <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
+        <LeenkList
+          data={data}
+          keyExtractor={(item) => String(item.leenkId)}
+          renderItem={({ item }) => <LeenkListItem item={item} />}
+          ItemSeparatorComponent={() => <Separator />}
+          showsVerticalScrollIndicator
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          onEndReachedThreshold={0.6}
+          onEndReached={onEndReached}
+          onMomentumScrollBegin={() => {
+            onEndReachedCalledDuringMomentum.current = false;
+          }}
+          // 리스트 여백은 contentContainerStyle 쪽이 더 안전
+          contentContainerStyle={{ paddingBottom: height * 20 }}
+          ListFooterComponent={loading ? <View /> : !hasMore ? <View /> : null}
+        />
+      </SafeAreaView>
     </ContainerWithNoPadding>
   );
 }

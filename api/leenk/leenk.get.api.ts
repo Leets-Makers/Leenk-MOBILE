@@ -40,9 +40,9 @@ export const getMyLeenkList = async (pageNumber: number, pageSize: number) => {
     },
   );
 
-  if (__DEV__) {
-    console.log('참여한 링크 조회:', res.data);
-  }
+  // if (__DEV__) {
+  //   console.log('참여한 링크 조회:', res.data);
+  // }
 
   return res.data;
 };
