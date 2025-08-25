@@ -22,8 +22,8 @@ export default function TabMenu({
         ]
       : [
           { label: '전체', value: 'all' },
-          { label: '모집중', value: 'recruiting' },
-          { label: '모집완료', value: 'completed' },
+          { label: '모집중', value: 'open' },
+          { label: '모집완료', value: 'close' },
         ];
 
   return (
