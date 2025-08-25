@@ -10,7 +10,10 @@ const TEMP_ACCESS_TOKEN_KEY = 'temp_access_token';
 // Access Token
 export const saveAccessToken = async (token: string) => {
   if (Platform.OS === 'web') return;
-
+  if (typeof token !== 'string') {
+    console.error('[SecureStore] 저장 실패 - token이 문자열 아님:', token);
+    return;
+  }
   try {
     if (__DEV__) {
       console.log('[SecureStore] saveAccessToken 호출됨');

@@ -12,15 +12,15 @@ import colors from '@/theme/color';
 import KakaoLogo from '@/assets/images/ic_KAKAO_symbol.svg';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CustomButton } from '@/components';
-import { login, logout } from '@react-native-kakao/user';
+import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
 import { Linking } from 'react-native';
 import { kakaoLogin } from '@/api/login/kakao.api';
 import {
+  clearAllTokens,
   getFcmToken,
   saveAccessToken,
   saveRefreshToken,
-  saveTempAccessToken,
 } from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
@@ -52,6 +52,7 @@ export default function LandingPage() {
   useBlockBackHandler({ block: shouldBlock });
 
   const handleKakaoLogin = async () => {
+    await clearAllTokens();
     //카카오 로그인 로직
     try {
       const token = await login();
@@ -60,10 +61,6 @@ export default function LandingPage() {
         if (__DEV__) console.warn('카카오 accessToken 없음(취소/실패)');
         return;
       }
-
-      // 이메일 정보 조회
-      // const userInfo = await getKakaoUserInfo(accessToken);
-      // console.log('사용자 이메일:', userInfo.kakao_account.email);
       const result = await kakaoLogin(accessToken);
 
       if (result.success) {
@@ -71,7 +68,7 @@ export default function LandingPage() {
         const refreshToken = result.data.refreshToken;
 
         if (result.code === 1002) {
-          await saveTempAccessToken(result.data.accessToken);
+          await saveAccessToken(serverToken);
           await saveRefreshToken(refreshToken);
           setName(result.data.name);
           setPosition(result.data.position);
@@ -79,41 +76,11 @@ export default function LandingPage() {
           // 최초 로그인: 약관 페이지로 이동
           router.push('/signup/terms');
         } else if (result.code === 1003) {
-          // 일반 로그인: 바로 피드로 이동
-          if (__DEV__) {
-            console.log('[secureStore 전에] serverToken:', serverToken);
-            console.log(
-              '[secureStore 전에] typeof serverToken:',
-              typeof serverToken,
-            );
-            console.log('[secureStore 전에] refreshToken:', refreshToken);
-            console.log(
-              '[secureStore 전에] typeof refreshToken:',
-              typeof refreshToken,
-            );
-          }
-
-          // 문자열이 아닐 경우 강제로 stringify하거나 에러 방어
-          if (
-            typeof serverToken === 'string' &&
-            typeof refreshToken === 'string'
-          ) {
-            await saveAccessToken(serverToken);
-            await saveRefreshToken(refreshToken);
-          } else {
-            console.error('❗ serverToken 또는 refreshToken이 문자열이 아님:', {
-              serverToken,
-              refreshToken,
-            });
-          }
-
+          // 일반 로그인: 바로 링크로 이동
+          await saveAccessToken(serverToken);
+          await saveRefreshToken(refreshToken);
           await registerFcmToken();
-          router.replace('/(page)/feed');
-
-          // setName('이유진');
-          // setPosition('FE');
-          // setCardinal(4);
-          // router.push('/signup/terms');
+          router.replace('/(page)/leenk');
         }
       } else {
         switch (result.code) {

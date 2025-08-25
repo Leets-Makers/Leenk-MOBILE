@@ -16,34 +16,19 @@ import {
 import colors from '@/theme/color';
 import { Pressable } from 'react-native';
 import styled from 'styled-components/native';
-import { formatRelativeTime } from '@/utils/format-date';
+import { formatMonthDayHour, formatRelativeTime } from '@/utils/format-date';
 import { TimeText } from '@/components/leenk/LeenkListItem';
+import { LeenkDetail } from '@/types/leenk';
 
 interface Props {
-  title: string;
-  place: string;
-  content: string;
-  date: string;
-  name: string;
-  createdAt: string;
-  profileImageUri: string | null;
-  participantCount: number;
-  allParticipants: number;
+  data: LeenkDetail;
   insetBottom: number;
   onShare: () => void;
   onParticipants: () => void;
 }
 
 export default function LeenkContentSection({
-  title,
-  place,
-  content,
-  date,
-  name,
-  createdAt,
-  profileImageUri,
-  participantCount,
-  allParticipants,
+  data,
   insetBottom,
   onShare,
   onParticipants,
@@ -51,16 +36,16 @@ export default function LeenkContentSection({
   return (
     <Container showsVerticalScrollIndicator={false}>
       <TitleRow>
-        <Title>{title}</Title>
+        <Title>{data.title}</Title>
         <ShareButton onPress={onShare}>
           <ShareIcon width={24 * width} />
         </ShareButton>
       </TitleRow>
 
       <RowWrapper>
-        <ProfileImageWithFallback uri={profileImageUri} size={24} />
+        <ProfileImageWithFallback uri={data.author.profileImage} size={24} />
         <TimeText style={{ marginLeft: width * 8 }}>
-          {name}・{formatRelativeTime(createdAt)}
+          {data.author.name}・{formatRelativeTime(data.createdAt)}
         </TimeText>
       </RowWrapper>
 
@@ -69,7 +54,7 @@ export default function LeenkContentSection({
       <RowWrapper>
         <PeopleIcon width={width * 16} />
         <TimeText>
-          {participantCount}/{allParticipants}명
+          {data.currentParticipants}/{data.maxParticipants}명
         </TimeText>
         <Pressable onPress={onParticipants}>
           <RightArrowIcon width={width * 16} />
@@ -78,15 +63,16 @@ export default function LeenkContentSection({
 
       <RowWrapper>
         <LocateIcon width={width * 16} />
-        <TimeText>{place}</TimeText>
+        <TimeText>{data.placeName}</TimeText>
       </RowWrapper>
 
       <RowWrapper>
         <ClockIcon width={width * 16} />
-        <TimeText>{date}</TimeText>
+        <TimeText>{formatMonthDayHour(data.startTime)}</TimeText>
       </RowWrapper>
+
       <ContentWrapper $insetBottom={insetBottom}>
-        <ContentText>{content}</ContentText>
+        <ContentText>{data.content}</ContentText>
       </ContentWrapper>
     </Container>
   );

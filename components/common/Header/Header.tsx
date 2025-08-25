@@ -19,6 +19,8 @@ interface HeaderProps extends ViewProps {
   signUpBackPress?: () => void;
   kebabPress?: () => void;
   kebabColor?: 'white' | 'black';
+  rightDisabled?: boolean;
+  leenkId?: number;
 }
 
 export default function Header({
@@ -29,6 +31,8 @@ export default function Header({
   RightSection = 'NONE',
   kebabPress,
   kebabColor,
+  rightDisabled = false,
+  leenkId = 0,
   ...props
 }: HeaderProps) {
   return (
@@ -54,7 +58,13 @@ export default function Header({
         {RightSection === 'KEBAB' && (
           <KebabButton handleKebab={kebabPress} color={kebabColor} />
         )}
-        {RightSection === 'KICK' && <UserKickButton handleKick={kebabPress} />}
+        {RightSection === 'KICK' && (
+          <UserKickButton
+            leenkId={leenkId}
+            handleKick={kebabPress}
+            disabled={rightDisabled}
+          />
+        )}
         {RightSection === 'NONE' && <None />}
       </Side>
     </Container>

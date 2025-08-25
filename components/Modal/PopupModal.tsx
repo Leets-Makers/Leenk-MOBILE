@@ -11,6 +11,7 @@ import {
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import CustomButton from '../common/Button/CustomButton';
+import Loading from '../common/Loading';
 
 /* 
 🦄스타일링 설명
@@ -30,6 +31,7 @@ interface PopupModalProps {
   isCancel?: boolean;
   leftBtnText?: string;
   rightBtnText: string;
+  isLoading?: boolean;
 }
 
 export default function PopupModal({
@@ -42,7 +44,9 @@ export default function PopupModal({
   isWarning = false,
   leftBtnText = '취소',
   rightBtnText,
+  isLoading = false,
 }: PopupModalProps) {
+  if (isLoading) return <Loading />;
   return (
     <Modal
       animationType="none"
