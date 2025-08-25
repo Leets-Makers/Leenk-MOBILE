@@ -15,7 +15,9 @@ import { useUserStore } from '@/stores/userStore';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useFocusEffect } from 'expo-router';
 
-const PAGE_SIZE = 10;
+const FOOTER_SPACER = 10 * height;
+const PAGE_SIZE = 6;
+
 const tabToStatus = (tab: 'all' | 'open' | 'close') =>
   tab === 'all' ? 'ALL' : tab === 'open' ? 'OPEN' : 'CLOSED';
 
@@ -29,6 +31,8 @@ export default function LeenkPage() {
   const [hasMore, setHasMore] = useState(true);
 
   const didMountRef = useRef(false);
+
+  const listRef = useRef<import('react-native').FlatList<Leenk>>(null);
 
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
@@ -47,13 +51,12 @@ export default function LeenkPage() {
   useFocusEffect(
     React.useCallback(() => {
       if (didMountRef.current) {
-        // 화면으로 복귀 시: 목록 리프레시
+        // 화면으로 복귀, 목록 리프레시
         setHasMore(true);
         setPage(0);
         onEndReachedCalledDuringMomentum.current = false;
-        onRefresh(); // loadPage(0, true) 호출됨
+        onRefresh();
       } else {
-        // 첫 포커스(초기 진입)는 건너뛰기
         didMountRef.current = true;
       }
     }, [tab]),
@@ -62,7 +65,6 @@ export default function LeenkPage() {
   // 중복 호출 방지
   const onEndReachedCalledDuringMomentum = useRef(false);
 
-  // 첫 페이지 로드
   const loadPage = async (nextPage: number, replace = false) => {
     if (loading) return;
     setLoading(true);
@@ -80,25 +82,28 @@ export default function LeenkPage() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+      onEndReachedCalledDuringMomentum.current = false;
     }
   };
 
-  // 초기화 및 탭 관리
+  // 초기화 및 탭 전환 시
   useEffect(() => {
     setData([]);
     setHasMore(true);
     setPage(0);
+    onEndReachedCalledDuringMomentum.current = false;
     loadPage(0, true);
   }, [tab]);
 
-  // 스크롤 당겨서 재호출
+  // 당겨서 새로고침
   const onRefresh = async () => {
     setRefreshing(true);
     setHasMore(true);
+    onEndReachedCalledDuringMomentum.current = false;
     await loadPage(0, true);
   };
 
-  // 무한스크롤
+  // 무한 스크롤 트리거
   const onEndReached = () => {
     if (onEndReachedCalledDuringMomentum.current) return;
     if (!loading && hasMore) {
@@ -123,19 +128,22 @@ export default function LeenkPage() {
       </View>
 
       <LeenkList
+        ref={listRef}
         data={data}
         keyExtractor={(item) => String(item.leenkId)}
         renderItem={({ item }) => <LeenkListItem item={item} />}
         ItemSeparatorComponent={() => <Separator />}
-        showsVerticalScrollIndicator
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        onEndReachedThreshold={0.6}
+        onEndReachedThreshold={0.3}
         onEndReached={onEndReached}
         onMomentumScrollBegin={() => {
           onEndReachedCalledDuringMomentum.current = false;
         }}
-        ListFooterComponent={loading ? <View /> : !hasMore ? <View /> : null}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        showsVerticalScrollIndicator
+        ListFooterComponent={
+          <View style={{ height: FOOTER_SPACER, opacity: loading ? 0.6 : 0 }} />
+        }
       />
     </ContainerWithNoPadding>
   );
