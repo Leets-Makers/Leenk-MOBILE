@@ -6,6 +6,7 @@ import {
 import api from '@/api/api';
 import { ApiResponse } from '@/api/api-type';
 
+// 링크 전체 조회
 export const getLeenkList = async (
   pageNumber: number,
   pageSize: number,
@@ -19,9 +20,28 @@ export const getLeenkList = async (
     },
   });
 
+  // if (__DEV__) {
+  //   console.log('링크 전체 조회:', res.data);
+  //   console.log('first leenk:', res.data.data.leenks[0]);
+  // }
+
+  return res.data;
+};
+
+// 내가 참여한 링크 조회
+export const getMyLeenkList = async (pageNumber: number, pageSize: number) => {
+  const res = await api.get<ApiResponse<LeenkListResponse>>(
+    '/leenks/participated',
+    {
+      params: {
+        pageNumber,
+        pageSize,
+      },
+    },
+  );
+
   if (__DEV__) {
-    console.log('링크 전체 조회:', res.data);
-    console.log('first leenk:', res.data.data.leenks[0]);
+    console.log('참여한 링크 조회:', res.data);
   }
 
   return res.data;

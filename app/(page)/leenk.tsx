@@ -122,7 +122,7 @@ export default function LeenkPage() {
         />
       </View>
 
-      <List
+      <LeenkList
         data={data}
         keyExtractor={(item) => String(item.leenkId)}
         renderItem={({ item }) => <LeenkListItem item={item} />}
@@ -135,40 +135,19 @@ export default function LeenkPage() {
         onMomentumScrollBegin={() => {
           onEndReachedCalledDuringMomentum.current = false;
         }}
-        ListFooterComponent={
-          loading ? (
-            <FooterLoading />
-          ) : !hasMore ? (
-            <FooterEnd></FooterEnd>
-          ) : null
-        }
+        ListFooterComponent={loading ? <View /> : !hasMore ? <View /> : null}
       />
     </ContainerWithNoPadding>
   );
 }
 
-const List = styled.FlatList.attrs({
+export const LeenkList = styled.FlatList.attrs({
   contentContainerStyle: {
     paddingBottom: height * 20,
     paddingHorizontal: FEED_PADDING * width,
   },
 })`` as unknown as typeof import('react-native').FlatList<Leenk>;
 
-const Separator = styled.View`
+export const Separator = styled.View`
   height: ${height * 8}px;
-`;
-
-// TODO: 마지막 게시물 표시 변경
-const FooterLoading = styled.ActivityIndicator.attrs({
-  size: 'small',
-  color: colors.primary ?? '#888',
-})`
-  margin: ${height * 8}px 0;
-`;
-
-const FooterEnd = styled.Text`
-  text-align: center;
-  color: ${colors.text?.[3] ?? '#999'};
-  padding: ${height * 8}px 0;
-  font-size: 12px;
 `;
