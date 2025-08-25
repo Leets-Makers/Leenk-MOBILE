@@ -49,19 +49,11 @@ export default function LeenkDetailPage() {
   const [leenkDetail, setLeenkDetail] = useState<LeenkDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
-  const [joining, setJoining] = useState(false);
-  const [leaving, setLeaving] = useState(false);
-  const [isParticipated, setIsParticipated] = useState(
-    leenkDetail?.isParticipated,
-  );
-  const [leenkStatus, setLeenkStatus] = useState('');
 
   const isAuthor = useMemo(
     () => (leenkDetail ? leenkDetail.author.userId === userInfo?.id : false),
     [leenkDetail, userInfo?.id],
   );
-
-  const isBusy = loading || deleting || joining || leaving;
 
   const fetchDetail = useCallback(async () => {
     if (!Number.isFinite(leenkId)) {
@@ -76,7 +68,6 @@ export default function LeenkDetailPage() {
       const data = await getLeenkDetail(leenkId);
       if (active) {
         setLeenkDetail(data);
-        setLeenkStatus(data.status);
         console.log('링크의 상태:', data.status);
       }
     } catch (e) {
@@ -110,7 +101,7 @@ export default function LeenkDetailPage() {
     openModal('leenkReport');
   }, [closeModal, openModal]);
 
-  // 링크 모집 종료 함수
+  // 링크 모집 종료 함수(작성자)
   const handleLeenkClose = async (leenkId: number) => {
     try {
       await closeLeenk(leenkId);
@@ -121,7 +112,8 @@ export default function LeenkDetailPage() {
       showToast('링크 모집 종료에 실패했어요.');
     }
   };
-  // 링크 모임 종료 함수
+
+  // 링크 모임 종료 함수(작성자)
   const handleLeenkFinish = async (leenkId: number) => {
     try {
       await finishLeenk(leenkId);
@@ -181,55 +173,68 @@ export default function LeenkDetailPage() {
   }, [closeModal, router, leenkDetail?.id]);
 
   // 링크 떠나기(참여자)
-  const handleLeave = useCallback(async () => {
-    if (!leenkDetail || leaving || !isParticipated) {
-      closeModal();
-      return;
-    }
-    try {
-      setLeaving(true);
-      await leaveLeenk(leenkDetail.id);
+  const handleLeave = async () => {
+    if (!leenkDetail) return;
+    setLeenkDetail((prev) =>
+      prev
+        ? {
+            ...prev,
+            isParticipated: false,
+            currentParticipants: Math.max(prev.currentParticipants - 1, 0),
+          }
+        : prev,
+    );
 
-      // Optimistic local update
-      setIsParticipated(false);
+    try {
+      await leaveLeenk(leenkDetail.id);
+      closeModal();
+      const fresh = await getLeenkDetail(leenkDetail.id);
+      setLeenkDetail(fresh);
+    } catch (e) {
       setLeenkDetail((prev) =>
         prev
           ? {
               ...prev,
+              isParticipated: true,
+              currentParticipants: prev.currentParticipants + 1,
+            }
+          : prev,
+      );
+      showToast('나가기에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
+    }
+  };
+
+  // 링크 참여하기(참여자)
+  const handleJoin = async () => {
+    if (!leenkDetail) return;
+    setLeenkDetail((prev) =>
+      prev
+        ? {
+            ...prev,
+            isParticipated: true,
+            currentParticipants: prev.currentParticipants + 1,
+          }
+        : prev,
+    );
+
+    try {
+      await participantLeenk(leenkDetail.id);
+      closeModal();
+      const fresh = await getLeenkDetail(leenkDetail.id);
+      setLeenkDetail(fresh);
+    } catch (e) {
+      setLeenkDetail((prev) =>
+        prev
+          ? {
+              ...prev,
+              isParticipated: false,
               currentParticipants: Math.max(prev.currentParticipants - 1, 0),
             }
           : prev,
       );
-      showToast('모임에서 나갔어.', 'success');
-    } catch {
-      showToast('나가기에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
-    } finally {
-      setLeaving(false);
-      closeModal();
-    }
-  }, [leenkDetail, leaving, isParticipated, closeModal, showToast]);
-
-  // 링크 참여하기(참여자)
-  const handleJoinLeenk = useCallback(async () => {
-    if (!leenkDetail || joining || isParticipated) return;
-    try {
-      setJoining(true);
-      await participantLeenk(leenkDetail.id);
-
-      // Optimistic local update
-      setIsParticipated(true);
-      setLeenkDetail((prev) =>
-        prev
-          ? { ...prev, currentParticipants: prev.currentParticipants + 1 }
-          : prev,
-      );
-      showToast('참여했어!', 'success');
-    } catch {
       showToast('참여에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
-    } finally {
-      setJoining(false);
     }
-  }, [leenkDetail, joining, isParticipated, showToast]);
+  };
 
   // 공유하기(작성자,침여자)
   const handleShare = async () => {
@@ -262,7 +267,7 @@ export default function LeenkDetailPage() {
     }
   };
 
-  if (isBusy || !leenkDetail) {
+  if (loading || deleting || !leenkDetail) {
     return <Loading />;
   }
 
@@ -304,7 +309,7 @@ export default function LeenkDetailPage() {
         onLeave={() => openModal('leenkLeave')}
         onFinish={() => openModal('leenkFinish')}
         onClose={() => openModal('leenkClose')}
-        onJoin={handleJoinLeenk}
+        onJoin={handleJoin}
         onParticipants={handleParticipants}
       />
 
