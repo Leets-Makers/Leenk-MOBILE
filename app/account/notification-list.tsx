@@ -55,16 +55,25 @@ export default function NotificationListPage() {
     setRefreshing(false);
   };
 
-  // 알림 읽음 처리
-  const handlePress = async (notificationId: string) => {
+  // 알림 읽음 처리 + 라우팅
+  const handlePress = async (notification: Notification) => {
     try {
-      if (userInfo) await markNotificationAsRead(userInfo?.id, notificationId);
+      if (userInfo) await markNotificationAsRead(userInfo?.id, notification.id);
+
+      // 읽음 처리 업데이트
       setData((prev) =>
         prev.map((item) =>
-          item.id === notificationId ? { ...item, isRead: true } : item,
+          item.id === notification.id ? { ...item, isRead: true } : item,
         ),
       );
-      router.push;
+      if (notification.content.leenkId || notification.content.feedId) {
+        // path에 따라 이동
+        if (notification.path === 'leenks') {
+          router.push(`/leenk/${notification.content.leenkId}`);
+        } else {
+          router.push(`/feed/${notification.content.feedId}`);
+        }
+      }
     } catch (error) {
       if (__DEV__) console.error('Failed to mark notification as read:', error);
       showToast('알림을 불러오는데 실패했습니다.', 'error');
@@ -85,7 +94,7 @@ export default function NotificationListPage() {
         renderItem={({ item }) => (
           <NotificationListItem
             item={item}
-            onPress={() => handlePress(item.id)}
+            onPress={() => handlePress(item)}
             onMorePress={() => {
               const detailData =
                 item.notificationType === 'FEED_REACTION_COUNT'
