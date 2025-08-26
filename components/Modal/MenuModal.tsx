@@ -35,9 +35,13 @@ export default function MenuModal({
   isDanger = false,
   isOneOption = true,
 }: MenuModalProps) {
-  const topPosition = Platform.OS === 'ios' ? 95 * height : 50 * height;
+  const topPositionPx = Platform.OS === 'ios' ? 95 * height : 50 * height;
+  const bottomMarginPx = Platform.OS === 'ios' ? 35 * height : 0;
 
   const DANGER_LABELS = ['신고하기', '삭제하기', '차단하기'] as const;
+
+  const isDangerLabel = (txt?: string) =>
+    !!txt && (DANGER_LABELS as readonly string[]).includes(txt);
 
   return (
     <Modal
@@ -47,7 +51,11 @@ export default function MenuModal({
       onRequestClose={onClose}
     >
       <Overlay onPress={onClose}>
-        <MenuContainer $isWrite={isWrite} $topPosition={topPosition}>
+        <MenuContainer
+          $isWrite={isWrite}
+          $topPosition={topPositionPx}
+          $bottomMargin={bottomMarginPx}
+        >
           {isWrite ? (
             <>
               <MenuItemWrapper onPress={onPressFirst}>
@@ -83,15 +91,7 @@ export default function MenuModal({
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
                     <MenuText
                       $isWrite={isWrite}
-                      $isDanger={
-                        isDanger ||
-                        DANGER_LABELS.includes(
-                          firstOptionText as
-                            | '신고하기'
-                            | '삭제하기'
-                            | '차단하기',
-                        )
-                      }
+                      $isDanger={isDanger || isDangerLabel(firstOptionText)}
                     >
                       {firstOptionText}
                     </MenuText>
@@ -105,12 +105,7 @@ export default function MenuModal({
                     <MenuItem pressed={pressed} $isWrite={isWrite}>
                       <MenuText
                         $isWrite={isWrite}
-                        $isDanger={DANGER_LABELS.includes(
-                          secondOptionText as
-                            | '신고하기'
-                            | '삭제하기'
-                            | '차단하기',
-                        )}
+                        $isDanger={isDangerLabel(secondOptionText)}
                       >
                         {secondOptionText}
                       </MenuText>
@@ -126,36 +121,43 @@ export default function MenuModal({
   );
 }
 
-const Overlay = styled.Pressable<{ $isWrite: boolean }>`
+const Overlay = styled.Pressable`
   flex: 1;
   background-color: rgba(0, 0, 0, 0.3);
   align-items: center;
 `;
 
-const MenuContainer = styled.View<{ $isWrite: boolean; $topPosition: number }>`
+const MenuContainer = styled.View<{
+  $isWrite: boolean;
+  $topPosition: number;
+  $bottomMargin: number;
+}>`
   position: absolute;
   ${({ $isWrite, $topPosition }) =>
     $isWrite
-      ? `bottom: ${70 * height}px; left: 50%; transform: translateX(-${(134 * width) / 2}px);`
-      : `top: ${$topPosition * height}px; right: 20px; align-items: center;`}
+      ? `
+        bottom: ${70 * height}px;
+        align-self: center;
+      `
+      : `
+        top: ${$topPosition}px;
+        right: ${20 * width}px;
+        align-items: center;
+      `}
   width: ${({ $isWrite }) => ($isWrite ? 134 * width : 100 * width)}px;
   padding: ${8 * height}px ${10 * width}px;
   background-color: ${colors.white};
   border-radius: ${radius.md}px;
   gap: ${4 * height}px;
+  margin-bottom: ${({ $bottomMargin }) => $bottomMargin}px;
+  /* Android */
   elevation: 6;
-
-  shadow-color: #000;
-  shadow-offset: 0px 2px;
-  shadow-opacity: 0.15;
-  shadow-radius: 4px;
 `;
 
 const MenuItem = styled.View<{ pressed: boolean; $isWrite: boolean }>`
   flex-direction: row;
   align-items: center;
   justify-content: ${({ $isWrite }) => ($isWrite ? 'flex-start' : 'center')};
-  justify-content: center;
   padding: ${({ pressed }) =>
     pressed
       ? `${4 * height}px ${12 * width}px`
