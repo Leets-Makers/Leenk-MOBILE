@@ -80,7 +80,11 @@ export default function LandingPage() {
           await saveAccessToken(serverToken);
           await saveRefreshToken(refreshToken);
           await registerFcmToken();
-          router.replace('/(page)/leenk');
+
+          setName(result.data.name);
+          setPosition(result.data.position);
+          setCardinal(result.data.cardinal);
+          router.push('/signup/terms');
         }
       } else {
         switch (result.code) {
