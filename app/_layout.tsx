@@ -28,7 +28,7 @@ export const unstable_settings = {
 };
 
 type NotiData = {
-  type?: 'leenk' | 'link' | 'feed';
+  type?: 'leenk' | 'feed';
   id?: string | number;
 };
 

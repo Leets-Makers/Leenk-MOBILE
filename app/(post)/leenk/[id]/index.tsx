@@ -63,7 +63,15 @@ export default function LeenkDetailPage() {
     async (signal?: { canceled: boolean }) => {
       setLoading(true);
       try {
+        if (!Number.isFinite(leenkId)) {
+          if (!signal?.canceled) {
+            showToast('잘못된 링크 주소야.', 'error');
+            router.back();
+          }
+          return;
+        }
         const data = await getLeenkDetail(leenkId);
+
         if (!signal?.canceled) {
           setLeenkDetail(data);
           console.log('링크의 상태:', data.status);

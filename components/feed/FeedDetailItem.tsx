@@ -29,8 +29,8 @@ import {
   width,
 } from '@/theme/globalStyles';
 import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
-import { StyledText } from '@/app/(post)/feed/write';
 import { Media } from '@/types/feed';
+import { StyledText } from './write/AuthorContent';
 
 interface Props {
   feed: FeedDetail;

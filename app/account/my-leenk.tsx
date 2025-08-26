@@ -11,48 +11,48 @@ import { getMyLeenkList } from '@/api/leenk/leenk.get.api';
 import { Leenk } from '@/types/leenk';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 6;
 
 export default function MyLeenkPage() {
-  // 리스트 데이터 상태
   const [data, setData] = useState<Leenk[]>([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  // UI 상태
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  // 모멘텀 스크롤 중복 호출 방지용 ref
   const onEndReachedCalledDuringMomentum = useRef(false);
+  const listCanScroll = useRef(false); // 컨텐츠가 화면을 넘는지 여부
 
-  // 특정 페이지 로드
+  // ✅ loadPage는 고정
   const loadPage = useCallback(
     async (nextPage: number, replace = false) => {
-      // 이미 로딩 중이면 중복 호출 방지
       if (loading) return;
-
       setLoading(true);
       try {
         const res = await getMyLeenkList(nextPage, PAGE_SIZE);
-
-        const pageItems: Leenk[] = res.leenks ?? [];
-
-        // 다음 페이지가 있는지 여부 판단 (단순 길이 기반)
+        const pageItems = res.leenks ?? [];
         const reachedEnd = pageItems.length < PAGE_SIZE;
 
         setData((prev) => (replace ? pageItems : [...prev, ...pageItems]));
         setHasMore(!reachedEnd);
         setPage(nextPage);
       } catch (e) {
-        if (__DEV__) console.warn('참여한 링크 조회 실패:', e);
+        if (__DEV__) console.warn('Failed to fetch leenks:', e);
       } finally {
         setLoading(false);
         setRefreshing(false);
+        onEndReachedCalledDuringMomentum.current = false;
       }
     },
     [loading],
   );
+
+  // ✅ 최초 1회만 호출
+  useEffect(() => {
+    loadPage(0, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 당겨서 새로고침
   const onRefresh = useCallback(async () => {
@@ -62,20 +62,18 @@ export default function MyLeenkPage() {
     await loadPage(0, true);
   }, [loadPage]);
 
-  // 무한 스크롤
+  // 무한 스크롤 트리거 (stale page 방지)
   const onEndReached = useCallback(() => {
-    // 모멘텀 중복 호출 방지
     if (onEndReachedCalledDuringMomentum.current) return;
     if (!loading && hasMore) {
       onEndReachedCalledDuringMomentum.current = true;
-      loadPage(page + 1);
+      setPage((prev) => {
+        const next = prev + 1;
+        loadPage(next);
+        return next; // 상태만 올리고 실제 fetch는 위에서
+      });
     }
-  }, [hasMore, loadPage, loading, page]);
-
-  // 첫 페이지 자동 로드
-  useEffect(() => {
-    loadPage(0, true);
-  }, [loadPage]);
+  }, [hasMore, loading, loadPage]);
 
   return (
     <ContainerWithNoPadding>
@@ -89,16 +87,32 @@ export default function MyLeenkPage() {
           keyExtractor={(item) => String(item.leenkId)}
           renderItem={({ item }) => <LeenkListItem item={item} />}
           ItemSeparatorComponent={() => <Separator />}
-          showsVerticalScrollIndicator
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          onEndReachedThreshold={0.6}
+          onEndReachedThreshold={0.2}
           onEndReached={onEndReached}
           onMomentumScrollBegin={() => {
             onEndReachedCalledDuringMomentum.current = false;
           }}
-          // 리스트 여백은 contentContainerStyle 쪽이 더 안전
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          showsVerticalScrollIndicator
           contentContainerStyle={{ paddingBottom: height * 20 }}
+          // ✅ 컨텐츠가 화면보다 작으면 자동으로 더 로드
+          onContentSizeChange={(w, h) => {
+            // 이미 스크롤 가능하면 패스
+            if (listCanScroll.current) return;
+            // 화면 높이를 넘지 못했고, 더 불러올 수 있고, 현재 로딩 아님
+            if (h < height * (1 - 0.01) && hasMore && !loading) {
+              setPage((prev) => {
+                const next = prev === 0 ? 1 : prev + 1; // 첫 페이지 직후 한 번 더
+                loadPage(next);
+                return next;
+              });
+            } else if (h >= height) {
+              listCanScroll.current = true;
+            }
+          }}
+          // 선택: 초기에 충분히 렌더
+          initialNumToRender={PAGE_SIZE}
           ListFooterComponent={loading ? <View /> : !hasMore ? <View /> : null}
         />
       </SafeAreaView>

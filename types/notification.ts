@@ -11,7 +11,7 @@ interface FeedReactionCount {
   reactionCount: number;
 }
 
-interface LeenkDetail {
+interface NotificationLeenkDetail {
   title: string;
   body: string;
   place: string;
@@ -31,7 +31,7 @@ interface NotificationContent {
   feedFirstReactions?: FeedFirstReaction[];
   feedReactionCounts?: FeedReactionCount[];
   newLeenkParticipantDetails?: NewLeenkParticipantDetails[];
-  leenkDetail?: LeenkDetail[];
+  leenkDetail?: NotificationLeenkDetail[];
   authorUserId?: number;
   authorName?: string;
   leenkTitle?: string;
@@ -59,7 +59,7 @@ type NotificationType =
 interface Notification {
   id: string;
   userId: number;
-  path: string;
+  path?: string;
   notificationType: NotificationType;
   isRead: boolean;
   content: NotificationContent;
