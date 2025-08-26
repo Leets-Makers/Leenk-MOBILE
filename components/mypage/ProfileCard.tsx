@@ -24,6 +24,10 @@ type ProfileCardProps = {
   isMyProfile?: boolean;
 };
 
+const INTRO_MAX_PX = 150 * height; // 원하는 최대 높이(px)
+const INTRO_LINE_PX = lineHeight.m; // 한 줄 line-height(px)
+const INTRO_MAX_LINES = Math.floor(INTRO_MAX_PX / INTRO_LINE_PX);
+
 export default function ProfileCard({
   cardinal,
   name,
@@ -122,7 +126,10 @@ const MbtiText = styled.Text`
   margin-top: ${8 * height}px;
 `;
 
-const IntroContainer = styled.Text`
+const IntroContainer = styled.Text.attrs({
+  numberOfLines: INTRO_MAX_LINES,
+  ellipsizeMode: 'tail',
+})`
   width: 100%;
   margin: ${20 * height}px 0 ${24 * height}px 0;
   font-size: ${fontSize.md}px;
@@ -130,10 +137,5 @@ const IntroContainer = styled.Text`
   font-family: ${fonts.Bold};
   line-height: ${lineHeight.m}px;
   text-align: justify;
-`;
-
-const ProfileImage = styled.Image`
-  width: ${79 * width}px;
-  height: ${79 * height}px;
-  border-radius: 99px;
+  max-height: ${INTRO_MAX_PX}px;
 `;
