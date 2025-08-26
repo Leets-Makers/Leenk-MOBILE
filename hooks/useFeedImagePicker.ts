@@ -1,7 +1,10 @@
+// useFeedImagePicker.ts
 import { useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Platform } from 'react-native';
 import { SelectedImage, useFeedWriteStore } from '@/stores/feedWriteStore';
+
+type PageInfo = { endCursor: string | null; hasNextPage: boolean };
 
 export default function useFeedImagePicker({
   maxSelect = 3,
@@ -12,17 +15,16 @@ export default function useFeedImagePicker({
 }) {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [pageInfo, setPageInfo] = useState<{
-    endCursor: string | null;
-    hasNextPage: boolean;
-  }>({ endCursor: null, hasNextPage: false });
+  const [pageInfo, setPageInfo] = useState<PageInfo>({
+    endCursor: null,
+    hasNextPage: false,
+  });
+  const [loading, setLoading] = useState(false);
+  const [initialized, setInitialized] = useState(false); // 첫 로딩 구분용
 
-  const selectedUris = useFeedWriteStore((state) => state.selectedImages);
-  const setSelectedImages = useFeedWriteStore(
-    (state) => state.setSelectedImages,
-  );
+  const selected = useFeedWriteStore((s) => s.selectedImages);
+  const setSelected = useFeedWriteStore((s) => s.setSelectedImages);
 
-  // 권한 요청
   const requestPermission = async (): Promise<boolean> => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const granted = status === 'granted';
@@ -30,86 +32,100 @@ export default function useFeedImagePicker({
     return granted;
   };
 
-  // 사진 로딩
-  const fetchPhotos = useCallback(async () => {
-    const perm = await MediaLibrary.getPermissionsAsync();
+  const fetchPhotos = useCallback(
+    async (opts?: { reset?: boolean }) => {
+      if (loading) return;
 
-    if (perm.status !== 'granted') return;
-
-    const { assets, endCursor, hasNextPage } =
-      await MediaLibrary.getAssetsAsync({
-        first: 24,
-        after: pageInfo?.endCursor ?? undefined,
-        mediaType: MediaLibrary.MediaType.photo,
-      });
-    let assetsWithLocalUri: MediaLibrary.Asset[] = [];
-    // console.log('🚨 전체 asset 로그:', JSON.stringify(assets, null, 2));
-
-    if (Platform.OS === 'ios') {
-      const assetInfoPromises = assets.map(async (asset) => {
-        try {
-          const info = await MediaLibrary.getAssetInfoAsync(asset.id);
-          return {
-            ...asset,
-            uri: info.localUri ?? asset.uri,
-          };
-        } catch (e) {
-          console.warn('asset info error', e);
-          return asset; // fallback
+      setLoading(true);
+      try {
+        const perm =
+          hasPermission === null
+            ? await MediaLibrary.getPermissionsAsync()
+            : { status: hasPermission ? 'granted' : 'denied' };
+        if (perm.status !== 'granted') {
+          setHasPermission(false);
+          return;
         }
-      });
-      assetsWithLocalUri = await Promise.all(assetInfoPromises);
-    } else {
-      assetsWithLocalUri = assets;
-    }
+        if (hasPermission === null) setHasPermission(true);
 
-    setPhotos((prev) => {
-      const existingIds = new Set(prev.map((p) => p.id));
-      const newAssets = assetsWithLocalUri.filter(
-        (asset) => !existingIds.has(asset.id),
-      );
-      return [...prev, ...newAssets];
-    });
+        const after = opts?.reset
+          ? undefined
+          : (pageInfo.endCursor ?? undefined);
 
-    setPageInfo({ endCursor, hasNextPage });
-    console.log('📸 가져온 사진 개수:', assets.length);
-  }, [pageInfo]);
+        const { assets, endCursor, hasNextPage } =
+          await MediaLibrary.getAssetsAsync({
+            first: 24,
+            after,
+            mediaType: MediaLibrary.MediaType.photo,
+          });
 
-  // 선택 상태 변경
+        let normalized = assets;
+        if (Platform.OS === 'ios') {
+          const infos = await Promise.all(
+            assets.map((a) =>
+              MediaLibrary.getAssetInfoAsync(a.id).catch(() => null),
+            ),
+          );
+          normalized = assets.map((a, i) => ({
+            ...a,
+            uri: infos[i]?.localUri ?? a.uri,
+          }));
+        }
+
+        setPhotos((prev) => {
+          const base = opts?.reset ? [] : prev;
+          const seen = new Set(base.map((p) => p.id));
+          return [...base, ...normalized.filter((a) => !seen.has(a.id))];
+        });
+
+        setPageInfo({ endCursor, hasNextPage });
+        if (!initialized) setInitialized(true);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [hasPermission, loading, pageInfo.endCursor, initialized],
+  );
+
+  const refresh = useCallback(
+    () => fetchPhotos({ reset: true }),
+    [fetchPhotos],
+  );
+
   const toggleSelect = (photo: MediaLibrary.Asset) => {
-    const isSelected = selectedUris.some((item) => item.uri === photo.uri);
-    let updatedUris: SelectedImage[];
+    const isSelected = selected.some((i) => i.uri === photo.uri);
+    let next: SelectedImage[];
+    if (isSelected) next = selected.filter((i) => i.uri !== photo.uri);
+    else if (selected.length < maxSelect)
+      next = [...selected, { uri: photo.uri, filename: photo.filename }];
+    else return;
 
-    if (isSelected) {
-      updatedUris = selectedUris.filter((item) => item.uri !== photo.uri);
-    } else if (selectedUris.length < maxSelect) {
-      updatedUris = [
-        ...selectedUris,
-        { uri: photo.uri, filename: photo.filename },
-      ];
-    } else {
-      return;
-    }
-
-    setSelectedImages(updatedUris);
+    setSelected(next);
+    onChange?.(next.map((n) => n.uri));
   };
 
   const getSelectionNumber = (photoId: string) => {
-    const photoUri = photos.find((photo) => photo.id === photoId)?.uri;
-    const index = selectedUris.findIndex((item) => item.uri === photoUri);
-    return index >= 0 ? index + 1 : null;
+    const uri = photos.find((p) => p.id === photoId)?.uri;
+    const idx = selected.findIndex((i) => i.uri === uri);
+    return idx >= 0 ? idx + 1 : null;
   };
+
+  // 화면에서 쓰기 편하도록 파생 상태 제공
+  const initialLoading = !initialized && loading; // 첫 로딩
+  const pagingLoading = initialized && loading; // 추가 로딩
 
   return {
     photos,
-    selected: photos.filter((photo) =>
-      selectedUris.some((item) => item.uri === photo.uri),
-    ),
+    selected: photos.filter((p) => selected.some((i) => i.uri === p.uri)),
     hasPermission,
     requestPermission,
+    fetchPhotos,
+    refresh,
+    hasNextPage: pageInfo.hasNextPage,
+    loading,
+    initialLoading,
+    pagingLoading,
     toggleSelect,
     getSelectionNumber,
-    fetchPhotos,
-    hasNextPage: pageInfo?.hasNextPage,
   };
 }

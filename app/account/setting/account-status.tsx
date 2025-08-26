@@ -85,8 +85,7 @@ export default function AccountStatusPage() {
         <PopupModal
           isOpen={deleteModalVisible}
           mainText="회원탈퇴 할까?"
-          subText="계정은 7일 뒤 완전히 삭제되고, 
-그 전에 다시 로그인하면 복구할 수 있어."
+          subText={`계정은 7일 뒤 완전히 삭제되고,\n그 전에 다시 로그인하면 복구할 수 있어.`}
           onLeftBtn={handleDeleteConfirm}
           onRightBtn={() => setDeleteModalVisible(false)}
           leftBtnText="확인"

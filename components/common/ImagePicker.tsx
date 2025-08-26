@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { FlatList, Platform, View } from 'react-native';
-import { ThumbnailItem } from '@/components';
+import { FlatList, View } from 'react-native';
+import { ThumbnailItem, Loading } from '@/components';
 import useFeedImagePicker from '@/hooks/useFeedImagePicker';
 import { CONTAINER_PADDING, NUM_COLUMNS } from '@/constants';
 import { AspectRatio } from '@/types/aspect-ratio';
-import { width } from '@/theme/globalStyles';
+import { height, width } from '@/theme/globalStyles';
 import useProfileImagePicker from '@/hooks/useProfileImagePicker';
 
 interface ImagePickerProps {
@@ -40,6 +40,11 @@ export default function ImagePicker({
       ? picker.getSelectionNumber
       : undefined;
 
+  const initialLoading =
+    'initialLoading' in picker ? picker.initialLoading : false;
+  const pagingLoading =
+    'pagingLoading' in picker ? picker.pagingLoading : false;
+
   // 권한 요청 및 초기 사진 로딩
   useEffect(() => {
     (async () => {
@@ -56,6 +61,10 @@ export default function ImagePicker({
 
   if (hasPermission === false) return null;
 
+  if (initialLoading) {
+    return <Loading />;
+  }
+
   return (
     <View style={{ flex: 1, maxHeight: 600 }}>
       <FlatList
@@ -67,7 +76,7 @@ export default function ImagePicker({
           gap: 4 * width,
         }}
         contentContainerStyle={{
-          paddingBottom: 100,
+          paddingBottom: 100 * height,
           paddingHorizontal: CONTAINER_PADDING * width,
         }}
         showsVerticalScrollIndicator
@@ -79,6 +88,9 @@ export default function ImagePicker({
         initialNumToRender={12}
         windowSize={5}
         removeClippedSubviews={true}
+        ListFooterComponent={
+          pagingLoading ? <Loading fullScreen={false} /> : null
+        }
         renderItem={({ item }) => (
           <ThumbnailItem
             asset={item}
