@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 type Store = {
   leenkImage: string | null;
-  setLeenkImage: (uri: string) => void;
+  setLeenkImage: (uri: string | null) => void;
   resetLeenkImage: () => void;
 };
 

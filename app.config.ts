@@ -18,6 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       NSPhotoLibraryUsageDescription:
         '사진을 선택하려면 접근 권한이 필요합니다.',
+      CFBundleURLTypes: [{ CFBundleURLSchemes: ['leenk'] }],
     },
     googleServicesFile: './GoogleService-Info.plist',
   },
@@ -26,6 +27,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: 'com.leetsmakers.leenk',
     googleServicesFile: './google-services.json',
     edgeToEdgeEnabled: true,
+    intentFilters: [
+      {
+        action: 'VIEW',
+        autoVerify: false,
+        data: [{ scheme: 'leenk' }],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+    ],
     adaptiveIcon: {
       // foregroundImage: './assets/images/ic_logo_round.png',
       // backgroundColor: '#ffffff',

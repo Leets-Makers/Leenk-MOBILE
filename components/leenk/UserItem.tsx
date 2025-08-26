@@ -10,15 +10,15 @@ import {
 import styled from 'styled-components/native';
 import { Badge, CheckBox, ProfileImageWithFallback } from '@/components';
 import { CopyIcon } from '@/assets';
-import { LeenkDataType } from '@/constants/mockUserData';
 import { useToastStore } from '@/stores/toastStore';
 import { useParticipantStore } from '@/stores/participantStore';
+import { LeenkParticipantItem } from '@/types/leenk';
 
-export default function UserItem({ user }: { user: LeenkDataType }) {
+export default function UserItem({ user }: { user: LeenkParticipantItem }) {
   const { showToast } = useToastStore();
-  const { selectedUsers, toggleUser, isSelectionMode } = useParticipantStore();
+  const { toggleUser, isSelectionMode, isSelected } = useParticipantStore();
 
-  const checked = selectedUsers.some((u) => u.id === user.id);
+  const checked = isSelected(user.participant.userId);
 
   const handleCopyClick = async () => {
     try {
@@ -33,22 +33,22 @@ export default function UserItem({ user }: { user: LeenkDataType }) {
 
   return (
     <Wrapper>
-      <ProfileImageWithFallback uri={user.profileImageUri} />
+      <ProfileImageWithFallback uri={user.participant.profileImage} />
       <MiddleWrapper>
         <NameRow>
-          <UserName>{user.name}</UserName>
-          {user.isWrite && <Badge label="작성자" profile />}
+          <UserName>{user.participant.name}</UserName>
+          {user.isHost && <Badge label="작성자" profile />}
         </NameRow>
       </MiddleWrapper>
 
       <RightWrapper>
-        {!user.isWrite && !isSelectionMode && (
+        {!user.isHost && !isSelectionMode && (
           <KakaoWrapper onPress={handleCopyClick}>
             <KakaoIdText>{user.kakaoTalkId || 'kakao ID'}</KakaoIdText>
             <CopyIcon width={20} height={20} style={{ marginLeft: 8 }} />
           </KakaoWrapper>
         )}
-        {!user.isWrite && isSelectionMode && (
+        {!user.isHost && isSelectionMode && (
           <CheckBox onPress={() => toggleUser(user)} checked={checked} />
         )}
       </RightWrapper>
