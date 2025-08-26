@@ -36,7 +36,7 @@ export default function MenuModal({
   isOneOption = true,
 }: MenuModalProps) {
   const topPositionPx = Platform.OS === 'ios' ? 95 * height : 50 * height;
-  const bottomMarginPx = Platform.OS === 'ios' ? 20 * height : 0;
+  const bottomMarginPx = Platform.OS === 'ios' ? 35 * height : 0;
 
   const DANGER_LABELS = ['신고하기', '삭제하기', '차단하기'] as const;
 

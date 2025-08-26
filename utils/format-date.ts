@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/ko';
 
 export function formatDate(iso: string): string {
@@ -12,14 +13,13 @@ export function formatDate(iso: string): string {
 }
 
 export function formatMonthDayHour(iso: string): string {
-  const date = new Date(iso);
-  const month = date.getUTCMonth() + 1;
-  const day = date.getUTCDate();
-  const hour = date.getUTCHours();
-
-  return `${month}월 ${day}일 ${hour}시`;
+  // 'Z'나 +09:00가 있으면 UTC 기준으로 읽고 local()로 변환
+  const hasTZ = /[zZ]|[+\-]\d{2}:?\d{2}$/.test(iso);
+  const d = hasTZ ? dayjs.utc(iso).local() : dayjs(iso);
+  return `${d.month() + 1}월 ${d.date()}일 ${d.hour()}시`;
 }
 
+dayjs.extend(utc);
 dayjs.extend(relativeTime);
 dayjs.locale('ko');
 

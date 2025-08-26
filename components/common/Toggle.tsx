@@ -19,24 +19,24 @@ export default function Toggle({ isOn, onToggle }: ToggleProps) {
 }
 
 const ToggleWrapper = styled(Pressable)`
-  width: ${50 * width}px;
-  height: ${28 * height}px;
+  width: ${36 * width}px;
+  height: ${21 * height}px;
   justify-content: center;
 `;
 
 const Track = styled.View<{ isOn: boolean }>`
   width: 100%;
   height: 100%;
-  border-radius: ${24 * height}px;
+  border-radius: ${100 * height}px;
   background-color: ${({ isOn }) => (isOn ? colors.primary : colors.gray[400])};
   padding-horizontal: ${4 * width}px;
   justify-content: center;
 `;
 
 const Thumb = styled.View<{ isOn: boolean }>`
-  width: ${22 * height}px;
-  height: ${22 * height}px;
-  border-radius: ${12 * height}px;
+  width: ${16 * height}px;
+  height: ${16 * height}px;
+  border-radius: ${100 * height}px;
   background-color: ${colors.white};
   align-self: ${({ isOn }) => (isOn ? 'flex-end' : 'flex-start')};
 `;

@@ -155,6 +155,7 @@ export default function AccountEdit() {
               title="자기소개를 입력해줘"
               placeholder={introduction}
               maxLength={200}
+              minHeight={30}
               value={edituserInfo}
               onChangeText={setEdituserInfo}
               {...(isIOS ? { accessoryID: ACCESSORY_ID } : {})}

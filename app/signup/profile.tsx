@@ -1,5 +1,11 @@
-import { useState } from 'react';
-import { Animated, Platform } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  Platform,
+  Animated,
+  View,
+  InputAccessoryView,
+  Keyboard,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';
@@ -39,15 +45,32 @@ export default function ProfilePage() {
   const router = useRouter();
   const randomMbti = useRandomMbti(2000);
   const insets = useSafeAreaInsets();
-
-  const buttonTranslateY = useKeyboardAnimation(10);
-
   const { showToast } = useToastStore();
 
-  // 프로필 저장 함수
+  const isIOS = Platform.OS === 'ios';
+  const androidTranslateY = useKeyboardAnimation(12);
+
+  // iOS: 키보드 열림 여부
+  const [kbVisible, setKbVisible] = useState(false);
+  useEffect(() => {
+    if (!isIOS) return;
+    const show = Keyboard.addListener('keyboardWillShow', () =>
+      setKbVisible(true),
+    );
+    const hide = Keyboard.addListener('keyboardWillHide', () =>
+      setKbVisible(false),
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, [isIOS]);
+
+  const ACCESSORY_ID = 'profile-accessory';
+
+  // ----- 저장 -----
   const saveProfile = async () => {
     const payload: UpdateProfilePayload = {};
-
     if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
     if (introduction) payload.introduction = introduction;
     if (mbti) payload.mbti = mbti;
@@ -62,12 +85,10 @@ export default function ProfilePage() {
         const mediaUrl = presignedUrls[0].mediaUrl;
         await uploadImageToS3(mediaUrl, profileImage);
 
-        // URL에서 쿼리 파라미터 제거
         try {
           const url = new URL(mediaUrl);
           payload.profileImage = `${url.protocol}//${url.host}${url.pathname}`;
-        } catch (urlError) {
-          // URL 파싱 실패 시 기존 방식 사용
+        } catch {
           payload.profileImage = mediaUrl.split('?')[0];
         }
       } catch (error) {
@@ -86,7 +107,7 @@ export default function ProfilePage() {
     }
   };
 
-  // 다음 단계
+  // ----- 다음 -----
   const handleNext = async () => {
     if (step === 'id') {
       setKakaoModalVisible(true);
@@ -97,7 +118,6 @@ export default function ProfilePage() {
     } else {
       try {
         await saveProfile();
-        // await commitTempAccessToken();
         await registerFcmToken();
         router.replace('/(page)/feed');
       } catch (e) {
@@ -120,7 +140,6 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('[handleSkip] 실패:', error);
     }
-    // await commitTempAccessToken();
     await registerFcmToken();
     router.replace('/(page)/feed');
   };
@@ -129,9 +148,95 @@ export default function ProfilePage() {
     router.push('/signup/select-image');
   };
 
+  // ----- 버튼 묶음 -----
+  const NormalButtons = () => (
+    <View style={{ width: '100%' }}>
+      {step !== 'id' && (
+        <>
+          <CustomButton
+            variant="text"
+            textColor="text[2]"
+            onPress={() => setSkipModalVisible(true)}
+            rounded="md"
+            size="lg"
+            fullWidth
+            style={{ marginBottom: 10 * height }}
+          >
+            지금은 넘어갈래
+          </CustomButton>
+          <PopupModal
+            isOpen={skipModalVisible}
+            onLeftBtn={() => setSkipModalVisible(false)}
+            onRightBtn={handleSkip}
+            mainText="프로필을 나중에 만들래?"
+            subText="마이페이지에서 마저 설정할 수 있어."
+            leftBtnText="취소"
+            rightBtnText="나중에 할래"
+            isCancel={false}
+          />
+        </>
+      )}
+
+      <CustomButton
+        variant="primary"
+        onPress={handleNext}
+        fullWidth
+        rounded="md"
+        size="lg"
+        style={{ marginBottom: 10 * height }}
+        disabled={
+          (step === 'id' &&
+            (kakaoTalkId.trim() === '' ||
+              kakaoTalkId.length < 4 ||
+              kakaoTalkId.length > 20)) ||
+          (step === 'introduction' && introduction.trim() === '') ||
+          (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
+        }
+      >
+        {step === 'mbti' ? '시작하자' : '다음으로'}
+      </CustomButton>
+    </View>
+  );
+
+  // 액세서리에는 주버튼만(높이 최소화)
+  const AccessoryButtons = () => (
+    <View style={{ width: '100%' }}>
+      <CustomButton
+        variant="primary"
+        onPress={handleNext}
+        fullWidth
+        rounded="md"
+        size="lg"
+        style={{ marginBottom: 0 }}
+        disabled={
+          (step === 'id' &&
+            (kakaoTalkId.trim() === '' ||
+              kakaoTalkId.length < 4 ||
+              kakaoTalkId.length > 20)) ||
+          (step === 'introduction' && introduction.trim() === '') ||
+          (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
+        }
+      >
+        {step === 'mbti' ? '시작하자' : '다음으로'}
+      </CustomButton>
+    </View>
+  );
+
+  const contentPaddingBottom = isIOS
+    ? kbVisible
+      ? 4
+      : insets.bottom + 72
+    : 120 * height;
+
   return (
     <Container>
-      <ContentArea>
+      <Scroll
+        automaticallyAdjustKeyboardInsets={false}
+        keyboardDismissMode="interactive"
+        contentInsetAdjustmentBehavior={isIOS ? 'never' : 'automatic'}
+        contentContainerStyle={{ paddingBottom: contentPaddingBottom }}
+        keyboardShouldPersistTaps="handled"
+      >
         <Header signUpBackPress={handlePrevStep} />
         <ProfileTitleText>프로필을 만들어보자</ProfileTitleText>
 
@@ -140,21 +245,24 @@ export default function ProfilePage() {
             <Input
               title="카카오톡 ID를 입력해줘"
               value={kakaoTalkId}
-              onChangeText={(text) => {
-                const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
-                setkakaoTalkId(filtered);
-              }}
+              onChangeText={(text) =>
+                setkakaoTalkId(text.replace(/[^a-zA-Z0-9]/g, ''))
+              }
               placeholder="모임원들과의 연락을 위해 필요해"
               subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
+              accessoryID={isIOS ? ACCESSORY_ID : undefined}
+              autoCorrect={false}
+              spellCheck={false}
+              autoCapitalize="none"
+              autoComplete="off"
+              textContentType="none"
             />
             <PopupModal
               isOpen={kakaoModalVisible}
               onLeftBtn={() => setKakaoModalVisible(false)}
               onRightBtn={() => {
                 setKakaoModalVisible(false);
-                setTimeout(() => {
-                  setStep('photo');
-                }, 100);
+                setTimeout(() => setStep('photo'), 100);
               }}
               mainText={kakaoTalkId}
               subText="카톡 아이디가 맞는지 확인해 줘."
@@ -173,8 +281,10 @@ export default function ProfilePage() {
             placeholder="안녕 나는 프론트 개발자 김링크야"
             maxLength={60}
             minHeight={1}
+            accessoryID={isIOS ? ACCESSORY_ID : undefined}
           />
         )}
+
         {step === 'mbti' && (
           <Input
             title="MBTI를 입력해줘"
@@ -182,12 +292,10 @@ export default function ProfilePage() {
             autoCapitalize="characters"
             autoCorrect={false}
             textContentType="none"
-            onChangeText={(text) => {
-              const filtered = text.replace(/[^a-zA-Z]/g, '');
-              setMbti(filtered);
-            }}
+            onChangeText={(text) => setMbti(text.replace(/[^a-zA-Z]/g, ''))}
             placeholder={randomMbti}
             maxLength={4}
+            accessoryID={isIOS ? ACCESSORY_ID : undefined}
           />
         )}
 
@@ -216,80 +324,77 @@ export default function ProfilePage() {
             </CustomButton>
           </>
         )}
-      </ContentArea>
+      </Scroll>
 
-      <Animated.View style={{ transform: [{ translateY: buttonTranslateY }] }}>
-        <ButtonContainer $paddingBottom={insets.bottom}>
-          {step !== 'id' && (
-            <>
-              <CustomButton
-                variant="text"
-                textColor="text[2]"
-                onPress={() => setSkipModalVisible(true)}
-                rounded="md"
-                size="lg"
-                fullWidth
-                style={{ marginBottom: 10 * height }}
-              >
-                지금은 넘어갈래
-              </CustomButton>
-              <PopupModal
-                isOpen={skipModalVisible}
-                onLeftBtn={() => setSkipModalVisible(false)}
-                onRightBtn={handleSkip}
-                mainText="프로필을 나중에 만들래?"
-                subText="마이페이지에서 마저 설정할 수 있어."
-                leftBtnText="취소"
-                rightBtnText="나중에 할래"
-                isCancel={false}
-              />
-            </>
+      {/* ===== 하단 액션 영역 ===== */}
+      {isIOS ? (
+        <>
+          {!kbVisible && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: insets.bottom + 8,
+                paddingHorizontal: 20 * width,
+              }}
+            >
+              <NormalButtons />
+            </View>
           )}
 
-          <CustomButton
-            variant="primary"
-            onPress={handleNext}
-            fullWidth
-            rounded="md"
-            size="lg"
-            style={{ marginBottom: 10 * height }}
-            disabled={
-              (step === 'id' &&
-                (kakaoTalkId.trim() === '' ||
-                  kakaoTalkId.length < 4 ||
-                  kakaoTalkId.length > 20)) ||
-              (step === 'introduction' && introduction.trim() === '') ||
-              (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
-            }
+          <InputAccessoryView
+            nativeID={ACCESSORY_ID}
+            backgroundColor={colors.bg[2]}
           >
-            {step === 'mbti' ? '시작하자' : '다음으로'}
-          </CustomButton>
-        </ButtonContainer>
-      </Animated.View>
+            <View
+              style={{
+                paddingHorizontal: 20 * width,
+                paddingTop: 8,
+                paddingBottom: insets.bottom + 8,
+                backgroundColor: colors.bg[2],
+                // 높이 과도 방지(HelpPage와 동일 보정)
+                marginBottom: -25 * height,
+              }}
+            >
+              <AccessoryButtons />
+            </View>
+          </InputAccessoryView>
+        </>
+      ) : (
+        <Animated.View
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: insets.bottom + 8,
+            paddingHorizontal: 20 * width,
+            transform: [{ translateY: androidTranslateY }],
+          }}
+        >
+          <NormalButtons />
+        </Animated.View>
+      )}
     </Container>
   );
 }
 
 const Container = styled.View`
   flex: 1;
-  justify-content: space-between;
   background-color: ${colors.bg[2]};
-  padding-horizontal: ${20 * width}px;
 `;
-const ContentArea = styled.View``;
+
+const Scroll = styled.ScrollView`
+  flex: 1;
+  padding: 0 ${20 * width}px;
+  background-color: transparent;
+`;
 
 export const StyledSubText = styled.Text`
   font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
   font-family: ${fonts.Regular};
   margin-bottom: ${12 * height}px;
-`;
-
-const ButtonContainer = styled.View<{ $paddingBottom: string }>`
-  align-self: center;
-  width: 100%;
-  padding-bottom: ${(props) => props.$paddingBottom}px;
-  ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
 `;
 
 const ImagePreview = styled.View`

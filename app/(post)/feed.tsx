@@ -86,8 +86,10 @@ export default function PostFeedPage() {
   return (
     <Container>
       <View style={{ flex: 1 }}>
-        <Header signUpBackPress={handleBackPress}>게시물 사진 선택</Header>
-        <SubText>최대 3장까지 선택 가능해</SubText>
+        <View style={{ paddingHorizontal: CONTAINER_PADDING * width }}>
+          <Header signUpBackPress={handleBackPress}>게시물 사진 선택</Header>
+          <SubText>최대 3장까지 선택 가능해</SubText>
+        </View>
         <View style={{ flex: 1 }}>
           <ImagePicker
             maxSelect={3}
@@ -101,6 +103,7 @@ export default function PostFeedPage() {
         style={{
           paddingBottom: 10 * height + insets.bottom,
           paddingTop: 16 * height,
+          paddingHorizontal: CONTAINER_PADDING * width,
         }}
       >
         <SubmitButton disabled={selectedUrisLength === 0} onPress={handleNext}>
@@ -131,7 +134,6 @@ export default function PostFeedPage() {
 
 export const Container = styled.View`
   flex: 1;
-  padding: 0 ${CONTAINER_PADDING * width}px;
   background-color: ${colors.gray[50]};
 `;
 

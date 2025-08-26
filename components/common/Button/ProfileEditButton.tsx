@@ -4,6 +4,7 @@ import {
   fonts,
   height,
   lineHeight,
+  radius,
   width,
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
@@ -41,26 +42,26 @@ const EditWrapper = styled.View`
 `;
 
 const Title = styled.Text`
-  font-size: ${fontSize.sm}px;
+  font-family: ${fonts.Bold};
+  font-size: ${fontSize.md}px;
   color: ${colors.text[2]};
-  font-family: ${fonts.Regular};
-  margin-bottom: ${6 * height}px;
-  font-weight: 700;
+  margin-bottom: ${12 * height}px;
 `;
 
 const Box = styled.Pressable`
   width: 100%;
-  border-radius: 8px;
-  padding: ${12 * height}px ${14 * width}px;
+  border-radius: ${radius.sm}px;
+  padding: ${14 * height}px ${14 * width}px;
   background-color: transparent;
   border: 1px solid ${colors.gray[300]};
 `;
 
 const BoxText = styled.Text`
+  font-family: ${fonts.Regular};
   font-size: ${fontSize.md}px;
   color: ${colors.black};
-  font-family: ${fonts.Regular};
 `;
+
 const TextareaWrapper = styled.Pressable`
   width: 100%;
   height: ${76 * height}px;
@@ -85,10 +86,11 @@ const TextareaText = styled.Text`
 `;
 
 const CharCount = styled.Text`
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.sm}px;
   position: absolute;
   bottom: ${12 * height}px;
   right: ${12 * width}px;
-  font-size: ${fontSize.xs}px;
   color: ${colors.gray[500]};
   margin-top: ${12 * height}px;
 `;

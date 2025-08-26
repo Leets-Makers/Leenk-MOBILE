@@ -12,11 +12,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   jsEngine: 'jsc',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
-  splash: {
-    image: './assets/images/ic_logo.png',
-    resizeMode: 'contain',
-    backgroundColor: '#F7F7FA',
-  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.leetsmakers.leenk',

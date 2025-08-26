@@ -11,6 +11,7 @@ import {
 import styled from 'styled-components/native';
 import * as Clipboard from 'expo-clipboard';
 import { useToastStore } from '@/stores/toastStore';
+import { useState } from 'react';
 
 export default function KakaoIdButton({
   kakaoTalkId,
@@ -18,6 +19,7 @@ export default function KakaoIdButton({
   kakaoTalkId: string;
 }) {
   const { showToast } = useToastStore();
+  const [pressed, setPressed] = useState(false);
 
   const handleCopyClick = async () => {
     try {
@@ -29,7 +31,12 @@ export default function KakaoIdButton({
   };
 
   return (
-    <Container onPress={handleCopyClick}>
+    <Container
+      onPress={handleCopyClick}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      $pressed={pressed}
+    >
       <KakaoIdWrapper>
         <TitleText>카카오톡 ID</TitleText>
         <CopyIcon />
@@ -39,8 +46,9 @@ export default function KakaoIdButton({
   );
 }
 
-const Container = styled.Pressable`
-  background-color: ${colors.bg[2]};
+const Container = styled.Pressable<{ $pressed: boolean }>`
+  background-color: ${({ $pressed }) =>
+    $pressed ? colors.gray[100] : colors.bg[2]};
   width: 100%;
   border-radius: ${radius.md}px;
   padding: ${12 * height}px ${16 * width}px;

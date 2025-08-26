@@ -13,6 +13,7 @@ import { updateProfileImage } from '@/api/users/patchUserEachInfo.api';
 import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLeenkImageStore } from '@/stores/leenkStore';
+import { CONTAINER_PADDING } from '@/constants';
 
 export default function SelectProfileImage({
   mode,
@@ -56,7 +57,12 @@ export default function SelectProfileImage({
   };
   return (
     <Container>
-      <Header style={{ marginBottom: 12 * height }}>
+      <Header
+        style={{
+          marginBottom: 12 * height,
+          paddingHorizontal: CONTAINER_PADDING * width,
+        }}
+      >
         {mode === 'leenk' ? '링크 이미지 선택' : '프로필 사진 선택'}
       </Header>
       <ImagePicker
@@ -83,7 +89,6 @@ export default function SelectProfileImage({
 
 const Container = styled.View`
   flex: 1;
-  padding-horizontal: ${20 * width}px;
   background-color: ${colors.bg[2]};
   position: relative;
 `;
@@ -93,5 +98,6 @@ const ButtonContainer = styled.View<{ $bottomInset: number }>`
   bottom: ${(props) => props.$bottomInset + 10 * height}px;
   align-self: center;
   width: 100%;
-  ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''}
+  padding: 0 ${CONTAINER_PADDING * width}px;
+  /* ${Platform.OS === 'web' ? `padding-horizontal: ${20 * width}px;` : ''} */
 `;
