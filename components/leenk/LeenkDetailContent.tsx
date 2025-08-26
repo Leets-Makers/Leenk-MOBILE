@@ -33,8 +33,6 @@ export default function LeenkContentSection({
   onShare,
   onParticipants,
 }: Props) {
-  console.log('시간', data.startTime);
-  console.log('포맷 시간', formatMonthDayHour(data.startTime));
   return (
     <Container showsVerticalScrollIndicator={false}>
       <TitleRow>
