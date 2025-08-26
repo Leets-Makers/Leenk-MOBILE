@@ -13,16 +13,30 @@ export function formatDate(iso: string): string {
 
 export function formatMonthDayHour(iso: string): string {
   const date = new Date(iso);
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
+  const hour = date.getUTCHours();
 
   return `${month}월 ${day}일 ${hour}시`;
 }
 
 dayjs.extend(relativeTime);
-dayjs.locale('ko'); // '몇 분 전' 등 한글로
+dayjs.locale('ko');
 
 export const formatRelativeTime = (date: string) => {
   return dayjs(date).fromNow(); // ex: '2분 전'
 };
+
+// ISO 문자열로 변환
+export const toISODateTime = (d: Date) =>
+  [
+    d.getFullYear(),
+    String(d.getMonth() + 1).padStart(2, '0'),
+    String(d.getDate()).padStart(2, '0'),
+  ].join('-') +
+  'T' +
+  [
+    String(d.getHours()).padStart(2, '0'),
+    String(d.getMinutes()).padStart(2, '0'),
+    '00',
+  ].join(':');

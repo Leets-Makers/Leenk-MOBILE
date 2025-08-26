@@ -62,7 +62,7 @@ export default function Header({
           <UserKickButton
             leenkId={leenkId}
             handleKick={kebabPress}
-            disabled={rightDisabled}
+            disabled={rightDisabled || !leenkId}
           />
         )}
         {RightSection === 'NONE' && <None />}

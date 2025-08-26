@@ -36,8 +36,7 @@ export default function MyLeenkPage() {
       try {
         const res = await getMyLeenkList(nextPage, PAGE_SIZE);
 
-        const pageItems: Leenk[] =
-          (res as any)?.data?.leenks ?? (res as any)?.data?.content ?? [];
+        const pageItems: Leenk[] = res.leenks ?? [];
 
         // 다음 페이지가 있는지 여부 판단 (단순 길이 기반)
         const reachedEnd = pageItems.length < PAGE_SIZE;

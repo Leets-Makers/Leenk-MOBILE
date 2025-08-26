@@ -123,7 +123,9 @@ export default function ParticipantsList() {
       <RowWrapper>
         <PeopleIcon width={width * 16} />
         <CountText>
-          {currentCount}/{maxCountFromRoute}명
+          {maxCountFromRoute != null
+            ? `${currentCount}/${maxCountFromRoute}명`
+            : `${currentCount}명`}
         </CountText>
       </RowWrapper>
 

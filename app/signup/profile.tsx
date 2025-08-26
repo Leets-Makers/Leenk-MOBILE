@@ -19,11 +19,6 @@ import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useToastStore } from '@/stores/toastStore';
-import {
-  deleteTempAccessToken,
-  getTempAccessToken,
-  saveAccessToken,
-} from '@/utils/tokenStorage';
 import { registerFcmToken } from '@/components/LandingPage';
 
 export default function ProfilePage() {
@@ -48,14 +43,6 @@ export default function ProfilePage() {
   const buttonTranslateY = useKeyboardAnimation(10);
 
   const { showToast } = useToastStore();
-
-  // const commitTempAccessToken = async () => {
-  //   const tempToken = await getTempAccessToken();
-  //   if (!tempToken) return;
-
-  //   await saveAccessToken(tempToken);
-  //   await deleteTempAccessToken();
-  // };
 
   // 프로필 저장 함수
   const saveProfile = async () => {
