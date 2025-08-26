@@ -185,6 +185,15 @@ export default function NotificationListItem({
             </SubText>
           </>
         );
+      case 'LEENK_LEFT':
+        return (
+          <>
+            <TitleText>
+              &#91;{item.content.leftUserName ?? '링크 제목'}&#93;
+              {item.content.body ?? '이 모임에서 나갔어'}
+            </TitleText>
+          </>
+        );
 
       default:
         return (

@@ -39,6 +39,7 @@ interface NotificationContent {
   newParticipantName?: string;
   placeName?: string;
   startTime?: string;
+  leftUserName?: string;
 }
 
 type NotificationType =
@@ -54,6 +55,7 @@ type NotificationType =
   | 'KICKED_FROM_LEENK'
   | 'LEENK_FINISHED'
   | 'LEENK_STARTED_HOST_REMINDER'
+  | 'LEENK_LEFT'
   | string;
 
 interface Notification {

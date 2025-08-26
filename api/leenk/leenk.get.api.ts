@@ -51,6 +51,10 @@ export const getMyLeenkList = async (pageNumber: number, pageSize: number) => {
 export const getLeenkDetail = async (leenkId: number) => {
   const res = await api.get<ApiResponse<LeenkDetail>>(`/leenks/${leenkId}`);
 
+  if (__DEV__) {
+    console.log(`링크 상세 조회(${leenkId}):`, res.data.data);
+  }
+
   return res.data.data;
 };
 
