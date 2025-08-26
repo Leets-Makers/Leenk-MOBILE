@@ -83,7 +83,7 @@ export default function ImagePicker({
         style={{ flexGrow: 1 }}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
-          if (hasNextPage) fetchPhotos();
+          if (hasNextPage && !pagingLoading) fetchPhotos();
         }}
         initialNumToRender={12}
         windowSize={5}
