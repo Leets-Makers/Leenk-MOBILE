@@ -95,7 +95,6 @@ const Title = styled.Text`
   line-height: ${lineHeight.l};
   padding-right: ${width * 52}px;
   align-items: center;
-  justify-content: center;
 `;
 
 const ShareButton = styled.Pressable`
