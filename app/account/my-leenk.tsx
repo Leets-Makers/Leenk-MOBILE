@@ -1,4 +1,3 @@
-// MyLeenkPage.tsx
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { ContainerWithNoPadding } from './my-feed';
@@ -10,33 +9,34 @@ import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { getMyLeenkList } from '@/api/leenk/leenk.get.api';
 import { Leenk } from '@/types/leenk';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getNotifications } from '@/api/users/notification.api';
 
 const PAGE_SIZE = 6;
 
 export default function MyLeenkPage() {
   const [data, setData] = useState<Leenk[]>([]);
-  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
+  const pageRef = useRef(0);
   const onEndReachedCalledDuringMomentum = useRef(false);
-  const listCanScroll = useRef(false); // 컨텐츠가 화면을 넘는지 여부
 
-  // ✅ loadPage는 고정
   const loadPage = useCallback(
     async (nextPage: number, replace = false) => {
       if (loading) return;
       setLoading(true);
       try {
         const res = await getMyLeenkList(nextPage, PAGE_SIZE);
+        const res2 = await getNotifications(nextPage, PAGE_SIZE);
         const pageItems = res.leenks ?? [];
         const reachedEnd = pageItems.length < PAGE_SIZE;
 
         setData((prev) => (replace ? pageItems : [...prev, ...pageItems]));
         setHasMore(!reachedEnd);
-        setPage(nextPage);
+        pageRef.current = nextPage;
+
+        console.log('[알림]', res2);
       } catch (e) {
         if (__DEV__) console.warn('Failed to fetch leenks:', e);
       } finally {
@@ -48,8 +48,9 @@ export default function MyLeenkPage() {
     [loading],
   );
 
-  // ✅ 최초 1회만 호출
+  // 최초 1회만 호출
   useEffect(() => {
+    pageRef.current = 0;
     loadPage(0, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -59,19 +60,17 @@ export default function MyLeenkPage() {
     setRefreshing(true);
     setHasMore(true);
     onEndReachedCalledDuringMomentum.current = false;
+    pageRef.current = 0;
     await loadPage(0, true);
   }, [loadPage]);
 
-  // 무한 스크롤 트리거 (stale page 방지)
+  // 무한 스크롤 트리거
   const onEndReached = useCallback(() => {
     if (onEndReachedCalledDuringMomentum.current) return;
     if (!loading && hasMore) {
       onEndReachedCalledDuringMomentum.current = true;
-      setPage((prev) => {
-        const next = prev + 1;
-        loadPage(next);
-        return next; // 상태만 올리고 실제 fetch는 위에서
-      });
+      const next = pageRef.current + 1;
+      loadPage(next);
     }
   }, [hasMore, loading, loadPage]);
 
@@ -96,22 +95,6 @@ export default function MyLeenkPage() {
           onRefresh={onRefresh}
           showsVerticalScrollIndicator
           contentContainerStyle={{ paddingBottom: height * 20 }}
-          // ✅ 컨텐츠가 화면보다 작으면 자동으로 더 로드
-          onContentSizeChange={(w, h) => {
-            // 이미 스크롤 가능하면 패스
-            if (listCanScroll.current) return;
-            // 화면 높이를 넘지 못했고, 더 불러올 수 있고, 현재 로딩 아님
-            if (h < height * (1 - 0.01) && hasMore && !loading) {
-              setPage((prev) => {
-                const next = prev === 0 ? 1 : prev + 1; // 첫 페이지 직후 한 번 더
-                loadPage(next);
-                return next;
-              });
-            } else if (h >= height) {
-              listCanScroll.current = true;
-            }
-          }}
-          // 선택: 초기에 충분히 렌더
           initialNumToRender={PAGE_SIZE}
           ListFooterComponent={loading ? <View /> : !hasMore ? <View /> : null}
         />
