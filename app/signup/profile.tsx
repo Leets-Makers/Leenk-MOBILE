@@ -222,7 +222,6 @@ export default function ProfilePage() {
     </View>
   );
 
-  // 스크롤 하단 여백(HelpPage와 동일 로직)
   const contentPaddingBottom = isIOS
     ? kbVisible
       ? 4
@@ -327,7 +326,7 @@ export default function ProfilePage() {
         )}
       </Scroll>
 
-      {/* ===== 하단 액션 영역 (HelpPage와 동일) ===== */}
+      {/* ===== 하단 액션 영역 ===== */}
       {isIOS ? (
         <>
           {!kbVisible && (
@@ -380,7 +379,6 @@ export default function ProfilePage() {
   );
 }
 
-/* ===== styles ===== */
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
