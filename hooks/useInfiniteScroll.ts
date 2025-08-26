@@ -68,7 +68,7 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
     setIsRefreshing(true);
     try {
       blockedRef.current = false;
-      nextPageRef.current = initialPageNumber;
+      // nextPageRef.current = initialPageNumber;
 
       console.log('refresh pageNumber:', initialPageNumber);
       const res = await fetchFunction(initialPageNumber, pageSize);
@@ -77,6 +77,7 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
       if (res.totalReactionCount !== undefined) {
         setTotalReactionCount(res.totalReactionCount);
       }
+      setHasError(false);
     } catch (error) {
       console.error('무한 스크롤 Refresh 에러:', error);
     } finally {
