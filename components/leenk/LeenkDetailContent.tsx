@@ -37,9 +37,9 @@ export default function LeenkContentSection({
     <Container showsVerticalScrollIndicator={false}>
       <TitleRow>
         <Title>{data.title}</Title>
-        <ShareButton onPress={onShare}>
+        {/* <ShareButton onPress={onShare}>
           <ShareIcon width={24 * width} />
-        </ShareButton>
+        </ShareButton> */}
       </TitleRow>
 
       <RowWrapper>

@@ -16,9 +16,9 @@ const validateKakaoToken = async (accessToken: string) => {
         },
       },
     );
-    console.log('[2] 카카오 토큰 유효성 OK:', res.data);
+    // console.log('[2] 카카오 토큰 유효성 OK:', res.data);
   } catch (e: any) {
-    console.error('[2] 카카오 토큰 유효성 실패:', e.response?.data || e);
+    // console.error('[2] 카카오 토큰 유효성 실패:', e.response?.data || e);
     return false;
   }
   return true;
@@ -28,11 +28,11 @@ export const kakaoLogin = async (
   accessToken: string,
 ): Promise<KakaoLoginResult> => {
   // [1] 토큰 로그 + 타입 확인
-  console.log('[1] 카카오 accessToken:', accessToken);
-  console.log('[1] accessToken 타입:', typeof accessToken);
+  // console.log('[1] 카카오 accessToken:', accessToken);
+  // console.log('[1] accessToken 타입:', typeof accessToken);
 
   if (typeof accessToken !== 'string') {
-    console.error('[1] ❗ accessToken이 문자열이 아님');
+    console.error('[1] accessToken이 문자열이 아님');
     return {
       success: false,
       code: -1,
@@ -45,7 +45,7 @@ export const kakaoLogin = async (
 
   try {
     // [3] 백엔드 전송 로그
-    console.log('[3] 백엔드에 보낼 accessToken:', accessToken);
+    //console.log('[3] 백엔드에 보낼 accessToken:', accessToken);
 
     const response = await api.post(
       '/kakao/login',
@@ -60,7 +60,7 @@ export const kakaoLogin = async (
     const { code, message, data } = response.data;
 
     // [4] 응답 로그
-    console.log('[4] 백엔드 응답 성공:', response.data);
+    // console.log('[4] 백엔드 응답 성공:', response.data);
 
     return {
       success: true,

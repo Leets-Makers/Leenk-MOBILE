@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import { Header } from '@/components';
+import { Header, Loading } from '@/components';
 import {
   getNotifications,
   markNotificationAsRead,
@@ -21,54 +21,57 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true); // ⬅️ 추가: 초기 로딩
   const { userInfo } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<ModalData[]>([]);
 
   const { showToast } = useToastStore();
 
-  // 알림 상세 모달 열기
   const openDetailModal = (details: ModalData[]) => {
     setSelectedDetails(details);
     setModalVisible(true);
   };
 
-  // 알림 목록 불러오기
-  const fetchNotifications = useCallback(async () => {
-    try {
-      const notifications = await getNotifications(0, 30);
-      console.log(notifications);
-      setData([...notifications.notificationResponses]);
-    } catch (error) {
-      console.error('Failed to fetch notifications:', error);
-    }
-  }, []);
+  // ⬇silent=false면 오버레이 로딩 표시, true면 당겨서 새로고침만 표시
+  const fetchNotifications = useCallback(
+    async (opts?: { silent?: boolean }) => {
+      const silent = opts?.silent ?? false;
+      if (!silent) setLoading(true);
+      try {
+        const notifications = await getNotifications(0, 30);
+        setData([...notifications.notificationResponses]);
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+        showToast('알림을 불러오는데 실패했습니다.', 'error');
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    },
+    [showToast],
+  );
 
-  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  // 새로고침 핸들러
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchNotifications();
+    await fetchNotifications({ silent: true });
     setRefreshing(false);
   };
 
-  // 알림 읽음 처리 + 라우팅
   const handlePress = async (notification: Notification) => {
     try {
-      if (userInfo) await markNotificationAsRead(userInfo?.id, notification.id);
+      if (userInfo) await markNotificationAsRead(userInfo.id, notification.id);
 
-      // 읽음 처리 업데이트
       setData((prev) =>
         prev.map((item) =>
           item.id === notification.id ? { ...item, isRead: true } : item,
         ),
       );
+
       if (notification.content.leenkId || notification.content.feedId) {
-        // path에 따라 이동
         if (notification.path === 'leenks') {
           router.push(`/leenk/${notification.content.leenkId}`);
         } else {
@@ -85,38 +88,44 @@ export default function NotificationListPage() {
     <Container>
       <Header style={{ paddingHorizontal: FEED_PADDING * width }} />
       <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator
-          contentContainerStyle={{
-            paddingHorizontal: FEED_PADDING * width,
-            marginTop: 8 * height,
-          }}
-          renderItem={({ item }) => (
-            <NotificationListItem
-              item={item}
-              onPress={() => handlePress(item)}
-              onMorePress={() => {
-                const detailData =
-                  item.notificationType === 'FEED_REACTION_COUNT'
-                    ? item.content.feedReactionCounts
-                    : item.notificationType === 'FEED_FIRST_REACTION'
-                      ? item.content.feedFirstReactions
-                      : item.notificationType === 'NEW_LEENK_PARTICIPANT'
-                        ? item.content.newLeenkParticipantDetails
-                        : [];
-
-                openDetailModal(detailData ?? []);
-              }}
-            />
-          )}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-          initialNumToRender={data.length}
-          removeClippedSubviews={false}
-        />
+        {loading && !refreshing ? (
+          <Loading />
+        ) : (
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator
+            contentContainerStyle={{
+              paddingHorizontal: FEED_PADDING * width,
+              marginTop: 8 * height,
+            }}
+            renderItem={({ item }) => (
+              <NotificationListItem
+                item={item}
+                onPress={() => handlePress(item)}
+                onMorePress={() => {
+                  const detailData =
+                    item.notificationType === 'FEED_REACTION_COUNT'
+                      ? item.content.feedReactionCounts
+                      : item.notificationType === 'FEED_FIRST_REACTION'
+                        ? item.content.feedFirstReactions
+                        : item.notificationType === 'NEW_LEENK_PARTICIPANT'
+                          ? item.content.newLeenkParticipantDetails
+                          : [];
+                  openDetailModal(detailData ?? []);
+                }}
+              />
+            )}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
+            }
+            initialNumToRender={data.length}
+            removeClippedSubviews={false}
+          />
+        )}
       </SafeAreaView>
 
       <NotificationModal
@@ -131,5 +140,4 @@ export default function NotificationListPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[1]};
-  /* padding-horizontal: ${20 * width}px; */
 `;

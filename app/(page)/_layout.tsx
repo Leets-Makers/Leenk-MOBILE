@@ -126,11 +126,11 @@ export default function TabLayout() {
               onClose={closeWriteMenu}
               onPressFirst={() => {
                 closeWriteMenu();
-                router.push('/leenk');
+                router.push('/(post)/leenk');
               }}
               onPressSecond={() => {
                 closeWriteMenu();
-                router.push('/feed');
+                router.push('/(post)/feed');
               }}
             />
           </>

@@ -193,7 +193,7 @@ export default function LeenkBottomButtonSection({
           <CustomButton
             variant="primary"
             onPress={() => {
-              router.push('/feed');
+              router.push('/(post)/feed');
             }}
             rounded="md"
             size="lg"

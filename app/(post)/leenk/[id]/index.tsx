@@ -341,6 +341,7 @@ export default function LeenkDetailPage() {
       />
 
       <LeenkDetailModals
+        leenkId={leenkDetail.id}
         modalType={modalType as any}
         title={leenkDetail.title}
         onClose={closeModal}
