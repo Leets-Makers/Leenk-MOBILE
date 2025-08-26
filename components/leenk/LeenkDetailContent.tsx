@@ -33,15 +33,13 @@ export default function LeenkContentSection({
   onShare,
   onParticipants,
 }: Props) {
-  console.log('시간', data.startTime);
-  console.log('포맷 시간', formatMonthDayHour(data.startTime));
   return (
     <Container showsVerticalScrollIndicator={false}>
       <TitleRow>
         <Title>{data.title}</Title>
-        <ShareButton onPress={onShare}>
+        {/* <ShareButton onPress={onShare}>
           <ShareIcon width={24 * width} />
-        </ShareButton>
+        </ShareButton> */}
       </TitleRow>
 
       <RowWrapper>
@@ -96,6 +94,7 @@ const Title = styled.Text`
   font-size: ${fontSize.lg};
   line-height: ${lineHeight.l};
   padding-right: ${width * 52}px;
+  align-items: center;
 `;
 
 const ShareButton = styled.Pressable`

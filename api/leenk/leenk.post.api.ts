@@ -10,7 +10,7 @@ export const createLeenk = async (payload: UpdateLeenkPayload) => {
     console.log(`링크 게시물 생성 payload:`, payload);
     console.log(`링크 게시물 생성 response:`, res.data);
   }
-  return res.data;
+  return res.data.data;
 };
 
 // 링크 신고하기

@@ -15,5 +15,5 @@ export const updateLeenk = async (
     console.log(`링크 수정(${leenkId}) payload:`, payload);
     console.log(`링크 수정(${leenkId}) response:`, res.data);
   }
-  return res.data;
+  return res.data.data;
 };

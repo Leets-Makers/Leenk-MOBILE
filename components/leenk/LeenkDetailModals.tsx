@@ -21,6 +21,7 @@ type ModalType =
 interface Props {
   modalType: ModalType;
   title: string;
+  leenkId: number;
   onClose: () => void;
 
   // actions
@@ -33,6 +34,7 @@ interface Props {
 function LeenkDetailModals({
   modalType,
   title,
+  leenkId,
   onClose,
   onConfirmDelete,
   onConfirmLeave,
@@ -103,7 +105,7 @@ function LeenkDetailModals({
         />
       );
     case 'leenkReport':
-      return <ReportModal type="leenk" />;
+      return <ReportModal type="leenk" leenkId={leenkId} />;
 
     case 'bottomSheet':
       return (
@@ -123,7 +125,7 @@ function LeenkDetailModals({
             fullWidth
             onPress={() => {
               onClose();
-              router.push('/feed');
+              router.push('/(post)/feed');
             }}
           >
             후기 쓰러갈래

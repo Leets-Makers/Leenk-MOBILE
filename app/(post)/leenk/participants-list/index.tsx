@@ -66,6 +66,7 @@ export default function ParticipantsList() {
   }, [load]);
 
   const onRefresh = async () => {
+    if (!Number.isFinite(parsedId)) return;
     try {
       setRefreshing(true);
       const list = await getLeenkParticipants(parsedId);
