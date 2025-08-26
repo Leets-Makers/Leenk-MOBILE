@@ -83,7 +83,10 @@ export default function MyLeenkPage() {
         <Header>참여한 모임</Header>
       </View>
 
-      <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
+      <SafeAreaView
+        edges={['bottom']}
+        style={{ flex: 1, paddingTop: 16 * height }}
+      >
         <LeenkList
           data={data}
           keyExtractor={(item) => String(item.leenkId)}

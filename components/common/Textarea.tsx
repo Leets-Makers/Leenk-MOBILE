@@ -106,7 +106,7 @@ const StyledTextarea = styled.TextInput<{
   max-height: ${({ maxHeight }) =>
     maxHeight ? `${maxHeight * height}px` : `${85 * height}px`};
   font-size: ${({ fontSizeKey }) => fontSize[fontSizeKey]}px;
-  font-family: ${fonts.Regular};
+  font-family: ${fonts.Bold};
   color: ${({ isDark }) => (isDark ? colors.white : colors.black)};
   text-align-vertical: top;
 `;

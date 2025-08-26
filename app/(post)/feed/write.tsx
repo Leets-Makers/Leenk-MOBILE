@@ -1,6 +1,15 @@
 import { Header, BackgroundImageSlider, Loading } from '@/components';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+} from 'react-native';
 import { Media } from '@/types/feed';
 import { height, width } from '@/theme/globalStyles';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -47,6 +56,23 @@ export default function FeedWritePage() {
   const iosKeyboardBottom = useIOSKeyboardSpacer(IOS_TEXTAREA_GAP);
 
   const didInitRef = useRef(false);
+
+  const [kbVisible, setKbVisible] = useState(false);
+
+  useEffect(() => {
+    const show = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setKbVisible(true),
+    );
+    const hide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setKbVisible(false),
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   // edit 모드에 들어오면 로컬 선택 이미지는 비워서 중복/혼선 제거
   useEffect(() => {
@@ -187,6 +213,8 @@ export default function FeedWritePage() {
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={Platform.OS === 'ios' ? 'on-drag' : 'none'}
+        onScrollBeginDrag={Keyboard.dismiss}
       >
         <View style={{ flex: 1 }}>
           <BackgroundImageSlider
@@ -256,6 +284,15 @@ export default function FeedWritePage() {
             leftBtnText={isEditParam ? '취소' : '추가할래'}
             rightBtnText={isEditParam ? '수정할래' : '그냥 업로드할래'}
           />
+
+          {kbVisible && (
+            <Pressable
+              style={StyleSheet.absoluteFillObject}
+              onPress={Keyboard.dismiss}
+              pointerEvents="auto"
+              accessible={false}
+            />
+          )}
         </View>
 
         <FeedUploadModal isOpen={isUploading && !isEditParam} />
