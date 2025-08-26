@@ -154,6 +154,10 @@ export default function PostLeenkPage() {
   // 작성 / 수정 분기
   const handleSubmit = async () => {
     if (!isFormValid || submitting) return;
+    if (isEdit && !Number.isFinite(leenkId)) {
+      showToast('유효하지 않은 링크 ID야. 다시 시도해줘.', 'error');
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -178,8 +182,7 @@ export default function PostLeenkPage() {
         router.back();
       } else {
         // 작성 API
-        const res = await createLeenk(payload);
-        console.log('링크 등록 응답: ', res);
+        await createLeenk(payload);
         showToast('등록 완료!', 'success');
         setCompleteModalOpen(false);
         router.push('/(page)/leenk');

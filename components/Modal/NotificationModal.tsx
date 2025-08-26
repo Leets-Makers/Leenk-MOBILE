@@ -1,13 +1,18 @@
 import React from 'react';
-import { Modal, TouchableWithoutFeedback } from 'react-native';
+import { Modal, Platform, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
 import { width, height, radius } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { FlatList } from 'react-native-gesture-handler';
-import { FeedFirstReaction, ModalData } from '@/types/notification';
+import {
+  FeedFirstReaction,
+  FeedReactionCount,
+  NewLeenkParticipantDetails,
+  ModalData,
+} from '@/types/notification';
 import LinearGradient from 'react-native-linear-gradient';
-import { LeftSection, Row, TimeText, TypeText } from '../NotificationListItem';
-import { FeedIcon } from '@/assets';
+import { LeftSection, Row, TypeText } from '../NotificationListItem';
+import { FeedIcon, LeenkIcon } from '@/assets';
 import { Title } from '../common/Input';
 import { SubText } from './PopupModal';
 
@@ -20,18 +25,28 @@ export default function NotificationModal({
   onClose: () => void;
   data: ModalData[];
 }) {
+  // 타입 가드
   const isFirstReaction = (item: ModalData): item is FeedFirstReaction =>
     (item as FeedFirstReaction).name !== undefined;
+
+  const isReactionCount = (item: ModalData): item is FeedReactionCount =>
+    (item as FeedReactionCount).body !== undefined &&
+    (item as any).name === undefined;
+
+  const isNewParticipant = (
+    item: ModalData,
+  ): item is NewLeenkParticipantDetails =>
+    (item as NewLeenkParticipantDetails).participantName !== undefined;
 
   const isScrollable = data.length > 5;
 
   return (
     <Modal
-      transparent
+      transparent={Platform.OS !== 'ios'}
       visible={isOpen}
       onRequestClose={onClose}
       animationType="slide"
-      presentationStyle="pageSheet"
+      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
     >
       <Overlay>
         <TouchableWithoutFeedback onPress={onClose}>
@@ -43,36 +58,61 @@ export default function NotificationModal({
             <FlatList
               data={data}
               keyExtractor={(_, index) => index.toString()}
-              renderItem={({ item }) =>
-                isFirstReaction(item) ? (
-                  <Item>
-                    <Row>
-                      <LeftSection>
-                        <FeedIcon width={16} stroke={colors.primary} />
-                        <TypeText>피드</TypeText>
-                      </LeftSection>
-                      <TimeText>방금</TimeText>
-                    </Row>
-                    <ContentContainer>
-                      <Title>{item.body}</Title>
-                      <SubText>{item.name}</SubText>
-                    </ContentContainer>
-                  </Item>
-                ) : (
-                  <Item>
-                    <Row>
-                      <LeftSection>
-                        <FeedIcon width={16} stroke={colors.primary} />
-                        <TypeText>피드</TypeText>
-                      </LeftSection>
-                      <TimeText>방금</TimeText>
-                    </Row>
-                    <ContentContainer>
-                      <Title>{item.body}</Title>
-                    </ContentContainer>
-                  </Item>
-                )
-              }
+              renderItem={({ item }) => {
+                // FeedFirstReaction
+                if (isFirstReaction(item)) {
+                  return (
+                    <Item>
+                      <Row>
+                        <LeftSection>
+                          <FeedIcon width={16} stroke={colors.primary} />
+                          <TypeText>피드</TypeText>
+                        </LeftSection>
+                      </Row>
+                      <ContentContainer>
+                        <Title>{item.body}</Title>
+                        <SubText>{item.name}</SubText>
+                      </ContentContainer>
+                    </Item>
+                  );
+                }
+
+                // FeedReactionCount
+                if (isReactionCount(item)) {
+                  return (
+                    <Item>
+                      <Row>
+                        <LeftSection>
+                          <FeedIcon width={16} stroke={colors.primary} />
+                          <TypeText>피드</TypeText>
+                        </LeftSection>
+                      </Row>
+                      <ContentContainer>
+                        <Title>{item.body}</Title>
+                      </ContentContainer>
+                    </Item>
+                  );
+                }
+
+                // NewLeenkParticipantDetails
+                if (isNewParticipant(item)) {
+                  return (
+                    <Item>
+                      <Row>
+                        <LeftSection>
+                          <LeenkIcon width={16} stroke={colors.primary} />
+                          <TypeText>링크</TypeText>
+                        </LeftSection>
+                      </Row>
+                      <ContentContainer>
+                        <Title>{item.participantName}</Title>
+                      </ContentContainer>
+                    </Item>
+                  );
+                }
+
+                return null;
+              }}
               ItemSeparatorComponent={() => <ItemGap />}
               scrollEnabled={isScrollable}
               showsVerticalScrollIndicator={false}
@@ -96,6 +136,7 @@ const Overlay = styled.View`
   align-items: center;
   padding: 0 ${10 * width}px;
 `;
+
 const Background = styled.View`
   position: absolute;
   top: 0;

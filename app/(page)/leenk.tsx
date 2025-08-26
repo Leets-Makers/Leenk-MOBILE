@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/native';
-import colors from '@/theme/color';
 import { width, height } from '@/theme/globalStyles';
-import { Header } from '@/components';
+import { Header, Loading } from '@/components';
 import TabMenu from '@/components/common/TabMenu';
 import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { ContainerWithNoPadding } from '../account/my-feed';
@@ -31,7 +30,6 @@ export default function LeenkPage() {
   const [hasMore, setHasMore] = useState(true);
 
   const didMountRef = useRef(false);
-
   const listRef = useRef<import('react-native').FlatList<Leenk>>(null);
 
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
@@ -47,11 +45,9 @@ export default function LeenkPage() {
     }
   }, [fetchedUserInfo, userInfo, setUserInfo]);
 
-  // 페이지 변경 시 정보 업데이트
   useFocusEffect(
     React.useCallback(() => {
       if (didMountRef.current) {
-        // 화면으로 복귀, 목록 리프레시
         setHasMore(true);
         setPage(0);
         onEndReachedCalledDuringMomentum.current = false;
@@ -62,7 +58,6 @@ export default function LeenkPage() {
     }, [tab]),
   );
 
-  // 중복 호출 방지
   const onEndReachedCalledDuringMomentum = useRef(false);
 
   const loadPage = async (nextPage: number, replace = false) => {
@@ -86,7 +81,6 @@ export default function LeenkPage() {
     }
   };
 
-  // 초기화 및 탭 전환 시
   useEffect(() => {
     setData([]);
     setHasMore(true);
@@ -95,7 +89,6 @@ export default function LeenkPage() {
     loadPage(0, true);
   }, [tab]);
 
-  // 당겨서 새로고침
   const onRefresh = async () => {
     setRefreshing(true);
     setHasMore(true);
@@ -103,7 +96,6 @@ export default function LeenkPage() {
     await loadPage(0, true);
   };
 
-  // 무한 스크롤 트리거
   const onEndReached = () => {
     if (onEndReachedCalledDuringMomentum.current) return;
     if (!loading && hasMore) {
@@ -111,6 +103,10 @@ export default function LeenkPage() {
       loadPage(page + 1);
     }
   };
+
+  // 초기 로딩 판단: 데이터 없고, page==0이고, 새로고침 중이 아닐 때
+  const showInitialLoader =
+    loading && !refreshing && data.length === 0 && page === 0;
 
   return (
     <ContainerWithNoPadding>
@@ -127,24 +123,30 @@ export default function LeenkPage() {
         />
       </View>
 
-      <LeenkList
-        ref={listRef}
-        data={data}
-        keyExtractor={(item) => String(item.leenkId)}
-        renderItem={({ item }) => <LeenkListItem item={item} />}
-        ItemSeparatorComponent={() => <Separator />}
-        onEndReachedThreshold={0.3}
-        onEndReached={onEndReached}
-        onMomentumScrollBegin={() => {
-          onEndReachedCalledDuringMomentum.current = false;
-        }}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        showsVerticalScrollIndicator
-        ListFooterComponent={
-          <View style={{ height: FOOTER_SPACER, opacity: loading ? 0.6 : 0 }} />
-        }
-      />
+      {showInitialLoader ? (
+        <Loading />
+      ) : (
+        <LeenkList
+          ref={listRef}
+          data={data}
+          keyExtractor={(item) => String(item.leenkId)}
+          renderItem={({ item }) => <LeenkListItem item={item} />}
+          ItemSeparatorComponent={() => <Separator />}
+          onEndReachedThreshold={0.3}
+          onEndReached={onEndReached}
+          onMomentumScrollBegin={() => {
+            onEndReachedCalledDuringMomentum.current = false;
+          }}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          showsVerticalScrollIndicator
+          ListFooterComponent={
+            <View
+              style={{ height: FOOTER_SPACER, opacity: loading ? 0.6 : 0 }}
+            />
+          }
+        />
+      )}
     </ContainerWithNoPadding>
   );
 }

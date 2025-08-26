@@ -89,13 +89,13 @@ export default function UserKickButton({
 
   return (
     <>
-      <Container onPress={handlePress} disabled={disabled}>
+      <Container onPress={handlePress} $disabled={disabled}>
         {(isSelectionMode || selectedUsers.length > 0) && (
           <CountBadge $isZero={isZero}>
             <CountText>{selectedUsers.length}</CountText>
           </CountBadge>
         )}
-        <ButtonText disabled={disabled}>내보내기</ButtonText>
+        <ButtonText $disabled={disabled}>내보내기</ButtonText>
       </Container>
 
       <PopupModal
@@ -112,18 +112,18 @@ export default function UserKickButton({
   );
 }
 
-const Container = styled.Pressable`
+const Container = styled.Pressable<{ $disabled?: boolean }>`
   flex-direction: row;
   align-items: center;
   padding: ${8 * height}px ${12 * width}px;
-  background-color: ${({ disabled }) =>
-    disabled ? colors.gray[100] : colors.divider[2]};
+  background-color: ${({ $disabled }) =>
+    $disabled ? colors.gray[100] : colors.divider[2]};
   border-radius: 100px;
 `;
 
-const ButtonText = styled.Text`
+const ButtonText = styled.Text<{ $disabled?: boolean }>`
   font-size: ${fontSize.sm}px;
-  color: ${({ disabled }) => (disabled ? colors.gray[400] : colors.text[1])};
+  color: ${({ $disabled }) => ($disabled ? colors.gray[400] : colors.text[1])};
   font-family: ${fonts.Bold};
   line-height: ${lineHeight.s}px;
 `;
