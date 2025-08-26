@@ -88,9 +88,7 @@ export default function ImagePicker({
         initialNumToRender={12}
         windowSize={5}
         removeClippedSubviews={true}
-        ListFooterComponent={
-          pagingLoading ? <Loading fullScreen={false} /> : null
-        }
+        ListFooterComponent={pagingLoading ? <Loading /> : null}
         renderItem={({ item }) => (
           <ThumbnailItem
             asset={item}
