@@ -9,7 +9,6 @@ import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { getMyLeenkList } from '@/api/leenk/leenk.get.api';
 import { Leenk } from '@/types/leenk';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getNotifications } from '@/api/users/notification.api';
 
 const PAGE_SIZE = 6;
 
@@ -28,15 +27,12 @@ export default function MyLeenkPage() {
       setLoading(true);
       try {
         const res = await getMyLeenkList(nextPage, PAGE_SIZE);
-        const res2 = await getNotifications(nextPage, PAGE_SIZE);
         const pageItems = res.leenks ?? [];
         const reachedEnd = pageItems.length < PAGE_SIZE;
 
         setData((prev) => (replace ? pageItems : [...prev, ...pageItems]));
         setHasMore(!reachedEnd);
         pageRef.current = nextPage;
-
-        console.log('[알림]', res2);
       } catch (e) {
         if (__DEV__) console.warn('Failed to fetch leenks:', e);
       } finally {
