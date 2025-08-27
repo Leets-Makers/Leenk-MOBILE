@@ -19,6 +19,7 @@ import * as Notifications from 'expo-notifications';
 import { getAccessToken } from '@react-native-kakao/user';
 import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useUserStore } from '@/stores/userStore';
+import { InAppNotificationProvider } from '@/components/InAppNotificationProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -46,6 +47,16 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
   const { setUserInfo } = useUserStore();
+
+  // 포그라운드에서도 배너 보이도록
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
 
   useEffect(() => {
     const autoLogin = async () => {
@@ -187,39 +198,41 @@ function RootLayoutNav() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <NotificationInitializer />
+        <InAppNotificationProvider>
+          <NotificationInitializer />
 
-        <StatusBar
-          style="dark"
-          backgroundColor={
-            pathname === '/account/notification-list'
-              ? colors.white
-              : colors.bg[2]
-          }
-          translucent={Platform.OS === 'ios'}
-        />
-
-        {/* 조건부 SafeAreaView (상단 배경 색 유지용) */}
-        {!isExcluded && (
-          <SafeAreaView
-            edges={['top']}
-            style={{
-              backgroundColor:
-                pathname === '/account/notification-list'
-                  ? colors.white
-                  : colors.bg[2],
-            }}
+          <StatusBar
+            style="dark"
+            backgroundColor={
+              pathname === '/account/notification-list'
+                ? colors.white
+                : colors.bg[2]
+            }
+            translucent={Platform.OS === 'ios'}
           />
-        )}
 
-        <ThemeProvider value={DefaultTheme}>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          />
-          <Toast />
-        </ThemeProvider>
+          {/* 조건부 SafeAreaView (상단 배경 색 유지용) */}
+          {!isExcluded && (
+            <SafeAreaView
+              edges={['top']}
+              style={{
+                backgroundColor:
+                  pathname === '/account/notification-list'
+                    ? colors.white
+                    : colors.bg[2],
+              }}
+            />
+          )}
+
+          <ThemeProvider value={DefaultTheme}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            />
+            <Toast />
+          </ThemeProvider>
+        </InAppNotificationProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -32,7 +32,6 @@ export default function NotificationListItem({
       case 'FEED_FIRST_REACTION': {
         const reactions = item.content.feedFirstReactionDetails || [];
         const firstReaction = reactions[0];
-        console.log('FEED_FIRST_REACTION', reactions, item.content);
         return (
           <>
             <TitleText>{firstReaction?.body ?? '알 수 없는 내용'}</TitleText>
@@ -48,7 +47,6 @@ export default function NotificationListItem({
 
       case 'FEED_REACTION_COUNT': {
         const reactions = item.content.feedReactionCountDetails || [];
-        console.log('FEED_REACTION_COUNT', reactions, item.content);
         if (reactions.length === 0) {
           return <TitleText>공감 없음</TitleText>;
         }
