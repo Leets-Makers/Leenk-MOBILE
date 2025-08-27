@@ -28,8 +28,8 @@ interface NotificationContent {
   body: string | null;
   feedId?: number;
   leenkId?: number;
-  feedFirstReactions?: FeedFirstReaction[];
-  feedReactionCounts?: FeedReactionCount[];
+  feedFirstReactionDetails?: FeedFirstReaction[];
+  feedReactionCountDetails?: FeedReactionCount[];
   newLeenkParticipantDetails?: NewLeenkParticipantDetails[];
   leenkDetail?: NotificationLeenkDetail[];
   authorUserId?: number;

@@ -40,6 +40,7 @@ export default function NotificationListPage() {
       if (!silent) setLoading(true);
       try {
         const notifications = await getNotifications(0, 30);
+
         setData([...notifications.notificationResponses]);
       } catch (error) {
         console.error('Failed to fetch notifications:', error);
@@ -106,9 +107,9 @@ export default function NotificationListPage() {
                 onMorePress={() => {
                   const detailData =
                     item.notificationType === 'FEED_REACTION_COUNT'
-                      ? item.content.feedReactionCounts
+                      ? item.content.feedReactionCountDetails
                       : item.notificationType === 'FEED_FIRST_REACTION'
-                        ? item.content.feedFirstReactions
+                        ? item.content.feedFirstReactionDetails
                         : item.notificationType === 'NEW_LEENK_PARTICIPANT'
                           ? item.content.newLeenkParticipantDetails
                           : [];
