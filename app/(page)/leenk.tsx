@@ -26,7 +26,7 @@ export default function LeenkPage() {
   const [data, setData] = useState<Leenk[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [pullRefreshing, setPullRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const didMountRef = useRef(false);
@@ -51,7 +51,7 @@ export default function LeenkPage() {
         setHasMore(true);
         setPage(0);
         onEndReachedCalledDuringMomentum.current = false;
-        onRefresh();
+        loadPage(0, true);
       } else {
         didMountRef.current = true;
       }
@@ -76,7 +76,6 @@ export default function LeenkPage() {
       if (__DEV__) console.warn('Failed to fetch leenks:', e);
     } finally {
       setLoading(false);
-      setRefreshing(false);
       onEndReachedCalledDuringMomentum.current = false;
     }
   };
@@ -90,10 +89,15 @@ export default function LeenkPage() {
   }, [tab]);
 
   const onRefresh = async () => {
-    setRefreshing(true);
+    // 사용자 제스처로만 호출되는 함수
+    setPullRefreshing(true);
     setHasMore(true);
     onEndReachedCalledDuringMomentum.current = false;
-    await loadPage(0, true);
+    try {
+      await loadPage(0, true);
+    } finally {
+      setPullRefreshing(false);
+    }
   };
 
   const onEndReached = () => {
@@ -106,7 +110,7 @@ export default function LeenkPage() {
 
   // 초기 로딩 판단: 데이터 없고, page==0이고, 새로고침 중이 아닐 때
   const showInitialLoader =
-    loading && !refreshing && data.length === 0 && page === 0;
+    loading && !pullRefreshing && data.length === 0 && page === 0;
 
   return (
     <ContainerWithNoPadding>
@@ -137,7 +141,7 @@ export default function LeenkPage() {
           onMomentumScrollBegin={() => {
             onEndReachedCalledDuringMomentum.current = false;
           }}
-          refreshing={refreshing}
+          refreshing={pullRefreshing}
           onRefresh={onRefresh}
           showsVerticalScrollIndicator
           ListFooterComponent={
