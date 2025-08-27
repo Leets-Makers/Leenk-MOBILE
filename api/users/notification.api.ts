@@ -23,7 +23,7 @@ export const getNotificationCount = async (userId: number) => {
 
 export const getNotificationsSetting = async () => {
   const res = await api.get('/user-setting/notifications');
-  return res.data;
+  return res.data.data;
 };
 
 export const patchNotificationsSetting = async (

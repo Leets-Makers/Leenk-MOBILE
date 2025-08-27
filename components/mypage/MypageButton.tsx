@@ -22,6 +22,7 @@ export default function MyPageButton({
   isToggleOn = false,
   onToggle,
 }: MyPageButtonProps) {
+  console.log(isToggleOn);
   return (
     <Container onPress={onPress}>
       <Title onlyText={type === 'none'}>{text}</Title>
