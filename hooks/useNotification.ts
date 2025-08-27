@@ -78,7 +78,7 @@ export default function NotificationInitializer() {
         title: m.notification?.title ?? '알림',
         body: m.notification?.body ?? '',
         data: m.data ?? {},
-        duration: 4000,
+        duration: 5000,
       });
     });
 

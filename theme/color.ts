@@ -60,6 +60,7 @@ const colors = {
     2: '#525463',
     3: '#8C8F9F',
     4: '#CDCED6',
+    5: '#FFFFFF',
   },
 
   divider: {

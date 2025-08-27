@@ -16,9 +16,17 @@ import Animated, {
 } from 'react-native-reanimated';
 import { router, type Href } from 'expo-router';
 import colors from '@/theme/color';
-import { LeenkIcon } from '@/assets';
+import { LeenkIcon, LogoNotify } from '@/assets';
 import styled from 'styled-components/native';
-import { height, radius, width } from '@/theme/globalStyles';
+import {
+  fonts,
+  fontSize,
+  height,
+  lineHeight,
+  radius,
+  width,
+} from '@/theme/globalStyles';
+import { BlurView } from 'expo-blur';
 
 type InAppPayload = {
   title?: string;
@@ -119,12 +127,20 @@ export function InAppNotificationProvider({
           <SafeAreaView edges={['top']} style={{ pointerEvents: 'box-none' }}>
             <CardWrap style={aStyle}>
               <Card onPress={onOpen} accessibilityRole="button">
+                {/* iOS: 블러 + 살짝 회색 오버레이, Android: 반투명 폴백 */}
+                {Platform.OS === 'ios' ? (
+                  <>
+                    <IOSBlur intensity={40} tint="light" />
+                    <FrostOverlay />
+                  </>
+                ) : (
+                  <AndroidFallback />
+                )}
+
                 <IconBadge>
-                  <LeenkIcon stroke={colors.primary} width={16} height={16} />
+                  <LogoNotify width={24 * width} />
                 </IconBadge>
-                <TextWrap>
-                  <BannerText numberOfLines={1}>{bannerText}</BannerText>
-                </TextWrap>
+                <BannerText numberOfLines={1}>{bannerText}</BannerText>
               </Card>
             </CardWrap>
           </SafeAreaView>
@@ -147,46 +163,58 @@ const Overlay = styled(Animated.View)`
 `;
 
 const CardWrap = styled(Animated.View)`
-  padding: 8px 12px 0 12px;
+  padding: 44px 20px 0 20px;
 `;
 
 const Card = styled.Pressable`
+  position: relative;
+  overflow: hidden;
   flex-direction: row;
   align-items: center;
   padding: ${9 * height}px ${8 * width}px;
   border-radius: ${radius.sm}px;
+  background-color: transparent;
+`;
 
+/* iOS 블러 */
+const IOSBlur = styled(BlurView)`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+`;
+
+/* 유리질감 강화용 얇은 회색 레이어(iOS 전용) */
+const FrostOverlay = styled.View`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(120, 120, 120, 0.35);
+`;
+
+/* Android 폴백: 반투명 회색 배경 */
+const AndroidFallback = styled.View`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   background-color: #0000004d;
-
-  ${Platform.select({
-    ios: `
-      shadow-color: ${colors.black};
-      shadow-opacity: 0.12;
-      shadow-radius: 10px;
-      shadow-offset: 0px 6px;
-    `,
-    android: `
-      elevation: 4;
-    `,
-  }) as any}
 `;
 
 const IconBadge = styled.View`
-  width: ${16 * width}px;
-  height: ${16 * width}px;
-  border-radius: 12px;
-  background-color: ${colors.white};
   align-items: center;
   justify-content: center;
-  margin-left: ${12 * width};
-`;
-
-const TextWrap = styled.View`
-  flex: 1;
+  margin-right: ${12 * width}px;
 `;
 
 const BannerText = styled.Text`
-  font-size: 14px;
+  font-family: ${fonts.Regular};
+  font-size: ${fontSize.md}px;
   font-weight: ${Platform.select({ ios: '600', android: '700' })};
-  color: ${colors.white};
+  color: ${colors.text[5]};
+  line-height: ${lineHeight.m}px;
 `;
