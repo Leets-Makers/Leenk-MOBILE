@@ -5,7 +5,7 @@ import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, usePathname, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +16,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'core-js/features/array/find-last-index';
 import colors from '@/theme/color';
 import * as Notifications from 'expo-notifications';
+import { getAccessToken } from '@react-native-kakao/user';
+import { getUsersInfo } from '@/api/users/getUsersInfo.api';
+import { useUserStore } from '@/stores/userStore';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -41,6 +44,34 @@ const ROUTES = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [appReady, setAppReady] = useState(false);
+  const { setUserInfo } = useUserStore();
+
+  useEffect(() => {
+    const autoLogin = async () => {
+      if (!kakaoNativeAppKey) return;
+
+      try {
+        await initializeKakaoSDK(kakaoNativeAppKey);
+        const accessToken = await getAccessToken();
+        if (accessToken) {
+          const data = await getUsersInfo();
+          setUserInfo(data);
+          router.replace('/leenk');
+        } else {
+          router.replace('/');
+        }
+      } catch (err) {
+        console.warn('[AUTO-LOGIN] accessToken 만료');
+        router.replace('/');
+      } finally {
+        setAppReady(true);
+        await SplashScreen.hideAsync();
+      }
+    };
+
+    autoLogin();
+  }, []);
   const [fontsLoaded, error] = useFonts({
     'NanumSquareNeo-Regular': require('../assets/fonts/NanumSquareNeo-bRg.ttf'),
     'NanumSquareNeo-Bold': require('../assets/fonts/NanumSquareNeo-cBd.ttf'),
