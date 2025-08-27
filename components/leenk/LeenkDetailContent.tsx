@@ -1,4 +1,5 @@
 import {
+  CheckerIcon,
   ClockIcon,
   LocateIcon,
   PeopleIcon,
@@ -14,11 +15,12 @@ import {
   width,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import { formatMonthDayHour, formatRelativeTime } from '@/utils/format-date';
 import { TimeText } from '@/components/leenk/LeenkListItem';
 import { LeenkDetail } from '@/types/leenk';
+import { Image } from 'expo-image';
 
 interface Props {
   data: LeenkDetail;
@@ -35,55 +37,70 @@ export default function LeenkContentSection({
 }: Props) {
   return (
     <Container showsVerticalScrollIndicator={false}>
-      <TitleRow>
-        <Title>{data.title}</Title>
-        {/* <ShareButton onPress={onShare}>
-          <ShareIcon width={24 * width} />
-        </ShareButton> */}
-      </TitleRow>
+      <ImageContainer>
+        {data.mediaUrl ? (
+          <Image
+            source={{ uri: data.mediaUrl }}
+            style={StyleSheet.absoluteFillObject}
+            contentFit="cover"
+          />
+        ) : (
+          <CheckerWrapper>
+            <CheckerIcon width="100%" height="100%" />
+          </CheckerWrapper>
+        )}
+      </ImageContainer>
 
-      <RowWrapper>
-        <ProfileImageWithFallback uri={data.author.profileImage} size={24} />
-        <TimeText style={{ marginLeft: width * 8 }}>
-          {data.author.name}・{formatRelativeTime(data.createdAt)}
-        </TimeText>
-      </RowWrapper>
+      <Inner>
+        <TitleRow>
+          <Title>{data.title}</Title>
+        </TitleRow>
 
-      <Line />
+        <RowWrapper>
+          <ProfileImageWithFallback uri={data.author.profileImage} size={24} />
+          <TimeText style={{ marginLeft: width * 8 }}>
+            {data.author.name}・{formatRelativeTime(data.createdAt)}
+          </TimeText>
+        </RowWrapper>
 
-      <RowWrapper>
-        <PeopleIcon width={width * 16} />
-        <TimeText>
-          {data.currentParticipants}/{data.maxParticipants}명
-        </TimeText>
-        <Pressable onPress={onParticipants}>
-          <RightArrowIcon width={width * 16} />
-        </Pressable>
-      </RowWrapper>
+        <Line />
 
-      <RowWrapper>
-        <LocateIcon width={width * 16} />
-        <TimeText>{data.placeName}</TimeText>
-      </RowWrapper>
+        <RowWrapper>
+          <PeopleIcon width={width * 16} />
+          <TimeText>
+            {data.currentParticipants}/{data.maxParticipants}명
+          </TimeText>
+          <Pressable onPress={onParticipants}>
+            <RightArrowIcon width={width * 16} />
+          </Pressable>
+        </RowWrapper>
 
-      <RowWrapper>
-        <ClockIcon width={width * 16} />
-        <TimeText>{formatMonthDayHour(data.startTime)}</TimeText>
-      </RowWrapper>
+        <RowWrapper>
+          <LocateIcon width={width * 16} />
+          <TimeText>{data.placeName}</TimeText>
+        </RowWrapper>
 
-      <ContentWrapper $insetBottom={insetBottom}>
-        <ContentText>{data.content}</ContentText>
-      </ContentWrapper>
+        <RowWrapper>
+          <ClockIcon width={width * 16} />
+          <TimeText>{formatMonthDayHour(data.startTime)}</TimeText>
+        </RowWrapper>
+
+        <ContentWrapper $insetBottom={insetBottom}>
+          <ContentText>{data.content}</ContentText>
+        </ContentWrapper>
+      </Inner>
     </Container>
   );
 }
 
 const Container = styled.ScrollView`
   flex: 1;
+`;
+
+const Inner = styled.View`
   padding-horizontal: ${width * 16}px;
   padding-top: ${height * 16}px;
 `;
-
 const TitleRow = styled.View`
   position: relative;
 `;
@@ -131,4 +148,18 @@ const ContentText = styled.Text`
   color: ${colors.text[1]};
   line-height: ${lineHeight.m};
   font-size: ${fontSize.md};
+`;
+
+const ImageContainer = styled.View`
+  ${StyleSheet.absoluteFillObject};
+  width: 100%;
+  height: ${height * 375}px;
+  position: relative;
+`;
+
+const CheckerWrapper = styled.View`
+  ${StyleSheet.absoluteFillObject};
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.bg[2]};
 `;

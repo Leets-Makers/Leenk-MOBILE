@@ -298,20 +298,6 @@ export default function LeenkDetailPage() {
         }}
       />
 
-      <ImageContainer>
-        {leenkDetail.mediaUrl ? (
-          <Image
-            source={{ uri: leenkDetail.mediaUrl }}
-            style={StyleSheet.absoluteFillObject}
-            contentFit="cover"
-          />
-        ) : (
-          <CheckerWrapper>
-            <CheckerIcon width="100%" height="100%" />
-          </CheckerWrapper>
-        )}
-      </ImageContainer>
-
       <LeenkContentSection
         data={leenkDetail}
         insetBottom={insets.bottom}
@@ -357,18 +343,4 @@ export default function LeenkDetailPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.white};
-`;
-
-const ImageContainer = styled.View`
-  ${StyleSheet.absoluteFillObject};
-  width: 100%;
-  height: ${height * 375}px;
-  position: relative;
-`;
-
-const CheckerWrapper = styled.View`
-  ${StyleSheet.absoluteFillObject};
-  justify-content: center;
-  align-items: center;
-  background-color: ${colors.bg[2]};
 `;
