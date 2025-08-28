@@ -151,7 +151,7 @@ const Line = styled.View`
   margin-top: ${16 * height}px;
 `;
 
-const ContentWrapper = styled.ScrollView<{ $insetBottom: number }>`
+const ContentWrapper = styled.View<{ $insetBottom: number }>`
   padding-bottom: ${({ $insetBottom }) => $insetBottom + 100 * height}px;
 `;
 
@@ -164,14 +164,10 @@ const ContentText = styled.Text`
 `;
 
 const ImageContainer = styled.View`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   width: 100%;
   height: ${height * 375}px;
   position: relative;
+  overflow: hidden;
 `;
 
 const CheckerWrapper = styled.View`
