@@ -1,4 +1,3 @@
-// hooks/useLeenkInfiniteScroll.ts
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pageable, PageableResponse } from '@/types/pageable';
 
@@ -9,14 +8,14 @@ interface UseLeenkInfiniteScrollProps<T> {
   ) => Promise<PageableResponse<T> & { totalReactionCount?: number }>;
   initialPageNumber?: number;
   pageSize?: number;
-  enabled?: boolean; // ⬅️ 추가
+  enabled?: boolean;
 }
 
 export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
   fetchFunction,
   initialPageNumber = 0,
   pageSize = 10,
-  enabled = true, // ⬅️ 기본값
+  enabled = true,
 }: UseLeenkInfiniteScrollProps<T>) {
   const [data, setData] = useState<T[]>([]);
   const [pageable, setPageable] = useState<Pageable | null>(null);
@@ -29,7 +28,7 @@ export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
   const blockedRef = useRef<boolean>(false);
 
   const loadMore = useCallback(async () => {
-    if (!enabled) return; // ⬅️ 가드
+    if (!enabled) return;
     if (isLoading) return;
     if (blockedRef.current) return;
     if (pageable && !pageable.hasNext) return;
@@ -70,7 +69,7 @@ export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
   ]);
 
   const refresh = useCallback(async () => {
-    if (!enabled) return; // ⬅️ 가드
+    if (!enabled) return;
     setIsRefreshing(true);
     try {
       blockedRef.current = false;
@@ -90,7 +89,7 @@ export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
   }, [enabled, fetchFunction, initialPageNumber, pageSize]);
 
   useEffect(() => {
-    if (enabled) refresh(); // ⬅️ 준비되면 자동 호출
+    if (enabled) refresh();
   }, [enabled, refresh]);
 
   return {
