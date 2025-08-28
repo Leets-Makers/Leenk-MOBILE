@@ -10,7 +10,7 @@ import {
   height,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { LeenkIcon, FeedIcon } from '@/assets';
+import { LeenkIcon, FeedIcon, MenuLeenkIcon, MenuFeedIcon } from '@/assets';
 
 interface MenuModalProps {
   visible: boolean;
@@ -61,7 +61,7 @@ export default function MenuModal({
               <MenuItemWrapper onPress={onPressFirst}>
                 {({ pressed }) => (
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
-                    <LeenkIcon
+                    <MenuLeenkIcon
                       width={20 * width}
                       height={20 * width}
                       stroke={colors.primary}
@@ -74,7 +74,7 @@ export default function MenuModal({
               <MenuItemWrapper onPress={onPressSecond}>
                 {({ pressed }) => (
                   <MenuItem pressed={pressed} $isWrite={isWrite}>
-                    <FeedIcon
+                    <MenuFeedIcon
                       width={20 * width}
                       height={20 * width}
                       stroke={colors.primary}
@@ -144,11 +144,15 @@ const MenuContainer = styled.View<{
         right: ${20 * width}px;
         align-items: center;
       `}
-  width: ${({ $isWrite }) => ($isWrite ? 134 * width : 100 * width)}px;
-  padding: ${8 * height}px ${10 * width}px;
+  width: ${({ $isWrite }) => ($isWrite ? 'auto' : `${100 * width}px`)};
+
+  padding: ${({ $isWrite }) =>
+    $isWrite
+      ? `${8 * height}px ${8 * width}px`
+      : `${6 * height}px ${10 * width}px`};
   background-color: ${colors.white};
   border-radius: ${radius.md}px;
-  gap: ${4 * height}px;
+  gap: ${({ $isWrite }) => ($isWrite ? `${6 * height}px` : `${4 * height}px`)};
   margin-bottom: ${({ $bottomMargin }) => $bottomMargin}px;
   /* Android */
   elevation: 6;
@@ -158,12 +162,12 @@ const MenuItem = styled.View<{ pressed: boolean; $isWrite: boolean }>`
   flex-direction: row;
   align-items: center;
   justify-content: ${({ $isWrite }) => ($isWrite ? 'flex-start' : 'center')};
-  padding: ${({ pressed }) =>
-    pressed
-      ? `${4 * height}px ${12 * width}px`
-      : `${4 * height}px ${4 * width}px`};
-  border-radius: ${({ pressed }) => (pressed ? radius.sm : 0)}px;
-  gap: ${({ $isWrite }) => ($isWrite ? 6 * width : 0)}px;
+  padding: ${({ pressed, $isWrite }) =>
+    !$isWrite && pressed
+      ? `${5 * height}px ${12 * width}px`
+      : `${5 * height}px ${6 * width}px`};
+  border-radius: ${({ pressed }) => (pressed ? radius.xs : 0)}px;
+  gap: ${({ $isWrite }) => ($isWrite ? 10 * width : 0)}px;
   background-color: ${({ pressed }) =>
     pressed ? colors.bg[3] : 'transparent'};
 `;

@@ -16,7 +16,7 @@ export default function MyFeedPage() {
   return (
     <ContainerWithNoPadding>
       <View style={{ paddingHorizontal: FEED_PADDING * width }}>
-        <Header RightSection="SETTING" />
+        <Header />
         <TabMenu
           activeTab={tab}
           onTabChange={(newTab: string) => {
