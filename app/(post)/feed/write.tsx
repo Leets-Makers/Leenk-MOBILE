@@ -5,7 +5,6 @@ import {
   ScrollView,
   Platform,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   Keyboard,
   Pressable,
   StyleSheet,
