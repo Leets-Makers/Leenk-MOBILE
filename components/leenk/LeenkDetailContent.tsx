@@ -59,7 +59,7 @@ export default function LeenkContentSection({
         <RowWrapper>
           <ProfileImageWithFallback uri={data.author.profileImage} size={24} />
           <TimeText style={{ marginLeft: width * 8 }}>
-            {data.author.name}・{formatRelativeTime(data.createdAt)}
+            {data.author.name}&nbsp;・&nbsp;{formatRelativeTime(data.createdAt)}
           </TimeText>
         </RowWrapper>
 
@@ -129,7 +129,7 @@ const ShareButton = styled.Pressable`
 const RowWrapper = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-top: ${12 * height}px;
+  margin-top: ${8 * height}px;
 `;
 
 const Line = styled.View`

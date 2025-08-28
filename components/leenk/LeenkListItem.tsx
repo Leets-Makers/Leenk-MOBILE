@@ -73,7 +73,7 @@ const StyledContainer = styled.View<{ $pressed: boolean }>`
   height: ${height * 104}px;
   padding: ${height * 12}px ${width * 12}px;
   flex-direction: row;
-  border-radius: ${radius.xs}px;
+  border-radius: ${radius.md}px;
   background-color: ${({ $pressed }) =>
     $pressed ? colors.bg[3] : colors.white};
 `;
