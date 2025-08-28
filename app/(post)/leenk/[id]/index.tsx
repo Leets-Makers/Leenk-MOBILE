@@ -14,7 +14,7 @@ import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Share } from 'react-native';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 
@@ -30,6 +30,8 @@ import {
 import LeenkDetailModals from '@/components/leenk/LeenkDetailModals';
 import * as Linking from 'expo-linking';
 import * as Clipboard from 'expo-clipboard';
+import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
+import OnBoardingModal from '@/components/Modal/OnBoardingModal';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
@@ -48,6 +50,15 @@ export default function LeenkDetailPage() {
   const [pendingAction, setPendingAction] = useState<null | 'close' | 'finish'>(
     null,
   );
+
+  const firstLaunch = useDetailFirstLaunch();
+  const [showOnBoarding, setShowOnBoarding] = useState(false);
+
+  useEffect(() => {
+    if (firstLaunch === true) {
+      setShowOnBoarding(true);
+    }
+  }, [firstLaunch]);
 
   // 부분 패치 헬퍼
   const patchDetail = useCallback((patch: Partial<LeenkDetail>) => {
@@ -299,20 +310,6 @@ export default function LeenkDetailPage() {
         }}
       />
 
-      <ImageContainer>
-        {leenkDetail.mediaUrl ? (
-          <Image
-            source={{ uri: leenkDetail.mediaUrl }}
-            style={StyleSheet.absoluteFillObject}
-            contentFit="cover"
-          />
-        ) : (
-          <CheckerWrapper>
-            <CheckerIcon width="100%" height="100%" />
-          </CheckerWrapper>
-        )}
-      </ImageContainer>
-
       <LeenkContentSection
         data={leenkDetail}
         insetBottom={insets.bottom}
@@ -351,6 +348,14 @@ export default function LeenkDetailPage() {
         onConfirmClose={() => handleLeenkClose(leenkDetail.id)}
         onConfirmFinish={() => handleLeenkFinish(leenkDetail.id)}
       />
+      {/* 온보딩 */}
+      {showOnBoarding && (
+        <OnBoardingModal
+          isLeenk
+          visible={showOnBoarding}
+          onClose={() => setShowOnBoarding(false)}
+        />
+      )}
     </Container>
   );
 }
@@ -358,18 +363,4 @@ export default function LeenkDetailPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.white};
-`;
-
-const ImageContainer = styled.View`
-  ${StyleSheet.absoluteFillObject};
-  width: 100%;
-  height: ${height * 375}px;
-  position: relative;
-`;
-
-const CheckerWrapper = styled.View`
-  ${StyleSheet.absoluteFillObject};
-  justify-content: center;
-  align-items: center;
-  background-color: ${colors.bg[2]};
 `;

@@ -13,6 +13,8 @@ import { CopyIcon } from '@/assets';
 import { useToastStore } from '@/stores/toastStore';
 import { useParticipantStore } from '@/stores/participantStore';
 import { LeenkParticipantItem } from '@/types/leenk';
+import { Pressable } from 'react-native';
+import { router } from 'expo-router';
 
 export default function UserItem({ user }: { user: LeenkParticipantItem }) {
   const { showToast } = useToastStore();
@@ -33,7 +35,14 @@ export default function UserItem({ user }: { user: LeenkParticipantItem }) {
 
   return (
     <Wrapper>
-      <ProfileImageWithFallback uri={user.participant.profileImage} />
+      <Pressable
+        onPress={() => {
+          router.push(`/users/${user.participant.userId}`);
+        }}
+      >
+        <ProfileImageWithFallback uri={user.participant.profileImage} />
+      </Pressable>
+
       <MiddleWrapper>
         <NameRow>
           <UserName>{user.participant.name}</UserName>

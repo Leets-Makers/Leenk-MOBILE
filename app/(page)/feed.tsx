@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Header, FeedCard, CustomButton, Loading } from '@/components';
+import { useEffect } from 'react';
+import { Header, FeedCard, Loading } from '@/components';
 import colors from '@/theme/color';
-import { View, FlatList, Platform } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { width, height } from '@/theme/globalStyles';
-import BottomSheetModal from '@/components/Modal/BottomSheetModal';
-import { SubText, TitleText } from '@/components/OnBoarding';
-import useFirstLaunch from '@/hooks/useFirstLaunch';
-import { CongratsIcon } from '@/assets';
+
 import useFeedList from '@/hooks/useFeedList';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
@@ -14,9 +11,6 @@ import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { FEED_PADDING } from '@/constants';
 
 export default function FeedPage() {
-  const firstLaunch = useFirstLaunch();
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
-
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
 
@@ -34,13 +28,6 @@ export default function FeedPage() {
       setUserInfo(fetchedUserInfo);
     }
   }, [fetchedUserInfo, userInfo, setUserInfo]);
-
-  useEffect(() => {
-    if (firstLaunch === true) {
-      // 처음 방문이면 모달 표시
-      setShowWelcomeModal(true);
-    }
-  }, [firstLaunch]);
 
   const {
     data: feeds,
@@ -84,30 +71,6 @@ export default function FeedPage() {
         onRefresh={refresh}
         ListFooterComponent={feeds.length > 0 && isLoading ? <Loading /> : null}
       />
-
-      {showWelcomeModal && (
-        <BottomSheetModal visible={true}>
-          <TitleText>Leenk에 온 걸 환영해!</TitleText>
-          <SubText>{'앞으로 신나는 링크 활동 부탁할게 :)'}</SubText>
-          <CongratsIcon
-            height={200}
-            width={200}
-            style={{
-              alignSelf: 'center',
-              marginTop: 16 * height,
-              marginBottom: 40 * height,
-            }}
-          />
-          <CustomButton
-            fullWidth
-            onPress={() => {
-              setShowWelcomeModal(false);
-            }}
-          >
-            나도 잘 부탁해
-          </CustomButton>
-        </BottomSheetModal>
-      )}
     </View>
   );
 }

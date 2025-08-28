@@ -11,7 +11,6 @@ import {
 } from '@/theme/globalStyles';
 import { Notification } from '@/types/notification';
 import { formatMonthDayHour, formatRelativeTime } from '@/utils/format-date';
-import { getSubjectJosa } from '@/utils/KoreanEndingCheck';
 import { Pressable } from 'react-native';
 
 export default function NotificationListItem({
@@ -27,15 +26,16 @@ export default function NotificationListItem({
   //   item.notificationType,
   //   item.notificationType === 'LEENK_STARTING_SOON' ? item.content : '',
   // );
+
   const renderContent = () => {
     switch (item.notificationType) {
       case 'FEED_FIRST_REACTION': {
-        const reactions = item.content.feedFirstReactions || [];
+        const reactions = item.content.feedFirstReactionDetails || [];
         const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{firstReaction?.body ?? '알 수 없는 내용'}</TitleText>
-            <SubText>{firstReaction?.name ?? '알 수 없는 이름'}</SubText>
+            <TitleText>{firstReaction?.body ?? '피드 공감'}</TitleText>
+            <SubText>{firstReaction?.name ?? '유저 이름'}</SubText>
             {reactions.length > 1 && (
               <MoreTextWrapper onPress={onMorePress}>
                 <MoreText>{reactions.length - 1}개 더보기</MoreText>
@@ -46,14 +46,14 @@ export default function NotificationListItem({
       }
 
       case 'FEED_REACTION_COUNT': {
-        const reactions = item.content.feedReactionCounts || [];
+        const reactions = item.content.feedReactionCountDetails || [];
         if (reactions.length === 0) {
           return <TitleText>공감 없음</TitleText>;
         }
         const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{firstReaction?.body ?? '알 수 없는 내용'}</TitleText>
+            <TitleText>{firstReaction?.body ?? '피드 공감 수'}</TitleText>
             {reactions.length > 1 && (
               <MoreTextWrapper onPress={onMorePress}>
                 <MoreText>{reactions.length - 1}개 더보기</MoreText>
@@ -67,7 +67,7 @@ export default function NotificationListItem({
           <>
             <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
             <SubText>
-              &#91;{item.content.authorName ?? '내용 없음'}&#93;
+              &#91;{item.content.authorName ?? '유저 이름'}&#93;
             </SubText>
           </>
         );
@@ -75,7 +75,10 @@ export default function NotificationListItem({
       case 'FEED_TAG': {
         return (
           <>
-            <TitleText>{item.content.body ?? '내용 없음'}</TitleText>
+            <TitleText>{item.content.body ?? '피드 태그'}</TitleText>
+            <SubText>
+              &#91;{item.content.authorName ?? '유저 이름'}&#93;
+            </SubText>
           </>
         );
       }

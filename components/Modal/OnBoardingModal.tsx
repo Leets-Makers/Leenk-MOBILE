@@ -4,13 +4,19 @@ import styled from 'styled-components/native';
 import { height, radius, SCREEN_HEIGHT, width } from '@/theme/globalStyles';
 import { OnBoarding } from '@/components';
 import colors from '@/theme/color';
+import { Overlay } from './PopupModal';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
+  isLeenk?: boolean;
 }
 
-export default function OnBoardingModal({ visible, onClose }: Props) {
+export default function OnBoardingModal({
+  visible,
+  onClose,
+  isLeenk = false,
+}: Props) {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   useEffect(() => {
@@ -30,12 +36,19 @@ export default function OnBoardingModal({ visible, onClose }: Props) {
   }, [visible]);
 
   return (
-    <Modal transparent visible={visible} animationType="none">
-      <Container>
-        <AnimatedContent style={{ transform: [{ translateY }] }}>
-          <OnBoarding onClose={onClose} />
-        </AnimatedContent>
-      </Container>
+    <Modal
+      transparent
+      visible={visible}
+      animationType="none"
+      onRequestClose={onClose}
+    >
+      <Overlay>
+        <Container>
+          <AnimatedContent style={{ transform: [{ translateY }] }}>
+            <OnBoarding onClose={onClose} isLeenk={isLeenk} />
+          </AnimatedContent>
+        </Container>
+      </Overlay>
     </Modal>
   );
 }

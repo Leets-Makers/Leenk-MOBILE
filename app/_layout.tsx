@@ -5,7 +5,7 @@ import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, usePathname, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +16,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'core-js/features/array/find-last-index';
 import colors from '@/theme/color';
 import * as Notifications from 'expo-notifications';
+import { getAccessToken } from '@react-native-kakao/user';
+import { getUsersInfo } from '@/api/users/getUsersInfo.api';
+import { useUserStore } from '@/stores/userStore';
+import { InAppNotificationProvider } from '@/components/InAppNotificationProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -41,6 +45,46 @@ const ROUTES = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [appReady, setAppReady] = useState(false);
+  const { setUserInfo } = useUserStore();
+
+  // 포그라운드에서도 배너 보이도록
+  useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  }, []);
+
+  useEffect(() => {
+    const autoLogin = async () => {
+      if (!kakaoNativeAppKey) return;
+
+      try {
+        await initializeKakaoSDK(kakaoNativeAppKey);
+        const accessToken = await getAccessToken();
+        if (accessToken) {
+          const data = await getUsersInfo();
+          setUserInfo(data);
+          router.replace('/leenk');
+        } else {
+          router.replace('/');
+        }
+      } catch (err) {
+        console.warn('[AUTO-LOGIN] accessToken 만료');
+        router.replace('/');
+      } finally {
+        setAppReady(true);
+        await SplashScreen.hideAsync();
+      }
+    };
+
+    autoLogin();
+  }, []);
   const [fontsLoaded, error] = useFonts({
     'NanumSquareNeo-Regular': require('../assets/fonts/NanumSquareNeo-bRg.ttf'),
     'NanumSquareNeo-Bold': require('../assets/fonts/NanumSquareNeo-cBd.ttf'),
@@ -160,39 +204,41 @@ function RootLayoutNav() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <NotificationInitializer />
+        <InAppNotificationProvider>
+          <NotificationInitializer />
 
-        <StatusBar
-          style="dark"
-          backgroundColor={
-            pathname === '/account/notification-list'
-              ? colors.white
-              : colors.bg[2]
-          }
-          translucent={Platform.OS === 'ios'}
-        />
-
-        {/* 조건부 SafeAreaView (상단 배경 색 유지용) */}
-        {!isExcluded && (
-          <SafeAreaView
-            edges={['top']}
-            style={{
-              backgroundColor:
-                pathname === '/account/notification-list'
-                  ? colors.white
-                  : colors.bg[2],
-            }}
+          <StatusBar
+            style="dark"
+            backgroundColor={
+              pathname === '/account/notification-list'
+                ? colors.white
+                : colors.bg[2]
+            }
+            translucent={Platform.OS === 'ios'}
           />
-        )}
 
-        <ThemeProvider value={DefaultTheme}>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          />
-          <Toast />
-        </ThemeProvider>
+          {/* 조건부 SafeAreaView (상단 배경 색 유지용) */}
+          {!isExcluded && (
+            <SafeAreaView
+              edges={['top']}
+              style={{
+                backgroundColor:
+                  pathname === '/account/notification-list'
+                    ? colors.white
+                    : colors.bg[2],
+              }}
+            />
+          )}
+
+          <ThemeProvider value={DefaultTheme}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            />
+            <Toast />
+          </ThemeProvider>
+        </InAppNotificationProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

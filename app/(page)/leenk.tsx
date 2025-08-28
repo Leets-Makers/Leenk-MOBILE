@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/native';
 import { width, height } from '@/theme/globalStyles';
-import { Header, Loading } from '@/components';
+import { CustomButton, Header, Loading } from '@/components';
 import TabMenu from '@/components/common/TabMenu';
 import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { ContainerWithNoPadding } from '../account/my-feed';
@@ -13,6 +13,11 @@ import { Leenk } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useFocusEffect } from 'expo-router';
+
+import BottomSheetModal from '@/components/Modal/BottomSheetModal';
+import { SubText, TitleText } from '@/components/OnBoarding';
+import { CongratsIcon } from '@/assets';
+import useFirstLaunch from '@/hooks/useFirstLaunch';
 
 const FOOTER_SPACER = 10 * height;
 const PAGE_SIZE = 6;
@@ -26,14 +31,18 @@ export default function LeenkPage() {
   const [data, setData] = useState<Leenk[]>([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [pullRefreshing, setPullRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const didMountRef = useRef(false);
   const listRef = useRef<import('react-native').FlatList<Leenk>>(null);
 
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
+
+  const firstLaunch = useFirstLaunch();
 
   useEffect(() => {
     refetch();
@@ -45,13 +54,20 @@ export default function LeenkPage() {
     }
   }, [fetchedUserInfo, userInfo, setUserInfo]);
 
+  useEffect(() => {
+    if (firstLaunch === true) {
+      // 처음 방문이면 모달 표시
+      setShowWelcomeModal(true);
+    }
+  }, [firstLaunch]);
+
   useFocusEffect(
     React.useCallback(() => {
       if (didMountRef.current) {
         setHasMore(true);
         setPage(0);
         onEndReachedCalledDuringMomentum.current = false;
-        onRefresh();
+        loadPage(0, true);
       } else {
         didMountRef.current = true;
       }
@@ -76,7 +92,6 @@ export default function LeenkPage() {
       if (__DEV__) console.warn('Failed to fetch leenks:', e);
     } finally {
       setLoading(false);
-      setRefreshing(false);
       onEndReachedCalledDuringMomentum.current = false;
     }
   };
@@ -90,10 +105,15 @@ export default function LeenkPage() {
   }, [tab]);
 
   const onRefresh = async () => {
-    setRefreshing(true);
+    // 사용자 제스처로만 호출되는 함수
+    setPullRefreshing(true);
     setHasMore(true);
     onEndReachedCalledDuringMomentum.current = false;
-    await loadPage(0, true);
+    try {
+      await loadPage(0, true);
+    } finally {
+      setPullRefreshing(false);
+    }
   };
 
   const onEndReached = () => {
@@ -106,7 +126,7 @@ export default function LeenkPage() {
 
   // 초기 로딩 판단: 데이터 없고, page==0이고, 새로고침 중이 아닐 때
   const showInitialLoader =
-    loading && !refreshing && data.length === 0 && page === 0;
+    loading && !pullRefreshing && data.length === 0 && page === 0;
 
   return (
     <ContainerWithNoPadding>
@@ -137,7 +157,7 @@ export default function LeenkPage() {
           onMomentumScrollBegin={() => {
             onEndReachedCalledDuringMomentum.current = false;
           }}
-          refreshing={refreshing}
+          refreshing={pullRefreshing}
           onRefresh={onRefresh}
           showsVerticalScrollIndicator
           ListFooterComponent={
@@ -146,6 +166,29 @@ export default function LeenkPage() {
             />
           }
         />
+      )}
+      {showWelcomeModal && (
+        <BottomSheetModal visible={true}>
+          <TitleText>Leenk에 온 걸 환영해!</TitleText>
+          <SubText>{'앞으로 신나는 링크 활동 부탁할게 :)'}</SubText>
+          <CongratsIcon
+            height={200}
+            width={200}
+            style={{
+              alignSelf: 'center',
+              marginTop: 16 * height,
+              marginBottom: 40 * height,
+            }}
+          />
+          <CustomButton
+            fullWidth
+            onPress={() => {
+              setShowWelcomeModal(false);
+            }}
+          >
+            나도 잘 부탁해
+          </CustomButton>
+        </BottomSheetModal>
       )}
     </ContainerWithNoPadding>
   );

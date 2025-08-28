@@ -1,4 +1,7 @@
-import { onboardingData } from '@/constants/onBoardingData';
+import React, { useState } from 'react';
+import Carousel from 'react-native-reanimated-carousel';
+import styled from 'styled-components/native';
+import { Image } from 'expo-image';
 import colors from '@/theme/color';
 import {
   fonts,
@@ -9,14 +12,23 @@ import {
   SCREEN_WIDTH,
   width,
 } from '@/theme/globalStyles';
-import { Image } from 'expo-image';
-import React, { useState } from 'react';
-import Carousel from 'react-native-reanimated-carousel';
-import styled from 'styled-components/native';
 import { CustomButton } from '@/components';
 
-export default function OnBoarding({ onClose }: { onClose: () => void }) {
+import {
+  feedOnboardingData,
+  leenkOnboardingData,
+} from '@/constants/onBoardingData';
+
+export default function OnBoarding({
+  onClose,
+  isLeenk = false,
+}: {
+  onClose: () => void;
+  isLeenk?: boolean;
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const data = isLeenk ? leenkOnboardingData : feedOnboardingData;
 
   return (
     <Container>
@@ -24,7 +36,7 @@ export default function OnBoarding({ onClose }: { onClose: () => void }) {
         loop={false}
         width={SCREEN_WIDTH - 48 * width}
         height={520 * height}
-        data={onboardingData}
+        data={data}
         onSnapToItem={setCurrentIndex}
         renderItem={({ item }) => (
           <SlideContainer>
@@ -39,7 +51,7 @@ export default function OnBoarding({ onClose }: { onClose: () => void }) {
       />
 
       <IndicatorContainer>
-        {onboardingData.map((_, index) => (
+        {data.map((_, index) => (
           <Dot key={index} isActive={index === currentIndex} />
         ))}
       </IndicatorContainer>

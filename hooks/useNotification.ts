@@ -5,6 +5,7 @@ import messaging, {
 import { Platform } from 'react-native';
 import { router, type Href } from 'expo-router';
 import { requestNotificationPermission } from './usePushNotification';
+import { useInAppNotification } from '@/components/InAppNotificationProvider';
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   console.log('[FCM][bg]', summarize(remoteMessage));
@@ -59,14 +60,26 @@ function navigateFromMessage(msg: FirebaseMessagingTypes.RemoteMessage) {
 }
 
 export default function NotificationInitializer() {
+  const { show } = useInAppNotification();
+
   useEffect(() => {
     // 권한/토큰
     requestNotificationPermission();
 
-    // 1) 포그라운드 수신(로그용)
+    // 1) 포그라운드 수신
     const unsubMsg = messaging().onMessage(async (m) => {
-      console.log('[FCM]', summarize(m));
-      // UX상 즉시 화면 이동은 보통 지양 (원하면 여기서도 navigateFromMessage(m) 호출 가능)
+      console.log('[FCM][fg]', {
+        title: m.notification?.title,
+        body: m.notification?.body,
+        data: m.data,
+      });
+
+      show({
+        title: m.notification?.title ?? '알림',
+        body: m.notification?.body ?? '',
+        data: m.data ?? {},
+        duration: 5000,
+      });
     });
 
     // 2) 알림 "탭"해서 앱 열림(백→포그라운드)

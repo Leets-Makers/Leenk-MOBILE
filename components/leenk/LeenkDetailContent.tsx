@@ -1,4 +1,5 @@
 import {
+  CheckerIcon,
   ClockIcon,
   LocateIcon,
   PeopleIcon,
@@ -14,11 +15,13 @@ import {
   width,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import { formatMonthDayHour, formatRelativeTime } from '@/utils/format-date';
 import { TimeText } from '@/components/leenk/LeenkListItem';
 import { LeenkDetail } from '@/types/leenk';
+import { Image } from 'expo-image';
+import { router } from 'expo-router';
 
 interface Props {
   data: LeenkDetail;
@@ -35,55 +38,82 @@ export default function LeenkContentSection({
 }: Props) {
   return (
     <Container showsVerticalScrollIndicator={false}>
-      <TitleRow>
-        <Title>{data.title}</Title>
-        {/* <ShareButton onPress={onShare}>
-          <ShareIcon width={24 * width} />
-        </ShareButton> */}
-      </TitleRow>
+      <ImageContainer>
+        {data.mediaUrl ? (
+          <Image
+            source={{ uri: data.mediaUrl }}
+            style={StyleSheet.absoluteFillObject}
+            contentFit="cover"
+          />
+        ) : (
+          <CheckerWrapper>
+            <CheckerIcon width="100%" height="100%" />
+          </CheckerWrapper>
+        )}
+      </ImageContainer>
 
-      <RowWrapper>
-        <ProfileImageWithFallback uri={data.author.profileImage} size={24} />
-        <TimeText style={{ marginLeft: width * 8 }}>
-          {data.author.name}・{formatRelativeTime(data.createdAt)}
-        </TimeText>
-      </RowWrapper>
+      <Inner>
+        <TitleRow>
+          <Title>{data.title}</Title>
+        </TitleRow>
 
-      <Line />
+        <RowWrapper>
+          <Pressable
+            onPress={() => {
+              router.push(`/users/${data.author.userId}`);
+            }}
+          >
+            <ProfileImageWithFallback
+              uri={data.author.profileImage}
+              size={24}
+            />
+          </Pressable>
 
-      <RowWrapper>
-        <PeopleIcon width={width * 16} />
-        <TimeText>
-          {data.currentParticipants}/{data.maxParticipants}명
-        </TimeText>
-        <Pressable onPress={onParticipants}>
-          <RightArrowIcon width={width * 16} />
-        </Pressable>
-      </RowWrapper>
+          <TimeText style={{ marginLeft: width * 8 }}>
+            {data.author.name}
+            {''}・{''}
+            {formatRelativeTime(data.createdAt)}
+          </TimeText>
+        </RowWrapper>
 
-      <RowWrapper>
-        <LocateIcon width={width * 16} />
-        <TimeText>{data.placeName}</TimeText>
-      </RowWrapper>
+        <Line />
 
-      <RowWrapper>
-        <ClockIcon width={width * 16} />
-        <TimeText>{formatMonthDayHour(data.startTime)}</TimeText>
-      </RowWrapper>
+        <RowWrapper onPress={onParticipants}>
+          <PeopleIcon width={width * 16} />
+          <TimeText>
+            {data.currentParticipants}/{data.maxParticipants}명
+          </TimeText>
+          <Pressable>
+            <RightArrowIcon width={width * 16} />
+          </Pressable>
+        </RowWrapper>
 
-      <ContentWrapper $insetBottom={insetBottom}>
-        <ContentText>{data.content}</ContentText>
-      </ContentWrapper>
+        <RowWrapper>
+          <LocateIcon width={width * 16} />
+          <TimeText>{data.placeName}</TimeText>
+        </RowWrapper>
+
+        <RowWrapper>
+          <ClockIcon width={width * 16} />
+          <TimeText>{formatMonthDayHour(data.startTime)}</TimeText>
+        </RowWrapper>
+
+        <ContentWrapper $insetBottom={insetBottom}>
+          <ContentText>{data.content}</ContentText>
+        </ContentWrapper>
+      </Inner>
     </Container>
   );
 }
 
 const Container = styled.ScrollView`
   flex: 1;
+`;
+
+const Inner = styled.View`
   padding-horizontal: ${width * 16}px;
   padding-top: ${height * 16}px;
 `;
-
 const TitleRow = styled.View`
   position: relative;
 `;
@@ -109,10 +139,10 @@ const ShareButton = styled.Pressable`
   justify-content: center;
 `;
 
-const RowWrapper = styled.View`
+const RowWrapper = styled.Pressable`
   flex-direction: row;
   align-items: center;
-  margin-top: ${12 * height}px;
+  margin-top: ${8 * height}px;
 `;
 
 const Line = styled.View`
@@ -121,7 +151,7 @@ const Line = styled.View`
   margin-top: ${16 * height}px;
 `;
 
-const ContentWrapper = styled.ScrollView<{ $insetBottom: number }>`
+const ContentWrapper = styled.View<{ $insetBottom: number }>`
   padding-bottom: ${({ $insetBottom }) => $insetBottom + 100 * height}px;
 `;
 
@@ -131,4 +161,22 @@ const ContentText = styled.Text`
   color: ${colors.text[1]};
   line-height: ${lineHeight.m};
   font-size: ${fontSize.md};
+`;
+
+const ImageContainer = styled.View`
+  width: 100%;
+  height: ${height * 375}px;
+  position: relative;
+  overflow: hidden;
+`;
+
+const CheckerWrapper = styled.View`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.bg[2]};
 `;
