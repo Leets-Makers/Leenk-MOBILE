@@ -77,7 +77,11 @@ function RootLayoutNav() {
   const pathname = usePathname();
 
   // 일부 페이지는 상단 SafeAreaView 배경을 제외하기 위한 패턴
-  const excludeSafeAreaPages = ['/feed/write', /^\/feed\/[^/]+$/];
+  const excludeSafeAreaPages = [
+    '/feed/write',
+    /^\/feed\/[^/]+$/,
+    /^\/leenk\/[^/]+$/,
+  ];
   const isExcluded = excludeSafeAreaPages.some((pattern) =>
     pattern instanceof RegExp ? pattern.test(pathname) : pattern === pathname,
   );
