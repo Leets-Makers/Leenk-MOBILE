@@ -105,6 +105,12 @@ export function InAppNotificationProvider({
     [hide],
   );
 
+  React.useEffect(() => {
+    return () => {
+      clearTimer();
+    };
+  }, []);
+
   const onOpen = useCallback(() => {
     if (payload?.data) navigateFromData(payload.data);
     hide();

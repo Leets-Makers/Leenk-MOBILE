@@ -72,7 +72,7 @@ export default function LeenkContentSection({
           <TimeText>
             {data.currentParticipants}/{data.maxParticipants}명
           </TimeText>
-          <Pressable onPress={onParticipants}>
+          <Pressable>
             <RightArrowIcon width={width * 16} />
           </Pressable>
         </RowWrapper>
@@ -153,14 +153,22 @@ const ContentText = styled.Text`
 `;
 
 const ImageContainer = styled.View`
-  ${StyleSheet.absoluteFillObject};
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: ${height * 375}px;
   position: relative;
 `;
 
 const CheckerWrapper = styled.View`
-  ${StyleSheet.absoluteFillObject};
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   justify-content: center;
   align-items: center;
   background-color: ${colors.bg[2]};

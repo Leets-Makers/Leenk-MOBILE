@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import { height, radius, SCREEN_HEIGHT, width } from '@/theme/globalStyles';
 import { OnBoarding } from '@/components';
 import colors from '@/theme/color';
+import { Overlay } from './PopupModal';
 
 interface Props {
   visible: boolean;
@@ -35,7 +36,12 @@ export default function OnBoardingModal({
   }, [visible]);
 
   return (
-    <Modal transparent visible={visible} animationType="none">
+    <Modal
+      transparent
+      visible={visible}
+      animationType="none"
+      onRequestClose={onClose}
+    >
       <Overlay>
         <Container>
           <AnimatedContent style={{ transform: [{ translateY }] }}>
@@ -46,15 +52,6 @@ export default function OnBoardingModal({
     </Modal>
   );
 }
-
-const Overlay = styled.View`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
 
 const Container = styled.View`
   flex: 1;
