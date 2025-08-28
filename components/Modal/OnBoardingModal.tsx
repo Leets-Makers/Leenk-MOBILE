@@ -8,9 +8,14 @@ import colors from '@/theme/color';
 interface Props {
   visible: boolean;
   onClose: () => void;
+  isLeenk?: boolean;
 }
 
-export default function OnBoardingModal({ visible, onClose }: Props) {
+export default function OnBoardingModal({
+  visible,
+  onClose,
+  isLeenk = false,
+}: Props) {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   useEffect(() => {
@@ -31,14 +36,25 @@ export default function OnBoardingModal({ visible, onClose }: Props) {
 
   return (
     <Modal transparent visible={visible} animationType="none">
-      <Container>
-        <AnimatedContent style={{ transform: [{ translateY }] }}>
-          <OnBoarding onClose={onClose} />
-        </AnimatedContent>
-      </Container>
+      <Overlay>
+        <Container>
+          <AnimatedContent style={{ transform: [{ translateY }] }}>
+            <OnBoarding onClose={onClose} isLeenk={isLeenk} />
+          </AnimatedContent>
+        </Container>
+      </Overlay>
     </Modal>
   );
 }
+
+const Overlay = styled.View`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
 
 const Container = styled.View`
   flex: 1;

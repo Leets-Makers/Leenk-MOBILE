@@ -14,7 +14,7 @@ import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Share } from 'react-native';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
 import LeenkBottomButtonSection from '@/components/leenk/LeenkDetailBottomButton';
 
@@ -30,6 +30,8 @@ import {
 import LeenkDetailModals from '@/components/leenk/LeenkDetailModals';
 import * as Linking from 'expo-linking';
 import * as Clipboard from 'expo-clipboard';
+import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
+import OnBoardingModal from '@/components/Modal/OnBoardingModal';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
@@ -48,6 +50,15 @@ export default function LeenkDetailPage() {
   const [pendingAction, setPendingAction] = useState<null | 'close' | 'finish'>(
     null,
   );
+
+  const firstLaunch = useDetailFirstLaunch();
+  const [showOnBoarding, setShowOnBoarding] = useState(false);
+
+  useEffect(() => {
+    if (firstLaunch === true) {
+      setShowOnBoarding(true);
+    }
+  }, [firstLaunch]);
 
   // 부분 패치 헬퍼
   const patchDetail = useCallback((patch: Partial<LeenkDetail>) => {
@@ -336,6 +347,14 @@ export default function LeenkDetailPage() {
         onConfirmClose={() => handleLeenkClose(leenkDetail.id)}
         onConfirmFinish={() => handleLeenkFinish(leenkDetail.id)}
       />
+      {/* 온보딩 */}
+      {showOnBoarding && (
+        <OnBoardingModal
+          isLeenk
+          visible={showOnBoarding}
+          onClose={() => setShowOnBoarding(false)}
+        />
+      )}
     </Container>
   );
 }
