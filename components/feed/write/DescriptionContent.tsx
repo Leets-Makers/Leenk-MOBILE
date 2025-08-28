@@ -26,6 +26,7 @@ export default function DescriptionContent({
           maxLength={100}
           value={value}
           onChangeText={onChange}
+          textFontKey="Bold"
         />
       </View>
     );

@@ -22,6 +22,9 @@ import PopupModal from '@/components/Modal/PopupModal';
 import Loading from '@/components/common/Loading';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import OnBoarding from '@/components/OnBoarding';
+import LeenkDetailModals from '@/components/leenk/LeenkDetailModals';
+import LeenkListItem from '@/components/leenk/LeenkListItem';
+
 export {
   CustomButton,
   Input,
@@ -47,4 +50,6 @@ export {
   Loading,
   BottomSheetModal,
   OnBoarding,
+  LeenkDetailModals,
+  LeenkListItem,
 };

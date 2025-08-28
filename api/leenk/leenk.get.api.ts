@@ -5,6 +5,9 @@ import {
 } from '@/types/leenk';
 import api from '@/api/api';
 import { ApiResponse } from '@/api/api-type';
+import { Pageable } from '@/types/pageable';
+
+type OtherUserLeenkListApi = LeenkListResponse & { pageable: Pageable };
 
 // 링크 전체 조회
 export const getLeenkList = async (
@@ -44,6 +47,21 @@ export const getMyLeenkList = async (pageNumber: number, pageSize: number) => {
   //   console.log('참여한 링크 조회:', res.data);
   // }
 
+  return res.data.data;
+};
+
+// 다른 유저가 참여한 링크 조회
+export const getOtherUserLeenkList = async (
+  userId: number,
+  pageNumber: number,
+  pageSize: number,
+): Promise<OtherUserLeenkListApi> => {
+  const res = await api.get<ApiResponse<OtherUserLeenkListApi>>(
+    `/leenks/participated/users/${userId}`,
+    { params: { pageNumber, pageSize } },
+  );
+  if (__DEV__)
+    console.log(`유저 ${userId}가 참여한 링크 목록 조회 : `, res.data);
   return res.data.data;
 };
 

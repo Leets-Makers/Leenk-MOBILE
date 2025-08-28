@@ -15,7 +15,7 @@ import MemberBadgeList from '@/components/feed/MemberBadgeList';
 import { height, width } from '@/theme/globalStyles';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getAllUsers } from '@/api/feed/feed.api';
-import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
+import { FEED_PADDING } from '@/constants';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
 import {

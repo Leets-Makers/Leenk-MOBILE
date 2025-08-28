@@ -97,10 +97,15 @@ export default function MyPage() {
           });
         }}
       />
-      {/* <MyPageButton
+      <MyPageButton
         text="참여한 모임"
-        onPress={() => router.push('/account/my-leenk')}
-      /> */}
+        onPress={() =>
+          router.push({
+            pathname: '/users/leenk',
+            params: { userId: id },
+          })
+        }
+      />
       {!isMyProfile && (
         <MenuModal
           visible={modalType === 'menu'}
@@ -132,5 +137,5 @@ const Container = styled.View`
   align-items: center;
   background-color: ${colors.bg[2]};
   gap: ${13 * height}px;
-  padding-horizontal: ${20 * width}px;
+  padding: 0 ${20 * width}px;
 `;

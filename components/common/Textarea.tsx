@@ -14,6 +14,7 @@ interface TextareaProps extends TextInputProps {
   maxHeight?: number;
   isRequired?: boolean;
   fontSizeKey?: keyof typeof fontSize;
+  textFontKey?: keyof typeof fonts;
   accessoryID?: string;
 }
 
@@ -29,6 +30,7 @@ export default function Textarea({
   isRequired = false,
   onChangeText,
   fontSizeKey = 'md',
+  textFontKey = 'Regular',
   accessoryID,
   ...props
 }: TextareaProps) {
@@ -56,6 +58,7 @@ export default function Textarea({
           maxHeight={maxHeight}
           onChangeText={onChangeText}
           fontSizeKey={fontSizeKey}
+          fontFamilyKey={textFontKey}
           onFocus={(e) => {
             setFocused(true);
             props.onFocus?.(e);
@@ -99,6 +102,7 @@ const StyledTextarea = styled.TextInput<{
   minHeight?: number;
   maxHeight?: number;
   fontSizeKey: keyof typeof fontSize;
+  fontFamilyKey: keyof typeof fonts;
 }>`
   width: 100%;
   min-height: ${({ minHeight }) =>
@@ -106,7 +110,7 @@ const StyledTextarea = styled.TextInput<{
   max-height: ${({ maxHeight }) =>
     maxHeight ? `${maxHeight * height}px` : `${85 * height}px`};
   font-size: ${({ fontSizeKey }) => fontSize[fontSizeKey]}px;
-  font-family: ${fonts.Bold};
+  font-family: ${({ fontFamilyKey }) => fonts[fontFamilyKey]};
   color: ${({ isDark }) => (isDark ? colors.white : colors.black)};
   text-align-vertical: top;
 `;
