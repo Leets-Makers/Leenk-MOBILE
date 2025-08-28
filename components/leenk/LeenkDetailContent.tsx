@@ -59,7 +59,9 @@ export default function LeenkContentSection({
         <RowWrapper>
           <ProfileImageWithFallback uri={data.author.profileImage} size={24} />
           <TimeText style={{ marginLeft: width * 8 }}>
-            {data.author.name}&nbsp;・&nbsp;{formatRelativeTime(data.createdAt)}
+            {data.author.name}
+            {''}・{''}
+            {formatRelativeTime(data.createdAt)}
           </TimeText>
         </RowWrapper>
 

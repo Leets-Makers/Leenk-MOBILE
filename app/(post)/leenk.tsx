@@ -18,7 +18,6 @@ import {
   fontSize,
   height,
   lineHeight,
-  radius,
   width,
 } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -34,9 +33,6 @@ import { getPresignedUrl } from '@/api/file/s3Upload';
 import { useToastStore } from '@/stores/toastStore';
 import { updateLeenk } from '@/api/leenk/leenk.patch.api';
 import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
-import { Platform } from 'react-native';
-import Animated from 'react-native-reanimated';
-import { LeenkIcon } from '@/assets';
 
 export default function PostLeenkPage() {
   const router = useRouter();
@@ -216,16 +212,6 @@ export default function PostLeenkPage() {
       extraScrollHeight={180 * height}
       keyboardShouldPersistTaps="handled"
     >
-      <CardWrap>
-        <Card accessibilityRole="button">
-          <IconBadge>
-            <LeenkIcon stroke={colors.primary} width={16} height={16} />
-          </IconBadge>
-          <TextWrap>
-            <BannerText numberOfLines={1}>[어어]여기로 와</BannerText>
-          </TextWrap>
-        </Card>
-      </CardWrap>
       <ScrollView
         style={{ flex: 1, backgroundColor: colors.bg[2] }}
         contentContainerStyle={{
@@ -327,39 +313,6 @@ export default function PostLeenkPage() {
     </KeyboardAwareScrollView>
   );
 }
-
-const CardWrap = styled(Animated.View)`
-  padding: 8px 12px 0 12px;
-`;
-
-const Card = styled.Pressable`
-  flex-direction: row;
-  align-items: center;
-  padding: ${9 * height}px ${8 * width}px;
-  border-radius: ${radius.sm}px;
-
-  background-color: #0000004d;
-`;
-
-const IconBadge = styled.View`
-  width: ${16 * width}px;
-  height: ${16 * width}px;
-  border-radius: 8px;
-  background-color: ${colors.white};
-  align-items: center;
-  justify-content: center;
-  margin-right: ${12 * width};
-`;
-
-const TextWrap = styled.View`
-  flex: 1;
-`;
-
-const BannerText = styled.Text`
-  font-size: 14px;
-  font-weight: ${Platform.select({ ios: '600', android: '700' })};
-  color: ${colors.white};
-`;
 
 const Row = styled.View`
   flex-direction: row;
