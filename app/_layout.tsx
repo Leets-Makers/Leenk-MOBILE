@@ -49,14 +49,16 @@ export default function RootLayout() {
   const { setUserInfo } = useUserStore();
 
   // 포그라운드에서도 배너 보이도록
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
-  });
+  useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  }, []);
 
   useEffect(() => {
     const autoLogin = async () => {

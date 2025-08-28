@@ -146,7 +146,7 @@ export function InAppNotificationProvider({
                 <IconBadge>
                   <LogoNotify width={24 * width} />
                 </IconBadge>
-                <BannerText numberOfLines={1}>{bannerText}</BannerText>
+                <BannerText>{bannerText}</BannerText>
               </Card>
             </CardWrap>
           </SafeAreaView>
