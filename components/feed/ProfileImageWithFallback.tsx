@@ -5,14 +5,9 @@ import { DefaultProfileImage } from '@/assets';
 interface Props {
   uri?: string | null;
   size?: number;
-  isDark?: boolean;
 }
 
-export default function ProfileImageWithFallback({
-  uri,
-  size = 40,
-  isDark = true,
-}: Props) {
+export default function ProfileImageWithFallback({ uri, size = 40 }: Props) {
   const [error, setError] = useState(false);
   useEffect(() => {
     setError(false);
