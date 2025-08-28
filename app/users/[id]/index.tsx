@@ -99,7 +99,12 @@ export default function MyPage() {
       />
       <MyPageButton
         text="참여한 모임"
-        onPress={() => router.push('/account/my-leenk')}
+        onPress={() =>
+          router.push({
+            pathname: '/users/leenk',
+            params: { userId: id },
+          })
+        }
       />
       {!isMyProfile && (
         <MenuModal
