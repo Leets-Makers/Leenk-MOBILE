@@ -33,7 +33,6 @@ import { getPresignedUrl } from '@/api/file/s3Upload';
 import { useToastStore } from '@/stores/toastStore';
 import { updateLeenk } from '@/api/leenk/leenk.patch.api';
 import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
-import { InteractionManager } from 'react-native';
 
 export default function PostLeenkPage() {
   const router = useRouter();
