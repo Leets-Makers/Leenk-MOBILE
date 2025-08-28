@@ -65,7 +65,7 @@ export default function LeenkContentSection({
 
         <Line />
 
-        <RowWrapper>
+        <RowWrapper onPress={onParticipants}>
           <PeopleIcon width={width * 16} />
           <TimeText>
             {data.currentParticipants}/{data.maxParticipants}명
@@ -126,7 +126,7 @@ const ShareButton = styled.Pressable`
   justify-content: center;
 `;
 
-const RowWrapper = styled.View`
+const RowWrapper = styled.Pressable`
   flex-direction: row;
   align-items: center;
   margin-top: ${8 * height}px;

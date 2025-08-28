@@ -163,7 +163,7 @@ const Overlay = styled(Animated.View)`
 `;
 
 const CardWrap = styled(Animated.View)`
-  padding: 44px 20px 0 20px;
+  padding: 88px 20px 0 20px;
 `;
 
 const Card = styled.Pressable`

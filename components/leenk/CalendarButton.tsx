@@ -88,7 +88,7 @@ export default function CalendarButton({
         <DatePicker
           mode="calendar"
           minimumDate={minDateStr}
-          onSelectedChange={handleSelectDate} // YYYY/MM/DD
+          onSelectedChange={handleSelectDate}
           onDateChange={() => {}}
           onMonthYearChange={() => {}}
           options={{
