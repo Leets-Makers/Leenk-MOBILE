@@ -21,6 +21,7 @@ import { formatMonthDayHour, formatRelativeTime } from '@/utils/format-date';
 import { TimeText } from '@/components/leenk/LeenkListItem';
 import { LeenkDetail } from '@/types/leenk';
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 
 interface Props {
   data: LeenkDetail;
@@ -57,7 +58,17 @@ export default function LeenkContentSection({
         </TitleRow>
 
         <RowWrapper>
-          <ProfileImageWithFallback uri={data.author.profileImage} size={24} />
+          <Pressable
+            onPress={() => {
+              router.push(`/users/${data.author.userId}`);
+            }}
+          >
+            <ProfileImageWithFallback
+              uri={data.author.profileImage}
+              size={24}
+            />
+          </Pressable>
+
           <TimeText style={{ marginLeft: width * 8 }}>
             {data.author.name}
             {''}・{''}

@@ -55,7 +55,6 @@ export default function LeenkListItem({ item }: Props) {
               <ProfileImageWithFallback
                 uri={item.author.profileImage}
                 size={20}
-                isDark
               />
               <NameText>{item.author.name}</NameText>
             </BottomRow>
