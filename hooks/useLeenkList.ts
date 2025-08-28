@@ -5,7 +5,7 @@ import { getOtherUserLeenkList } from '@/api/leenk/leenk.get.api';
 import useLeenkInfiniteScroll from './useLeenkInfiniteScroll';
 import { Leenk } from '@/types/leenk';
 
-type LeenkListType = 'userLeenk';
+type LeenkListType = 'userLeenk'; // TODO: all, myLeenk 추가해서 리팩토링
 
 export interface UseLeenkListOptions {
   type: LeenkListType;

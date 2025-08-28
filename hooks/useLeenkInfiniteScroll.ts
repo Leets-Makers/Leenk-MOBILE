@@ -8,7 +8,7 @@ interface UseLeenkInfiniteScrollProps<T> {
   ) => Promise<PageableResponse<T> & { totalReactionCount?: number }>;
   initialPageNumber?: number;
   pageSize?: number;
-  enabled?: boolean;
+  enabled?: boolean; // 조건부 활성화
 }
 
 export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
@@ -24,33 +24,34 @@ export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
   const [totalReactionCount, setTotalReactionCount] = useState(0);
   const [hasError, setHasError] = useState(false);
 
-  const nextPageRef = useRef<number>(initialPageNumber);
+  // 에러 후 자동 재호출 차단 플래그
   const blockedRef = useRef<boolean>(false);
+  const inFlightRef = useRef<boolean>(false);
 
   const loadMore = useCallback(async () => {
     if (!enabled) return;
+    if (inFlightRef.current) return;
     if (isLoading) return;
     if (blockedRef.current) return;
     if (pageable && !pageable.hasNext) return;
 
     setIsLoading(true);
+    inFlightRef.current = true;
     try {
       const pageNumber = pageable ? pageable.pageNumber + 1 : initialPageNumber;
       const res = await fetchFunction(pageNumber, pageSize);
 
       setData((prev) => {
-        const newData = res.data.filter(
+        const newItems = res.data.filter(
           (item) => !prev.some((p) => p.leenkId === item.leenkId),
         );
-        return [...prev, ...newData];
+        return [...prev, ...newItems];
       });
 
       setPageable(res.pageable);
       if (res.totalReactionCount !== undefined) {
         setTotalReactionCount(res.totalReactionCount);
       }
-
-      nextPageRef.current = pageNumber + 1;
       setHasError(false);
     } catch (error) {
       blockedRef.current = true;
@@ -58,6 +59,7 @@ export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
       console.error('무한 스크롤 에러:', error);
     } finally {
       setIsLoading(false);
+      inFlightRef.current = false;
     }
   }, [
     enabled,
@@ -70,10 +72,12 @@ export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
 
   const refresh = useCallback(async () => {
     if (!enabled) return;
-    setIsRefreshing(true);
-    try {
-      blockedRef.current = false;
 
+    setIsRefreshing(true);
+    blockedRef.current = false;
+    inFlightRef.current = false;
+
+    try {
       const res = await fetchFunction(initialPageNumber, pageSize);
       setData(res.data);
       setPageable(res.pageable);
@@ -82,6 +86,7 @@ export default function useLeenkInfiniteScroll<T extends { leenkId: number }>({
       }
       setHasError(false);
     } catch (error) {
+      setHasError(true);
       console.error('무한 스크롤 Refresh 에러:', error);
     } finally {
       setIsRefreshing(false);
