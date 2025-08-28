@@ -72,7 +72,7 @@ export default function OtherUserProfilePage() {
   );
 }
 
-const Content = styled.View`
+export const Content = styled.View`
   flex: 1;
   margin-top: ${8 * height}px;
 `;

@@ -47,6 +47,28 @@ export const getMyLeenkList = async (pageNumber: number, pageSize: number) => {
   return res.data.data;
 };
 
+// 다른 유저가 참여한 링크 조회
+export const getOtherUserLeenkList = async (
+  userId: number,
+  pageNumber: number,
+  pageSize: number,
+) => {
+  const res = await api.get<ApiResponse<LeenkListResponse>>(
+    `/leenks/participated/users/${userId}`,
+    {
+      params: {
+        pageNumber,
+        pageSize,
+      },
+    },
+  );
+
+  if (__DEV__)
+    console.log(`유저 ${userId}가 참여한 링크 목록 조회 : `, res.data);
+
+  return res.data.data;
+};
+
 // 링크 상세 조회
 export const getLeenkDetail = async (leenkId: number) => {
   const res = await api.get<ApiResponse<LeenkDetail>>(`/leenks/${leenkId}`);

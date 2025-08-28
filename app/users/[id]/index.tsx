@@ -132,5 +132,5 @@ const Container = styled.View`
   align-items: center;
   background-color: ${colors.bg[2]};
   gap: ${13 * height}px;
-  padding-horizontal: ${20 * width}px;
+  padding: 0 ${20 * width}px;
 `;
