@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/native';
 import { width, height } from '@/theme/globalStyles';
-import { Header, Loading } from '@/components';
+import { CustomButton, Header, Loading } from '@/components';
 import TabMenu from '@/components/common/TabMenu';
 import LeenkListItem from '@/components/leenk/LeenkListItem';
 import { ContainerWithNoPadding } from '../account/my-feed';
@@ -13,6 +13,11 @@ import { Leenk } from '@/types/leenk';
 import { useUserStore } from '@/stores/userStore';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useFocusEffect } from 'expo-router';
+
+import BottomSheetModal from '@/components/Modal/BottomSheetModal';
+import { SubText, TitleText } from '@/components/OnBoarding';
+import { CongratsIcon } from '@/assets';
+import useFirstLaunch from '@/hooks/useFirstLaunch';
 
 const FOOTER_SPACER = 10 * height;
 const PAGE_SIZE = 6;
@@ -32,8 +37,12 @@ export default function LeenkPage() {
   const didMountRef = useRef(false);
   const listRef = useRef<import('react-native').FlatList<Leenk>>(null);
 
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
+
+  const firstLaunch = useFirstLaunch();
 
   useEffect(() => {
     refetch();
@@ -44,6 +53,13 @@ export default function LeenkPage() {
       setUserInfo(fetchedUserInfo);
     }
   }, [fetchedUserInfo, userInfo, setUserInfo]);
+
+  useEffect(() => {
+    if (firstLaunch === true) {
+      // 처음 방문이면 모달 표시
+      setShowWelcomeModal(true);
+    }
+  }, [firstLaunch]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -150,6 +166,29 @@ export default function LeenkPage() {
             />
           }
         />
+      )}
+      {showWelcomeModal && (
+        <BottomSheetModal visible={true}>
+          <TitleText>Leenk에 온 걸 환영해!</TitleText>
+          <SubText>{'앞으로 신나는 링크 활동 부탁할게 :)'}</SubText>
+          <CongratsIcon
+            height={200}
+            width={200}
+            style={{
+              alignSelf: 'center',
+              marginTop: 16 * height,
+              marginBottom: 40 * height,
+            }}
+          />
+          <CustomButton
+            fullWidth
+            onPress={() => {
+              setShowWelcomeModal(false);
+            }}
+          >
+            나도 잘 부탁해
+          </CustomButton>
+        </BottomSheetModal>
       )}
     </ContainerWithNoPadding>
   );

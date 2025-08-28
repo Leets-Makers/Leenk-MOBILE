@@ -34,8 +34,8 @@ export default function NotificationListItem({
         const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{firstReaction?.body ?? '알 수 없는 내용'}</TitleText>
-            <SubText>{firstReaction?.name ?? '알 수 없는 이름'}</SubText>
+            <TitleText>{firstReaction?.body ?? '피드 공감'}</TitleText>
+            <SubText>{firstReaction?.name ?? '유저 이름'}</SubText>
             {reactions.length > 1 && (
               <MoreTextWrapper onPress={onMorePress}>
                 <MoreText>{reactions.length - 1}개 더보기</MoreText>
@@ -53,7 +53,7 @@ export default function NotificationListItem({
         const firstReaction = reactions[0];
         return (
           <>
-            <TitleText>{firstReaction?.body ?? '알 수 없는 내용'}</TitleText>
+            <TitleText>{firstReaction?.body ?? '피드 공감 수'}</TitleText>
             {reactions.length > 1 && (
               <MoreTextWrapper onPress={onMorePress}>
                 <MoreText>{reactions.length - 1}개 더보기</MoreText>
@@ -67,7 +67,7 @@ export default function NotificationListItem({
           <>
             <TitleText>{item.content.body ?? '새로운 피드'}</TitleText>
             <SubText>
-              &#91;{item.content.authorName ?? '내용 없음'}&#93;
+              &#91;{item.content.authorName ?? '유저 이름'}&#93;
             </SubText>
           </>
         );
@@ -75,7 +75,10 @@ export default function NotificationListItem({
       case 'FEED_TAG': {
         return (
           <>
-            <TitleText>{item.content.body ?? '내용 없음'}</TitleText>
+            <TitleText>{item.content.body ?? '피드 태그'}</TitleText>
+            <SubText>
+              &#91;{item.content.authorName ?? '유저 이름'}&#93;
+            </SubText>
           </>
         );
       }
