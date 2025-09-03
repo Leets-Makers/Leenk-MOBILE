@@ -13,7 +13,10 @@ import {
 import styled from 'styled-components/native';
 
 import { useParticipantStore } from '@/stores/participantStore';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
@@ -150,7 +153,7 @@ export default function ParticipantsList() {
   );
 }
 
-const Container = styled.View`
+const Container = styled(SafeAreaView)`
   flex: 1;
   padding-horizontal: ${CONTAINER_PADDING};
   background-color: ${colors.white};
