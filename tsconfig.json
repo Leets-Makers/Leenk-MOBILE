@@ -1,16 +1,21 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
-    "noImplicitAny": false,
-    "strict": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@app/*": ["app/*"], // app 디렉토리
-      "@assets/*": ["assets/*"], // assets 디렉토리
-      "@components/*": ["components/*"], // components 디렉토리
-      "@constants/*": ["constants/*"] // constants 디렉토리
-    }
+      "@app/*": ["app/*"],
+      "@assets/*": ["assets/*"],
+      "@components/*": ["components/*"],
+      "@constants/*": ["constants/*"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "types": ["react", "react-native", "jest"]
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

@@ -1,6 +1,11 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.leetsmakers.leenk">
+
+  <!-- 권한 (필요 최소만 유지 권장) -->
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+  <!-- targetSdk 35 기준 legacy 외부저장은 가급적 제거 권장 -->
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28" tools:replace="android:maxSdkVersion"/>
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
   <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
@@ -8,38 +13,85 @@
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+
+  <!-- 패키지 가시성: 카카오톡 탐지 -->
   <queries>
+    <!-- 기존 https VIEW 쿼리 유지 -->
     <intent>
       <action android:name="android.intent.action.VIEW"/>
       <category android:name="android.intent.category.BROWSABLE"/>
       <data android:scheme="https"/>
     </intent>
+    <!-- 카카오톡 패키지 -->
+    <package android:name="com.kakao.talk" />
   </queries>
-  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true" android:requestLegacyExternalStorage="true">
-    <meta-data android:name="com.kakao.sdk.AppKey" android:value="${EXPO_PUBLIC_NATIVE_APP_KEY}"/>
-    <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
+
+  <application
+      android:name=".MainApplication"
+      android:label="@string/app_name"
+      android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:allowBackup="true"
+      android:theme="@style/AppTheme"
+      android:supportsRtl="true"
+      android:requestLegacyExternalStorage="true">
+
+    <!-- Kakao SDK가 읽는 앱 키 -->
+    <meta-data
+        android:name="com.kakao.sdk.AppKey"
+        android:value="@string/kakao_native_app_key"/>
+
+    <!-- Expo Updates 메타데이터 유지 -->
+    <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
+    <meta-data android:name="expo.modules.updates.EXPO_SDK_VERSION" android:value="53.0.0"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
-    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
+    <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://exp.host/@jini921/Leenk"/>
+
+    <activity
+        android:name=".MainActivity"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:theme="@style/Theme.App.SplashScreen"
+        android:exported="true"
+        android:screenOrientation="portrait">
+
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
+
+      <!-- 기존 딥링크 스킴 유지 -->
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="leenk"/>
         <data android:scheme="exp+leenk"/>
+        <data android:scheme="com.leetsmakers.leenk"/>
+      </intent-filter>
+
+      <intent-filter tools:ignore="AppLinkUrlError" data-generated="true">
+        <action android:name="android.intent.action.VIEW"/>
+        <data android:scheme="leenk"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
-    <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity" android:exported="true">
+
+    <!-- Kakao Redirect 처리 액티비티 (SDK 포함되지만 명시해두면 확실) -->
+    <activity
+        android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:host="oauth" android:scheme="kakao256f44621022ddbf0acaea987d2956e9"/>
+        <!-- 스킴은 kakao + 앱키, host는 oauth -->
+        <data android:scheme="@string/kakao_scheme" android:host="oauth"/>
       </intent-filter>
     </activity>
+
   </application>
 </manifest>
