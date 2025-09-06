@@ -139,9 +139,7 @@ export default function FeedWritePage() {
     setIsUploading(true);
     try {
       // 생성 api 호출
-      console.log('피드 데이터: ', requestBodyCreate);
-      const res = await uploadFeed(requestBodyCreate);
-      console.log('[피드 업로드 성공]:', res);
+      await uploadFeed(requestBodyCreate);
 
       resetFeedWrite();
       didInitRef.current = false;
@@ -162,7 +160,7 @@ export default function FeedWritePage() {
     setIsModalOpen(false);
     setIsUploading(true);
     try {
-      if (__DEV__) console.log('수정 내용 : ', requestBodyEdit);
+      // if (__DEV__) console.log('수정 내용 : ', requestBodyEdit);
 
       const idNum = typeof feedId === 'string' ? Number(feedId) : NaN;
       if (Number.isNaN(idNum) || idNum <= 0) {

@@ -8,14 +8,11 @@ export type KakaoLoginResult =
 // Access Token 유효성 검증 (카카오 공식 API)
 const validateKakaoToken = async (accessToken: string) => {
   try {
-    const res = await axios.get(
-      'https://kapi.kakao.com/v1/user/access_token_info',
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    await axios.get('https://kapi.kakao.com/v1/user/access_token_info', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-    );
+    });
     // console.log('[2] 카카오 토큰 유효성 OK:', res.data);
   } catch (e: any) {
     // console.error('[2] 카카오 토큰 유효성 실패:', e.response?.data || e);

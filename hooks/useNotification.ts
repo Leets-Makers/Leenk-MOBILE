@@ -7,9 +7,9 @@ import { router, type Href } from 'expo-router';
 import { requestNotificationPermission } from './usePushNotification';
 import { useInAppNotification } from '@/components/InAppNotificationProvider';
 
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  console.log('[FCM][bg]', summarize(remoteMessage));
-});
+// messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+//   console.log('[FCM][bg]', summarize(remoteMessage));
+// });
 
 const ROUTES = {
   leenk: '/leenk/[id]' as const,
@@ -17,17 +17,17 @@ const ROUTES = {
 };
 
 // 전체 데이터 확인용 로그
-function summarize(msg: FirebaseMessagingTypes.RemoteMessage) {
-  return {
-    phase: 'log',
-    os: Platform.OS,
-    msgId: msg.messageId ?? null,
-    title: msg.notification?.title ?? null,
-    body: msg.notification?.body ?? null,
-    data: msg.data ?? null,
-    sentTime: msg.sentTime ?? null,
-  };
-}
+// function summarize(msg: FirebaseMessagingTypes.RemoteMessage) {
+//   return {
+//     phase: 'log',
+//     os: Platform.OS,
+//     msgId: msg.messageId ?? null,
+//     title: msg.notification?.title ?? null,
+//     body: msg.notification?.body ?? null,
+//     data: msg.data ?? null,
+//     sentTime: msg.sentTime ?? null,
+//   };
+// }
 
 // 받은 메시지 → 해당 화면으로 이동 (탭/냉시작에서만 호출)
 function navigateFromMessage(msg: FirebaseMessagingTypes.RemoteMessage) {
@@ -42,10 +42,10 @@ function navigateFromMessage(msg: FirebaseMessagingTypes.RemoteMessage) {
     pathRaw === 'leenks' || pathRaw === 'leenk' || pathRaw === 'link';
   const isFeed = pathRaw === 'feeds' || pathRaw === 'feed';
 
-  if (!id) {
-    console.log('[FCM] id가 없어서 상세로 이동할 수 없어요:', d);
-    return;
-  }
+  // if (!id) {
+  //   console.log('[FCM] id가 없어서 상세로 이동할 수 없어요:', d);
+  //   return;
+  // }
 
   if (isLeenk) {
     router.push({ pathname: ROUTES.leenk, params: { id } });
@@ -56,7 +56,7 @@ function navigateFromMessage(msg: FirebaseMessagingTypes.RemoteMessage) {
     return;
   }
 
-  console.log('[FCM] 알 수 없는 path:', pathRaw, d);
+  // console.log('[FCM] 알 수 없는 path:', pathRaw, d);
 }
 
 export default function NotificationInitializer() {
@@ -68,11 +68,11 @@ export default function NotificationInitializer() {
 
     // 1) 포그라운드 수신
     const unsubMsg = messaging().onMessage(async (m) => {
-      console.log('[FCM][fg]', {
-        title: m.notification?.title,
-        body: m.notification?.body,
-        data: m.data,
-      });
+      // console.log('[FCM][fg]', {
+      //   title: m.notification?.title,
+      //   body: m.notification?.body,
+      //   data: m.data,
+      // });
 
       show({
         title: m.notification?.title ?? '알림',
@@ -84,7 +84,7 @@ export default function NotificationInitializer() {
 
     // 2) 알림 "탭"해서 앱 열림(백→포그라운드)
     const unsubOpened = messaging().onNotificationOpenedApp((m) => {
-      console.log('[FCM][tap]', summarize(m));
+      // console.log('[FCM][tap]', summarize(m));
       navigateFromMessage(m);
     });
 
@@ -92,7 +92,7 @@ export default function NotificationInitializer() {
     (async () => {
       const initial = await messaging().getInitialNotification();
       if (initial) {
-        console.log('[FCM][cold]', summarize(initial));
+        // console.log('[FCM][cold]', summarize(initial));
         navigateFromMessage(initial);
       }
     })();

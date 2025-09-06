@@ -9,11 +9,10 @@ export const updateUserAgreement = async ({
   privacyPolicy: boolean;
 }) => {
   try {
-    const response = await api.patch('/users/agreement', {
+    await api.patch('/users/agreement', {
       termsService,
       privacyPolicy,
     });
-    console.log('updateUserAgreement: ', response.data);
   } catch (error: any) {
     console.error('updateUserAgreement 오류:', error.message);
     throw error;
@@ -27,10 +26,9 @@ export const updateKakaoTalkId = async ({
   kakaoTalkId: string;
 }) => {
   try {
-    const response = await api.patch('/users/me/kakao-talk-id', {
+    await api.patch('/users/me/kakao-talk-id', {
       kakaoTalkId,
     });
-    console.log('updateKakaoTalkId: ', response.data);
   } catch (error: any) {
     console.error('updateKakaoTalkId 오류:', error.message);
     throw error;
@@ -40,8 +38,7 @@ export const updateKakaoTalkId = async ({
 // MBTI 수정
 export const updateMbti = async ({ mbti }: { mbti: string }) => {
   try {
-    const response = await api.patch('/users/me/mbti', { mbti });
-    console.log('updateMbti: ', response.data);
+    await api.patch('/users/me/mbti', { mbti });
   } catch (error: any) {
     console.error('updateMbti 오류:', error.message);
     throw error;
@@ -55,10 +52,9 @@ export const updateIntroduction = async ({
   introduction: string;
 }) => {
   try {
-    const response = await api.patch('/users/me/introduction', {
+    await api.patch('/users/me/introduction', {
       introduction,
     });
-    console.log('updateIntroduction: ', response.data);
   } catch (error: any) {
     console.error('updateIntroduction 오류:', error.message);
     throw error;
@@ -72,10 +68,9 @@ export const updateProfileImage = async ({
   profileImage: string;
 }) => {
   try {
-    const response = await api.patch('/users/me/profile-image', {
+    await api.patch('/users/me/profile-image', {
       profileImage,
     });
-    console.log('updateProfileImage: ', response.data);
   } catch (error: any) {
     console.error('updateProfileImage 오류:', error.message);
     throw error;

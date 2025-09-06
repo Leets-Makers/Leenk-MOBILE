@@ -60,8 +60,8 @@ export const getOtherUserLeenkList = async (
     `/leenks/participated/users/${userId}`,
     { params: { pageNumber, pageSize } },
   );
-  if (__DEV__)
-    console.log(`유저 ${userId}가 참여한 링크 목록 조회 : `, res.data);
+  // if (__DEV__)
+  //   console.log(`유저 ${userId}가 참여한 링크 목록 조회 : `, res.data);
   return res.data.data;
 };
 
@@ -69,9 +69,9 @@ export const getOtherUserLeenkList = async (
 export const getLeenkDetail = async (leenkId: number) => {
   const res = await api.get<ApiResponse<LeenkDetail>>(`/leenks/${leenkId}`);
 
-  if (__DEV__) {
-    console.log(`링크 상세 조회(${leenkId}):`, res.data.data);
-  }
+  // if (__DEV__) {
+  //   console.log(`링크 상세 조회(${leenkId}):`, res.data.data);
+  // }
 
   return res.data.data;
 };
@@ -81,7 +81,7 @@ export const getLeenkParticipants = async (leenkId: number) => {
   const res = await api.get<ApiResponse<LeenkParticipantsData>>(
     `/leenks/${leenkId}/participants`,
   );
-  if (__DEV__)
-    console.log(`참여자 목록(${leenkId}):`, res.data.data.participants);
+  // if (__DEV__)
+  //   console.log(`참여자 목록(${leenkId}):`, res.data.data.participants);
   return res.data.data.participants;
 };

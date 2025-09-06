@@ -32,7 +32,6 @@ export const registerFcmToken = async () => {
   if (!fcmToken) return;
   try {
     await patchNotificationsToken(fcmToken);
-    console.log('FCM 토큰 서버 등록 성공');
   } catch (error) {
     console.error('FCM 토큰 서버 등록 실패:', error);
   }
@@ -105,7 +104,6 @@ export default function LandingPage() {
 
   const handleSignUp = () => {
     Linking.openURL(weethSiteURL);
-    console.log('새로 가입하기');
   };
 
   return (

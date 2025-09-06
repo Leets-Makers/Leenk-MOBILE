@@ -27,7 +27,7 @@ export default function SettingNotificationsPage() {
           newLeenkPost: !!data?.isNewLeenkNotify,
           leenkApplyRequest: !!data?.isLeenkStatusNotify,
         });
-        if (__DEV__) console.log('[알림 설정 불러오기]', data);
+        // if (__DEV__) console.log('[알림 설정 불러오기]', data);
       } catch (error) {
         if (__DEV__) console.error('알림 설정을 불러오지 못했습니다:', error);
       }

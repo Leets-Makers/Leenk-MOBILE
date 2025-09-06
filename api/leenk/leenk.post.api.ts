@@ -6,10 +6,10 @@ import { UpdateLeenkPayload } from '@/types/leenk';
 export const createLeenk = async (payload: UpdateLeenkPayload) => {
   const res = await api.post<ApiResponse<string>>(`/leenks`, payload);
 
-  if (__DEV__) {
-    console.log(`링크 게시물 생성 payload:`, payload);
-    console.log(`링크 게시물 생성 response:`, res.data);
-  }
+  // if (__DEV__) {
+  //   console.log(`링크 게시물 생성 payload:`, payload);
+  //   console.log(`링크 게시물 생성 response:`, res.data);
+  // }
   return res.data.data;
 };
 
@@ -22,10 +22,6 @@ export const reportLeenk = async (leenkId: number, report: string) => {
     },
   );
 
-  if (__DEV__) {
-    console.log(`링크 신고(${leenkId}):`, res.data.data);
-  }
-
   return res.data.data;
 };
 
@@ -35,10 +31,6 @@ export const participantLeenk = async (leenkId: number) => {
     `/leenks/${leenkId}/participant`,
   );
 
-  if (__DEV__) {
-    console.log(`링크 참여(${leenkId}):`, res.data.data);
-  }
-
   return res.data.data;
 };
 
@@ -46,20 +38,12 @@ export const participantLeenk = async (leenkId: number) => {
 export const finishLeenk = async (leenkId: number) => {
   const res = await api.post<ApiResponse<string>>(`/leenks/${leenkId}/finish`);
 
-  if (__DEV__) {
-    console.log(`링크 모임 종료(${leenkId}):`, res.data.data);
-  }
-
   return res.data.data;
 };
 
 // 링크 모집 종료
 export const closeLeenk = async (leenkId: number) => {
   const res = await api.post<ApiResponse<string>>(`/leenks/${leenkId}/close`);
-
-  if (__DEV__) {
-    console.log(`링크 모집 종료(${leenkId}):`, res.data.data);
-  }
 
   return res.data.data;
 };
