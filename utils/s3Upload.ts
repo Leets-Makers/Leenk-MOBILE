@@ -12,8 +12,6 @@ export const getPresignedUrl = async (
 ): Promise<PresignedUrlData[]> => {
   const fileNameParams = Array.isArray(fileNames) ? fileNames : [fileNames];
 
-  console.log('[getPresignedUrl] 요청 fileNames:', fileNameParams);
-
   try {
     const res = await api.get('/medias', {
       params: { fileName: fileNameParams },
@@ -21,7 +19,6 @@ export const getPresignedUrl = async (
         qs.stringify(params, { arrayFormat: 'repeat' }),
     });
 
-    console.log('[getPresignedUrl] 응답 데이터:', res.data.data);
     const responseData = res.data.data;
     if (!Array.isArray(responseData)) {
       throw new Error('서버 응답 형식이 올바르지 않습니다.');

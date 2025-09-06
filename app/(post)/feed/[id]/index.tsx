@@ -99,8 +99,6 @@ export default function FeedDetailPage() {
   });
 
   useEffect(() => {
-    console.log('firstLaunch', firstLaunch);
-
     if (firstLaunch === true) {
       setShowOnBoarding(true);
     }
@@ -113,7 +111,6 @@ export default function FeedDetailPage() {
       try {
         setIsLoading(true);
         const res = await getFeedDetail(Number(id));
-        console.log('res: ', res.linkedUser);
         setFeed(res);
       } catch (err: any) {
         console.error('피드 상세 조회 오류:', err);

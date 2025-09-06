@@ -188,7 +188,7 @@ export default function PostLeenkPage() {
         router.push('/(page)/leenk');
       }
     } catch (e: any) {
-      if (__DEV__) console.log('submit error:', e?.response ?? e);
+      // if (__DEV__) console.log('submit error:', e?.response ?? e);
       showToast(isEdit ? '수정에 실패했어.' : '등록에 실패했어.', 'error');
     } finally {
       setSubmitting(false);

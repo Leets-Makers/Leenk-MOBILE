@@ -15,11 +15,11 @@ export const saveAccessToken = async (token: string) => {
     return;
   }
   try {
-    if (__DEV__) {
-      console.log('[SecureStore] saveAccessToken 호출됨');
-      console.log('[SecureStore] token 타입:', typeof token);
-      console.log('[SecureStore] token 값:', token);
-    }
+    // if (__DEV__) {
+    //   console.log('[SecureStore] saveAccessToken 호출됨');
+    //   console.log('[SecureStore] token 타입:', typeof token);
+    //   console.log('[SecureStore] token 값:', token);
+    // }
 
     await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, token);
   } catch (err) {
@@ -43,11 +43,11 @@ export const saveRefreshToken = async (token: string) => {
   if (Platform.OS === 'web') return;
 
   try {
-    if (__DEV__) {
-      console.log('[SecureStore] saveRefreshToken 호출됨');
-      console.log('[SecureStore] token 타입:', typeof token);
-      console.log('[SecureStore] token 값:', token);
-    }
+    // if (__DEV__) {
+    //   console.log('[SecureStore] saveRefreshToken 호출됨');
+    //   console.log('[SecureStore] token 타입:', typeof token);
+    //   console.log('[SecureStore] token 값:', token);
+    // }
 
     await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, token);
   } catch (err) {

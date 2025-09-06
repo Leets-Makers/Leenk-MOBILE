@@ -85,7 +85,6 @@ export default function LeenkDetailPage() {
 
         if (!signal?.canceled) {
           setLeenkDetail(data);
-          console.log('링크의 상태:', data.status);
         }
       } catch (e) {
         if (!signal?.canceled) {

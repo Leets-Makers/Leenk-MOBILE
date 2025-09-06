@@ -31,7 +31,6 @@ export default function AccountStatusPage() {
       await deleteAccessToken();
       reset();
 
-      console.log('로그아웃 완료');
       setLogoutModalVisible(false);
 
       setTimeout(() => {
