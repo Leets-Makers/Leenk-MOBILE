@@ -11,7 +11,9 @@ import { useProfileStore } from '@/stores/profileStore';
 import { CustomButton, Header, Input, Textarea } from '@/components';
 import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
-import { Image } from 'expo-image';
+// import { Image } from 'expo-image';
+import { Image } from 'react-native';
+
 import { DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
 import PopupModal from '@/components/Modal/PopupModal';
@@ -305,7 +307,7 @@ export default function ProfilePage() {
             <ImagePreview>
               {profileImage ? (
                 <Image
-                  source={profileImage}
+                  source={{ uri: profileImage }}
                   style={{ width: 100, height: 100, borderRadius: 50 }}
                 />
               ) : (
