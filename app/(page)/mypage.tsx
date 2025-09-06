@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import { width, height } from '@/theme/globalStyles';

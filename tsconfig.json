@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
+  "extends": "./node_modules/@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -14,7 +14,7 @@
     "strict": true,
     "noImplicitAny": false,
     "jsx": "react-jsx",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "types": ["react", "react-native", "jest"]
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

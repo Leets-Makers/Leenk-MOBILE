@@ -53,7 +53,6 @@ export default function LinkMembersPage() {
 
   const handleComplete = () => {
     setUsers(tempSelectedUsers); // 전역 상태에 저장
-    console.log('추가된 사람: ', tempSelectedUsers);
     router.back();
   };
 
@@ -76,7 +75,6 @@ export default function LinkMembersPage() {
     const fetchUsers = async () => {
       try {
         const response = await getAllUsers();
-        console.log('getAllUsers 응답:', response);
         setAllUsers(response);
       } catch (error) {
         console.error('함께한 사람 추가를 위한 사용자 목록 조회 실패:', error);

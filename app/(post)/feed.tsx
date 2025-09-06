@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
 import { useRouter } from 'expo-router';
@@ -44,10 +44,8 @@ export default function PostFeedPage() {
 
     try {
       const fileNames = selectedImages.map((img) => img.filename);
-      console.log('파일명: ', fileNames);
 
       const presignedUrls = await getPresignedUrl(fileNames);
-      console.log('presigned url : ', presignedUrls);
 
       const mediaArray: Media[] = [];
 
@@ -74,7 +72,6 @@ export default function PostFeedPage() {
       }
 
       setMediaUrls(mediaArray);
-      console.log('MediaUrls : ', mediaArray);
       router.push('/(post)/feed/write');
     } catch (error) {
       console.error('이미지 업로드 중 에러 발생:', error);

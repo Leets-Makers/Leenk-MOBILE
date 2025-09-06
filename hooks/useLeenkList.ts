@@ -22,12 +22,6 @@ export default function useLeenkList({
 
   const fetchLeenks = useCallback(
     async (pageNumber: number, pageSizeArg: number) => {
-      console.log('[useLeenkList] call', {
-        type,
-        userId,
-        pageNumber,
-        pageSizeArg,
-      });
       try {
         if (type !== 'userLeenk') throw new Error('지원하지 않는 타입입니다.');
         if (!userId || Number.isNaN(userId)) {

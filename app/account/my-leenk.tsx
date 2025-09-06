@@ -34,7 +34,7 @@ export default function MyLeenkPage() {
         setHasMore(!reachedEnd);
         pageRef.current = nextPage;
       } catch (e) {
-        if (__DEV__) console.warn('Failed to fetch leenks:', e);
+        console.error('Failed to fetch leenks:', e);
       } finally {
         setLoading(false);
         setRefreshing(false);

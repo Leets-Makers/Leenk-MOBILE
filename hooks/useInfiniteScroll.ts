@@ -36,7 +36,6 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
     setIsLoading(true);
     try {
       const pageNumber = pageable ? pageable.pageNumber + 1 : initialPageNumber;
-      console.log('loadMore pageNumber:', pageNumber);
       const res = await fetchFunction(pageNumber, pageSize);
 
       setData((prev) => {
@@ -68,9 +67,7 @@ export default function UseInfiniteScroll<T extends { feedId: number }>({
     setIsRefreshing(true);
     try {
       blockedRef.current = false;
-      // nextPageRef.current = initialPageNumber;
 
-      console.log('refresh pageNumber:', initialPageNumber);
       const res = await fetchFunction(initialPageNumber, pageSize);
       setData(res.data);
       setPageable(res.pageable);
