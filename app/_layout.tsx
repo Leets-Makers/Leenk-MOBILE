@@ -20,6 +20,7 @@ import { getAccessToken } from '@react-native-kakao/user';
 import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useUserStore } from '@/stores/userStore';
 import { InAppNotificationProvider } from '@/components/InAppNotificationProvider';
+import { LogBox } from 'react-native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -40,6 +41,11 @@ const ROUTES = {
   leenk: '/leenk/[id]' as const,
   feed: '/feed/[id]' as const,
 };
+
+LogBox.ignoreLogs([
+  'StatusBar backgroundColor is not supported with edge-to-edge enabled.',
+  'StatusBar is always translucent when edge-to-edge is enabled.',
+]);
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

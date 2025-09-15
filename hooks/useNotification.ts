@@ -7,9 +7,9 @@ import { router, type Href } from 'expo-router';
 import { requestNotificationPermission } from './usePushNotification';
 import { useInAppNotification } from '@/components/InAppNotificationProvider';
 
-// messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-//   console.log('[FCM][bg]', summarize(remoteMessage));
-// });
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  console.log('[FCM][bg]', summarize(remoteMessage));
+});
 
 const ROUTES = {
   leenk: '/leenk/[id]' as const,
@@ -17,17 +17,17 @@ const ROUTES = {
 };
 
 // 전체 데이터 확인용 로그
-// function summarize(msg: FirebaseMessagingTypes.RemoteMessage) {
-//   return {
-//     phase: 'log',
-//     os: Platform.OS,
-//     msgId: msg.messageId ?? null,
-//     title: msg.notification?.title ?? null,
-//     body: msg.notification?.body ?? null,
-//     data: msg.data ?? null,
-//     sentTime: msg.sentTime ?? null,
-//   };
-// }
+function summarize(msg: FirebaseMessagingTypes.RemoteMessage) {
+  return {
+    phase: 'log',
+    os: Platform.OS,
+    msgId: msg.messageId ?? null,
+    title: msg.notification?.title ?? null,
+    body: msg.notification?.body ?? null,
+    data: msg.data ?? null,
+    sentTime: msg.sentTime ?? null,
+  };
+}
 
 // 받은 메시지 → 해당 화면으로 이동 (탭/냉시작에서만 호출)
 function navigateFromMessage(msg: FirebaseMessagingTypes.RemoteMessage) {
@@ -42,10 +42,10 @@ function navigateFromMessage(msg: FirebaseMessagingTypes.RemoteMessage) {
     pathRaw === 'leenks' || pathRaw === 'leenk' || pathRaw === 'link';
   const isFeed = pathRaw === 'feeds' || pathRaw === 'feed';
 
-  // if (!id) {
-  //   console.log('[FCM] id가 없어서 상세로 이동할 수 없어요:', d);
-  //   return;
-  // }
+  if (!id) {
+    // console.log('[FCM] id가 없어서 상세로 이동할 수 없어요:', d);
+    return;
+  }
 
   if (isLeenk) {
     router.push({ pathname: ROUTES.leenk, params: { id } });
