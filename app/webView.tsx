@@ -1,34 +1,68 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   BackHandler,
-  Platform,
   SafeAreaView,
   View,
 } from 'react-native';
-import {
-  WebView,
-  type WebViewNavigation,
-  type WebViewMessageEvent,
-} from 'react-native-webview';
-import * as Linking from 'expo-linking';
+import { WebView, type WebViewNavigation } from 'react-native-webview';
 
-/** 신뢰하는 도메인만 내부 WebView로 열고, 나머지는 외부 앱으로 보낼 때 사용 */
+import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes';
+import * as Linking from 'expo-linking';
+import { Header } from '@/components';
+import { CONTAINER_PADDING } from '@/constants';
+import { width } from '@/theme/globalStyles';
+
+const TRUSTED_HOSTS = [
+  'weeth.kr',
+  'www.weeth.kr',
+
+  // Kakao OAuth/동의/리다이렉트 도메인
+  'accounts.kakao.com',
+  'kauth.kakao.com',
+  'kapi.kakao.com',
+  'talk-apps.kakao.com',
+];
+
 const isHttp = (url: string) => /^https?:\/\//i.test(url);
-const TRUSTED_HOSTS = ['weeth.kr', 'www.weeth.kr'];
+const isTrustedHost = (u: string) => {
+  try {
+    return TRUSTED_HOSTS.includes(new URL(u).host);
+  } catch {
+    return false;
+  }
+};
+
+// 비동기여도 호출만 하고 기다리지 않음
+const openAndroidIntent = async (intentUrl: string) => {
+  try {
+    await Linking.openURL(intentUrl);
+  } catch {
+    // fallback URL 또는 PlayStore 이동 처리
+    const fallback = /;S\.browser_fallback_url=([^;]+);?/.exec(intentUrl)?.[1];
+    if (fallback) {
+      const decoded = decodeURIComponent(fallback);
+      await Linking.openURL(decoded);
+      return;
+    }
+    const pkg = /;package=([^;]+);?/.exec(intentUrl)?.[1];
+    if (pkg) {
+      await Linking.openURL(`market://details?id=${pkg}`);
+    }
+  }
+};
 
 export default function WebviewScreen() {
-  const { url = '', title } = useLocalSearchParams<{
-    url?: string;
-    title?: string;
-  }>();
-  const router = useRouter();
+  const { url = '' } = useLocalSearchParams<{ url?: string; title?: string }>();
+
   const webRef = useRef<WebView>(null);
   const [canGoBack, setCanGoBack] = useState(false);
   const targetUrl = useMemo(() => (typeof url === 'string' ? url : ''), [url]);
 
-  // 안드로이드 하드웨어 뒤로가기 처리 (WebView 내부 뒤로가기 우선)
+  const [currentUrl, setCurrentUrl] = useState(targetUrl);
+
+  // 안드로이드 하드웨어 뒤로가기 처리
   React.useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (canGoBack && webRef.current) {
@@ -42,23 +76,43 @@ export default function WebviewScreen() {
 
   const onNavStateChange = useCallback((navState: WebViewNavigation) => {
     setCanGoBack(navState.canGoBack);
+    if (navState.url) setCurrentUrl(navState.url);
   }, []);
 
-  const onShouldStart = useCallback((req: any) => {
+  const displayUrl = useMemo(() => {
+    try {
+      const u = new URL(currentUrl);
+      const path = u.pathname === '/' ? '' : u.pathname;
+      return `${u.host}${path}`;
+    } catch {
+      return currentUrl || '';
+    }
+  }, [currentUrl]);
+
+  // 동기 함수로 변경
+  const onShouldStart = useCallback((req: ShouldStartLoadRequest) => {
     const nextUrl: string = req?.url ?? '';
-    if (!isHttp(nextUrl)) {
-      // 카카오톡 등 외부 스킴은 외부로 넘김
-      Linking.openURL(nextUrl).catch(() => {});
+
+    // 1) 카카오/마켓 등 앱 스킴은 외부로
+    if (/^(kakaolink|kakaokompassauth|kakao|market):\/\//i.test(nextUrl)) {
+      void Linking.openURL(nextUrl);
       return false;
     }
-    try {
-      const host = new URL(nextUrl).host;
-      // 신뢰 도메인이면 WebView 내부에서 계속 열기
-      if (TRUSTED_HOSTS.includes(host)) return true;
-    } catch {
-      // URL 파싱 실패 시 외부로 넘김
+    // 2) Android intent:// 처리 (카카오 앱 열기 등)
+    if (/^intent:\/\//i.test(nextUrl)) {
+      void openAndroidIntent(nextUrl);
+      return false;
     }
-    Linking.openURL(nextUrl).catch(() => {});
+
+    // 3) http(s)인 경우: 신뢰 도메인은 WebView 내부, 그 외는 외부 브라우저
+    if (isHttp(nextUrl)) {
+      if (isTrustedHost(nextUrl)) return true;
+      void Linking.openURL(nextUrl);
+      return false;
+    }
+
+    // 4) 나머지 스킴도 외부로 넘김
+    void Linking.openURL(nextUrl);
     return false;
   }, []);
 
@@ -66,29 +120,16 @@ export default function WebviewScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      {/* 간단한 헤더 */}
-      <View
+      <Header
+        isWebView
         style={{
-          height: 48,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingHorizontal: 12,
-          borderBottomWidth: 1,
-          borderBottomColor: '#eee',
+          zIndex: 9999,
+          backgroundColor: 'white',
+          paddingHorizontal: CONTAINER_PADDING * width,
         }}
       >
-        <View style={{ width: 48 }}>
-          {/* Back 버튼 */}
-          <ActivityIndicator animating={false} />
-        </View>
-        <View>
-          {/* 가운데 타이틀 */}
-          <ActivityIndicator animating={false} />
-        </View>
-        <View style={{ width: 48 }} />
-      </View>
-
+        {displayUrl}
+      </Header>
       <WebView
         ref={webRef}
         source={{ uri: targetUrl }}
@@ -101,18 +142,12 @@ export default function WebviewScreen() {
             <ActivityIndicator />
           </View>
         )}
-        // 새 창 열기 억제 (target=_blank 등)
         setSupportMultipleWindows={false}
         onShouldStartLoadWithRequest={onShouldStart}
-        // 필요 시 UA 커스터마이징
-        // userAgent="LeenkApp/1.0 (ReactNative WebView)"
-        // 메시지 브릿지 필요 시
-        onMessage={(e: WebViewMessageEvent) => {
-          // window.ReactNativeWebView.postMessage(...) 처리
-          console.log('WEBVIEW_MESSAGE:', e.nativeEvent.data);
-        }}
-        // iOS에서 스크롤 바운스 방지 원하면
-        // bounces={false}
+        contentInsetAdjustmentBehavior="never"
+        bounces={false}
+        originWhitelist={['*']}
+        mixedContentMode="always"
       />
     </SafeAreaView>
   );

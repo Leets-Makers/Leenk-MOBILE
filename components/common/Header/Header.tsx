@@ -21,6 +21,7 @@ interface HeaderProps extends ViewProps {
   kebabColor?: 'white' | 'black';
   rightDisabled?: boolean;
   leenkId?: number;
+  isWebView?: boolean;
 }
 
 export default function Header({
@@ -33,6 +34,7 @@ export default function Header({
   kebabColor,
   rightDisabled = false,
   leenkId = 0,
+  isWebView = false,
   ...props
 }: HeaderProps) {
   return (
@@ -49,7 +51,7 @@ export default function Header({
       </Side>
 
       <TitleWrapper>
-        <TitleText>{children}</TitleText>
+        <TitleText $isWebView={isWebView}>{children}</TitleText>
       </TitleWrapper>
 
       <Side>
@@ -94,10 +96,11 @@ const TitleWrapper = styled.View.attrs({ pointerEvents: 'none' })`
   height: 100%;
 `;
 
-const TitleText = styled.Text`
-  font-family: ${fonts.Bold};
-  font-size: ${fontSize.lg}px;
-  line-height: ${lineHeight.l};
+export const TitleText = styled.Text<{ $isWebView: boolean }>`
+  font-family: ${({ $isWebView }) => ($isWebView ? fonts.Regular : fonts.Bold)};
+  font-size: ${({ $isWebView }) => ($isWebView ? fontSize.md : fontSize.lg)}px;
+  line-height: ${({ $isWebView }) =>
+    $isWebView ? lineHeight.m : lineHeight.l}px;
 `;
 
 const None = styled.View`
