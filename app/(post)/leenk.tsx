@@ -33,6 +33,7 @@ import { getPresignedUrl } from '@/api/file/s3Upload';
 import { useToastStore } from '@/stores/toastStore';
 import { updateLeenk } from '@/api/leenk/leenk.patch.api';
 import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
+import { toISODateTime } from '@/utils/format-date';
 
 export default function PostLeenkPage() {
   const router = useRouter();
@@ -56,22 +57,6 @@ export default function PostLeenkPage() {
   const { showToast } = useToastStore();
 
   const { leenkImage, resetLeenkImage, setLeenkImage } = useLeenkImageStore();
-  // setLeenkImage가 없다면 leenkStore에 아래 setter 하나만 추가:
-  // setLeenkImage: (uri: string | null) => set({ leenkImage: uri })
-
-  // ISO 문자열로 변환
-  const toISODateTime = (d: Date) =>
-    [
-      d.getFullYear(),
-      String(d.getMonth() + 1).padStart(2, '0'),
-      String(d.getDate()).padStart(2, '0'),
-    ].join('-') +
-    'T' +
-    [
-      String(d.getHours()).padStart(2, '0'),
-      String(d.getMinutes()).padStart(2, '0'),
-      '00',
-    ].join(':');
 
   const isRemoteUrl = (uri: string) => /^https?:\/\//i.test(uri);
   const stripQuery = (url: string) => url.split('?')[0];
@@ -136,7 +121,7 @@ export default function PostLeenkPage() {
     content.trim().length > 0 &&
     date !== null;
 
-  // 공통: S3 업로드 or 기존 URL 재사용
+  // S3 업로드 or 기존 URL 재사용
   const prepareMediaUrl = async (): Promise<string> => {
     if (!leenkImage) return '';
     if (isRemoteUrl(leenkImage)) return stripQuery(leenkImage);

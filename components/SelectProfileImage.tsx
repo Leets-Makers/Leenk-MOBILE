@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router';
 import { useProfileStore } from '@/stores/profileStore';
 
 import { useState } from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { updateProfileImage } from '@/api/users/patchUserEachInfo.api';
 import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -57,32 +57,48 @@ export default function SelectProfileImage({
   };
   return (
     <Container>
-      <Header
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            paddingHorizontal: CONTAINER_PADDING * width,
+            marginTop: 35,
+            marginBottom: 12 * height,
+          }}
+        >
+          <Header>
+            {mode === 'leenk' ? '링크 이미지 선택' : '프로필 사진 선택'}
+          </Header>
+        </View>
+        <View style={{ flex: 1 }}>
+          <ImagePicker
+            maxSelect={1}
+            aspectRatio={AspectRatio.SQUARE}
+            mode="profile"
+            onSelect={(uris) => {
+              setSelectedUri(uris[0]);
+            }}
+          />
+        </View>
+      </View>
+
+      <View
         style={{
-          marginBottom: 12 * height,
+          paddingBottom: 10 * height + insets.bottom,
+          paddingTop: 16 * height,
           paddingHorizontal: CONTAINER_PADDING * width,
         }}
       >
-        {mode === 'leenk' ? '링크 이미지 선택' : '프로필 사진 선택'}
-      </Header>
-      <ImagePicker
-        maxSelect={1}
-        aspectRatio={AspectRatio.SQUARE}
-        mode="profile"
-        onSelect={(uris) => {
-          setSelectedUri(uris[0]);
-        }}
-      />
-      <ButtonContainer $bottomInset={insets.bottom}>
-        <CustomButton
-          variant="primary"
-          size="lg"
-          disabled={!selectedUri}
-          onPress={handleSelectComplete}
-        >
-          {mode === 'profile' || mode === 'leenk' ? '선택완료' : '다음'}
-        </CustomButton>
-      </ButtonContainer>
+        <ButtonContainer $bottomInset={insets.bottom}>
+          <CustomButton
+            variant="primary"
+            size="lg"
+            disabled={!selectedUri}
+            onPress={handleSelectComplete}
+          >
+            {mode === 'profile' || mode === 'leenk' ? '선택완료' : '다음'}
+          </CustomButton>
+        </ButtonContainer>
+      </View>
     </Container>
   );
 }
