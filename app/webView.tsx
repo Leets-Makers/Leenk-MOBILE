@@ -128,8 +128,8 @@ export default function WebviewScreen() {
         onShouldStartLoadWithRequest={onShouldStart}
         contentInsetAdjustmentBehavior="never"
         bounces={false}
-        originWhitelist={['*']}
-        mixedContentMode="always"
+        originWhitelist={['https://*', 'http://*']}
+        mixedContentMode="compatibility"
       />
     </SafeAreaView>
   );
