@@ -71,9 +71,12 @@ export default function SelectProfileImage({
         </View>
         <View style={{ flex: 1 }}>
           <ImagePicker
-            maxSelect={3}
-            aspectRatio={AspectRatio.PORTRAIT}
-            mode="feed"
+            maxSelect={1}
+            aspectRatio={AspectRatio.SQUARE}
+            mode="profile"
+            onSelect={(uris) => {
+              setSelectedUri(uris[0]);
+            }}
           />
         </View>
       </View>

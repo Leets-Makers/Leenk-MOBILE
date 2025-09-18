@@ -93,7 +93,6 @@ export default function WebviewScreen() {
     }
 
     // 4) 그 외 알 수 없는 스킴은 외부(또는 false로 차단해도 됨)
-    void Linking.openURL(nextUrl);
     return false;
   }, []);
 
