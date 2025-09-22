@@ -59,11 +59,13 @@ export default function SelectProfileImage({
     <Container>
       <View style={{ flex: 1 }}>
         <View
-          style={{
-            paddingHorizontal: CONTAINER_PADDING * width,
-            marginTop: 35,
-            marginBottom: 12 * height,
-          }}
+          style={[
+            {
+              paddingHorizontal: CONTAINER_PADDING * width,
+              marginBottom: 12 * height,
+            },
+            mode === 'leenk' && { marginTop: 35 },
+          ]}
         >
           <Header>
             {mode === 'leenk' ? '링크 이미지 선택' : '프로필 사진 선택'}
