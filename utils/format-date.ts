@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
 import 'dayjs/locale/ko';
 
 export function formatDate(iso: string): string {

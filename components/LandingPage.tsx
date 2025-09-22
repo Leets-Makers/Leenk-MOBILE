@@ -103,7 +103,10 @@ export default function LandingPage() {
   };
 
   const handleSignUp = () => {
-    Linking.openURL(weethSiteURL);
+    router.push({
+      pathname: '/webView',
+      params: { url: weethSiteURL, title: 'Weeth' },
+    });
   };
 
   return (
@@ -114,9 +117,7 @@ export default function LandingPage() {
         subText="Leets 활동을 위해 위드는 필수야"
         leftBtnText="닫기"
         rightBtnText="위드 가입하자"
-        onRightBtn={() => {
-          Linking.openURL(weethSiteURL);
-        }}
+        onRightBtn={handleSignUp}
         onLeftBtn={() => setNotRegisterModal(false)}
       />
       <PopupModal
@@ -125,9 +126,7 @@ export default function LandingPage() {
         subText="승인이 완료될 때까지 조금만 기다려줘."
         leftBtnText="닫기"
         rightBtnText="위드 보러가자"
-        onRightBtn={() => {
-          Linking.openURL(weethSiteURL);
-        }}
+        onRightBtn={handleSignUp}
         onLeftBtn={() => setWaitModal(false)}
       />
       <LogoWrapper>
