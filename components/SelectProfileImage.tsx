@@ -85,7 +85,6 @@ export default function SelectProfileImage({
         style={{
           paddingBottom: 10 * height + insets.bottom,
           paddingTop: 16 * height,
-          paddingHorizontal: CONTAINER_PADDING * width,
         }}
       >
         <ButtonContainer $bottomInset={insets.bottom}>
