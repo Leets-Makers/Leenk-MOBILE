@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Leenk',
   slug: 'Leenk',
-  version: '1.0.0',
+  version: '1.1.6',
   orientation: 'portrait',
   icon: './assets/images/ic_logo.png',
   scheme: 'leenk',
@@ -13,7 +13,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   ios: {
-    supportsTablet: true,
+    supportsTablet: false,
     bundleIdentifier: 'com.leetsmakers.leenk',
     infoPlist: {
       NSPhotoLibraryUsageDescription:
