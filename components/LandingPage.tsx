@@ -14,7 +14,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { CustomButton } from '@/components';
 import { login } from '@react-native-kakao/user';
 import PopupModal from '@/components/Modal/PopupModal';
-import { Linking } from 'react-native';
+import Input, { Title } from '@/components/common/Input';
+import { Asterisk } from '@/components/common/Textarea';
 import { kakaoLogin } from '@/api/login/kakao.api';
 import {
   clearAllTokens,
@@ -25,6 +26,10 @@ import {
 import { useProfileStore } from '@/stores/profileStore';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { patchNotificationsToken } from '@/api/users/notification.api';
+import { postLogin } from '@/api/login/login.post.api';
+import { useToastStore } from '@/stores/toastStore';
+import { FEED_PADDING } from '@/constants';
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 // FCM 토큰 서버 전송 함수
 export const registerFcmToken = async () => {
@@ -41,18 +46,25 @@ export default function LandingPage() {
   const router = useRouter();
   const [notRegisterModal, setNotRegisterModal] = useState(false);
   const [waitModal, setWaitModal] = useState(false);
+  const [id, setId] = useState('');
+  const [pw, setPw] = useState('');
+
+  const validEmailInput = (s: string) => s.replace(/[^A-Za-z0-9@._-]/g, '');
+  const isValidEmail = (s: string) =>
+    /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(s);
+
+  const { showToast } = useToastStore();
+
   const weethSiteURL = 'https://www.weeth.kr';
-  const { fromLogout } = useLocalSearchParams();
+  const { fromLogout } = useLocalSearchParams<{ fromLogout?: string }>();
 
   const { setName, setPosition, setCardinal } = useProfileStore();
 
   const shouldBlock = fromLogout === 'true';
-
   useBlockBackHandler({ block: shouldBlock });
 
   const handleKakaoLogin = async () => {
     await clearAllTokens();
-    //카카오 로그인 로직
     try {
       const token = await login();
       const accessToken = token?.accessToken;
@@ -72,10 +84,8 @@ export default function LandingPage() {
           setName(result.data.name);
           setPosition(result.data.position);
           setCardinal(result.data.cardinal);
-          // 최초 로그인: 약관 페이지로 이동
           router.push('/signup/terms');
         } else if (result.code === 1003) {
-          // 일반 로그인: 바로 링크로 이동
           await saveAccessToken(serverToken);
           await saveRefreshToken(refreshToken);
           await registerFcmToken();
@@ -109,8 +119,38 @@ export default function LandingPage() {
     });
   };
 
+  const handleLogin = async () => {
+    if (!id.trim()) return showToast('이메일을 입력해줘', 'error');
+    if (!isValidEmail(id))
+      return showToast('올바른 이메일 형식이 아니야', 'error');
+    if (!pw.trim()) return showToast('비밀번호를 입력해줘', 'error');
+
+    try {
+      const result = await postLogin(id.trim(), pw);
+
+      if (result.code === 1003) {
+        // 성공: 토큰/프로필 저장 후 화면 이동
+        await saveAccessToken(result.data.accessToken);
+        await saveRefreshToken(result.data.refreshToken);
+        setName(result.data.name);
+        setPosition(result.data.position);
+        setCardinal(result.data.cardinal);
+        await registerFcmToken();
+        router.replace('/(page)/leenk');
+      } else {
+        showToast(result.message || '로그인에 실패했어', 'error');
+      }
+    } catch (e: any) {
+      // 네트워크/서버 에러
+      const status = e?.response?.status;
+      const msg = e?.response?.data?.message ?? e?.message ?? '로그인 실패';
+      console.log('[LOGIN ERROR]', status, msg);
+      showToast(msg, 'error');
+    }
+  };
+
   return (
-    <Container>
+    <Screen>
       <PopupModal
         isOpen={notRegisterModal}
         mainText="먼저 Weeth부터 가입해야 해"
@@ -129,65 +169,120 @@ export default function LandingPage() {
         onRightBtn={handleSignUp}
         onLeftBtn={() => setWaitModal(false)}
       />
-      <LogoWrapper>
-        <LogoGif
-          source={require('@/assets/images/gif/ic_logo.gif')}
-          contentFit="cover"
-          transition={300}
-        />
-      </LogoWrapper>
-      <BottomArea>
-        <CustomButton
-          variant="kakao"
-          size="md"
-          fullWidth
-          onPress={handleKakaoLogin}
+
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.select({ ios: 'padding', android: undefined })}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 24 * height,
+          }}
+          keyboardShouldPersistTaps="handled"
         >
-          <KakaoContainer>
-            <KakaoLogo />
-            <KakaoBtnText>카카오로 로그인</KakaoBtnText>
-          </KakaoContainer>
-        </CustomButton>
-        <CustomButton
-          style={{ marginTop: 12 * height }}
-          variant="text"
-          textColor="text[3]"
-          size="md"
-          fullWidth
-          onPress={handleSignUp}
-        >
-          새로 가입하기
-        </CustomButton>
-      </BottomArea>
-    </Container>
+          <LogoWrapper>
+            <LogoGif
+              source={require('@/assets/images/gif/ic_logo.gif')}
+              contentFit="cover"
+              transition={200}
+            />
+          </LogoWrapper>
+
+          <Form>
+            <Title style={{ marginBottom: 8 * height }}>
+              아이디<Asterisk> *</Asterisk>
+            </Title>
+            <Input
+              placeholder="아이디를 입력해줘"
+              value={id}
+              onChangeText={(t) => setId(validEmailInput(t))}
+              maxLength={30}
+              isRequired
+              returnKeyType="next"
+            />
+
+            <Title style={{ marginTop: 16 * height, marginBottom: 8 * height }}>
+              비밀번호<Asterisk> *</Asterisk>
+            </Title>
+            <Input
+              placeholder="비밀번호를 입력해줘"
+              value={pw}
+              onChangeText={setPw}
+              maxLength={30}
+              isRequired
+              secureTextEntry
+              returnKeyType="done"
+            />
+
+            <CustomButton
+              size="md"
+              fullWidth
+              onPress={handleLogin}
+              style={{ marginTop: 16 * height }}
+            >
+              로그인
+            </CustomButton>
+          </Form>
+
+          <Divider />
+
+          <CustomButton
+            variant="kakao"
+            size="md"
+            fullWidth
+            onPress={handleKakaoLogin}
+          >
+            <KakaoRow>
+              <KakaoLogo />
+              <KakaoBtnText>카카오로 로그인</KakaoBtnText>
+            </KakaoRow>
+          </CustomButton>
+
+          <CustomButton
+            variant="text"
+            textColor="text[3]"
+            size="md"
+            fullWidth
+            onPress={handleSignUp}
+            style={{ marginTop: 12 * height }}
+          >
+            새로 가입하기
+          </CustomButton>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Screen>
   );
 }
 
-const Container = styled.SafeAreaView`
+const Screen = styled.SafeAreaView`
   flex: 1;
   background-color: ${colors.bg[2]};
-  align-items: center;
-  position: relative;
+  padding-horizontal: ${FEED_PADDING}px;
 `;
 
 const LogoWrapper = styled.View`
-  margin-top: ${190 * height}px;
+  margin-top: ${8 * height}px;
 `;
 
 const LogoGif = styled(Image)`
   width: ${300 * width}px;
-  height: ${171 * height}px;
+  height: ${200 * height}px;
 `;
 
-const BottomArea = styled.View`
-  position: absolute;
-  bottom: ${120 * height}px;
-  align-items: center;
+const Form = styled.View`
   width: 100%;
-  padding-horizontal: ${20 * width}px;
+  align-items: flex-start;
 `;
 
-const KakaoContainer = styled.View`
+const Divider = styled.View`
+  width: 100%;
+  height: ${99 * height}px;
+`;
+
+const KakaoRow = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
