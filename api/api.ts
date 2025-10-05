@@ -78,15 +78,25 @@ api.interceptors.request.use(
 
 // 응답 인터셉터
 let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
+type RefreshSubscriber = {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+};
+
+let refreshSubscribers: RefreshSubscriber[] = [];
 
 const onTokenRefreshed = (token: string) => {
-  refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers.forEach(({ resolve }) => resolve(token));
   refreshSubscribers = [];
 };
 
-const addRefreshSubscriber = (cb: (token: string) => void) => {
-  refreshSubscribers.push(cb);
+const onTokenRefreshFailed = (error: unknown) => {
+  refreshSubscribers.forEach(({ reject }) => reject(error));
+  refreshSubscribers = [];
+};
+
+const addRefreshSubscriber = (subscriber: RefreshSubscriber) => {
+  refreshSubscribers.push(subscriber);
 };
 
 api.interceptors.response.use(
@@ -105,10 +115,13 @@ api.interceptors.response.use(
 
       // 이미 리프레시 중이면 큐에 대기 후 새 토큰으로 재시도
       if (isRefreshing) {
-        return new Promise((resolve) => {
-          addRefreshSubscriber((token: string) => {
-            setAuthHeader(originalRequest, token);
-            resolve(api(originalRequest));
+        return new Promise((resolve, reject) => {
+          addRefreshSubscriber({
+            resolve: (token: string) => {
+              setAuthHeader(originalRequest, token);
+              resolve(api(originalRequest));
+            },
+            reject,
           });
         });
       }
@@ -125,6 +138,7 @@ api.interceptors.response.use(
         setAuthHeader(originalRequest, newAccessToken);
         return api(originalRequest);
       } catch (err) {
+        onTokenRefreshFailed(err);
         await clearAllTokens();
         router.replace('/');
         return Promise.reject(err);
