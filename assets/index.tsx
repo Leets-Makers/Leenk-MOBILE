@@ -39,6 +39,8 @@ import LocateIcon from '@/assets/images/ic_locate.svg';
 import ShareIcon from '@/assets/images/ic_share.svg';
 import ReviewIcon from '@/assets/images/ic_review.svg';
 import AdditionIcon from '@/assets/images/ic_navi_addition.svg';
+import BirthdayIcon from '@/assets/images/ic_birthday.svg';
+import BirthdayLogoIcon from '@/assets/images/ic_birthdayLogo.svg';
 import LeenkImg01 from '@/assets/images/default_leenk/leenk_img_01.svg';
 import LeenkImg02 from '@/assets/images/default_leenk/leenk_img_02.svg';
 import LeenkImg03 from '@/assets/images/default_leenk/leenk_img_03.svg';
@@ -87,6 +89,8 @@ export {
   ShareIcon,
   ReviewIcon,
   AdditionIcon,
+  BirthdayIcon,
+  BirthdayLogoIcon,
   LeenkImg01,
   LeenkImg02,
   LeenkImg03,
