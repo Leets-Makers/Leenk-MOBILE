@@ -16,7 +16,13 @@ import {
 } from '@/utils/button-style';
 import styled from 'styled-components/native';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'kakao';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'text'
+  | 'kakao'
+  | 'apple'
+  | 'appleWhite';
 export type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'full';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 

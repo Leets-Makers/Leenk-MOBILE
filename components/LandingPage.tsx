@@ -29,7 +29,8 @@ import { patchNotificationsToken } from '@/api/users/notification.api';
 import { postLogin } from '@/api/login/login.post.api';
 import { useToastStore } from '@/stores/toastStore';
 import { FEED_PADDING } from '@/constants';
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { AppleLogo } from '@/assets';
 
 // FCM 토큰 서버 전송 함수
 export const registerFcmToken = async () => {
@@ -179,6 +180,7 @@ export default function LandingPage() {
             flexGrow: 1,
             justifyContent: 'center',
             alignItems: 'center',
+            paddingHorizontal: FEED_PADDING * width,
             paddingVertical: 24 * height,
           }}
           keyboardShouldPersistTaps="handled"
@@ -191,7 +193,7 @@ export default function LandingPage() {
             />
           </LogoWrapper>
 
-          <Form>
+          {/* <Form>
             <Title style={{ marginBottom: 8 * height }}>
               아이디<Asterisk> *</Asterisk>
             </Title>
@@ -225,18 +227,45 @@ export default function LandingPage() {
             >
               로그인
             </CustomButton>
-          </Form>
+          </Form> */}
 
           <Divider />
+          {/* 
+          <CustomButton
+            variant="apple"
+            size="lg"
+            fullWidth
+            onPress={() => {}}
+            style={{ marginBottom: 12 * height }}
+            textStyle={{ fontFamily: fonts.ExtraBold }}
+          >
+            Apple로 로그인
+          </CustomButton> */}
+
+          <CustomButton
+            variant="appleWhite"
+            size="lg"
+            fullWidth
+            onPress={() => {}}
+            style={{
+              marginBottom: 12 * height,
+            }}
+            textStyle={{ fontFamily: fonts.ExtraBold }}
+          >
+            <KakaoRow>
+              <AppleLogo width={19 * width} height={19 * height} />
+              <KakaoBtnText>Apple로 로그인</KakaoBtnText>
+            </KakaoRow>
+          </CustomButton>
 
           <CustomButton
             variant="kakao"
-            size="md"
+            size="lg"
             fullWidth
             onPress={handleKakaoLogin}
           >
             <KakaoRow>
-              <KakaoLogo />
+              <KakaoLogo width={19 * width} height={19 * height} />
               <KakaoBtnText>카카오로 로그인</KakaoBtnText>
             </KakaoRow>
           </CustomButton>
@@ -260,7 +289,7 @@ export default function LandingPage() {
 const Screen = styled.SafeAreaView`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding-horizontal: ${FEED_PADDING}px;
+  /* padding-horizontal: ${FEED_PADDING}px; */
 `;
 
 const LogoWrapper = styled.View`
@@ -290,7 +319,7 @@ const KakaoRow = styled.View`
 
 const KakaoBtnText = styled.Text`
   color: ${colors.text[2]};
-  font-family: ${fonts.Bold};
+  font-family: ${fonts.ExtraBold};
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
   margin-left: ${8 * width}px;

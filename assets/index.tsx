@@ -44,6 +44,7 @@ import LeenkImg03 from '@/assets/images/default_leenk/leenk_img_03.svg';
 import LeenkImg04 from '@/assets/images/default_leenk/leenk_img_04.svg';
 import LeenkImg05 from '@/assets/images/default_leenk/leenk_img_05.svg';
 import LogoNotify from '@/assets/images/ic_logo_notification.svg';
+import AppleLogo from '@/assets/images/ic_apple_logo.svg';
 export {
   FeedIcon,
   LeenkIcon,
@@ -91,4 +92,5 @@ export {
   LeenkImg04,
   LeenkImg05,
   LogoNotify,
+  AppleLogo,
 };

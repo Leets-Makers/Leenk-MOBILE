@@ -41,7 +41,7 @@ export const sizeStyles: Record<
     paddingVertical: 12 * height,
   },
   lg: {
-    height: 52 * height,
+    height: 48 * height,
     paddingHorizontal: 24 * width,
     paddingVertical: 14 * height,
   },
