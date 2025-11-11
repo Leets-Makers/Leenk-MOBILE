@@ -37,8 +37,7 @@ export const getButtonBackgroundColor = ({
   }
 
   if (variant === 'kakao') return colors.kakao;
-  if (variant === 'apple') return colors.black;
-  if (variant === 'appleWhite') return colors.white;
+  if (variant === 'apple') return colors.white;
 
   return 'transparent';
 };
@@ -52,7 +51,8 @@ export const getButtonTextColor = ({
 
   if (variant === 'primary') return colors.white;
   if (variant === 'secondary') return colors.gray[700];
-  if (variant === 'appleWhite') return colors.black;
+  if (variant === 'kakao') return colors.text[2];
+  if (variant === 'apple') return colors.black;
   if (variant === 'text') {
     return textColor === 'black'
       ? colors.black

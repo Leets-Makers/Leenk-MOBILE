@@ -21,8 +21,7 @@ export type ButtonVariant =
   | 'secondary'
   | 'text'
   | 'kakao'
-  | 'apple'
-  | 'appleWhite';
+  | 'apple';
 export type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'full';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -37,6 +36,7 @@ type CustomButtonProps = {
   textStyle?: StyleProp<TextStyle>;
   fullWidth?: boolean;
   textColor?: 'primary' | 'black' | 'text[2]' | 'text[3]';
+  icon?: React.ReactNode;
 };
 
 export default function CustomButton({
@@ -50,6 +50,7 @@ export default function CustomButton({
   textStyle,
   fullWidth = false,
   textColor,
+  icon,
 }: CustomButtonProps) {
   const sizeStyle = sizeStyles[size];
   const borderRadius = getBorderRadius(rounded);
@@ -75,6 +76,7 @@ export default function CustomButton({
       ]}
     >
       <StyledContentWrapper>
+        {icon && <IconWrapper>{icon}</IconWrapper>}
         <StyledButtonText
           variant={variant}
           style={[
@@ -91,6 +93,12 @@ export default function CustomButton({
 
 export const StyledContentWrapper = styled.View`
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const IconWrapper = styled.View`
+  margin-right: 8px;
   align-items: center;
   justify-content: center;
 `;

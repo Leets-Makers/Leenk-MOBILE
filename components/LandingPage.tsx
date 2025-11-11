@@ -180,7 +180,6 @@ export default function LandingPage() {
             flexGrow: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            paddingHorizontal: FEED_PADDING * width,
             paddingVertical: 24 * height,
           }}
           keyboardShouldPersistTaps="handled"
@@ -230,56 +229,45 @@ export default function LandingPage() {
           </Form> */}
 
           <Divider />
-          {/* 
-          <CustomButton
-            variant="apple"
-            size="lg"
-            fullWidth
-            onPress={() => {}}
-            style={{ marginBottom: 12 * height }}
-            textStyle={{ fontFamily: fonts.ExtraBold }}
-          >
-            Apple로 로그인
-          </CustomButton> */}
 
-          <CustomButton
-            variant="appleWhite"
-            size="lg"
-            fullWidth
-            onPress={() => {}}
-            style={{
-              marginBottom: 12 * height,
-            }}
-            textStyle={{ fontFamily: fonts.ExtraBold }}
-          >
-            <KakaoRow>
-              <AppleLogo width={19 * width} height={19 * height} />
-              <KakaoBtnText>Apple로 로그인</KakaoBtnText>
-            </KakaoRow>
-          </CustomButton>
+          <ButtonSection>
+            <AppleButton
+              variant="apple"
+              size="lg"
+              fullWidth
+              onPress={() => {}}
+              style={{
+                marginBottom: 12 * height,
+              }}
+              textStyle={{ fontFamily: fonts.ExtraBold }}
+              icon={<AppleLogo width={19 * width} height={19 * height} />}
+            >
+              Apple로 로그인
+            </AppleButton>
 
-          <CustomButton
-            variant="kakao"
-            size="lg"
-            fullWidth
-            onPress={handleKakaoLogin}
-          >
-            <KakaoRow>
-              <KakaoLogo width={19 * width} height={19 * height} />
-              <KakaoBtnText>카카오로 로그인</KakaoBtnText>
-            </KakaoRow>
-          </CustomButton>
+            <CustomButton
+              variant="kakao"
+              size="lg"
+              fullWidth
+              onPress={handleKakaoLogin}
+              textStyle={{ fontFamily: fonts.ExtraBold }}
+              textColor="text[2]"
+              icon={<KakaoLogo width={19 * width} height={19 * height} />}
+            >
+              카카오로 로그인
+            </CustomButton>
 
-          <CustomButton
-            variant="text"
-            textColor="text[3]"
-            size="md"
-            fullWidth
-            onPress={handleSignUp}
-            style={{ marginTop: 12 * height }}
-          >
-            새로 가입하기
-          </CustomButton>
+            <CustomButton
+              variant="text"
+              textColor="text[3]"
+              size="md"
+              fullWidth
+              onPress={handleSignUp}
+              style={{ marginTop: 12 * height }}
+            >
+              새로 가입하기
+            </CustomButton>
+          </ButtonSection>
         </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
@@ -293,7 +281,8 @@ const Screen = styled.SafeAreaView`
 `;
 
 const LogoWrapper = styled.View`
-  margin-top: ${8 * height}px;
+  /* margin-top: ${8 * height}px; */
+  margin-bottom: ${85 * height}px;
 `;
 
 const LogoGif = styled(Image)`
@@ -324,4 +313,23 @@ const KakaoBtnText = styled.Text`
   line-height: ${lineHeight.m}px;
   margin-left: ${8 * width}px;
   text-align: center;
+`;
+
+const AppleBtnText = styled(KakaoBtnText)`
+  color: ${colors.black};
+`;
+const ButtonSection = styled.View`
+  position: absolute;
+  bottom: ${80 * height}px;
+  width: 100%;
+  align-items: center;
+  padding-horizontal: ${FEED_PADDING * width}px;
+`;
+
+const AppleButton = styled(CustomButton)`
+  shadow-color: #000000;
+  shadow-offset: 0px 0px;
+  shadow-opacity: 0.08;
+  shadow-radius: 20px;
+  elevation: 5; /* Android */
 `;
