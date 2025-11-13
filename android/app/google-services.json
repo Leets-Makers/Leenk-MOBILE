@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:112362531333:android:a27ac5fbf04236e9b90a6c",
+        "mobilesdk_app_id": "1:112362531333:android:7e524578bccb9edab90a6c",
         "android_client_info": {
-          "package_name": "com.leetsmakers.leenk"
+          "package_name": "com.example.leenk"
         }
       },
       "oauth_client": [],

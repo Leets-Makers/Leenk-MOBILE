@@ -31,6 +31,7 @@ import { useToastStore } from '@/stores/toastStore';
 import { FEED_PADDING } from '@/constants';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { AppleLogo } from '@/assets';
+import * as AppleAuthentication from 'expo-apple-authentication';
 
 // FCM 토큰 서버 전송 함수
 export const registerFcmToken = async () => {
@@ -120,35 +121,36 @@ export default function LandingPage() {
     });
   };
 
-  const handleLogin = async () => {
-    if (!id.trim()) return showToast('이메일을 입력해줘', 'error');
-    if (!isValidEmail(id))
-      return showToast('올바른 이메일 형식이 아니야', 'error');
-    if (!pw.trim()) return showToast('비밀번호를 입력해줘', 'error');
+  const handleAppleSignup = () => {};
+  // const handleLogin = async () => {
+  //   if (!id.trim()) return showToast('이메일을 입력해줘', 'error');
+  //   if (!isValidEmail(id))
+  //     return showToast('올바른 이메일 형식이 아니야', 'error');
+  //   if (!pw.trim()) return showToast('비밀번호를 입력해줘', 'error');
 
-    try {
-      const result = await postLogin(id.trim(), pw);
+  //   try {
+  //     const result = await postLogin(id.trim(), pw);
 
-      if (result.code === 1003) {
-        // 성공: 토큰/프로필 저장 후 화면 이동
-        await saveAccessToken(result.data.accessToken);
-        await saveRefreshToken(result.data.refreshToken);
-        setName(result.data.name);
-        setPosition(result.data.position);
-        setCardinal(result.data.cardinal);
-        await registerFcmToken();
-        router.replace('/(page)/leenk');
-      } else {
-        showToast(result.message || '로그인에 실패했어', 'error');
-      }
-    } catch (e: any) {
-      // 네트워크/서버 에러
-      const status = e?.response?.status;
-      const msg = e?.response?.data?.message ?? e?.message ?? '로그인 실패';
-      console.log('[LOGIN ERROR]', status, msg);
-      showToast(msg, 'error');
-    }
-  };
+  //     if (result.code === 1003) {
+  //       // 성공: 토큰/프로필 저장 후 화면 이동
+  //       await saveAccessToken(result.data.accessToken);
+  //       await saveRefreshToken(result.data.refreshToken);
+  //       setName(result.data.name);
+  //       setPosition(result.data.position);
+  //       setCardinal(result.data.cardinal);
+  //       await registerFcmToken();
+  //       router.replace('/(page)/leenk');
+  //     } else {
+  //       showToast(result.message || '로그인에 실패했어', 'error');
+  //     }
+  //   } catch (e: any) {
+  //     // 네트워크/서버 에러
+  //     const status = e?.response?.status;
+  //     const msg = e?.response?.data?.message ?? e?.message ?? '로그인 실패';
+  //     console.log('[LOGIN ERROR]', status, msg);
+  //     showToast(msg, 'error');
+  //   }
+  // };
 
   return (
     <Screen>
@@ -230,20 +232,41 @@ export default function LandingPage() {
 
           <Divider />
 
-          <ButtonSection>
-            <AppleButton
+          <ButtonSection
+            style={{
+              paddingLeft: FEED_PADDING * width,
+              paddingRight: FEED_PADDING * width,
+            }}
+          >
+            {/* <CustomButton
               variant="apple"
               size="lg"
               fullWidth
               onPress={() => {}}
               style={{
                 marginBottom: 12 * height,
+                shadowColor: colors.black,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.04,
+                shadowRadius: 20,
+                elevation: 5,
               }}
               textStyle={{ fontFamily: fonts.ExtraBold }}
               icon={<AppleLogo width={19 * width} height={19 * height} />}
             >
               Apple로 로그인
-            </AppleButton>
+            </CustomButton> */}
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={
+                AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+              }
+              buttonStyle={
+                AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+              }
+              cornerRadius={8}
+              style={{ width: 200, height: 44 }}
+              onPress={handleAppleSignup}
+            />
 
             <CustomButton
               variant="kakao"
@@ -253,6 +276,7 @@ export default function LandingPage() {
               textStyle={{ fontFamily: fonts.ExtraBold }}
               textColor="text[2]"
               icon={<KakaoLogo width={19 * width} height={19 * height} />}
+              style={{ marginBottom: 0 }}
             >
               카카오로 로그인
             </CustomButton>
@@ -277,11 +301,9 @@ export default function LandingPage() {
 const Screen = styled.SafeAreaView`
   flex: 1;
   background-color: ${colors.bg[2]};
-  /* padding-horizontal: ${FEED_PADDING}px; */
 `;
 
 const LogoWrapper = styled.View`
-  /* margin-top: ${8 * height}px; */
   margin-bottom: ${85 * height}px;
 `;
 
@@ -300,36 +322,9 @@ const Divider = styled.View`
   height: ${99 * height}px;
 `;
 
-const KakaoRow = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-
-const KakaoBtnText = styled.Text`
-  color: ${colors.text[2]};
-  font-family: ${fonts.ExtraBold};
-  font-size: ${fontSize.md}px;
-  line-height: ${lineHeight.m}px;
-  margin-left: ${8 * width}px;
-  text-align: center;
-`;
-
-const AppleBtnText = styled(KakaoBtnText)`
-  color: ${colors.black};
-`;
 const ButtonSection = styled.View`
   position: absolute;
   bottom: ${80 * height}px;
   width: 100%;
   align-items: center;
-  padding-horizontal: ${FEED_PADDING * width}px;
-`;
-
-const AppleButton = styled(CustomButton)`
-  shadow-color: #000000;
-  shadow-offset: 0px 0px;
-  shadow-opacity: 0.08;
-  shadow-radius: 20px;
-  elevation: 5; /* Android */
 `;

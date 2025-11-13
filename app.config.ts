@@ -21,6 +21,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       CFBundleURLTypes: [{ CFBundleURLSchemes: ['leenk'] }],
     },
     googleServicesFile: './GoogleService-Info.plist',
+    usesAppleSignIn: true,
   },
   android: {
     icon: './assets/images/ic_logo_round.png',
@@ -82,6 +83,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-router',
+    'expo-apple-authentication',
   ],
   experiments: {
     typedRoutes: true,

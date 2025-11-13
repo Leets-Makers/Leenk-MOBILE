@@ -4,6 +4,8 @@
   <dict>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
+    <key>CFBundleAllowMixedLocalizations</key>
+    <true/>
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
@@ -19,29 +21,23 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>1.1.6</string>
     <key>CFBundleSignature</key>
     <string>????</string>
-
-    <!-- URL Schemes -->
     <key>CFBundleURLTypes</key>
     <array>
-      <!-- 앱 고유 스킴 -->
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
           <string>leenk</string>
-          <string>com.leetsmakers.leenk</string>
         </array>
       </dict>
-      <!-- Expo dev client 스킴 -->
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
           <string>exp+leenk</string>
         </array>
       </dict>
-      <!-- Kakao redirect 스킴 -->
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
@@ -51,8 +47,8 @@
         <string>Kakao</string>
       </dict>
     </array>
-
-    <!-- KakaoTalk 탐지/호출용 스킴 -->
+    <key>CFBundleVersion</key>
+    <string>1</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>kakao</string>
@@ -61,14 +57,10 @@
       <string>kakaolink</string>
       <string>kakaoplus</string>
     </array>
-
-    <key>CFBundleVersion</key>
-    <string>1</string>
     <key>LSMinimumSystemVersion</key>
     <string>12.0</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
-
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
@@ -76,7 +68,6 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
-
     <key>NSCameraUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your camera</string>
     <key>NSMicrophoneUsageDescription</key>
@@ -85,12 +76,10 @@
     <string>Allow $(PRODUCT_NAME) to save photos</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>사진을 선택하려면 접근 권한이 필요합니다.</string>
-
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
     </array>
-
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
