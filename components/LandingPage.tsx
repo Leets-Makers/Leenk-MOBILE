@@ -6,6 +6,7 @@ import {
   fontSize,
   height,
   lineHeight,
+  radius,
   width,
 } from '@/theme/globalStyles';
 import colors from '@/theme/color';
@@ -121,7 +122,25 @@ export default function LandingPage() {
     });
   };
 
-  const handleAppleSignup = () => {};
+  const handleAppleLogin = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      // credential 객체에 id, email, name 등 포함됨. 이후 서버 등에 전달해서 처리
+      // TODO: 서버 연동 및 사용자 생성 로직 연결(현재는 alert)
+      // alert(JSON.stringify(credential));
+    } catch (e: any) {
+      if (e.code === 'ERR_CANCELED') {
+        // 사용자가 취소함
+      } else {
+        // 기타 에러 처리
+      }
+    }
+  };
   // const handleLogin = async () => {
   //   if (!id.trim()) return showToast('이메일을 입력해줘', 'error');
   //   if (!isValidEmail(id))
@@ -238,11 +257,11 @@ export default function LandingPage() {
               paddingRight: FEED_PADDING * width,
             }}
           >
-            {/* <CustomButton
+            <CustomButton
               variant="apple"
               size="lg"
               fullWidth
-              onPress={() => {}}
+              onPress={handleAppleLogin}
               style={{
                 marginBottom: 12 * height,
                 shadowColor: colors.black,
@@ -255,19 +274,7 @@ export default function LandingPage() {
               icon={<AppleLogo width={19 * width} height={19 * height} />}
             >
               Apple로 로그인
-            </CustomButton> */}
-            <AppleAuthentication.AppleAuthenticationButton
-              buttonType={
-                AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-              }
-              buttonStyle={
-                AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-              }
-              cornerRadius={8}
-              style={{ width: 200, height: 44 }}
-              onPress={handleAppleSignup}
-            />
-
+            </CustomButton>
             <CustomButton
               variant="kakao"
               size="lg"
