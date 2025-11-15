@@ -28,6 +28,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useToastStore } from '@/stores/toastStore';
 import { registerFcmToken } from '@/components/LandingPage';
+import CalendarButton from '@/components/leenk/CalendarButton';
+import dayjs from 'dayjs';
 
 export default function ProfilePage() {
   const {
@@ -37,6 +39,8 @@ export default function ProfilePage() {
     setkakaoTalkId,
     introduction,
     setintroduction,
+    birthday,
+    setBirthday,
     mbti,
     setMbti,
     profileImage,
@@ -76,6 +80,7 @@ export default function ProfilePage() {
     if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
     if (introduction) payload.introduction = introduction;
     if (mbti) payload.mbti = mbti;
+    if (birthday) payload.birthday = birthday;
 
     if (profileImage) {
       const fileName = `profile_${Date.now()}.jpg`;
@@ -116,6 +121,8 @@ export default function ProfilePage() {
     } else if (step === 'photo') {
       setStep('introduction');
     } else if (step === 'introduction') {
+      setStep('birthday');
+    } else if (step === 'birthday') {
       setStep('mbti');
     } else {
       try {
@@ -131,7 +138,8 @@ export default function ProfilePage() {
   const handlePrevStep = () => {
     if (step === 'photo') setStep('id');
     else if (step === 'introduction') setStep('photo');
-    else if (step === 'mbti') setStep('introduction');
+    else if (step === 'birthday') setStep('introduction');
+    else if (step === 'mbti') setStep('birthday');
     else router.back();
   };
 
@@ -285,6 +293,24 @@ export default function ProfilePage() {
             minHeight={1}
             accessoryID={isIOS ? ACCESSORY_ID : undefined}
           />
+        )}
+
+        {step === 'birthday' && (
+          <>
+            <StyledSubText>생일을 알려줘</StyledSubText>
+            <CalendarButton
+              value={birthday ? new Date(birthday) : null}
+              mode="birthday"
+              onDateChange={(date) => {
+                if (date) {
+                  // YYYY-MM-DD 형식으로 저장
+                  const formatted = dayjs(date).format('YYYY-MM-DD');
+                  setBirthday(formatted);
+                }
+              }}
+              placeholder="생일 축하를 받을 수 있어"
+            />
+          </>
         )}
 
         {step === 'mbti' && (
