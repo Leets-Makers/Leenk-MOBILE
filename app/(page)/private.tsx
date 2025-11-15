@@ -1,49 +1,185 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import LockIcon from '@/assets/images/ic_lock.svg';
 import {
   fontSize,
-  lineHeight,
-  radius,
   fonts,
   width,
   height,
+  lineHeight,
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import { Header } from '@/components';
+import BirthdayCard from '@/components/private/BirthdayCard';
+import UpcomingBirthdayCard from '@/components/private/UpcomingBirthdayCard';
+import { useModalStore } from '@/stores/modalStore';
+import TextInputModal from '@/components/Modal/TextInputModal';
+import { formatTodayMonthDay } from '@/utils/format-date';
+import { useBirthdayStore } from '@/stores/birthdayStore';
+import { useUserInfo } from '@/hooks/useUserInfo';
+import ImageModal from '@/components/Modal/ImageModal';
+import { postMarkBirthdayLetters } from '@/api/private/birthday/postBirthdayLettersMark.api';
+import { BirthdayUser } from '@/types/birthday';
+import { LeenkGrayIcon } from '@/assets';
 
 export default function PrivatePage() {
   const router = useRouter();
+  const { userInfo } = useUserInfo();
+  const { openModal, closeModal } = useModalStore();
+  const {
+    birthdayUsers,
+    myBirthdayLettersCounts,
+    hasNewLetters,
+    upcomingBirthdayUsers,
+    fetchBirthdayUsers,
+    fetchUpcomingBirthdayUsers,
+  } = useBirthdayStore();
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchBirthdayUsers();
+      fetchUpcomingBirthdayUsers();
+    }, []),
+  );
+
+  const handleBirthdayCardPress = useCallback(
+    async (user: BirthdayUser) => {
+      const isOwn = user.userId === userInfo?.id;
+
+      if (isOwn) {
+        // 본인 생일인 경우
+        if (hasNewLetters) {
+          try {
+            await postMarkBirthdayLetters();
+
+            // 읽음 처리 후 store 업데이트
+            useBirthdayStore.setState({
+              hasNewLetters: false,
+            });
+          } catch (err) {
+            console.log('편지 읽음 처리 실패:', err);
+          }
+        }
+        router.push('/birthday/letters');
+        return;
+      }
+
+      // 다른 사람 생일인 경우 (편지 작성 모달)
+      openModal('birthdayLetter', user.userId);
+    },
+    [userInfo?.id, hasNewLetters],
+  );
+
+  //  오늘 생일자
+  const todayBirthdayUsers = birthdayUsers.filter((u) => u.isUserBirthdayToday);
+
+  // empty 조건
+  const isEmpty =
+    todayBirthdayUsers.length === 0 && upcomingBirthdayUsers.length === 0;
+
   return (
-    <Container>
-      <Header LeftSection="LOGO" RightSection="BELL" />
-      <LockIcon
-        width={120 * width}
-        height={120 * width}
-        style={{ marginTop: 162 * height }}
+    <>
+      <HeaderWrapper>
+        <Header LeftSection="LOGO" RightSection="BELL" />
+      </HeaderWrapper>
+      <Container>
+        {isEmpty ? (
+          <EmptyWrapper>
+            <LeenkGrayIcon
+              width={120 * width}
+              height={120 * width}
+              style={{ marginTop: 162 * height }}
+            />
+            <MessageText>
+              아직 생일인 친구가 없어{'\n'}
+              새로운 생일 소식을 기다려볼까?
+            </MessageText>
+          </EmptyWrapper>
+        ) : (
+          <>
+            <ScrollArea>
+              {/* 오늘 생일 */}
+              <BirthdayCardContainer>
+                {todayBirthdayUsers.length > 0 && (
+                  <Title>{`${formatTodayMonthDay()} 오늘의 생일자! 🎉`}</Title>
+                )}
+                {todayBirthdayUsers.map((user) => (
+                  <BirthdayCard
+                    key={user.userId}
+                    username={user.name}
+                    profileImage={user.thumbnail}
+                    isUserBirthdayToday={user.isUserBirthdayToday}
+                    isOwnBirthdayToday={user.userId === userInfo?.id}
+                    myBirthdayLettersCounts={myBirthdayLettersCounts}
+                    hasNewLetters={hasNewLetters}
+                    onPress={() => handleBirthdayCardPress(user)}
+                  />
+                ))}
+              </BirthdayCardContainer>
+
+              {/* 곧 생일 */}
+              {upcomingBirthdayUsers.length > 0 && (
+                <>
+                  <UpcomingBirthdayCardContainer>
+                    <Title>곧 생일이야</Title>
+                  </UpcomingBirthdayCardContainer>
+                  <UpcomingBirthdayCard data={upcomingBirthdayUsers} />
+                </>
+              )}
+            </ScrollArea>
+          </>
+        )}
+      </Container>
+
+      <TextInputModal type="birthday" />
+      <ImageModal
+        titleText="생일 축하해!"
+        subText="편지가 날아가는 중이야 💌"
+        ImageComponent={null}
+        onClose={() => closeModal()}
       />
-      <MessageText>
-        재밌는 기능들을 {'\n'}
-        준비중이야
-      </MessageText>
-      <FeedbackButton
-        onPress={() => {
-          router.push('/account/setting/help');
-        }}
-      >
-        <ButtonLabel>이런 것도 있으면 좋겠어</ButtonLabel>
-      </FeedbackButton>
-    </Container>
+    </>
   );
 }
 
 const Container = styled.View`
   flex: 1;
-  padding-horizontal: ${20 * width}px;
-  align-items: center;
   background-color: ${colors.bg[2]};
-  gap: ${20 * height};
+`;
+
+const HeaderWrapper = styled.View`
+  padding-horizontal: ${20 * width}px;
+  background-color: ${colors.bg[2]};
+`;
+
+const ScrollArea = styled.ScrollView`
+  flex: 1;
+  gap: ${20 * height}px;
+`;
+
+const Title = styled.Text`
+  color: ${colors.text[1]};
+  font-family: ${fonts.ExtraBold};
+  font-size: ${fontSize['lg']}px;
+  align-self: flex-start;
+  padding-top: ${24 * height}px;
+  padding-bottom: ${12 * height}px;
+`;
+
+const BirthdayCardContainer = styled.View`
+  padding-horizontal: ${20 * width}px;
+  gap: ${8 * height}px;
+`;
+
+const UpcomingBirthdayCardContainer = styled.View`
+  padding-horizontal: ${20 * width}px;
+`;
+
+const EmptyWrapper = styled.View`
+  flex: 1;
+  align-items: center;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const MessageText = styled.Text`
@@ -52,18 +188,4 @@ const MessageText = styled.Text`
   font-family: ${fonts.Bold};
   color: ${colors.text[3]};
   text-align: center;
-`;
-
-const FeedbackButton = styled.Pressable`
-  background-color: ${colors.white};
-  border-radius: ${radius.md}px;
-  padding: ${8 * height}px ${12 * width}px;
-  justify-content: center;
-`;
-
-const ButtonLabel = styled.Text`
-  font-size: ${fontSize.sm}px;
-  font-family: ${fonts.Regular};
-  font-weight: 700;
-  color: ${colors.primaryLight};
 `;
