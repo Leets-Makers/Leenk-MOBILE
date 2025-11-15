@@ -19,7 +19,7 @@ import { formatTodayMonthDay } from '@/utils/format-date';
 import { useBirthdayStore } from '@/stores/birthdayStore';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import ImageModal from '@/components/Modal/ImageModal';
-import { postMarkBirthdayLetters } from '@/api/private/birthday/postBirthdayLettersMark.api';
+import { postMarkBirthdayLetters } from '@/api/private/birthday/birthday.post.api';
 import { BirthdayUser } from '@/types/birthday';
 import { LeenkGrayIcon } from '@/assets';
 

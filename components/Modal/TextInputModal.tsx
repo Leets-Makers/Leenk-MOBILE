@@ -16,7 +16,7 @@ import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { reportFeed } from '@/api/feed/feed.api';
 import { reportLeenk } from '@/api/leenk/leenk.post.api';
-import { postBirthdayLetter } from '@/api/private/birthday/postBirthdayLetters.api';
+import { postBirthdayLetter } from '@/api/private/birthday/birthday.post.api';
 
 interface TextInputModalProps {
   type: 'feed' | 'leenk' | 'birthday';

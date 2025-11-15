@@ -4,9 +4,9 @@ import {
   UpcomingBirthdayUser,
   BirthdayLetter,
 } from '@/types/birthday';
-import { getBirthdayUsers } from '@/api/private/birthday/getBirthday.api';
-import { getUpcomingBirthdayUsers } from '@/api/private/birthday/getUpcomingBirthday.api';
-import { getBirthdayLetters } from './../api/private/birthday/getBirthdayLetters.api';
+import { getBirthdayUsers } from '@/api/private/birthday/birthday.get.api';
+import { getUpcomingBirthdayUsers } from '@/api/private/birthday/birthday.get.api';
+import { getBirthdayLetters } from '@/api/private/birthday/birthday.get.api';
 
 interface BirthdayStore {
   //  생일 관련 데이터
