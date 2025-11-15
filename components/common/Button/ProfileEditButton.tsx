@@ -8,6 +8,7 @@ import {
   width,
 } from '@/theme/globalStyles';
 import styled from 'styled-components/native';
+import dayjs from 'dayjs';
 
 export const ProfileEditButton = ({
   title,
@@ -19,23 +20,48 @@ export const ProfileEditButton = ({
   content: string;
   onPress: () => void;
   isTextarea?: boolean;
-}) => (
-  <EditWrapper>
-    <Title>{title}</Title>
-    {isTextarea ? (
-      <TextareaWrapper onPress={onPress}>
-        <ScrollableTextContainer>
-          <TextareaText>{content}</TextareaText>
-        </ScrollableTextContainer>
-        <CharCount>{content.length}/200</CharCount>
-      </TextareaWrapper>
-    ) : (
-      <Box onPress={onPress}>
-        <BoxText numberOfLines={1}>{content}</BoxText>
-      </Box>
-    )}
-  </EditWrapper>
-);
+}) => {
+  const placeholders: Record<string, string> = {
+    '카톡 아이디': '모임원들과의 연락을 위해 필요해',
+    MBTI: 'MBTI를 입력해줘',
+    생일: '생일을 입력해줘',
+    자기소개: '자기소개를 입력해줘',
+  };
+
+  const isEmpty = !content || content.trim().length === 0;
+  const placeholderText = placeholders[title] || '';
+
+  // 생일이면 YYYY년 M월 D일 포맷
+  const formattedContent =
+    title === '생일' && !isEmpty
+      ? dayjs(content, 'YYYY-MM-DD').format('YYYY년 M월 D일')
+      : content;
+
+  const displayText = isEmpty ? placeholderText : formattedContent;
+  const textColor = isEmpty ? colors.gray[400] : colors.black;
+
+  return (
+    <EditWrapper>
+      <Title>{title}</Title>
+      {isTextarea ? (
+        <TextareaWrapper onPress={onPress}>
+          <ScrollableTextContainer>
+            <TextareaText style={{ color: textColor }}>
+              {displayText}
+            </TextareaText>
+          </ScrollableTextContainer>
+          <CharCount>{content.length}/200</CharCount>
+        </TextareaWrapper>
+      ) : (
+        <Box onPress={onPress}>
+          <BoxText numberOfLines={1} style={{ color: textColor }}>
+            {displayText}
+          </BoxText>
+        </Box>
+      )}
+    </EditWrapper>
+  );
+};
 
 const EditWrapper = styled.View`
   margin-top: ${20 * height}px;
@@ -59,7 +85,6 @@ const Box = styled.Pressable`
 const BoxText = styled.Text`
   font-family: ${fonts.Regular};
   font-size: ${fontSize.md}px;
-  color: ${colors.black};
 `;
 
 const TextareaWrapper = styled.Pressable`
@@ -80,7 +105,6 @@ const ScrollableTextContainer = styled.ScrollView.attrs({
 
 const TextareaText = styled.Text`
   font-size: ${fontSize.md}px;
-  color: ${colors.black};
   font-family: ${fonts.Regular};
   line-height: ${lineHeight.l}px;
 `;

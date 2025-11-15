@@ -6,6 +6,7 @@ export interface UpdateProfilePayload {
   introduction?: string;
   profileImage?: string;
   mbti?: string;
+  birthday?: string;
 }
 
 export const updateUserProfile = async (payload: UpdateProfilePayload) => {
