@@ -14,16 +14,28 @@ type ModalType =
   | 'leenkFinish'
   | 'leenkLeave'
   | 'leenkReport'
+  | 'birthdayLetter'
+  | 'birthdayLetterFinish'
   | null;
 
 interface ModalStore {
-  openModal: (type: ModalType) => void;
+  openModal: (type: ModalType, receiverId?: number | null) => void;
   closeModal: () => void;
   modalType: ModalType;
+  receiverId: number | null;
 }
 
 export const useModalStore = create<ModalStore>((set) => ({
   modalType: null,
-  openModal: (type) => set({ modalType: type }),
-  closeModal: () => set({ modalType: null }),
+  receiverId: null,
+  openModal: (type, receiverId = null) =>
+    set({
+      modalType: type,
+      receiverId,
+    }),
+  closeModal: () =>
+    set({
+      modalType: null,
+      receiverId: null,
+    }),
 }));
