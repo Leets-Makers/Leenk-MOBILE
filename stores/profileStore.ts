@@ -1,11 +1,13 @@
 import { create } from 'zustand';
 
 type ProfileState = {
-  step: 'id' | 'introduction' | 'mbti' | 'photo';
+  step: 'id' | 'introduction' | 'birthday' | 'mbti' | 'photo';
   userId: number;
   kakaoTalkId: string;
   introduction: string;
   mbti: string;
+  birthday: string;
+  isUserBirthdayToday: boolean;
   profileImage: string;
   position: string;
   name: string;
@@ -15,6 +17,8 @@ type ProfileState = {
   setkakaoTalkId: (kakaoTalkId: string) => void;
   setintroduction: (text: string) => void;
   setMbti: (mbti: string) => void;
+  setBirthday: (birthday: string) => void;
+  setIsUserBirthdayToday: (isUSerBirthdayToday: boolean) => void;
   setProfileImage: (uri: string) => void;
   setPosition: (position: string) => void;
   setName: (name: string) => void;
@@ -28,6 +32,8 @@ export const useProfileStore = create<ProfileState>((set) => ({
   kakaoTalkId: '',
   introduction: '',
   mbti: '',
+  birthday: '',
+  isUserBirthdayToday: false,
   profileImage: '',
   position: '',
   name: '',
@@ -37,6 +43,8 @@ export const useProfileStore = create<ProfileState>((set) => ({
   setkakaoTalkId: (kakaoTalkId) => set({ kakaoTalkId }),
   setintroduction: (introduction) => set({ introduction }),
   setMbti: (mbti) => set({ mbti }),
+  setBirthday: (birthday) => set({ birthday }),
+  setIsUserBirthdayToday: (isUserBirthdayToday) => set({ isUserBirthdayToday }),
   setProfileImage: (uri) => set({ profileImage: uri }),
   setPosition: (position) => set({ position }),
   setName: (name) => set({ name }),
@@ -48,6 +56,8 @@ export const useProfileStore = create<ProfileState>((set) => ({
       kakaoTalkId: '',
       introduction: '',
       mbti: '',
+      birthday: '',
+      isUserBirthdayToday: false,
       profileImage: '',
       position: '',
       name: '',

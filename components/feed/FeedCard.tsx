@@ -20,7 +20,10 @@ export default function FeedCard({ item }: FeedCardProps) {
     <CardContainer onPress={handlePress}>
       <Thumbnail source={{ uri: item.thumbNail }} resizeMode="cover">
         <OverlayTopLeft>
-          <ProfileImageWithFallback uri={item.author.profileImage} />
+          <ProfileImageWithFallback
+            uri={item.author.profileImage}
+            isUserBirthdayToday={item.author.isUserBirthdayToday}
+          />
         </OverlayTopLeft>
 
         <OverlayBottomRight>

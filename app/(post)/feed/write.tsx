@@ -243,6 +243,7 @@ export default function FeedWritePage() {
               profileImage={userInfo?.profileImage}
               name={userInfo?.name}
               label={writeBadgeLabel}
+              isUserBirthdayToday={userInfo?.isUserBirthdayToday}
               onPressBadge={onClickToAddMember}
             />
 

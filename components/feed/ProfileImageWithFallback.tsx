@@ -5,19 +5,26 @@ import { DefaultProfileImage, BirthdayIcon } from '@/assets';
 interface ProfileImageProps {
   uri?: string | null;
   size?: number;
-  isBirthday?: boolean; // 생일자 여부
+  isUserBirthdayToday?: boolean; // 생일자 여부
 }
 
 export default function ProfileImageWithFallback({
   uri,
   size = 40,
-  isBirthday = false,
+  isUserBirthdayToday = false,
 }: ProfileImageProps) {
   const [error, setError] = useState(false);
   useEffect(() => {
     setError(false);
   }, [uri]);
+
   const showFallback = !uri || error;
+
+  const birthdayIconSize = size <= 40 ? 16 : 24;
+
+  const overlayPosition =
+    size <= 40 ? { top: -10, left: 2 } : { top: -12, left: 8 };
+
   return (
     <Wrapper width={size}>
       <ImageContainer width={size}>
@@ -38,9 +45,11 @@ export default function ProfileImageWithFallback({
           />
         )}
       </ImageContainer>
-      {isBirthday && (
-        <BirthdayOverlay>
-          <BirthdayIcon width={24} height={24} />
+      {isUserBirthdayToday && (
+        <BirthdayOverlay
+          style={{ top: overlayPosition.top, left: overlayPosition.left }}
+        >
+          <BirthdayIcon width={birthdayIconSize} height={birthdayIconSize} />
         </BirthdayOverlay>
       )}
     </Wrapper>
@@ -77,8 +86,6 @@ const StyledImage = styled.Image<{ width: number; height: number }>`
 
 const BirthdayOverlay = styled.View`
   position: absolute;
-  top: -10px;
-  left: 6px;
   z-index: 10;
   elevation: 10;
 `;
