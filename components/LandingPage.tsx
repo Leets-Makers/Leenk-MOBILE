@@ -33,6 +33,7 @@ import { FEED_PADDING } from '@/constants';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { AppleLogo } from '@/assets';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { appleLogin } from '@/api/login/apple.api';
 
 // FCM 토큰 서버 전송 함수
 export const registerFcmToken = async () => {
@@ -130,15 +131,23 @@ export default function LandingPage() {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      // credential 객체에 id, email, name 등 포함됨. 이후 서버 등에 전달해서 처리
-      // TODO: 서버 연동 및 사용자 생성 로직 연결(현재는 alert)
-      // alert(JSON.stringify(credential));
-    } catch (e: any) {
-      if (e.code === 'ERR_CANCELED') {
-        // 사용자가 취소함
-      } else {
-        // 기타 에러 처리
+
+      const idToken = credential.identityToken;
+
+      if (!idToken) {
+        console.error('identityToken 없음');
+        return;
       }
+
+      const res = await appleLogin(idToken);
+
+      console.log('애플 로그인 결과:', res.data);
+    } catch (error: any) {
+      if (error && error.code === 'ERR_REQUEST_CANCELED') {
+        return;
+      }
+
+      console.error('애플 로그인 에러:', error);
     }
   };
   // const handleLogin = async () => {
