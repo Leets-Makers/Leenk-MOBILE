@@ -38,7 +38,7 @@ export default function ImageModal({
   }, [isOpen, onClose]);
 
   return (
-    <Modal animationType="none" transparent visible={isOpen}>
+    <Modal animationType="fade" transparent visible={isOpen}>
       {/* 배경 전체를 터치하면 닫힘 */}
       <TouchableWithoutFeedback onPress={closeModal}>
         <Overlay>
