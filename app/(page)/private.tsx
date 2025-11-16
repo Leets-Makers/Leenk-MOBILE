@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
@@ -19,13 +19,13 @@ import { formatTodayMonthDay } from '@/utils/format-date';
 import { useBirthdayStore } from '@/stores/birthdayStore';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import ImageModal from '@/components/Modal/ImageModal';
-import { postMarkBirthdayLetters } from '@/api/private/birthday/birthday.post.api';
 import { BirthdayUser } from '@/types/birthday';
 import { LeenkGrayIcon } from '@/assets';
 
 export default function PrivatePage() {
   const router = useRouter();
   const { userInfo } = useUserInfo();
+  const [selectedUserName, setSelectedUserName] = React.useState<string>('');
   const { openModal, closeModal } = useModalStore();
   const {
     birthdayUsers,
@@ -51,6 +51,8 @@ export default function PrivatePage() {
         router.push('/birthday/letters');
         return;
       }
+
+      setSelectedUserName(user.name);
 
       // 다른 사람 생일인 경우 (편지 작성 모달)
       openModal('birthdayLetter', user.userId);
@@ -121,8 +123,8 @@ export default function PrivatePage() {
 
       <TextInputModal type="birthday" />
       <ImageModal
-        titleText="생일 축하해!"
-        subText="편지가 날아가는 중이야 💌"
+        titleText={`생일 축하해 ${selectedUserName}!`}
+        subText={`편지가 날아가는 중이야 💌\n또 보내볼까?`}
         ImageComponent={null}
         onClose={() => closeModal()}
       />
