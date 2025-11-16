@@ -42,7 +42,7 @@ const ScrollContainer = styled(ScrollView)`
 `;
 
 const Card = styled.View`
-  width: ${95 * width}px;
+  min-width: ${95 * width}px;
   height: ${124 * height}px;
   padding: ${16 * height}px ${20 * width}px;
   flex-direction: column;
@@ -50,18 +50,18 @@ const Card = styled.View`
   align-items: center;
   background-color: ${colors.white};
   border-radius: ${radius.lg}px;
-  margin-right: 8px;
+  margin-right: ${8 * width}px;
 `;
 
 const UserName = styled.Text`
-  margin-top: 10px;
+  margin-top: ${10 * height}px;
   font-family: ${fonts.Regular};
   font-size: ${fontSize['lg']}px;
   color: ${colors.text[1]};
 `;
 
 const UserBirthday = styled.Text`
-  margin-top: 8px;
+  margin-top: ${8 * height}px;
   font-family: ${fonts.Regular};
   font-size: ${fontSize['sm']}px;
   color: ${colors.text[3]};

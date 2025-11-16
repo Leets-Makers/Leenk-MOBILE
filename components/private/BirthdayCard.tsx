@@ -45,8 +45,8 @@ export default function BirthdayCard({
             <BadgeWrapperInButton>
               <Badge>{myBirthdayLettersCounts}</Badge>
             </BadgeWrapperInButton>
+            {hasNewLetters && <Dot />}
           </LettersButton>
-          {hasNewLetters && <Dot />}
         </BadgeWrapper>
       )}
 
@@ -78,14 +78,14 @@ const Container = styled.View`
 
 const ContentArea = styled.View`
   flex: 1;
-  margin-left: 10px;
+  margin-left: ${10 * width}px;
 `;
 
 const NameText = styled.Text`
   color: ${colors.text[1]};
   font-family: ${fonts.Bold};
   font-size: ${fontSize['lg']}px;
-  padding-bottom: 4px;
+  padding-bottom: ${4 * height}px;
 `;
 
 const LeftSection = styled.View`
@@ -106,7 +106,7 @@ const LettersText = styled.Text`
   color: ${colors.white};
   font-family: ${fonts.Bold};
   font-size: ${fontSize['sm']}px;
-  margin-right: 8px;
+  margin-right: ${8 * width}px;
 `;
 
 const Badge = styled.Text`
@@ -132,5 +132,5 @@ const Dot = styled.View`
   background-color: ${colors.secondary};
   position: absolute;
   top: 8px;
-  right: 10px;
+  right: 9px;
 `;
