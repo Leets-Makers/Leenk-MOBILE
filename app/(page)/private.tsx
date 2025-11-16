@@ -48,19 +48,6 @@ export default function PrivatePage() {
       const isOwn = user.userId === userInfo?.id;
 
       if (isOwn) {
-        // 본인 생일인 경우
-        if (hasNewLetters) {
-          try {
-            await postMarkBirthdayLetters();
-
-            // 읽음 처리 후 store 업데이트
-            useBirthdayStore.setState({
-              hasNewLetters: false,
-            });
-          } catch (err) {
-            console.log('편지 읽음 처리 실패:', err);
-          }
-        }
         router.push('/birthday/letters');
         return;
       }

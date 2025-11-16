@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Header } from '@/components';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
@@ -12,13 +12,26 @@ import {
 import BirthdayLetterCard from '@/components/private/BirthdayLetterCard';
 import { useBirthdayStore } from '@/stores/birthdayStore';
 import { LeenkGrayIcon } from '@/assets';
+import { useFocusEffect } from 'expo-router';
+import { postMarkBirthdayLetters } from '@/api/private/birthday/birthday.post.api';
 
 export default function BirthdayLettersPage() {
-  const { birthdayLetters, fetchBirthdayLetters } = useBirthdayStore();
+  const { birthdayLetters, fetchBirthdayLetters, hasNewLetters } =
+    useBirthdayStore();
 
-  useEffect(() => {
-    fetchBirthdayLetters();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchBirthdayLetters();
+
+      if (hasNewLetters) {
+        postMarkBirthdayLetters()
+          .then(() => {
+            useBirthdayStore.setState({ hasNewLetters: false });
+          })
+          .catch((err) => console.log('편지 읽음 처리 실패:', err));
+      }
+    }, [hasNewLetters]),
+  );
 
   const letters = birthdayLetters ?? [];
 
