@@ -80,7 +80,7 @@ export default function ProfilePage() {
     if (profileImage) {
       const fileName = `profile_${Date.now()}.jpg`;
       try {
-        const presignedUrls = await getPresignedUrl(fileName);
+        const presignedUrls = await getPresignedUrl(fileName, 'PROFILE');
         if (!presignedUrls || presignedUrls.length === 0) {
           throw new Error('presigned URL 생성에 실패했습니다.');
         }
