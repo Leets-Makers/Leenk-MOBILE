@@ -21,7 +21,6 @@ export const getPresignedUrl = async (
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: 'repeat' }),
     });
-    console.log('이미지 응답: ', res.data);
     return res.data.data;
   } catch (error) {
     console.error(
