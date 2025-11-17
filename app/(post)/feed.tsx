@@ -45,7 +45,7 @@ export default function PostFeedPage() {
     try {
       const fileNames = selectedImages.map((img) => img.filename);
 
-      const presignedUrls = await getPresignedUrl(fileNames);
+      const presignedUrls = await getPresignedUrl(fileNames, 'FEED');
 
       const mediaArray: Media[] = [];
 
