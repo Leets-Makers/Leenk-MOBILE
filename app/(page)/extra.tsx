@@ -26,7 +26,7 @@ export default function ExtraPage() {
   const router = useRouter();
   const { userInfo, refetch: refetchUserInfo } = useUserInfo();
   const [selectedUserName, setSelectedUserName] = React.useState<string>('');
-  const { openModal, closeModal } = useModalStore();
+  const { openModal } = useModalStore();
   const {
     birthdayUsers,
     myBirthdayLettersCounts,
@@ -58,7 +58,7 @@ export default function ExtraPage() {
       // 다른 사람 생일인 경우 (편지 작성 모달)
       openModal('birthdayLetter', user.userId);
     },
-    [userInfo?.id, openModal],
+    [userInfo?.id, openModal, router, setSelectedUserName],
   );
 
   //  오늘 생일자
@@ -94,18 +94,23 @@ export default function ExtraPage() {
                 {todayBirthdayUsers.length > 0 && (
                   <Title>{`${formatTodayMonthDay()} 오늘의 생일자! 🎉`}</Title>
                 )}
-                {todayBirthdayUsers.map((user) => (
-                  <BirthdayCard
-                    key={user.userId}
-                    username={user.name}
-                    profileImage={user.thumbnail}
-                    isUserBirthdayToday={user.isUserBirthdayToday}
-                    isOwnBirthdayToday={user.userId === userInfo?.id}
-                    myBirthdayLettersCounts={myBirthdayLettersCounts}
-                    hasNewLetters={hasNewLetters}
-                    onPress={() => handleBirthdayCardPress(user)}
-                  />
-                ))}
+                {todayBirthdayUsers.map((user) => {
+                  const isOwn = user.userId === userInfo?.id;
+                  return (
+                    <BirthdayCard
+                      key={user.userId}
+                      username={user.name}
+                      profileImage={user.thumbnail}
+                      isUserBirthdayToday={user.isUserBirthdayToday}
+                      isOwnBirthdayToday={isOwn}
+                      myBirthdayLettersCounts={
+                        isOwn ? myBirthdayLettersCounts : 0
+                      }
+                      hasNewLetters={isOwn ? hasNewLetters : false}
+                      onPress={() => handleBirthdayCardPress(user)}
+                    />
+                  );
+                })}
               </BirthdayCardContainer>
 
               {/* 곧 생일 */}
@@ -124,7 +129,7 @@ export default function ExtraPage() {
 
       <TextInputModal type="birthday" />
       <ImageModal
-        titleText={`생일 축하해 ${selectedUserName.slice(-2)}!`}
+        titleText={`생일 축하해 ${selectedUserName.length >= 2 ? selectedUserName.slice(-2) : selectedUserName}!`}
         subText={`편지가 날아가는 중이야 💌\n또 보내볼까?`}
         ImageComponent={null}
         onClose={() => setSelectedUserName('')}
@@ -145,7 +150,6 @@ const HeaderWrapper = styled.View`
 
 const ScrollArea = styled.ScrollView`
   flex: 1;
-  gap: ${20 * height}px;
 `;
 
 const Title = styled.Text`
