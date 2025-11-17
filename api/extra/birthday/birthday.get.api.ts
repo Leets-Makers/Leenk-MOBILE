@@ -8,8 +8,6 @@ import {
 // 🎉 생일인 사람들 조회
 export const getBirthdayUsers = async (): Promise<BirthdayData> => {
   const res = await api.get('/birthday/users');
-
-  console.log('생일인 사람들: ', res.data.data);
   return res.data.data;
 };
 
@@ -23,7 +21,5 @@ export const getBirthdayLetters = async (): Promise<BirthdayLetter[]> => {
 export const getUpcomingBirthdayUsers =
   async (): Promise<UpcomingBirthdayData> => {
     const res = await api.get('/birthday/users/upcoming');
-
-    console.log('곧 생일인 사람들: ', res.data.data);
     return res.data.data;
   };
