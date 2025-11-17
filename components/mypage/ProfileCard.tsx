@@ -56,12 +56,12 @@ export default function ProfileCard({
           <InfoSection>
             <InfoText textColor={colors.text[3]}>MBTI</InfoText>
             <InfoText textColor={colors.primary} isPrimary>
-              {mbti || '????'}
+              {mbti || '미등록'}
             </InfoText>
 
             <InfoText textColor={colors.text[3]}>생일</InfoText>
             <InfoText textColor={colors.primary} isPrimary>
-              {birthday ? formatMonthDay(birthday) : '????'}
+              {birthday ? formatMonthDay(birthday) : '미등록'}
             </InfoText>
           </InfoSection>
         </TextWrapper>
