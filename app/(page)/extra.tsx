@@ -24,7 +24,7 @@ import { LeenkGrayIcon } from '@/assets';
 
 export default function ExtraPage() {
   const router = useRouter();
-  const { userInfo } = useUserInfo();
+  const { userInfo, refetch: refetchUserInfo } = useUserInfo();
   const [selectedUserName, setSelectedUserName] = React.useState<string>('');
   const { openModal, closeModal } = useModalStore();
   const {
@@ -40,11 +40,12 @@ export default function ExtraPage() {
     useCallback(() => {
       fetchBirthdayUsers();
       fetchUpcomingBirthdayUsers();
-    }, []),
+      refetchUserInfo();
+    }, [fetchBirthdayUsers, fetchUpcomingBirthdayUsers, refetchUserInfo]),
   );
 
   const handleBirthdayCardPress = useCallback(
-    async (user: BirthdayUser) => {
+    (user: BirthdayUser) => {
       const isOwn = user.userId === userInfo?.id;
 
       if (isOwn) {
@@ -57,7 +58,7 @@ export default function ExtraPage() {
       // 다른 사람 생일인 경우 (편지 작성 모달)
       openModal('birthdayLetter', user.userId);
     },
-    [userInfo?.id, hasNewLetters],
+    [userInfo?.id, openModal],
   );
 
   //  오늘 생일자
@@ -126,7 +127,7 @@ export default function ExtraPage() {
         titleText={`생일 축하해 ${selectedUserName}!`}
         subText={`편지가 날아가는 중이야 💌\n또 보내볼까?`}
         ImageComponent={null}
-        onClose={() => closeModal()}
+        onClose={() => setSelectedUserName('')}
       />
     </>
   );
