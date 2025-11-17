@@ -6,15 +6,18 @@ export interface PresignedUrlData {
   mediaUrl: string;
 }
 
+export type DomainType = 'FEED' | 'LEENK' | 'PROFILE';
+
 // 여러장의 이미지 Url를 요청할 경우 getPresignedUrl(['profile_1.jpg', 'profile_2.jpg']); 이렇게 보내주시면 됩니다!
 export const getPresignedUrl = async (
   fileNames: string | string[],
+  domainType: DomainType,
 ): Promise<PresignedUrlData[]> => {
   const fileNameParams = Array.isArray(fileNames) ? fileNames : [fileNames];
 
   try {
     const res = await api.get('/medias', {
-      params: { fileName: fileNameParams },
+      params: { fileName: fileNameParams, domainType },
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: 'repeat' }),
     });
