@@ -33,14 +33,20 @@ export default function ImageModal({
     if (!isOpen) return;
     const t = setTimeout(() => {
       onClose?.();
+      closeModal();
     }, 3000);
     return () => clearTimeout(t);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, closeModal]);
 
   return (
     <Modal animationType="fade" transparent visible={isOpen}>
       {/* 배경 전체를 터치하면 닫힘 */}
-      <TouchableWithoutFeedback onPress={closeModal}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onClose?.();
+          closeModal();
+        }}
+      >
         <Overlay>
           <TouchableWithoutFeedback>
             <Container>
