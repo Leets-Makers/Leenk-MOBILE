@@ -11,7 +11,7 @@ import {
 import CustomButton from '@/components/common/Button/CustomButton';
 import { useRouter } from 'expo-router';
 import KakaoIdButton from '@/components/mypage/KakaoIdButton';
-import ProfileImageWithFallback from '../feed/ProfileImageWithFallback';
+import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
 import { formatMonthDay } from '@/utils/format-date';
 
 type ProfileCardProps = {

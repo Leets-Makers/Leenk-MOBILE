@@ -1,4 +1,4 @@
-import ProfileImageWithFallback from '../feed/ProfileImageWithFallback';
+import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
 import { fonts, fontSize, height, radius, width } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import styled from 'styled-components/native';
