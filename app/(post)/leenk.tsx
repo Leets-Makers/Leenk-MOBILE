@@ -127,7 +127,7 @@ export default function PostLeenkPage() {
     if (isRemoteUrl(leenkImage)) return stripQuery(leenkImage);
 
     const fileName = `leenk_${Date.now()}.jpg`;
-    const presignedUrls = await getPresignedUrl(fileName);
+    const presignedUrls = await getPresignedUrl(fileName, 'LEENK');
     if (!presignedUrls || presignedUrls.length === 0) {
       throw new Error('Failed to get presigned URL.');
     }
