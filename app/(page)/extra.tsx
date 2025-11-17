@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
@@ -11,8 +11,8 @@ import {
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
 import { Header } from '@/components';
-import BirthdayCard from '@/components/private/BirthdayCard';
-import UpcomingBirthdayCard from '@/components/private/UpcomingBirthdayCard';
+import BirthdayCard from '@/components/extra/birthday/BirthdayCard';
+import UpcomingBirthdayCard from '@/components/extra/birthday/UpcomingBirthdayCard';
 import { useModalStore } from '@/stores/modalStore';
 import TextInputModal from '@/components/Modal/TextInputModal';
 import { formatTodayMonthDay } from '@/utils/format-date';
@@ -22,7 +22,7 @@ import ImageModal from '@/components/Modal/ImageModal';
 import { BirthdayUser } from '@/types/birthday';
 import { LeenkGrayIcon } from '@/assets';
 
-export default function PrivatePage() {
+export default function ExtraPage() {
   const router = useRouter();
   const { userInfo } = useUserInfo();
   const [selectedUserName, setSelectedUserName] = React.useState<string>('');
@@ -48,7 +48,7 @@ export default function PrivatePage() {
       const isOwn = user.userId === userInfo?.id;
 
       if (isOwn) {
-        router.push('/birthday/letters');
+        router.push('/extra/birthday/letters');
         return;
       }
 

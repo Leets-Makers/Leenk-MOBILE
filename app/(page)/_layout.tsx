@@ -27,7 +27,7 @@ const TAB_CONFIG: readonly TabConfigItem[] = [
   { name: 'leenk', label: '링크', icon: LeenkIcon },
   { name: 'feed', label: '피드', icon: FeedIcon },
   { name: 'write', label: '', icon: PlusIcon, isSpecial: true },
-  { name: 'private', label: '부가', icon: AdditionIcon },
+  { name: 'extra', label: '부가', icon: AdditionIcon },
   { name: 'mypage', label: '마이', icon: MypageIcon },
 ];
 

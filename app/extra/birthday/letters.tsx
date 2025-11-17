@@ -9,11 +9,11 @@ import {
   height,
   lineHeight,
 } from '@/theme/globalStyles';
-import BirthdayLetterCard from '@/components/private/BirthdayLetterCard';
+import BirthdayLetterCard from '@/components/extra/birthday/BirthdayLetterCard';
 import { useBirthdayStore } from '@/stores/birthdayStore';
 import { LeenkGrayIcon } from '@/assets';
 import { useFocusEffect } from 'expo-router';
-import { postMarkBirthdayLetters } from '@/api/private/birthday/birthday.post.api';
+import { postMarkBirthdayLetters } from '@/api/extra/birthday/birthday.post.api';
 
 export default function BirthdayLettersPage() {
   const { birthdayLetters, fetchBirthdayLetters, hasNewLetters } =
