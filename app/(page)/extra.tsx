@@ -124,7 +124,7 @@ export default function ExtraPage() {
 
       <TextInputModal type="birthday" />
       <ImageModal
-        titleText={`생일 축하해 ${selectedUserName}!`}
+        titleText={`생일 축하해 ${selectedUserName.slice(-2)}!`}
         subText={`편지가 날아가는 중이야 💌\n또 보내볼까?`}
         ImageComponent={null}
         onClose={() => setSelectedUserName('')}
