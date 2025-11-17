@@ -56,13 +56,13 @@ const Card = styled.View`
 const UserName = styled.Text`
   margin-top: ${10 * height}px;
   font-family: ${fonts.Regular};
-  font-size: ${fontSize['lg']}px;
+  font-size: ${fontSize.lg}px;
   color: ${colors.text[1]};
 `;
 
 const UserBirthday = styled.Text`
   margin-top: ${8 * height}px;
   font-family: ${fonts.Regular};
-  font-size: ${fontSize['sm']}px;
+  font-size: ${fontSize.sm}px;
   color: ${colors.text[3]};
 `;

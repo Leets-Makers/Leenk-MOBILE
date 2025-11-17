@@ -122,7 +122,7 @@ const DividerLine = styled.View`
 const YearText = styled.Text`
   color: ${colors.divider[2]};
   font-family: ${fonts.Bold};
-  font-size: ${fontSize['xs']}px;
+  font-size: ${fontSize.xs}px;
 `;
 
 const EmptyWrapper = styled.View`

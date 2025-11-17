@@ -84,7 +84,7 @@ const ContentArea = styled.View`
 const NameText = styled.Text`
   color: ${colors.text[1]};
   font-family: ${fonts.Bold};
-  font-size: ${fontSize['lg']}px;
+  font-size: ${fontSize.lg}px;
   padding-bottom: ${4 * height}px;
 `;
 
@@ -105,14 +105,14 @@ const LettersButton = styled.TouchableOpacity`
 const LettersText = styled.Text`
   color: ${colors.white};
   font-family: ${fonts.Bold};
-  font-size: ${fontSize['sm']}px;
+  font-size: ${fontSize.sm}px;
   margin-right: ${8 * width}px;
 `;
 
 const Badge = styled.Text`
   color: ${colors.primary};
   font-family: ${fonts.Bold};
-  font-size: ${fontSize['sm']}px;
+  font-size: ${fontSize.sm}px;
 `;
 
 const BadgeWrapper = styled.View`

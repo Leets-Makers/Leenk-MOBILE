@@ -52,12 +52,12 @@ const ProfileWrapper = styled.View`
 const UserName = styled.Text`
   margin-top: ${8 * height}px;
   font-family: ${fonts.Regular};
-  font-size: ${fontSize['lg']}px;
+  font-size: ${fontSize.lg}px;
   color: ${colors.text[1]};
 `;
 
 const Message = styled.Text`
   font-family: ${fonts.Regular};
-  font-size: ${fontSize['lg']}px;
+  font-size: ${fontSize.lg}px;
   color: ${colors.text[1]};
 `;

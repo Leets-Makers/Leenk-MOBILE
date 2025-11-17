@@ -150,7 +150,7 @@ const ScrollArea = styled.ScrollView`
 const Title = styled.Text`
   color: ${colors.text[1]};
   font-family: ${fonts.ExtraBold};
-  font-size: ${fontSize['lg']}px;
+  font-size: ${fontSize.lg}px;
   align-self: flex-start;
   padding-top: ${24 * height}px;
   padding-bottom: ${12 * height}px;
