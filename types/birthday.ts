@@ -18,11 +18,7 @@ export interface BirthdayLetter {
   createdAt: string;
 }
 
-export interface UpcomingBirthdayUser {
-  userId: number;
-  thumbnail: string;
-  name: string;
-  isUserBirthdayToday: boolean;
+export interface UpcomingBirthdayUser extends BirthdayUser {
   birthday: string;
 }
 
