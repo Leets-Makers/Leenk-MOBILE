@@ -16,47 +16,87 @@ import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { reportFeed } from '@/api/feed/feed.api';
 import { reportLeenk } from '@/api/leenk/leenk.post.api';
+import { postBirthdayLetter } from '@/api/extra/birthday/birthday.post.api';
 
-interface ReportModalProps {
-  type: 'feed' | 'leenk';
+interface TextInputModalProps {
+  type: 'feed' | 'leenk' | 'birthday';
   feedId?: number;
   leenkId?: number;
 }
 
-export default function ReportModal({
+export default function TextInputModal({
   type = 'feed',
   feedId,
   leenkId,
-}: ReportModalProps) {
-  const [report, setReport] = useState('');
-  const { modalType, closeModal } = useModalStore();
+}: TextInputModalProps) {
+  const [text, setText] = useState('');
+  const { modalType, receiverId, closeModal, openModal } = useModalStore();
   const { showToast } = useToastStore();
 
-  const isOpen = modalType === `${type}Report`;
+  const isOpen =
+    (type === 'feed' && modalType === 'feedReport') ||
+    (type === 'leenk' && modalType === 'leenkReport') ||
+    (type === 'birthday' && modalType === 'birthdayLetter');
+
   const targetId = type === 'feed' ? feedId : leenkId;
 
-  const handleSubmit = async () => {
-    if (!targetId) {
-      console.error('신고할 ID가 없습니다.');
-      return;
-    }
+  const modalConfig = {
+    feed: {
+      title: '해당 피드를 신고하는 이유를 알려줘',
+      subtitle: '빠르게 확인하고 조치를 취해줄게!',
+      buttonText: '신고할게',
+      onSubmit: async () => {
+        if (!targetId) throw new Error('feedId 없음');
+        await reportFeed(targetId, text);
+        showToast('해당 피드를 신고했어', 'success');
+      },
+    },
+    leenk: {
+      title: '해당 링크를 신고하는 이유를 알려줘',
+      subtitle: '빠르게 확인하고 조치를 취해줄게!',
+      buttonText: '신고할게',
+      onSubmit: async () => {
+        if (!targetId) throw new Error('leenkId 없음');
+        await reportLeenk(targetId, text);
+        showToast('해당 링크를 신고했어', 'success');
+      },
+    },
+    birthday: {
+      title: '생일 편지를 보내봐!',
+      subtitle: '생일을 축하하는 메시지를 입력해 줘',
+      buttonText: '생일 축하해!',
+      onSubmit: async () => {
+        if (!receiverId) throw new Error('receiverId 없음');
+        await postBirthdayLetter(receiverId, { message: text });
+      },
+    },
+  } as const;
 
+  const { title, subtitle, buttonText, onSubmit } = modalConfig[type];
+
+  const handleSubmit = async () => {
     try {
-      if (type === 'feed') {
-        await reportFeed(targetId, report);
-      } else {
-        await reportLeenk(targetId, report);
+      await onSubmit();
+      if (type === 'birthday') {
+        closeModal();
+        setText('');
+
+        requestAnimationFrame(() => {
+          openModal('birthdayLetterFinish');
+        });
+
+        return;
       }
-      showToast(
-        `해당 ${type === 'feed' ? '피드' : '링크'}를 신고했어`,
-        'success',
-      );
-    } catch (error) {
-      console.error(`${type} 신고 실패:`, error);
-      showToast('신고 실패!', 'error');
-    } finally {
+
       closeModal();
-      setReport('');
+      setText('');
+    } catch (error) {
+      const errorMessage = type === 'birthday' ? '전송 실패!' : '신고 실패!';
+      console.error(`${type} 처리 실패:`, error);
+      showToast(errorMessage, 'error');
+
+      closeModal();
+      setText('');
     }
   };
 
@@ -78,17 +118,14 @@ export default function ReportModal({
           >
             <SheetContainer>
               <SheetBox>
-                <Title>
-                  해당 {type === 'feed' ? '피드' : '링크'}를 신고하는 이유를
-                  알려줘
-                </Title>
-                <SubText>빠르게 확인하고 조치를 취해줄게!</SubText>
+                <Title>{title}</Title>
+                <SubText>{subtitle}</SubText>
 
                 <Textarea
                   placeholder="텍스트를 입력해 주세요"
-                  value={report}
-                  onChangeText={setReport}
-                  maxLength={100}
+                  value={text}
+                  onChangeText={setText}
+                  maxLength={type === 'birthday' ? 40 : 100}
                   minHeight={30}
                   maxHeight={40}
                 />
@@ -98,9 +135,9 @@ export default function ReportModal({
                     variant="primary"
                     size="lg"
                     onPress={handleSubmit}
-                    disabled={report.length === 0}
+                    disabled={text.length === 0}
                   >
-                    신고할게
+                    {buttonText}
                   </CustomButton>
                   <CancelButton onPress={closeModal}>
                     <CancelText>취소</CancelText>

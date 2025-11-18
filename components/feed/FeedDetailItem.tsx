@@ -20,7 +20,7 @@ import colors from '@/theme/color';
 import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { useUserStore } from '@/stores/userStore';
-import FeedReportModal from '@/components/Modal/ReportModal';
+import FeedReportModal from '@/components/Modal/TextInputModal';
 import {
   fonts,
   fontSize,
@@ -76,6 +76,7 @@ export default function FeedDetailItem({ feed }: Props) {
   const authorName = feed?.author?.name ?? '사용자';
   const authorProfile = feed?.author?.profileImage ?? undefined;
   const isAuthor = authorId === userInfo?.id;
+  const isAuthorBirthdayToday = feed?.author?.isUserBirthdayToday;
 
   // ─────────────────────────────────────────────
   // 3) 연결 배지 라벨 (널가드)
@@ -164,7 +165,11 @@ export default function FeedDetailItem({ feed }: Props) {
               <TouchableOpacity
                 style={{ flexDirection: 'row', alignItems: 'center' }}
               >
-                <ProfileImageWithFallback uri={authorProfile} size={36} />
+                <ProfileImageWithFallback
+                  uri={authorProfile}
+                  size={36}
+                  isUserBirthdayToday={isAuthorBirthdayToday}
+                />
                 <StyledText>{authorName}</StyledText>
               </TouchableOpacity>
             </Link>

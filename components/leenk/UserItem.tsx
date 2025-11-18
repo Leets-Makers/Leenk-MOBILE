@@ -40,7 +40,10 @@ export default function UserItem({ user }: { user: LeenkParticipantItem }) {
           router.push(`/users/${user.participant.userId}`);
         }}
       >
-        <ProfileImageWithFallback uri={user.participant.profileImage} />
+        <ProfileImageWithFallback
+          uri={user.participant.profileImage}
+          isUserBirthdayToday={user.participant.isUserBirthdayToday}
+        />
       </Pressable>
 
       <MiddleWrapper>

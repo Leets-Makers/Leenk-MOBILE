@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import ReportModal from '@/components/Modal/ReportModal';
+import ReportModal from '@/components/Modal/TextInputModal';
 import PopupModal from '@/components/Modal/PopupModal';
 import BottomSheetModal from '../Modal/BottomSheetModal';
 import CustomButton from '../common/Button/CustomButton';

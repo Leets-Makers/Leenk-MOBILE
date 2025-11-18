@@ -8,11 +8,11 @@ import {
   radius,
   width,
 } from '@/theme/globalStyles';
-import { DefaultProfileImage } from '@/assets';
 import CustomButton from '@/components/common/Button/CustomButton';
 import { useRouter } from 'expo-router';
 import KakaoIdButton from '@/components/mypage/KakaoIdButton';
-import ProfileImageWithFallback from '../feed/ProfileImageWithFallback';
+import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback';
+import { formatMonthDay } from '@/utils/format-date';
 
 type ProfileCardProps = {
   cardinal: number;
@@ -20,8 +20,10 @@ type ProfileCardProps = {
   imageUrl?: string;
   introduction: string;
   kakaoTalkId: string;
-  mbti: string;
+  mbti?: string;
+  birthday?: string;
   isMyProfile?: boolean;
+  isUserBirthdayToday?: boolean;
 };
 
 const INTRO_MAX_PX = 150 * height; // 원하는 최대 높이(px)
@@ -35,7 +37,9 @@ export default function ProfileCard({
   introduction,
   kakaoTalkId,
   mbti,
+  birthday,
   isMyProfile = false,
+  isUserBirthdayToday = false,
 }: ProfileCardProps) {
   const router = useRouter();
   return (
@@ -48,9 +52,24 @@ export default function ProfileCard({
               <Badge>{cardinal}기</Badge>
             </BadgeWrapper>
           </LeftSection>
-          <MbtiText>{mbti}</MbtiText>
+
+          <InfoSection>
+            <InfoText textColor={colors.text[3]}>MBTI</InfoText>
+            <InfoText textColor={colors.primary} isPrimary>
+              {mbti || '미등록'}
+            </InfoText>
+
+            <InfoText textColor={colors.text[3]}>생일</InfoText>
+            <InfoText textColor={colors.primary} isPrimary>
+              {birthday ? formatMonthDay(birthday) : '미등록'}
+            </InfoText>
+          </InfoSection>
         </TextWrapper>
-        <ProfileImageWithFallback uri={imageUrl} size={79} />
+        <ProfileImageWithFallback
+          uri={imageUrl}
+          size={79}
+          isUserBirthdayToday={isUserBirthdayToday}
+        />
       </RowContainer>
       <IntroContainer>{introduction}</IntroContainer>
       <KakaoIdButton kakaoTalkId={kakaoTalkId} />
@@ -119,11 +138,17 @@ const Badge = styled.Text`
   line-height: ${lineHeight.s};
 `;
 
-const MbtiText = styled.Text`
+const InfoText = styled.Text<{ textColor?: string; isPrimary?: boolean }>`
   font-size: ${fontSize.md}px;
-  color: ${colors.primary};
   font-family: ${fonts.Bold};
   margin-top: ${8 * height}px;
+  color: ${({ textColor }) => textColor || colors.text[1]};
+  padding-right: ${({ isPrimary }) => (isPrimary ? `${12 * width}px` : '0')};
+`;
+
+const InfoSection = styled.View`
+  flex-direction: row;
+  gap: ${8 * width}px;
 `;
 
 const IntroContainer = styled.Text.attrs({

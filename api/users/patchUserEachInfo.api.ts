@@ -45,6 +45,16 @@ export const updateMbti = async ({ mbti }: { mbti: string }) => {
   }
 };
 
+// 생일 수정
+export const updateBirthday = async ({ birthday }: { birthday: string }) => {
+  try {
+    await api.patch('/users/me/birthday', { birthday });
+  } catch (error: any) {
+    console.error('updateBirthday 오류:', error.message);
+    throw error;
+  }
+};
+
 // 자기소개 수정
 export const updateIntroduction = async ({
   introduction,

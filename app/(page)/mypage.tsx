@@ -12,8 +12,13 @@ import { useProfileStore } from '@/stores/profileStore';
 export default function MyPage() {
   const router = useRouter();
   const { userInfo, error, refetch, loading } = useUserInfo();
-  const { setkakaoTalkId, setintroduction, setMbti, setProfileImage } =
-    useProfileStore();
+  const {
+    setkakaoTalkId,
+    setintroduction,
+    setMbti,
+    setBirthday,
+    setProfileImage,
+  } = useProfileStore();
 
   // 마이페이지 진입/포커스될 때마다 refetch 실행
   useFocusEffect(
@@ -31,6 +36,7 @@ export default function MyPage() {
       setkakaoTalkId(userInfo.kakaoTalkId);
       setintroduction(userInfo.introduction);
       setMbti(userInfo.mbti);
+      setBirthday(userInfo.birthday);
       setProfileImage(userInfo.profileImage);
     }
   }, [userInfo, setkakaoTalkId, setintroduction, setMbti, setProfileImage]);
@@ -50,6 +56,8 @@ export default function MyPage() {
           kakaoTalkId={userInfo?.kakaoTalkId}
           introduction={userInfo?.introduction}
           mbti={userInfo?.mbti}
+          birthday={userInfo?.birthday}
+          isUserBirthdayToday={userInfo?.isUserBirthdayToday}
           isMyProfile
         />
       )}
@@ -71,4 +79,5 @@ const Container = styled.View`
   background-color: ${colors.bg[2]};
   gap: ${13 * height}px;
   padding-horizontal: ${20 * width}px;
+  padding-bottom: 8px;
 `;

@@ -35,7 +35,10 @@ export default function UserListModalContent({
             }}
           >
             <UserRow>
-              <ProfileImageWithFallback uri={item.profileImage} size={45} />
+              <ProfileImageWithFallback
+                uri={item.profileImage}
+                isUserBirthdayToday={item.isUserBirthdayToday}
+              />
               <NameRow>
                 <RightContent>
                   <UserName>{item.name}</UserName>

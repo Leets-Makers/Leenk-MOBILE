@@ -113,7 +113,7 @@ export const TitleText = styled.Text`
   text-align: center;
 `;
 
-export const SubText = styled.Text<{ $isWarning: boolean }>`
+export const SubText = styled.Text<{ $isWarning?: boolean }>`
   font-family: ${fonts.Regular};
   font-size: ${fontSize.md}px;
   line-height: ${lineHeight.m}px;
