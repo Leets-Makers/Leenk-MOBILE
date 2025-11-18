@@ -73,7 +73,7 @@ export default function LandingPage() {
 
     // --- 정상 로그인 ---
     if (code === 1002) {
-      // 최초 로그인
+      // 최초 로그인(회원가입 페이지로 이동)
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
 
@@ -86,7 +86,7 @@ export default function LandingPage() {
     }
 
     if (code === 1003) {
-      // 일반 로그인
+      // 일반 로그인(홈으로 이동)
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
 
@@ -97,13 +97,13 @@ export default function LandingPage() {
 
     // ---- 예외 처리 ----
     switch (code) {
-      case 2000:
+      case 2000: // weeth 가입 승인 안된 유저
         setWaitModal(true);
         break;
       case 2001:
         console.error('서버 인증 에러:', result.message);
         break;
-      case 2002:
+      case 2002: // weeth에 가입되지 않은 유저
         setNotRegisterModal(true);
         break;
       default:
@@ -127,6 +127,9 @@ export default function LandingPage() {
   };
 
   const handleSignUp = () => {
+    setWaitModal(false);
+    setNotRegisterModal(false);
+
     router.push({
       pathname: '/webView',
       params: { url: weethSiteURL, title: 'Weeth' },
@@ -145,8 +148,10 @@ export default function LandingPage() {
       const idToken = credential.identityToken;
       if (!idToken) return;
 
+      const fakeIdToken = 'FAKE_APPLE_ID_TOKEN_FOR_TESTING';
+
       console.log('Identity Token : ', idToken);
-      const res = await appleLogin(idToken);
+      const res = await appleLogin(fakeIdToken);
       await handleSocialLogin(res.data);
     } catch (error: any) {
       if (error?.code === 'ERR_REQUEST_CANCELED') return;
