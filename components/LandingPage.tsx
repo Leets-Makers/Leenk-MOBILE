@@ -124,8 +124,19 @@ export default function LandingPage() {
 
       const result = await kakaoLogin(accessToken);
       await handleSocialLogin(result);
-    } catch (e: any) {
-      if (__DEV__) console.error('카카오 로그인 실패:', e);
+    } catch (error: any) {
+      const serverCode = error?.response?.data?.code;
+      const serverMsg = error?.response?.data?.message;
+
+      if (serverCode) {
+        await handleSocialLogin({
+          code: serverCode,
+          message: serverMsg,
+          data: error.response.data.data,
+        });
+        return;
+      }
+
       showToast('카카오 로그인 실패', 'error');
     }
   };
@@ -159,6 +170,19 @@ export default function LandingPage() {
       await handleSocialLogin(res.data);
     } catch (error: any) {
       if (error?.code === 'ERR_REQUEST_CANCELED') return;
+
+      const serverCode = error?.response?.data?.code;
+      const serverMsg = error?.response?.data?.message;
+
+      if (serverCode) {
+        await handleSocialLogin({
+          code: serverCode,
+          message: serverMsg,
+          data: error.response.data.data,
+        });
+        return;
+      }
+
       if (__DEV__) console.error('애플 로그인 실패:', error);
       showToast('애플 로그인 실패', 'error');
     }
