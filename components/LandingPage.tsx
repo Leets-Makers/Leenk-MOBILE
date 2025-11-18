@@ -296,7 +296,6 @@ export default function LandingPage() {
               fullWidth
               onPress={handleKakaoLogin}
               textStyle={{ fontFamily: fonts.ExtraBold }}
-              textColor="text[2]"
               icon={<KakaoLogo width={19 * width} height={19 * height} />}
               style={{ marginBottom: 0 }}
             >
