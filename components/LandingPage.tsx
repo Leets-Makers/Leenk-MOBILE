@@ -148,10 +148,7 @@ export default function LandingPage() {
       const idToken = credential.identityToken;
       if (!idToken) return;
 
-      const fakeIdToken = 'FAKE_APPLE_ID_TOKEN_FOR_TESTING';
-
-      console.log('Identity Token : ', idToken);
-      const res = await appleLogin(fakeIdToken);
+      const res = await appleLogin(idToken);
       await handleSocialLogin(res.data);
     } catch (error: any) {
       if (error?.code === 'ERR_REQUEST_CANCELED') return;
