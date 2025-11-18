@@ -6,7 +6,13 @@ import colors from '@/theme/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWriteMenuStore } from '@/stores/writeMenuStore';
 import MenuModal from '@/components/Modal/MenuModal';
-import { FeedIcon, LeenkIcon, LockIcon, MypageIcon, PlusIcon } from '@/assets';
+import {
+  FeedIcon,
+  LeenkIcon,
+  AdditionIcon,
+  MypageIcon,
+  PlusIcon,
+} from '@/assets';
 import { fontSize, radius, width, height, fonts } from '@/theme/globalStyles';
 import { View, Platform } from 'react-native';
 
@@ -21,7 +27,7 @@ const TAB_CONFIG: readonly TabConfigItem[] = [
   { name: 'leenk', label: '링크', icon: LeenkIcon },
   { name: 'feed', label: '피드', icon: FeedIcon },
   { name: 'write', label: '', icon: PlusIcon, isSpecial: true },
-  { name: 'private', label: '부가', icon: LockIcon },
+  { name: 'extra', label: '부가', icon: AdditionIcon },
   { name: 'mypage', label: '마이', icon: MypageIcon },
 ];
 

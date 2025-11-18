@@ -18,6 +18,9 @@ import { useToastStore } from '@/stores/toastStore';
 interface CalendarButtonProps {
   value?: Date | null;
   onChange?: (date: Date | null) => void;
+  onDateChange?: (date: Date | null) => void;
+  mode?: 'leenk' | 'birthday';
+  placeholder?: string;
 }
 
 type Step = 'date' | 'time' | null;
@@ -25,16 +28,18 @@ type Step = 'date' | 'time' | null;
 export default function CalendarButton({
   value,
   onChange,
+  onDateChange,
+  mode = 'leenk',
+  placeholder,
 }: CalendarButtonProps) {
   const { showToast } = useToastStore();
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(value ?? null);
   const [step, setStep] = useState<Step>(null);
   const [tempDateStr, setTempDateStr] = useState<string>('');
-  const minDateStr = useMemo(
-    () => getFormatedDate(new Date(), 'YYYY/MM/DD'),
-    [],
-  );
+
+  // 날짜 제한값 설정 (미래/과거)
+  const todayStr = useMemo(() => getFormatedDate(new Date(), 'YYYY/MM/DD'), []);
 
   useEffect(() => {
     if (value?.getTime() !== selectedDate?.getTime()) {
@@ -45,13 +50,28 @@ export default function CalendarButton({
   const commit = (date: Date | null) => {
     setSelectedDate(date);
     onChange?.(date);
+    onDateChange?.(date);
   };
 
+  // 날짜 선택 로직
   const handleSelectDate = (dateStr: string) => {
-    setTempDateStr(dateStr); // YYYY/MM/DD
-    setStep('time');
+    if (mode === 'birthday') {
+      // 생일 모드: 오늘 이후 선택 불가
+      const selected = dayjs(dateStr, 'YYYY/MM/DD');
+      if (selected.isAfter(dayjs(), 'day')) {
+        showToast('오늘 이전 날짜만 선택할 수 있어요!', 'error');
+        return;
+      }
+      commit(selected.toDate());
+      setStep(null);
+    } else {
+      // 일반 모드: 다음 단계에서 시간 선택
+      setTempDateStr(dateStr);
+      setStep('time');
+    }
   };
 
+  // 시간 선택 로직
   const handleSelectTime = (timeStr: string) => {
     const selected = dayjs(`${tempDateStr} ${timeStr}`, 'YYYY/MM/DD HH:mm');
     const now = dayjs();
@@ -70,14 +90,18 @@ export default function CalendarButton({
     setStep(null);
   };
 
+  // 표시 포맷 변경
+  const formattedText = selectedDate
+    ? mode === 'birthday'
+      ? dayjs(selectedDate).format('YYYY년 M월 D일')
+      : dayjs(selectedDate).format('MM월 DD일 HH시 mm분')
+    : (placeholder ??
+      (mode === 'birthday' ? '생일을 선택해줘' : '모임 일시를 선택해줘'));
+
   return (
     <>
       <Container $isFocused={!!step}>
-        <StyledText selected={!!selectedDate}>
-          {selectedDate
-            ? dayjs(selectedDate).format('MM월 DD일 HH시 mm분')
-            : '모임 일시를 선택해줘'}
-        </StyledText>
+        <StyledText selected={!!selectedDate}>{formattedText}</StyledText>
         <Pressable onPress={() => setStep('date')}>
           <CalendarIcon />
         </Pressable>
@@ -87,7 +111,8 @@ export default function CalendarButton({
       {step === 'date' && (
         <DatePicker
           mode="calendar"
-          minimumDate={minDateStr}
+          minimumDate={mode === 'birthday' ? undefined : todayStr}
+          maximumDate={mode === 'birthday' ? todayStr : undefined}
           onSelectedChange={handleSelectDate}
           onDateChange={() => {}}
           onMonthYearChange={() => {}}

@@ -8,7 +8,8 @@ import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback
 export default function ProfileEdit() {
   const router = useRouter();
 
-  const { kakaoTalkId, introduction, mbti, profileImage } = useProfileStore();
+  const { kakaoTalkId, introduction, mbti, birthday, profileImage } =
+    useProfileStore();
 
   const editFields = [
     {
@@ -17,6 +18,7 @@ export default function ProfileEdit() {
       type: 'kakaoTalkId',
     },
     { title: 'MBTI', content: mbti, type: 'mbti' },
+    { title: '생일', content: birthday, type: 'birthday' },
     {
       title: '자기소개',
       content: introduction,

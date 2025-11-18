@@ -21,7 +21,10 @@ export default function UserItem({ user, checked, onToggle }: UserItemProps) {
       accessibilityRole="button"
       accessibilityLabel={`${user.name} ${checked ? '선택됨' : '선택 안됨'}`}
     >
-      <ProfileImageWithFallback uri={user.profileImage} />
+      <ProfileImageWithFallback
+        uri={user.profileImage}
+        isUserBirthdayToday={user.isUserBirthdayToday}
+      />
       <UserName>{user.name}</UserName>
       <CheckBox checked={checked} onPress={onToggle} />
     </Wrapper>

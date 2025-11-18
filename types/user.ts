@@ -6,4 +6,6 @@ export interface UserProfile {
   kakaoTalkId: string;
   introduction: string;
   mbti: string;
+  birthday: string;
+  isUserBirthdayToday: boolean;
 }

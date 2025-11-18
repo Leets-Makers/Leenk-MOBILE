@@ -2,6 +2,7 @@ export interface Author {
   userId: number;
   name: string;
   profileImage: string;
+  isUserBirthdayToday: boolean;
 }
 
 export interface FeedItem {
@@ -30,6 +31,7 @@ export interface FeedDetail {
     name: string;
     isAuthor: boolean;
     profileImage?: string; // isAuthor = false일 경우 없을 수 있음
+    isUserBirthdayToday: boolean;
   }[];
 }
 
@@ -38,12 +40,14 @@ export interface FeedReactedUser {
   name: string;
   profileImage?: string;
   reactionCount: number;
+  isUserBirthdayToday: boolean;
 }
 
 export interface FeedConnectedUser {
   userId: number;
   name: string;
   profileImage?: string;
+  isUserBirthdayToday: boolean;
 }
 
 // 피드 업로드

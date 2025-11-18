@@ -10,7 +10,7 @@ import { AspectRatio } from '@/types/aspect-ratio';
 import { CONTAINER_PADDING } from '@/constants';
 import { sizeStyles } from '@/components/common/Button/CustomButton.styled';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
-import { getPresignedUrl, uploadImageToS3 } from '@/utils/s3Upload';
+import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { Media } from '@/types/feed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -45,7 +45,7 @@ export default function PostFeedPage() {
     try {
       const fileNames = selectedImages.map((img) => img.filename);
 
-      const presignedUrls = await getPresignedUrl(fileNames);
+      const presignedUrls = await getPresignedUrl(fileNames, 'FEED');
 
       const mediaArray: Media[] = [];
 

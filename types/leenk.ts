@@ -2,6 +2,7 @@ export interface Author {
   userId: number;
   profileImage: string;
   name: string;
+  isUserBirthdayToday: boolean;
 }
 
 export interface Leenk {

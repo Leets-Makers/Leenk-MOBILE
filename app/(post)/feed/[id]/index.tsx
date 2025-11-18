@@ -29,7 +29,7 @@ import { deleteFeed, getFeedDetail } from '@/api/feed/feed.api';
 import { FeedDetail } from '@/types/feed';
 import { useEffect, useState } from 'react';
 import { useUserStore } from '@/stores/userStore';
-import FeedReportModal from '@/components/Modal/ReportModal';
+import FeedReportModal from '@/components/Modal/TextInputModal';
 import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
@@ -172,6 +172,7 @@ export default function FeedDetailPage() {
                 <ProfileImageWithFallback
                   uri={feed.author.profileImage}
                   size={36}
+                  isUserBirthdayToday={feed.author.isUserBirthdayToday}
                 />
                 <StyledText>{feed.author.name}</StyledText>
               </TouchableOpacity>

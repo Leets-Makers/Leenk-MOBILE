@@ -10,6 +10,8 @@ export interface UserInfo {
   kakaoTalkId: string;
   introduction: string;
   mbti: string;
+  birthday: string;
+  isUserBirthdayToday: boolean;
 }
 
 export const useUserInfo = () => {

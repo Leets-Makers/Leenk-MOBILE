@@ -7,6 +7,7 @@ import { Badge, ProfileImageWithFallback } from '@/components';
 interface Props {
   profileImage?: string | null;
   name?: string | null;
+  isUserBirthdayToday?: boolean;
   label: string | null; // "OOO 외 N명" 또는 null
   onPressBadge: () => void;
 }
@@ -14,6 +15,7 @@ interface Props {
 export default function AuthorContent({
   profileImage,
   name,
+  isUserBirthdayToday = false,
   label,
   onPressBadge,
 }: Props) {
@@ -25,7 +27,11 @@ export default function AuthorContent({
         marginBottom: 16,
       }}
     >
-      <ProfileImageWithFallback uri={profileImage} size={36} />
+      <ProfileImageWithFallback
+        uri={profileImage}
+        size={36}
+        isUserBirthdayToday={isUserBirthdayToday}
+      />
       <StyledText>{name}</StyledText>
 
       <Badge

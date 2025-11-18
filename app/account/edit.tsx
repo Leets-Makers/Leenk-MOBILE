@@ -3,6 +3,7 @@ import colors from '@/theme/color';
 import { height, width } from '@/theme/globalStyles';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import {
   Platform,
   Animated,
@@ -14,18 +15,22 @@ import styled from 'styled-components/native';
 import {
   updateKakaoTalkId,
   updateMbti,
+  updateBirthday,
   updateIntroduction,
 } from '@/api/users/patchUserEachInfo.api';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useProfileStore } from '@/stores/profileStore';
 import { useToastStore } from '@/stores/toastStore';
+import CalendarButton from '@/components/leenk/CalendarButton';
 
 export default function AccountEdit() {
   const { type } = useLocalSearchParams<{
-    type?: 'kakaoTalkId' | 'mbti' | 'introduction';
+    type?: 'kakaoTalkId' | 'mbti' | 'birthday' | 'introduction';
   }>();
   const [edituserInfo, setEdituserInfo] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { showToast } = useToastStore();
@@ -37,6 +42,8 @@ export default function AccountEdit() {
     setintroduction,
     mbti,
     setMbti,
+    birthday,
+    setBirthday,
   } = useProfileStore();
 
   const isIOS = Platform.OS === 'ios';
@@ -68,7 +75,19 @@ export default function AccountEdit() {
         ? 'MBTI'
         : type === 'introduction'
           ? '자기소개'
-          : '프로필 수정';
+          : type === 'birthday'
+            ? '생일'
+            : '프로필 수정';
+
+  useEffect(() => {
+    // 화면 진입 시 프로필에 이미 저장된 birthday(문자열)가 있으면 selectedDate 초기화
+    if (birthday) {
+      const parsed = dayjs(birthday, 'YYYY-MM-DD');
+      if (parsed.isValid()) {
+        setSelectedDate(parsed.toDate());
+      }
+    }
+  }, [birthday]);
 
   const handleSubmit = async () => {
     try {
@@ -80,6 +99,15 @@ export default function AccountEdit() {
         setMbti(edituserInfo);
         await updateMbti({ mbti: edituserInfo });
         showToast('MBTI가 수정됐어!', 'success');
+      } else if (type === 'birthday') {
+        if (!selectedDate) {
+          showToast('생일을 선택해줘', 'error');
+          return;
+        }
+        const formatted = dayjs(selectedDate).format('YYYY-MM-DD');
+        setBirthday(formatted);
+        await updateBirthday({ birthday: formatted });
+        showToast('생일이 수정됐어!', 'success');
       } else if (type === 'introduction') {
         setintroduction(edituserInfo);
         await updateIntroduction({ introduction: edituserInfo });
@@ -97,7 +125,8 @@ export default function AccountEdit() {
         edituserInfo.length < 4 ||
         edituserInfo.length > 20)) ||
     (type === 'mbti' &&
-      (edituserInfo.trim() === '' || edituserInfo.length !== 4));
+      (edituserInfo.trim() === '' || edituserInfo.length !== 4)) ||
+    (type === 'birthday' && !selectedDate); // 생일은 selectedDate 필요
 
   const contentPaddingBottom = isIOS
     ? kbVisible
@@ -148,6 +177,16 @@ export default function AccountEdit() {
               }}
               {...(isIOS ? { accessoryID: ACCESSORY_ID } : {})}
             />
+          )}
+
+          {type === 'birthday' && (
+            <View>
+              <CalendarButton
+                value={selectedDate}
+                onDateChange={(d) => setSelectedDate(d)}
+                mode="birthday"
+              />
+            </View>
           )}
 
           {type === 'introduction' && (

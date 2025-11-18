@@ -41,3 +41,15 @@ export const toISODateTime = (d: Date) =>
     String(d.getMinutes()).padStart(2, '0'),
     '00',
   ].join(':');
+
+// 오늘 날짜 기준 n월 n일 반환
+export const formatTodayMonthDay = (): string => {
+  const today = dayjs();
+  return `${today.month() + 1}월 ${today.date()}일`;
+};
+
+// n월 n일 반환
+export function formatMonthDay(iso: string): string {
+  const [year, month, day] = iso.split('-').map(Number);
+  return `${month}월 ${day}일`;
+}

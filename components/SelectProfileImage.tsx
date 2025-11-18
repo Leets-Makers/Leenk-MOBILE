@@ -41,7 +41,7 @@ export default function SelectProfileImage({
     if (mode === 'edit') {
       try {
         const fileName = `profile_${Date.now()}.jpg`;
-        const presignedUrls = await getPresignedUrl(fileName);
+        const presignedUrls = await getPresignedUrl(fileName, 'PROFILE');
         if (!presignedUrls || presignedUrls.length === 0) {
           throw new Error('Presigned URL을 받아올 수 없습니다.');
         }
