@@ -67,52 +67,62 @@ export default function LandingPage() {
   const shouldBlock = fromLogout === 'true';
   useBlockBackHandler({ block: shouldBlock });
 
+  const handleSocialLogin = async (result: any) => {
+    const code = result.code;
+    const data = result.data;
+
+    // --- 정상 로그인 ---
+    if (code === 1002) {
+      // 최초 로그인
+      await saveAccessToken(data.accessToken);
+      await saveRefreshToken(data.refreshToken);
+
+      setName(data.name);
+      setPosition(data.position);
+      setCardinal(data.cardinal);
+
+      router.push('/signup/terms');
+      return;
+    }
+
+    if (code === 1003) {
+      // 일반 로그인
+      await saveAccessToken(data.accessToken);
+      await saveRefreshToken(data.refreshToken);
+
+      await registerFcmToken();
+      router.replace('/(page)/leenk');
+      return;
+    }
+
+    // ---- 예외 처리 ----
+    switch (code) {
+      case 2000:
+        setWaitModal(true);
+        break;
+      case 2001:
+        console.error('서버 인증 에러:', result.message);
+        break;
+      case 2002:
+        setNotRegisterModal(true);
+        break;
+      default:
+        console.error('알 수 없는 예외:', code, result.message);
+    }
+  };
+
   const handleKakaoLogin = async () => {
     await clearAllTokens();
+
     try {
       const token = await login();
       const accessToken = token?.accessToken;
-      if (!accessToken) {
-        if (__DEV__) console.warn('카카오 accessToken 없음(취소/실패)');
-        return;
-      }
+      if (!accessToken) return;
+
       const result = await kakaoLogin(accessToken);
-
-      if (result.success) {
-        const serverToken = result.data.accessToken;
-        const refreshToken = result.data.refreshToken;
-
-        if (result.code === 1002) {
-          await saveAccessToken(serverToken);
-          await saveRefreshToken(refreshToken);
-          setName(result.data.name);
-          setPosition(result.data.position);
-          setCardinal(result.data.cardinal);
-          router.push('/signup/terms');
-        } else if (result.code === 1003) {
-          await saveAccessToken(serverToken);
-          await saveRefreshToken(refreshToken);
-          await registerFcmToken();
-          router.replace('/(page)/leenk');
-        }
-      } else {
-        switch (result.code) {
-          case 2000:
-            setWaitModal(true);
-            break;
-          case 2001:
-            if (__DEV__) console.error('서버 인증 에러:', result.message);
-            break;
-          case 2002:
-            setNotRegisterModal(true);
-            break;
-          default:
-            if (__DEV__)
-              console.error('알 수 없는 예외:', result.code, result.message);
-        }
-      }
+      await handleSocialLogin(result);
     } catch (e) {
-      if (__DEV__) console.error('카카오 로그인 실패:', e);
+      console.error('카카오 로그인 실패:', e);
     }
   };
 
@@ -133,23 +143,17 @@ export default function LandingPage() {
       });
 
       const idToken = credential.identityToken;
+      if (!idToken) return;
 
-      if (!idToken) {
-        console.error('identityToken 없음');
-        return;
-      }
-
+      console.log('Identity Token : ', idToken);
       const res = await appleLogin(idToken);
-
-      console.log('애플 로그인 결과:', res.data);
+      await handleSocialLogin(res.data);
     } catch (error: any) {
-      if (error && error.code === 'ERR_REQUEST_CANCELED') {
-        return;
-      }
-
-      console.error('애플 로그인 에러:', error);
+      if (error?.code === 'ERR_REQUEST_CANCELED') return;
+      console.error('애플 로그인 실패:', error);
     }
   };
+
   // const handleLogin = async () => {
   //   if (!id.trim()) return showToast('이메일을 입력해줘', 'error');
   //   if (!isValidEmail(id))
