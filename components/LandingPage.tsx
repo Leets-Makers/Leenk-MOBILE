@@ -70,6 +70,7 @@ export default function LandingPage() {
   const handleSocialLogin = async (result: any) => {
     const code = result.code;
     const data = result.data;
+    const message = result.message || '로그인에 실패했습니다';
 
     // --- 정상 로그인 ---
     if (code === 1002) {
@@ -101,13 +102,15 @@ export default function LandingPage() {
         setWaitModal(true);
         break;
       case 2001:
-        console.error('서버 인증 에러:', result.message);
+        if (__DEV__) console.error('서버 인증 에러:', result.message);
+        showToast(message, 'error');
         break;
       case 2002: // weeth에 가입되지 않은 유저
         setNotRegisterModal(true);
         break;
       default:
-        console.error('알 수 없는 예외:', code, result.message);
+        if (__DEV__) console.error('알 수 없는 예외:', code, result.message);
+        showToast(message, 'error');
     }
   };
 
@@ -121,8 +124,9 @@ export default function LandingPage() {
 
       const result = await kakaoLogin(accessToken);
       await handleSocialLogin(result);
-    } catch (e) {
-      console.error('카카오 로그인 실패:', e);
+    } catch (e: any) {
+      if (__DEV__) console.error('카카오 로그인 실패:', e);
+      showToast('카카오 로그인 실패', 'error');
     }
   };
 
@@ -146,13 +150,17 @@ export default function LandingPage() {
       });
 
       const idToken = credential.identityToken;
-      if (!idToken) return;
+      if (!idToken) {
+        showToast('애플 토큰이 유효하지 않습니다.', 'error');
+        return;
+      }
 
       const res = await appleLogin(idToken);
       await handleSocialLogin(res.data);
     } catch (error: any) {
       if (error?.code === 'ERR_REQUEST_CANCELED') return;
-      console.error('애플 로그인 실패:', error);
+      if (__DEV__) console.error('애플 로그인 실패:', error);
+      showToast('애플 로그인 실패', 'error');
     }
   };
 
