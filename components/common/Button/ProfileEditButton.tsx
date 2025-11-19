@@ -31,7 +31,7 @@ export const ProfileEditButton = ({
   const isEmpty = !content || content.trim().length === 0;
   const placeholderText = placeholders[title] || '';
 
-  // 생일이면 YYYY년 M월 D일 포맷
+  // 생일이면 MM월 DD일 포맷 (연도 제외)
   const formattedContent =
     title === '생일' && !isEmpty
       ? dayjs(content, 'YYYY-MM-DD').format('MM월 DD일')
