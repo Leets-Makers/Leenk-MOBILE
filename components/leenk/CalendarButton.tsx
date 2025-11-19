@@ -39,10 +39,7 @@ export default function CalendarButton({
   const [tempDateStr, setTempDateStr] = useState<string>('');
 
   // 최소 날짜 (leenk 전용)
-  const minDateStr = useMemo(
-    () => getFormatedDate(new Date(), 'YYYY/MM/DD'),
-    [],
-  );
+  const minDateStr = getFormatedDate(new Date(), 'YYYY/MM/DD');
 
   useEffect(() => {
     if (value?.getTime() !== selectedDate?.getTime()) {
