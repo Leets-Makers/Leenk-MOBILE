@@ -38,8 +38,8 @@ export default function CalendarButton({
   const [step, setStep] = useState<Step>(null);
   const [tempDateStr, setTempDateStr] = useState<string>('');
 
-  // 날짜 제한값 설정 (미래/과거)
-  const todayStr = useMemo(() => getFormatedDate(new Date(), 'YYYY/MM/DD'), []);
+  // 최소 날짜 (leenk 전용)
+  const minDateStr = getFormatedDate(new Date(), 'YYYY/MM/DD');
 
   useEffect(() => {
     if (value?.getTime() !== selectedDate?.getTime()) {
@@ -55,26 +55,25 @@ export default function CalendarButton({
 
   // 날짜 선택 로직
   const handleSelectDate = (dateStr: string) => {
+    const selected = dayjs(dateStr, 'YYYY/MM/DD');
+
     if (mode === 'birthday') {
-      // 생일 모드: 오늘 이후 선택 불가
-      const selected = dayjs(dateStr, 'YYYY/MM/DD');
-      if (selected.isAfter(dayjs(), 'day')) {
-        showToast('오늘 이전 날짜만 선택할 수 있어요!', 'error');
-        return;
-      }
+      // 생일 모드 : 모든 날짜 가능
       commit(selected.toDate());
       setStep(null);
-    } else {
-      // 일반 모드: 다음 단계에서 시간 선택
-      setTempDateStr(dateStr);
-      setStep('time');
+      return;
     }
+
+    // leenk 모드 : 날짜 선택 후 시간 선택으로 이동
+    setTempDateStr(dateStr);
+    setStep('time');
   };
 
   // 시간 선택 로직
   const handleSelectTime = (timeStr: string) => {
     const selected = dayjs(`${tempDateStr} ${timeStr}`, 'YYYY/MM/DD HH:mm');
     const now = dayjs();
+
     if (selected.isSame(now, 'day') && selected.isBefore(now)) {
       const minutesToAdd = 30 - (now.minute() % 30);
       const rounded = now
@@ -93,7 +92,7 @@ export default function CalendarButton({
   // 표시 포맷 변경
   const formattedText = selectedDate
     ? mode === 'birthday'
-      ? dayjs(selectedDate).format('YYYY년 M월 D일')
+      ? dayjs(selectedDate).format('MM월 DD일')
       : dayjs(selectedDate).format('MM월 DD일 HH시 mm분')
     : (placeholder ??
       (mode === 'birthday' ? '생일을 선택해줘' : '모임 일시를 선택해줘'));
@@ -111,8 +110,8 @@ export default function CalendarButton({
       {step === 'date' && (
         <DatePicker
           mode="calendar"
-          minimumDate={mode === 'birthday' ? undefined : todayStr}
-          maximumDate={mode === 'birthday' ? todayStr : undefined}
+          minimumDate={mode === 'leenk' ? minDateStr : undefined}
+          maximumDate={undefined}
           onSelectedChange={handleSelectDate}
           onDateChange={() => {}}
           onMonthYearChange={() => {}}
