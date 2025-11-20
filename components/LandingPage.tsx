@@ -59,7 +59,7 @@ export default function LandingPage() {
 
   const { showToast } = useToastStore();
 
-  const weethSiteURL = 'https://develop.dl97snxjdgiq1.amplifyapp.com ';
+  const weethSiteURL = 'https://develop.dl97snxjdgiq1.amplifyapp.com';
   const { fromLogout } = useLocalSearchParams<{ fromLogout?: string }>();
 
   const { setName, setPosition, setCardinal } = useProfileStore();
