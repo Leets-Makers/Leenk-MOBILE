@@ -41,6 +41,27 @@ function navigateFromMessage(msg: FirebaseMessagingTypes.RemoteMessage) {
   const isLeenk =
     pathRaw === 'leenks' || pathRaw === 'leenk' || pathRaw === 'link';
   const isFeed = pathRaw === 'feeds' || pathRaw === 'feed';
+  const isBirthday = pathRaw === 'birthday';
+
+  if (isBirthday) {
+    const type = d['notificationType'];
+
+    if (type === 'BIRTHDAY_LETTER') {
+      // 받은 생일 편지 목록
+      router.push('/extra/birthday/letters');
+      return;
+    }
+
+    if (type === 'BIRTHDAY_CELEBRATE' || type === 'BIRTHDAY_ANNOUNCEMENT') {
+      // 생일 메인
+      router.push('/extra');
+      return;
+    }
+
+    // fallback
+    router.push('/extra');
+    return;
+  }
 
   if (!id) {
     // console.log('[FCM] id가 없어서 상세로 이동할 수 없어요:', d);
