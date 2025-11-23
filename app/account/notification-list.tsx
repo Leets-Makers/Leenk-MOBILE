@@ -72,11 +72,21 @@ export default function NotificationListPage() {
         ),
       );
 
-      if (notification.content.leenkId || notification.content.feedId) {
-        if (notification.path === 'leenks') {
-          router.push(`/leenk/${notification.content.leenkId}`);
+      const { path, notificationType, content } = notification;
+
+      //  생일 경로 처리
+      if (path === 'birthday') {
+        if (notificationType === 'BIRTHDAY_LETTER') {
+          return router.push('/extra/birthday/letters');
+        }
+        return router.push('/extra');
+      }
+
+      if (content.leenkId || content.feedId) {
+        if (path === 'leenks') {
+          router.push(`/leenk/${content.leenkId}`);
         } else {
-          router.push(`/feed/${notification.content.feedId}`);
+          router.push(`/feed/${content.feedId}`);
         }
       }
     } catch (error) {

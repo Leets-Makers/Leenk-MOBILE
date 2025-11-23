@@ -40,6 +40,10 @@ interface NotificationContent {
   placeName?: string;
   startTime?: string;
   leftUserName?: string;
+  senderName?: string;
+  birthdayLetterId?: number;
+  birthdayUserId?: number;
+  birthdayUserName?: string;
 }
 
 type NotificationType =
@@ -56,6 +60,9 @@ type NotificationType =
   | 'LEENK_FINISHED'
   | 'LEENK_STARTED_HOST_REMINDER'
   | 'LEENK_LEFT'
+  | 'BIRTHDAY_LETTER'
+  | 'BIRTHDAY_CELEBRATE'
+  | 'BIRTHDAY_ANNOUNCEMENT'
   | string;
 
 interface Notification {
