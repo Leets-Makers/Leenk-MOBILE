@@ -255,7 +255,16 @@ export default function NotificationListItem({
         <StyledItemContent pressed={pressed}>
           <Row>
             <LeftSection>
-              {item.path === 'leenks' ? (
+              {[
+                'BIRTHDAY_ANNOUNCEMENT',
+                'BIRTHDAY_CELEBRATE',
+                'BIRTHDAY_LETTER',
+              ].includes(item.notificationType) ? (
+                <>
+                  <FeedIcon width={16} stroke={colors.primary} />
+                  <TypeText>생일</TypeText>
+                </>
+              ) : item.path === 'leenks' ? (
                 <>
                   <LeenkIcon width={16} stroke={colors.primary} />
                   <TypeText>링크</TypeText>
