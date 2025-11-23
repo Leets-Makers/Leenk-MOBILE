@@ -15,6 +15,7 @@ export default function SettingNotificationsPage() {
     newFeedPost: false,
     newLeenkPost: false,
     leenkApplyRequest: false,
+    birthdayNotify: false,
   });
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function SettingNotificationsPage() {
           newFeedPost: !!data?.isNewFeedNotify,
           newLeenkPost: !!data?.isNewLeenkNotify,
           leenkApplyRequest: !!data?.isLeenkStatusNotify,
+          birthdayNotify: !!data?.isBirthdayNotify,
         });
         // if (__DEV__) console.log('[알림 설정 불러오기]', data);
       } catch (error) {
@@ -44,6 +46,11 @@ export default function SettingNotificationsPage() {
       key: 'leenkApplyRequest',
       label: '링크 참여자 신청 시',
       apiKey: 'leenkStatusNotify',
+    },
+    {
+      key: 'birthdayNotify',
+      label: '생일 축하',
+      apiKey: 'birthdayNotify',
     },
   ] as const;
 
