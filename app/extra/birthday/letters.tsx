@@ -1,5 +1,5 @@
-import { useEffect, useCallback } from 'react';
-import { Header } from '@/components';
+import { useCallback } from 'react';
+import { Header, Loading } from '@/components';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import {
@@ -16,8 +16,12 @@ import { useFocusEffect } from 'expo-router';
 import { postMarkBirthdayLetters } from '@/api/extra/birthday/birthday.post.api';
 
 export default function BirthdayLettersPage() {
-  const { birthdayLetters, fetchBirthdayLetters, hasNewLetters } =
-    useBirthdayStore();
+  const {
+    birthdayLetters,
+    fetchBirthdayLetters,
+    hasNewLetters,
+    birthdayLettersLoading,
+  } = useBirthdayStore();
 
   useFocusEffect(
     useCallback(() => {
@@ -58,7 +62,9 @@ export default function BirthdayLettersPage() {
           받은 편지
         </Header>
 
-        {letters.length === 0 ? (
+        {birthdayLettersLoading && <Loading />}
+
+        {!birthdayLettersLoading && letters.length === 0 ? (
           <EmptyWrapper>
             <LeenkGrayIcon
               width={120 * width}
@@ -71,31 +77,33 @@ export default function BirthdayLettersPage() {
             </EmptyText>
           </EmptyWrapper>
         ) : (
-          sortedYears.map((year) => (
-            <YearSection key={year}>
-              <YearHeader>
-                <YearText>{year}</YearText>
-                <DividerLine />
-              </YearHeader>
+          <ScrollArea>
+            {sortedYears.map((year) => (
+              <YearSection key={year}>
+                <YearHeader>
+                  <YearText>{year}</YearText>
+                  <DividerLine />
+                </YearHeader>
 
-              {groupedByYear[year].map((letter) => (
-                <BirthdayLetterCard
-                  key={letter.letterId}
-                  username={letter.author.name}
-                  profileImage={letter.author.thumbnail}
-                  isUserBirthdayToday={letter.author.isUserBirthdayToday}
-                  message={letter.message}
-                />
-              ))}
-            </YearSection>
-          ))
+                {groupedByYear[year].map((letter) => (
+                  <BirthdayLetterCard
+                    key={letter.letterId}
+                    username={letter.name ?? '사용자'}
+                    profileImage={letter.thumbnail ?? ''}
+                    isUserBirthdayToday={letter.isUserBirthdayToday ?? false}
+                    message={letter.message}
+                  />
+                ))}
+              </YearSection>
+            ))}
+          </ScrollArea>
         )}
       </Container>
     </>
   );
 }
 
-const Container = styled.ScrollView`
+const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
   padding-horizontal: ${20 * width}px;
@@ -137,4 +145,9 @@ const EmptyText = styled.Text`
   color: ${colors.text[3]};
   text-align: center;
   line-height: ${lineHeight.l}px;
+`;
+
+const ScrollArea = styled.ScrollView`
+  flex: 1;
+  margin-top: ${12 * height}px;
 `;
