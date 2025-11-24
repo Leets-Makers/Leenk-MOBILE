@@ -64,7 +64,8 @@ export default function NotificationListPage() {
 
   const handlePress = async (notification: Notification) => {
     try {
-      if (userInfo) await markNotificationAsRead(userInfo.id, notification.id);
+      if (userInfo)
+        await markNotificationAsRead(userInfo.userId, notification.id);
 
       setData((prev) =>
         prev.map((item) =>
