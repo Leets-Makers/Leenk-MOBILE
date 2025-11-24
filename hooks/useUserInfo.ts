@@ -2,7 +2,7 @@ import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useCallback, useState } from 'react';
 
 export interface UserInfo {
-  id: number;
+  userId: number;
   cardinal: number;
   name: string;
   position: 'FE' | 'BE' | 'D' | 'PM';
