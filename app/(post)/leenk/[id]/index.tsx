@@ -66,8 +66,9 @@ export default function LeenkDetailPage() {
   }, []);
 
   const isAuthor = useMemo(
-    () => (leenkDetail ? leenkDetail.author.userId === userInfo?.id : false),
-    [leenkDetail, userInfo?.id],
+    () =>
+      leenkDetail ? leenkDetail.author.userId === userInfo?.userId : false,
+    [leenkDetail, userInfo?.userId],
   );
 
   const fetchDetail = useCallback(

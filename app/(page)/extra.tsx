@@ -46,7 +46,7 @@ export default function ExtraPage() {
 
   const handleBirthdayCardPress = useCallback(
     (user: BirthdayUser) => {
-      const isOwn = user.userId === userInfo?.id;
+      const isOwn = user.userId === userInfo?.userId;
 
       if (isOwn) {
         router.push('/extra/birthday/letters');
@@ -58,7 +58,7 @@ export default function ExtraPage() {
       // 다른 사람 생일인 경우 (편지 작성 모달)
       openModal('birthdayLetter', user.userId);
     },
-    [userInfo?.id, openModal, router, setSelectedUserName],
+    [userInfo?.userId, openModal, router, setSelectedUserName],
   );
 
   //  오늘 생일자
@@ -95,7 +95,7 @@ export default function ExtraPage() {
                   <Title>{`${formatTodayMonthDay()} 오늘의 생일자! 🎉`}</Title>
                 )}
                 {todayBirthdayUsers.map((user) => {
-                  const isOwn = user.userId === userInfo?.id;
+                  const isOwn = user.userId === userInfo?.userId;
                   return (
                     <BirthdayCard
                       key={user.userId}
