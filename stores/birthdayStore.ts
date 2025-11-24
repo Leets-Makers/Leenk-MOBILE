@@ -29,6 +29,7 @@ interface BirthdayStore {
   setHasNewLetters: (value: boolean) => void;
   setMyBirthdayLettersCounts: (value: number) => void;
   setLoading: (value: boolean) => void;
+  setBirthdayLettersLoading: (value: boolean) => void;
   setError: (msg: string | null) => void;
 
   // fetchers
