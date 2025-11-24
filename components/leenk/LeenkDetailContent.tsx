@@ -63,10 +63,7 @@ export default function LeenkContentSection({
               router.push(`/users/${data.author.userId}`);
             }}
           >
-            <ProfileImageWithFallback
-              uri={data.author.profileImage}
-              size={24}
-            />
+            <ProfileImageWithFallback uri={data.author.thumbnail} size={24} />
           </Pressable>
 
           <TimeText style={{ marginLeft: width * 8 }}>

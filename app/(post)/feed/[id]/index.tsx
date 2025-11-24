@@ -170,7 +170,7 @@ export default function FeedDetailPage() {
                 style={{ flexDirection: 'row', alignItems: 'center' }}
               >
                 <ProfileImageWithFallback
-                  uri={feed.author.profileImage}
+                  uri={feed.author.thumbnail}
                   size={36}
                   isUserBirthdayToday={feed.author.isUserBirthdayToday}
                 />

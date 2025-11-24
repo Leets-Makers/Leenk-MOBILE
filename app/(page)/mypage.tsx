@@ -37,7 +37,7 @@ export default function MyPage() {
       setintroduction(userInfo.introduction);
       setMbti(userInfo.mbti);
       setBirthday(userInfo.birthday);
-      setProfileImage(userInfo.profileImage);
+      setProfileImage(userInfo.thumbnail);
     }
   }, [userInfo, setkakaoTalkId, setintroduction, setMbti, setProfileImage]);
 
@@ -52,7 +52,7 @@ export default function MyPage() {
         <ProfileCard
           cardinal={userInfo?.cardinal}
           name={userInfo?.name}
-          imageUrl={userInfo?.profileImage}
+          imageUrl={userInfo?.thumbnail}
           kakaoTalkId={userInfo?.kakaoTalkId}
           introduction={userInfo?.introduction}
           mbti={userInfo?.mbti}
