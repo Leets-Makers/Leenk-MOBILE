@@ -23,7 +23,7 @@ export default function MyPage() {
 
   const viewedId = Number(id);
   const { userInfo } = useUserStore();
-  const myId = userInfo?.id;
+  const myId = userInfo?.userId;
   const isMyProfile = !!myId && viewedId === myId;
 
   const handleBlock = useCallback(() => {

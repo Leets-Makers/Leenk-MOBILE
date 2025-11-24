@@ -48,7 +48,7 @@ export default function FeedDetailPage() {
   const firstLaunch = useDetailFirstLaunch();
   const [showOnBoarding, setShowOnBoarding] = useState(false);
 
-  const isAuthor = feed?.author.userId === userInfo?.id;
+  const isAuthor = feed?.author.userId === userInfo?.userId;
 
   const handleEdit = () => {
     if (!feed) return;
@@ -190,7 +190,7 @@ export default function FeedDetailPage() {
             feedId={Number(feed.feedId)}
             totalReactionCount={feed.totalReactionCount}
             authorId={feed.author.userId}
-            currentUserId={userInfo?.id}
+            currentUserId={userInfo?.userId}
             flushOnExit
           />
         </RowWrapper>

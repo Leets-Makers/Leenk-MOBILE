@@ -75,7 +75,7 @@ export default function FeedDetailItem({ feed }: Props) {
   const authorId = feed?.author?.userId ?? 0;
   const authorName = feed?.author?.name ?? '사용자';
   const authorProfile = feed?.author?.profileImage ?? undefined;
-  const isAuthor = authorId === userInfo?.id;
+  const isAuthor = authorId === userInfo?.userId;
   const isAuthorBirthdayToday = feed?.author?.isUserBirthdayToday;
 
   // ─────────────────────────────────────────────
@@ -187,7 +187,7 @@ export default function FeedDetailItem({ feed }: Props) {
             feedId={Number(feed.feedId)}
             totalReactionCount={feed.totalReactionCount ?? 0}
             authorId={authorId}
-            currentUserId={userInfo?.id}
+            currentUserId={userInfo?.userId}
             flushOnExit
           />
         </TopRow>
