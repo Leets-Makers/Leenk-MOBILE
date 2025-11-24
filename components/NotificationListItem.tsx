@@ -198,6 +198,47 @@ export default function NotificationListItem({
           </>
         );
 
+      case 'BIRTHDAY_ANNOUNCEMENT': {
+        const userName = item.content.birthdayUserName ?? '이름';
+        const rawBody =
+          item.content.body ?? '오늘은 {name}의 생일이야 \n축하해주러 가볼까?';
+
+        // {name}을 실제 이름으로 치환
+        const replacedBody = rawBody.replaceAll('{name}', userName);
+
+        return (
+          <>
+            <TitleText>{replacedBody}</TitleText>
+          </>
+        );
+      }
+
+      case 'BIRTHDAY_CELEBRATE': {
+        const userName = item.content.birthdayUserName ?? '이름';
+        const rawBody = item.content.body ?? '생일 축하해, 멋쟁이 {name}!';
+
+        // {name}을 실제 이름으로 치환
+        const replacedBody = rawBody.replaceAll('{name}', userName);
+        return (
+          <>
+            <TitleText>{replacedBody}</TitleText>
+          </>
+        );
+      }
+
+      case 'BIRTHDAY_LETTER': {
+        const senderName = item.content.senderName ?? '보낸 사람';
+        const rawBody = item.content.body ?? '{name}에게 생일 편지를 받았어!';
+
+        // {name}을 senderName으로 치환
+        const replacedBody = rawBody.replaceAll('{name}', senderName);
+        return (
+          <>
+            <TitleText>{replacedBody}</TitleText>
+          </>
+        );
+      }
+
       default:
         return (
           <>
@@ -214,7 +255,16 @@ export default function NotificationListItem({
         <StyledItemContent pressed={pressed}>
           <Row>
             <LeftSection>
-              {item.path === 'leenks' ? (
+              {[
+                'BIRTHDAY_ANNOUNCEMENT',
+                'BIRTHDAY_CELEBRATE',
+                'BIRTHDAY_LETTER',
+              ].includes(item.notificationType) ? (
+                <>
+                  <FeedIcon width={16} stroke={colors.primary} />
+                  <TypeText>생일</TypeText>
+                </>
+              ) : item.path === 'leenks' ? (
                 <>
                   <LeenkIcon width={16} stroke={colors.primary} />
                   <TypeText>링크</TypeText>

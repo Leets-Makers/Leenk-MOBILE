@@ -32,6 +32,7 @@ export const patchNotificationsSetting = async (
     leenkStatusNotify: boolean;
     newFeedNotify: boolean;
     newReactionNotify: boolean;
+    birthdayNotify: boolean;
   }>,
 ) => {
   const res = await api.patch('/user-setting/notifications', body);
