@@ -21,6 +21,7 @@
     "@react-native-community/datetimepicker": "^8.4.3",
     "@react-native-firebase/analytics": "^23.5.0",
     "@react-native-firebase/app": "^23.5.0",
+    "@react-native-firebase/crashlytics": "^23.5.0",
     "@react-native-firebase/messaging": "^23.5.0",
     "@react-native-kakao/core": "^2.4.0",
     "@react-native-kakao/user": "^2.4.0",
