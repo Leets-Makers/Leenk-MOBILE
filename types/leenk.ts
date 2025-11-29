@@ -1,6 +1,6 @@
 export interface Author {
   userId: number;
-  profileImage: string;
+  thumbnail: string;
   name: string;
   isUserBirthdayToday: boolean;
 }

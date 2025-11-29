@@ -11,9 +11,8 @@ export interface BirthdayData {
   hasNewLetters: boolean;
 }
 
-export interface BirthdayLetter {
+export interface BirthdayLetter extends BirthdayUser {
   letterId: number;
-  author: BirthdayUser;
   message: string;
   createdAt: string;
 }

@@ -52,10 +52,7 @@ export default function LeenkListItem({ item }: Props) {
             </TopSection>
 
             <BottomRow>
-              <ProfileImageWithFallback
-                uri={item.author.profileImage}
-                size={20}
-              />
+              <ProfileImageWithFallback uri={item.author.thumbnail} size={20} />
               <NameText>{item.author.name}</NameText>
             </BottomRow>
           </ContentWrapper>

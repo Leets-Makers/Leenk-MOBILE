@@ -6,7 +6,7 @@ export interface UserInfo {
   cardinal: number;
   name: string;
   position: 'FE' | 'BE' | 'D' | 'PM';
-  profileImage: string;
+  thumbnail: string;
   kakaoTalkId: string;
   introduction: string;
   mbti: string;

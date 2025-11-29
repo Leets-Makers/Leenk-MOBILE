@@ -22,7 +22,7 @@ export default function UserItem({ user, checked, onToggle }: UserItemProps) {
       accessibilityLabel={`${user.name} ${checked ? '선택됨' : '선택 안됨'}`}
     >
       <ProfileImageWithFallback
-        uri={user.profileImage}
+        uri={user.thumbnail}
         isUserBirthdayToday={user.isUserBirthdayToday}
       />
       <UserName>{user.name}</UserName>

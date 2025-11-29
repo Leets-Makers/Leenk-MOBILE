@@ -36,7 +36,7 @@ export default function UserListModalContent({
           >
             <UserRow>
               <ProfileImageWithFallback
-                uri={item.profileImage}
+                uri={item.thumbnail}
                 isUserBirthdayToday={item.isUserBirthdayToday}
               />
               <NameRow>

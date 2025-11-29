@@ -10,7 +10,7 @@ import {
   lineHeight,
 } from '@/theme/globalStyles';
 import { useRouter } from 'expo-router';
-import { Header } from '@/components';
+import { Header, Loading } from '@/components';
 import BirthdayCard from '@/components/extra/birthday/BirthdayCard';
 import UpcomingBirthdayCard from '@/components/extra/birthday/UpcomingBirthdayCard';
 import { useModalStore } from '@/stores/modalStore';
@@ -34,6 +34,7 @@ export default function ExtraPage() {
     upcomingBirthdayUsers,
     fetchBirthdayUsers,
     fetchUpcomingBirthdayUsers,
+    loading,
   } = useBirthdayStore();
 
   useFocusEffect(
@@ -74,7 +75,9 @@ export default function ExtraPage() {
         <Header LeftSection="LOGO" RightSection="BELL" />
       </HeaderWrapper>
       <Container>
-        {isEmpty ? (
+        {loading ? (
+          <Loading />
+        ) : isEmpty ? (
           <EmptyWrapper>
             <LeenkGrayIcon
               width={120 * width}
