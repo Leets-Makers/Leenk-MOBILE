@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { Header, Loading } from '@/components';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
+import { View } from 'react-native';
 import {
   fontSize,
   fonts,
@@ -58,9 +59,11 @@ export default function BirthdayLettersPage() {
   return (
     <>
       <Container>
-        <Header LeftSection="BACK" RightSection="NONE">
-          받은 편지
-        </Header>
+        <View style={{ paddingHorizontal: 20 * width }}>
+          <Header LeftSection="BACK" RightSection="NONE">
+            받은 편지
+          </Header>
+        </View>
 
         {birthdayLettersLoading && <Loading />}
 
@@ -106,12 +109,12 @@ export default function BirthdayLettersPage() {
 const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding-horizontal: ${20 * width}px;
 `;
 
 const YearSection = styled.View`
   padding-vertical: ${12 * height}px;
   gap: ${8 * height}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const YearHeader = styled.View`
