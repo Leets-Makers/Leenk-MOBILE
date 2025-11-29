@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Header, Loading } from '@/components';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
-import { View } from 'react-native';
+import { View, FlatList } from 'react-native';
 import {
   fontSize,
   fonts,
@@ -80,9 +80,12 @@ export default function BirthdayLettersPage() {
             </EmptyText>
           </EmptyWrapper>
         ) : (
-          <ScrollArea>
-            {sortedYears.map((year) => (
-              <YearSection key={year}>
+          <FlatList
+            style={{ flex: 1, marginTop: 12 * height }}
+            data={sortedYears}
+            keyExtractor={(item) => item.toString()}
+            renderItem={({ item: year }) => (
+              <YearSection>
                 <YearHeader>
                   <YearText>{year}</YearText>
                   <DividerLine />
@@ -98,8 +101,8 @@ export default function BirthdayLettersPage() {
                   />
                 ))}
               </YearSection>
-            ))}
-          </ScrollArea>
+            )}
+          />
         )}
       </Container>
     </>
@@ -148,9 +151,4 @@ const EmptyText = styled.Text`
   color: ${colors.text[3]};
   text-align: center;
   line-height: ${lineHeight.l}px;
-`;
-
-const ScrollArea = styled.ScrollView`
-  flex: 1;
-  margin-top: ${12 * height}px;
 `;
