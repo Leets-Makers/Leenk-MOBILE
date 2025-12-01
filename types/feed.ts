@@ -56,3 +56,38 @@ export interface UploadFeedPayload {
   media: Media[];
   userId?: number[];
 }
+
+// 피드 네비게이션 (이전/현재/다음 피드)
+export interface FeedNavigationItem {
+  feedId: number;
+  author: {
+    author: {
+      userId: number;
+      thumbnail: string;
+      name: string;
+      isUserBirthdayToday: boolean;
+    };
+  };
+  description: string;
+  totalReactionCount: number;
+  createdAt: string;
+  media: Media[];
+  linkedUserCount: number;
+  linkedUser: {
+    user: {
+      userId: number;
+      thumbnail: string;
+      name: string;
+      isUserBirthdayToday: boolean;
+    };
+    isAuthor: boolean;
+  }[];
+}
+
+export interface FeedNavigation {
+  current: FeedNavigationItem;
+  prevFeeds: FeedNavigationItem[];
+  nextFeeds: FeedNavigationItem[];
+  hasMorePrev: boolean;
+  hasMoreNext: boolean;
+}

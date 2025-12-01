@@ -55,6 +55,13 @@ export default function FeedDetailItem({ feed }: Props) {
       (feed as any)?.files ??
       [];
 
+    if (!Array.isArray(raw) || raw.length === 0) return [];
+
+    // 이미 Media 객체 배열이면 그대로 반환
+    if (typeof raw[0] === 'object' && raw[0]?.mediaUrl) {
+      return raw as Media[];
+    }
+
     // 문자열 배열이면 { url } 객체로 매핑
     if (typeof raw[0] === 'string') {
       return (raw as string[]).filter(Boolean).map<Media>((url, idx) => ({

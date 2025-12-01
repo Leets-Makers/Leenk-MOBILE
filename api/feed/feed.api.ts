@@ -1,5 +1,11 @@
 import api from '@/api/api';
-import { Author, FeedItem, FeedReactedUser, Media } from '@/types/feed';
+import {
+  Author,
+  FeedItem,
+  FeedNavigation,
+  FeedReactedUser,
+  Media,
+} from '@/types/feed';
 import { FeedDetail, UploadFeedPayload } from '@/types/feed';
 import { ApiResponse } from '@/api/api-type';
 import { Pageable } from '@/types/pageable';
@@ -36,6 +42,14 @@ export const getFeedList = async (pageNumber: number, pageSize: number) => {
 // 피드 상세 조회
 export const getFeedDetail = async (feedId: number) => {
   const res = await api.get<ApiResponse<FeedDetail>>(`/feeds/${feedId}`);
+  return res.data.data;
+};
+
+// 피드 네비게이션 조회( 이전 피드, 다음 피드 조회 )
+export const getFeedNavigation = async (feedId: number) => {
+  const res = await api.get<ApiResponse<FeedNavigation>>(
+    `/feeds/${feedId}/navigation`,
+  );
   return res.data.data;
 };
 
