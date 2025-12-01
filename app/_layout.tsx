@@ -21,6 +21,7 @@ import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useUserStore } from '@/stores/userStore';
 import { InAppNotificationProvider } from '@/components/InAppNotificationProvider';
 import { LogBox } from 'react-native';
+import * as Clarity from '@microsoft/react-native-clarity';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,6 +50,11 @@ LogBox.ignoreLogs([
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+// 클래리티 초기화
+Clarity.initialize('ub586r8mex', {
+  logLevel: Clarity.LogLevel.None, // Note: Use "LogLevel.Verbose" value while testing to debug initialization issues.
+});
 
 export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
