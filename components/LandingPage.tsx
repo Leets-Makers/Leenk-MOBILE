@@ -75,6 +75,11 @@ export default function LandingPage() {
     // --- 정상 로그인 ---
     if (code === 1002) {
       // 최초 로그인(회원가입 페이지로 이동)
+      if (!data?.accessToken || !data?.refreshToken) {
+        showToast('토큰 발급 실패', 'error');
+        return;
+      }
+
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
 
@@ -88,8 +93,16 @@ export default function LandingPage() {
 
     if (code === 1003) {
       // 일반 로그인(홈으로 이동)
+      if (!data?.accessToken || !data?.refreshToken) {
+        showToast('토큰 발급 실패', 'error');
+        return;
+      }
+
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
+
+      // SecureStore 반영 대기
+      await new Promise((r) => setTimeout(r, 150));
 
       await registerFcmToken();
       router.replace('/(page)/leenk');
@@ -102,6 +115,7 @@ export default function LandingPage() {
         setWaitModal(true);
         break;
       case 2001:
+        await clearAllTokens();
         if (__DEV__) console.error('서버 인증 에러:', result.message);
         showToast(message, 'error');
         break;
@@ -110,19 +124,22 @@ export default function LandingPage() {
         break;
       default:
         if (__DEV__) console.error('알 수 없는 예외:', code, result.message);
+        await clearAllTokens();
         showToast(message, 'error');
     }
   };
 
   const handleKakaoLogin = async () => {
-    await clearAllTokens();
-
     try {
       const token = await login();
       const accessToken = token?.accessToken;
-      if (!accessToken) return;
+      if (!accessToken) {
+        showToast('카카오 토큰 발급 실패', 'error');
+        return;
+      }
 
       const result = await kakaoLogin(accessToken);
+
       await handleSocialLogin(result);
     } catch (error: any) {
       const serverCode = error?.response?.data?.code;
@@ -137,6 +154,8 @@ export default function LandingPage() {
         return;
       }
 
+      await clearAllTokens();
+      if (__DEV__) console.error('카카오 로그인 실패:', error);
       showToast('카카오 로그인 실패', 'error');
     }
   };
@@ -166,8 +185,9 @@ export default function LandingPage() {
         return;
       }
 
-      const res = await appleLogin(idToken);
-      await handleSocialLogin(res.data);
+      const result = await appleLogin(idToken);
+
+      await handleSocialLogin(result);
     } catch (error: any) {
       if (error?.code === 'ERR_REQUEST_CANCELED') return;
 
