@@ -21,7 +21,7 @@ export default function FeedCard({ item }: FeedCardProps) {
       <Thumbnail source={{ uri: item.thumbNail }} resizeMode="cover">
         <OverlayTopLeft>
           <ProfileImageWithFallback
-            uri={item.author.profileImage}
+            uri={item.author.thumbnail}
             isUserBirthdayToday={item.author.isUserBirthdayToday}
           />
         </OverlayTopLeft>

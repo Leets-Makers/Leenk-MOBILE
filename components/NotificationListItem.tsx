@@ -204,7 +204,7 @@ export default function NotificationListItem({
           item.content.body ?? '오늘은 {name}의 생일이야 \n축하해주러 가볼까?';
 
         // {name}을 실제 이름으로 치환
-        const replacedBody = rawBody.replaceAll('{name}', userName);
+        const replacedBody = rawBody.replace(/{name}/g, userName);
 
         return (
           <>
@@ -218,7 +218,7 @@ export default function NotificationListItem({
         const rawBody = item.content.body ?? '생일 축하해, 멋쟁이 {name}!';
 
         // {name}을 실제 이름으로 치환
-        const replacedBody = rawBody.replaceAll('{name}', userName);
+        const replacedBody = rawBody.replace(/{name}/g, userName);
         return (
           <>
             <TitleText>{replacedBody}</TitleText>
@@ -231,7 +231,7 @@ export default function NotificationListItem({
         const rawBody = item.content.body ?? '{name}에게 생일 편지를 받았어!';
 
         // {name}을 senderName으로 치환
-        const replacedBody = rawBody.replaceAll('{name}', senderName);
+        const replacedBody = rawBody.replace(/{name}/g, senderName);
         return (
           <>
             <TitleText>{replacedBody}</TitleText>

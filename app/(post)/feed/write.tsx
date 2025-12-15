@@ -240,7 +240,7 @@ export default function FeedWritePage() {
           >
             {/* 작성자 관련 영역 */}
             <AuthorContent
-              profileImage={userInfo?.profileImage}
+              profileImage={userInfo?.thumbnail}
               name={userInfo?.name}
               label={writeBadgeLabel}
               isUserBirthdayToday={userInfo?.isUserBirthdayToday}

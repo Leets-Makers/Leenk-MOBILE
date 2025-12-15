@@ -41,7 +41,7 @@ export default function UserItem({ user }: { user: LeenkParticipantItem }) {
         }}
       >
         <ProfileImageWithFallback
-          uri={user.participant.profileImage}
+          uri={user.participant.thumbnail}
           isUserBirthdayToday={user.participant.isUserBirthdayToday}
         />
       </Pressable>

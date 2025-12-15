@@ -46,9 +46,19 @@ export const getFeedDetail = async (feedId: number) => {
 };
 
 // 피드 네비게이션 조회( 이전 피드, 다음 피드 조회 )
-export const getFeedNavigation = async (feedId: number) => {
+export const getFeedNavigation = async (
+  feedId: number,
+  prevSize: number = 1,
+  nextSize: number = 1,
+) => {
   const res = await api.get<ApiResponse<FeedNavigation>>(
     `/feeds/${feedId}/navigation`,
+    {
+      params: {
+        prevSize,
+        nextSize,
+      },
+    },
   );
   return res.data.data;
 };

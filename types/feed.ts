@@ -1,7 +1,7 @@
 export interface Author {
   userId: number;
   name: string;
-  profileImage: string;
+  thumbnail: string;
   isUserBirthdayToday: boolean;
 }
 
@@ -30,7 +30,7 @@ export interface FeedDetail {
     userId: number;
     name: string;
     isAuthor: boolean;
-    profileImage?: string; // isAuthor = false일 경우 없을 수 있음
+    thumbnail?: string; // isAuthor = false일 경우 없을 수 있음
     isUserBirthdayToday: boolean;
   }[];
 }
@@ -38,15 +38,16 @@ export interface FeedDetail {
 export interface FeedReactedUser {
   userId: number;
   name: string;
-  profileImage?: string;
+  thumbnail?: string;
   reactionCount: number;
   isUserBirthdayToday: boolean;
 }
 
 export interface FeedConnectedUser {
+  isAuthor?: boolean;
   userId: number;
   name: string;
-  profileImage?: string;
+  thumbnail?: string;
   isUserBirthdayToday: boolean;
 }
 
@@ -60,26 +61,17 @@ export interface UploadFeedPayload {
 // 피드 네비게이션 (이전/현재/다음 피드)
 export interface FeedNavigationItem {
   feedId: number;
-  author: {
-    author: {
-      userId: number;
-      thumbnail: string;
-      name: string;
-      isUserBirthdayToday: boolean;
-    };
-  };
+  author: Author;
   description: string;
   totalReactionCount: number;
   createdAt: string;
   media: Media[];
   linkedUserCount: number;
   linkedUser: {
-    user: {
-      userId: number;
-      thumbnail: string;
-      name: string;
-      isUserBirthdayToday: boolean;
-    };
+    userId: number;
+    name: string;
+    thumbnail: string | null;
+    isUserBirthdayToday: boolean;
     isAuthor: boolean;
   }[];
 }

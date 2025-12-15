@@ -82,7 +82,7 @@ export default function MyPage() {
         <ProfileCard
           cardinal={profile?.cardinal}
           name={profile?.name}
-          imageUrl={profile?.profileImage}
+          imageUrl={profile?.thumbnail}
           kakaoTalkId={profile?.kakaoTalkId}
           introduction={profile?.introduction}
           mbti={profile?.mbti}

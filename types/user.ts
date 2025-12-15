@@ -2,7 +2,7 @@ export interface UserProfile {
   id: number;
   name: string;
   cardinal: number;
-  profileImage: string;
+  thumbnail: string;
   kakaoTalkId: string;
   introduction: string;
   mbti: string;

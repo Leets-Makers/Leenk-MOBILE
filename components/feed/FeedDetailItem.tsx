@@ -47,6 +47,9 @@ export default function FeedDetailItem({ feed }: Props) {
   // ─────────────────────────────────────────────
 
   const media: Media[] = useMemo(() => {
+    // feed가 없으면 빈 배열 반환
+    if (!feed || !feed.feedId) return [];
+
     // 서버/목록/상세에 따라 키가 다를 수 있음 → 가능한 모든 후보에서 수집
     const raw =
       (feed as any)?.media ??
@@ -57,31 +60,38 @@ export default function FeedDetailItem({ feed }: Props) {
 
     if (!Array.isArray(raw) || raw.length === 0) return [];
 
-    // 이미 Media 객체 배열이면 그대로 반환
+    // 이미 Media 객체 배열이면 유효한 URL만 필터링해서 반환
     if (typeof raw[0] === 'object' && raw[0]?.mediaUrl) {
-      return raw as Media[];
+      return (raw as Media[]).filter(
+        (item) =>
+          item.mediaUrl &&
+          typeof item.mediaUrl === 'string' &&
+          item.mediaUrl.trim() !== '',
+      );
     }
 
-    // 문자열 배열이면 { url } 객체로 매핑
+    // 문자열 배열이면 유효한 URL만 필터링 후 { url } 객체로 매핑
     if (typeof raw[0] === 'string') {
-      return (raw as string[]).filter(Boolean).map<Media>((url, idx) => ({
-        mediaUrl: url,
-        position: idx,
-        mediaId: `${feed?.feedId ?? 'tmp'}_${idx}`,
-        type: 'IMAGE',
-        mediaType: 'IMAGE', // mediaType 필드 추가 (필수)
-      }));
+      return (raw as string[])
+        .filter((url) => url && typeof url === 'string' && url.trim() !== '')
+        .map<Media>((url, idx) => ({
+          mediaUrl: url,
+          position: idx,
+          mediaId: `${feed?.feedId ?? 'tmp'}_${idx}`,
+          type: 'IMAGE',
+          mediaType: 'IMAGE', // mediaType 필드 추가 (필수)
+        }));
     }
 
     return [];
-  }, [feed]);
+  }, [feed, feed?.feedId]);
 
   // ─────────────────────────────────────────────
   // 2) 작성자 정보 안전 폴백
   // ─────────────────────────────────────────────
   const authorId = feed?.author?.userId ?? 0;
   const authorName = feed?.author?.name ?? '사용자';
-  const authorProfile = feed?.author?.profileImage ?? undefined;
+  const authorProfile = feed?.author?.thumbnail ?? undefined;
   const isAuthor = authorId === userInfo?.userId;
   const isAuthorBirthdayToday = feed?.author?.isUserBirthdayToday;
 
@@ -102,11 +112,7 @@ export default function FeedDetailItem({ feed }: Props) {
   //    - NaN년 NaN월 NaN일 방지: createdAt 존재/파싱 가능할 때만 formatDate
   // ─────────────────────────────────────────────
   const createdAtText = useMemo(() => {
-    const raw =
-      (feed as any)?.createdAt ??
-      (feed as any)?.created_at ??
-      (feed as any)?.createdDate ??
-      null;
+    const raw = (feed as any)?.createdAt ?? null;
 
     if (!raw) return ''; // 값이 없으면 빈 문자열
 
@@ -146,10 +152,12 @@ export default function FeedDetailItem({ feed }: Props) {
 
   return (
     <Wrapper>
-      <BackgroundImageSlider
-        mediaUrls={media}
-        gradient={{ top: 120 * height, bottom: 520 * height }}
-      />
+      {media.length > 0 && (
+        <BackgroundImageSlider
+          mediaUrls={media}
+          gradient={{ top: 120 * height, bottom: 520 * height }}
+        />
+      )}
 
       <Header
         isBackWhite

@@ -19,6 +19,7 @@ interface BirthdayStore {
   birthdayLetters: BirthdayLetter[];
 
   loading: boolean;
+  birthdayLettersLoading: boolean;
   error: string | null;
 
   // setters
@@ -28,6 +29,7 @@ interface BirthdayStore {
   setHasNewLetters: (value: boolean) => void;
   setMyBirthdayLettersCounts: (value: number) => void;
   setLoading: (value: boolean) => void;
+  setBirthdayLettersLoading: (value: boolean) => void;
   setError: (msg: string | null) => void;
 
   // fetchers
@@ -50,6 +52,7 @@ export const useBirthdayStore = create<BirthdayStore>((set, get) => ({
   birthdayLetters: [],
 
   loading: false,
+  birthdayLettersLoading: false,
   error: null,
 
   // setters
@@ -60,6 +63,7 @@ export const useBirthdayStore = create<BirthdayStore>((set, get) => ({
   setMyBirthdayLettersCounts: (value: number) =>
     set({ myBirthdayLettersCounts: value }),
   setLoading: (value) => set({ loading: value }),
+  setBirthdayLettersLoading: (value) => set({ birthdayLettersLoading: value }),
   setError: (msg) => set({ error: msg }),
 
   // 생일자 조회
@@ -94,14 +98,14 @@ export const useBirthdayStore = create<BirthdayStore>((set, get) => ({
 
   //  내가 받은 생일 편지 조회
   fetchBirthdayLetters: async () => {
-    set({ loading: true, error: null });
+    set({ birthdayLettersLoading: true, error: null });
     try {
       const letters = await getBirthdayLetters();
       set({ birthdayLetters: letters });
     } catch (err) {
       set({ error: '생일 편지 조회 실패' });
     } finally {
-      set({ loading: false });
+      set({ birthdayLettersLoading: false });
     }
   },
 

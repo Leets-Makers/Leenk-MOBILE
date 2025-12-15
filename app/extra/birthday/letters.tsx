@@ -1,7 +1,8 @@
-import { useEffect, useCallback } from 'react';
-import { Header } from '@/components';
+import { useCallback } from 'react';
+import { Header, Loading } from '@/components';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
+import { View, FlatList } from 'react-native';
 import {
   fontSize,
   fonts,
@@ -16,8 +17,12 @@ import { useFocusEffect } from 'expo-router';
 import { postMarkBirthdayLetters } from '@/api/extra/birthday/birthday.post.api';
 
 export default function BirthdayLettersPage() {
-  const { birthdayLetters, fetchBirthdayLetters, hasNewLetters } =
-    useBirthdayStore();
+  const {
+    birthdayLetters,
+    fetchBirthdayLetters,
+    hasNewLetters,
+    birthdayLettersLoading,
+  } = useBirthdayStore();
 
   useFocusEffect(
     useCallback(() => {
@@ -54,11 +59,15 @@ export default function BirthdayLettersPage() {
   return (
     <>
       <Container>
-        <Header LeftSection="BACK" RightSection="NONE">
-          받은 편지
-        </Header>
+        <View style={{ paddingHorizontal: 20 * width }}>
+          <Header LeftSection="BACK" RightSection="NONE">
+            받은 편지
+          </Header>
+        </View>
 
-        {letters.length === 0 ? (
+        {birthdayLettersLoading && <Loading />}
+
+        {!birthdayLettersLoading && letters.length === 0 ? (
           <EmptyWrapper>
             <LeenkGrayIcon
               width={120 * width}
@@ -71,39 +80,44 @@ export default function BirthdayLettersPage() {
             </EmptyText>
           </EmptyWrapper>
         ) : (
-          sortedYears.map((year) => (
-            <YearSection key={year}>
-              <YearHeader>
-                <YearText>{year}</YearText>
-                <DividerLine />
-              </YearHeader>
+          <FlatList
+            style={{ flex: 1, marginTop: 12 * height }}
+            data={sortedYears}
+            keyExtractor={(item) => item.toString()}
+            renderItem={({ item: year }) => (
+              <YearSection>
+                <YearHeader>
+                  <YearText>{year}</YearText>
+                  <DividerLine />
+                </YearHeader>
 
-              {groupedByYear[year].map((letter) => (
-                <BirthdayLetterCard
-                  key={letter.letterId}
-                  username={letter.author.name}
-                  profileImage={letter.author.thumbnail}
-                  isUserBirthdayToday={letter.author.isUserBirthdayToday}
-                  message={letter.message}
-                />
-              ))}
-            </YearSection>
-          ))
+                {groupedByYear[year].map((letter) => (
+                  <BirthdayLetterCard
+                    key={letter.letterId}
+                    username={letter.name ?? '사용자'}
+                    profileImage={letter.thumbnail ?? ''}
+                    isUserBirthdayToday={letter.isUserBirthdayToday ?? false}
+                    message={letter.message}
+                  />
+                ))}
+              </YearSection>
+            )}
+          />
         )}
       </Container>
     </>
   );
 }
 
-const Container = styled.ScrollView`
+const Container = styled.View`
   flex: 1;
   background-color: ${colors.bg[2]};
-  padding-horizontal: ${20 * width}px;
 `;
 
 const YearSection = styled.View`
   padding-vertical: ${12 * height}px;
   gap: ${8 * height}px;
+  padding-horizontal: ${20 * width}px;
 `;
 
 const YearHeader = styled.View`
