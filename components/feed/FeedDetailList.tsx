@@ -145,7 +145,7 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
       setIsLoadingMore(true);
       const firstFeedId = feeds[0].feedId;
       // 이전 피드만 3개 가져오기
-      const navigation = await getFeedNavigation(firstFeedId, 3, 0);
+      const navigation = await getFeedNavigation(firstFeedId, 2, 0);
 
       if (navigation.prevFeeds.length > 0) {
         const timestamp = Date.now();
@@ -192,7 +192,7 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
       setIsLoadingMore(true);
       const lastFeedId = feeds[feeds.length - 1].feedId;
       // 다음 피드만 3개 가져오기
-      const navigation = await getFeedNavigation(lastFeedId, 0, 3);
+      const navigation = await getFeedNavigation(lastFeedId, 0, 2);
 
       if (navigation.nextFeeds.length > 0) {
         const timestamp = Date.now();

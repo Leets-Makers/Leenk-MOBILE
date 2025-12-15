@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import * as MediaLibrary from 'expo-media-library';
-import { Image, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { IMAGE_SIZE, ITEM_MARGIN } from '@/constants/dimension.constants';
 import colors from '@/theme/color';
 import { ToastCheckIcon } from '@/assets';
@@ -41,7 +42,7 @@ export default function ThumbnailItem({
         {uri && (
           <Image
             source={{ uri }}
-            resizeMode="cover"
+            contentFit="cover"
             style={{
               width: IMAGE_SIZE,
               height: imageHeight,

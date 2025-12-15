@@ -54,23 +54,24 @@ export default function useFeedImagePicker({
 
         const { assets, endCursor, hasNextPage } =
           await MediaLibrary.getAssetsAsync({
-            first: 24,
+            first: 50,
             after,
             mediaType: MediaLibrary.MediaType.photo,
           });
 
-        let normalized = assets;
-        if (Platform.OS === 'ios') {
-          const infos = await Promise.all(
-            assets.map((a) =>
-              MediaLibrary.getAssetInfoAsync(a.id).catch(() => null),
-            ),
-          );
-          normalized = assets.map((a, i) => ({
-            ...a,
-            uri: infos[i]?.localUri ?? a.uri,
-          }));
-        }
+        // let normalized = assets;
+        // if (Platform.OS === 'ios') {
+        //   const infos = await Promise.all(
+        //     assets.map((a) =>
+        //       MediaLibrary.getAssetInfoAsync(a.id).catch(() => null),
+        //     ),
+        //   );
+        //   normalized = assets.map((a, i) => ({
+        //     ...a,
+        //     uri: infos[i]?.localUri ?? a.uri,
+        //   }));
+        // }
+        const normalized = assets;
 
         setPhotos((prev) => {
           const base = opts?.reset ? [] : prev;
@@ -92,13 +93,37 @@ export default function useFeedImagePicker({
     [fetchPhotos],
   );
 
+  // const toggleSelect = (photo: MediaLibrary.Asset) => {
+  //   const isSelected = selected.some((i) => i.uri === photo.uri);
+  //   let next: SelectedImage[];
+  //   if (isSelected) next = selected.filter((i) => i.uri !== photo.uri);
+  //   else if (selected.length < maxSelect)
+  //     next = [...selected, { uri: photo.uri, filename: photo.filename }];
+  //   else return;
+
+  //   setSelected(next);
+  //   onChange?.(next.map((n) => n.uri));
+  // };
+
   const toggleSelect = (photo: MediaLibrary.Asset) => {
-    const isSelected = selected.some((i) => i.uri === photo.uri);
+    const isSelected = selected.some((i) => i.assetId === photo.id);
+
     let next: SelectedImage[];
-    if (isSelected) next = selected.filter((i) => i.uri !== photo.uri);
-    else if (selected.length < maxSelect)
-      next = [...selected, { uri: photo.uri, filename: photo.filename }];
-    else return;
+
+    if (isSelected) {
+      next = selected.filter((i) => i.assetId !== photo.id);
+    } else if (selected.length < maxSelect) {
+      next = [
+        ...selected,
+        {
+          assetId: photo.id,
+          uri: photo.uri,
+          filename: photo.filename,
+        },
+      ];
+    } else {
+      return;
+    }
 
     setSelected(next);
     onChange?.(next.map((n) => n.uri));

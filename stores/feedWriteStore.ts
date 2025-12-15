@@ -3,6 +3,7 @@ import { FeedConnectedUser, FeedDetail, Media } from '@/types/feed';
 
 export interface SelectedImage {
   uri: string;
+  assetId?: string;
   filename: string;
 }
 
