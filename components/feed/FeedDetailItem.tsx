@@ -36,8 +36,10 @@ interface Props {
   feed: FeedDetail;
 }
 
-export default function FeedDetailItem({ feed }: Props) {
-  const { modalType, openModal, closeModal } = useModalStore();
+function FeedDetailItem({ feed }: Props) {
+  const { modalType, openModal, closeModal, payload } = useModalStore();
+  const isOpen = modalType === 'feedLinked' && payload?.feedId === feed.feedId;
+
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
 
@@ -99,7 +101,27 @@ export default function FeedDetailItem({ feed }: Props) {
   // 3) 연결 배지 라벨 (널가드)
   // ─────────────────────────────────────────────
   const linkedCount = feed?.linkedUserCount ?? 0;
-  const linkedUser = Array.isArray(feed?.linkedUser) ? feed.linkedUser : [];
+
+  // linkedUser를 useMemo로 감싸서 feed.feedId가 변경될 때마다 새로운 배열 참조 생성
+  const linkedUser = useMemo(() => {
+    if (!feed?.linkedUser || !Array.isArray(feed.linkedUser)) return [];
+    // 새로운 배열을 생성하여 반환
+    const result = [...feed.linkedUser];
+
+    if (__DEV__) {
+      console.log(
+        `[FeedDetailItem] feedId: ${feed.feedId}, linkedUser 개수: ${result.length}`,
+      );
+      if (result.length > 0) {
+        console.log(
+          `[FeedDetailItem] feedId: ${feed.feedId}, 첫번째 유저: ${result[0]?.name}`,
+        );
+      }
+    }
+
+    return result;
+  }, [feed?.feedId, feed?.linkedUser]);
+
   const linkedLabel = useMemo(() => {
     const nonAuthor = linkedUser.filter((u) => !u.isAuthor);
     const first = nonAuthor[0]?.name ?? '사용자';
@@ -193,7 +215,9 @@ export default function FeedDetailItem({ feed }: Props) {
               <Badge
                 variant="gray"
                 label={linkedLabel}
-                onPress={() => openModal('feedLinked')}
+                onPress={() =>
+                  openModal('feedLinked', null, { feedId: feed.feedId })
+                }
               />
             )}
           </View>
@@ -239,7 +263,7 @@ export default function FeedDetailItem({ feed }: Props) {
 
       {/* 모달들 */}
       <UserListModal
-        visible={modalType === 'feedLinked'}
+        visible={isOpen}
         title="함께 연결된 Leets"
         list={linkedUser}
         onClose={closeModal}
@@ -274,6 +298,12 @@ export default function FeedDetailItem({ feed }: Props) {
     </Wrapper>
   );
 }
+
+// React.memo로 감싸서 feed.feedId가 변경될 때만 재렌더링
+export default React.memo(FeedDetailItem, (prevProps, nextProps) => {
+  // feed.feedId가 같으면 재렌더링하지 않음
+  return prevProps.feed.feedId === nextProps.feed.feedId;
+});
 
 const Wrapper = styled.View`
   width: 100%;

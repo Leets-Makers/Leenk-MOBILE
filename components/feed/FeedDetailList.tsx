@@ -292,8 +292,8 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
       }}
       scrollEventThrottle={400}
       renderItem={({ item }) => (
-        <View key={item.feedId} style={{ height: SCREEN_HEIGHT }}>
-          <FeedDetailItem feed={item} />
+        <View style={{ height: SCREEN_HEIGHT }}>
+          <FeedDetailItem key={item._uniqueKey} feed={item} />
         </View>
       )}
     />
