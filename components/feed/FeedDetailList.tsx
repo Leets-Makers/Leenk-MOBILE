@@ -122,18 +122,24 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
   };
 
   useEffect(() => {
-    // initialFeedId가 변경되었을 때 데이터 새로 로드
-    if (
-      !initialLoadDoneRef.current ||
-      initialFeedIdRef.current !== initialFeedId
-    ) {
-      // 기존 상태 초기화
-      setFeeds([]);
-      setIsLoading(true);
-      initialLoadDoneRef.current = false;
+    // initialFeedId가 변경되었을 때만 데이터 새로 로드 (초기 로드 또는 외부에서 변경된 경우)
+    if (!initialLoadDoneRef.current) {
+      // 초기 로딩
       initialFeedIdRef.current = initialFeedId;
-
       fetchInitialFeeds();
+    } else if (initialFeedIdRef.current !== initialFeedId) {
+      // 외부에서 feedId가 변경된 경우 (뒤로가기 등)
+      // 이미 해당 피드가 로드되어 있는지 확인
+      const existingIndex = feeds.findIndex((f) => f.feedId === initialFeedId);
+      if (existingIndex === -1) {
+        // 해당 피드가 없으면 새로 로드
+        setFeeds([]);
+        setIsLoading(true);
+        initialLoadDoneRef.current = false;
+        initialFeedIdRef.current = initialFeedId;
+        fetchInitialFeeds();
+      }
+      // 이미 있으면 아무것도 하지 않음 (스크롤로 인한 URL 변경)
     }
   }, [initialFeedId]);
 
@@ -233,6 +239,8 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
           // 이미 같은 feedId면 URL 업데이트 생략
           if (currentVisibleFeedIdRef.current !== feedId) {
             currentVisibleFeedIdRef.current = feedId;
+            // initialFeedIdRef도 업데이트해서 useEffect가 불필요하게 트리거되지 않도록 함
+            initialFeedIdRef.current = feedId;
             // URL 업데이트 (히스토리에 추가하지 않음)
             router.setParams({ id: feedId.toString() });
           }
