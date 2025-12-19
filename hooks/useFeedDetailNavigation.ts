@@ -166,6 +166,22 @@ export function useFeedDetailNavigation(initialFeedId: number) {
     }
   }, [hasMoreNext, isLoadingMore, feeds]);
 
+  useEffect(() => {
+    if (!feeds.length) return;
+
+    const targetFeedId = initialFeedIdRef.current;
+
+    const index = feeds.findIndex((f) => f.feedId === targetFeedId);
+    if (index === -1) return;
+
+    requestAnimationFrame(() => {
+      flatListRef.current?.scrollToIndex({
+        index,
+        animated: false,
+      });
+    });
+  }, [feeds]);
+
   // 현재 보이는 아이템 추적
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -189,11 +205,11 @@ export function useFeedDetailNavigation(initialFeedId: number) {
     feeds,
     isLoading,
     flatListRef,
-    initialIndex: currentIndexRef.current,
     onViewableItemsChanged,
     loadMorePrev,
     loadMoreNext,
     hasMorePrev,
+    hasMoreNext,
     isLoadingMore,
   };
 }

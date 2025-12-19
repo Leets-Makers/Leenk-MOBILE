@@ -14,7 +14,6 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
     feeds,
     isLoading,
     flatListRef,
-    initialIndex,
     onViewableItemsChanged,
     loadMoreNext,
     loadMorePrev,
@@ -38,25 +37,16 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
         offset: SCREEN_HEIGHT * index,
         index,
       })}
-      onScrollToIndexFailed={(info) => {
-        setTimeout(() => {
-          flatListRef.current?.scrollToIndex({
-            index: info.index,
-            animated: false,
-          });
-        }, 50);
-      }}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
       onEndReached={loadMoreNext}
       onEndReachedThreshold={0.5}
-      onScroll={(event) => {
-        const offsetY = event.nativeEvent.contentOffset.y;
+      onScroll={(e) => {
+        const offsetY = e.nativeEvent.contentOffset.y;
         if (offsetY <= SCREEN_HEIGHT && hasMorePrev && !isLoadingMore) {
           loadMorePrev();
         }
       }}
-      scrollEventThrottle={16}
       renderItem={({ item }) => (
         <View style={{ height: SCREEN_HEIGHT }}>
           <FeedDetailItem feed={item} />
