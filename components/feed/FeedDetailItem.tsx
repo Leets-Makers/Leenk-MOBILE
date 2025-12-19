@@ -43,81 +43,28 @@ function FeedDetailItem({ feed }: Props) {
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
 
-  // ─────────────────────────────────────────────
-  // 1) media 안전 폴백 + BackgroundImageSlider 타입 맞추기
-  //    - 컴포넌트가 Media[] (ex: {url, type}) 를 기대하는 경우를 맞춰줌
-  // ─────────────────────────────────────────────
-
+  // 미디어(이미지) 배열 목록
   const media: Media[] = useMemo(() => {
-    // feed가 없으면 빈 배열 반환
-    if (!feed || !feed.feedId) return [];
+    if (!Array.isArray(feed?.media)) return [];
 
-    // 서버/목록/상세에 따라 키가 다를 수 있음 → 가능한 모든 후보에서 수집
-    const raw =
-      (feed as any)?.media ??
-      (feed as any)?.mediaUrls ??
-      (feed as any)?.images ??
-      (feed as any)?.files ??
-      [];
+    return feed.media.filter(
+      (item): item is Media =>
+        typeof item.mediaUrl === 'string' && item.mediaUrl.length > 0,
+    );
+  }, [feed?.media]);
 
-    if (!Array.isArray(raw) || raw.length === 0) return [];
-
-    // 이미 Media 객체 배열이면 유효한 URL만 필터링해서 반환
-    if (typeof raw[0] === 'object' && raw[0]?.mediaUrl) {
-      return (raw as Media[]).filter(
-        (item) =>
-          item.mediaUrl &&
-          typeof item.mediaUrl === 'string' &&
-          item.mediaUrl.trim() !== '',
-      );
-    }
-
-    // 문자열 배열이면 유효한 URL만 필터링 후 { url } 객체로 매핑
-    if (typeof raw[0] === 'string') {
-      return (raw as string[])
-        .filter((url) => url && typeof url === 'string' && url.trim() !== '')
-        .map<Media>((url, idx) => ({
-          mediaUrl: url,
-          position: idx,
-          mediaId: `${feed?.feedId ?? 'tmp'}_${idx}`,
-          type: 'IMAGE',
-          mediaType: 'IMAGE', // mediaType 필드 추가 (필수)
-        }));
-    }
-
-    return [];
-  }, [feed, feed?.feedId]);
-
-  // ─────────────────────────────────────────────
-  // 2) 작성자 정보 안전 폴백
-  // ─────────────────────────────────────────────
+  // 작성자 관련
   const authorId = feed?.author?.userId ?? 0;
   const authorName = feed?.author?.name ?? '사용자';
   const authorProfile = feed?.author?.thumbnail ?? undefined;
   const isAuthor = authorId === userInfo?.userId;
   const isAuthorBirthdayToday = feed?.author?.isUserBirthdayToday;
-
-  // ─────────────────────────────────────────────
-  // 3) 연결 배지 라벨 (널가드)
-  // ─────────────────────────────────────────────
   const linkedCount = feed?.linkedUserCount ?? 0;
 
-  // linkedUser를 useMemo로 감싸서 feed.feedId가 변경될 때마다 새로운 배열 참조 생성
+  // 함께한 유저 목록
   const linkedUser = useMemo(() => {
     if (!feed?.linkedUser || !Array.isArray(feed.linkedUser)) return [];
-    // 새로운 배열을 생성하여 반환
     const result = [...feed.linkedUser];
-
-    if (__DEV__) {
-      console.log(
-        `[FeedDetailItem] feedId: ${feed.feedId}, linkedUser 개수: ${result.length}`,
-      );
-      if (result.length > 0) {
-        console.log(
-          `[FeedDetailItem] feedId: ${feed.feedId}, 첫번째 유저: ${result[0]?.name}`,
-        );
-      }
-    }
 
     return result;
   }, [feed?.feedId, feed?.linkedUser]);
@@ -129,25 +76,17 @@ function FeedDetailItem({ feed }: Props) {
     return others > 0 ? `${first} 외 ${others}명` : first;
   }, [linkedUser, linkedCount]);
 
-  // ─────────────────────────────────────────────
-  // 4) 날짜 표시 안전 처리
-  //    - NaN년 NaN월 NaN일 방지: createdAt 존재/파싱 가능할 때만 formatDate
-  // ─────────────────────────────────────────────
+  // 피드 작성 날짜
   const createdAtText = useMemo(() => {
-    const raw = (feed as any)?.createdAt ?? null;
+    if (!feed?.createdAt) return '';
 
-    if (!raw) return ''; // 값이 없으면 빈 문자열
+    const date = new Date(feed.createdAt);
+    if (Number.isNaN(date.getTime())) return '';
 
-    // formatDate가 문자열/Date 모두 받는다면 그대로 전달,
-    // 아니라면 new Date로 검증 후 전달
-    const d = new Date(raw);
-    if (isNaN(d.getTime())) return '';
-    return formatDate(raw);
-  }, [feed]);
+    return formatDate(feed.createdAt);
+  }, [feed?.createdAt]);
 
-  // ─────────────────────────────────────────────
-  // 5) 메뉴/삭제/신고 로직
-  // ─────────────────────────────────────────────
+  // 피드 삭제/신고 로직
   const handleDelete = useCallback(() => {
     closeModal();
     openModal('deleteConfirm');
@@ -299,9 +238,7 @@ function FeedDetailItem({ feed }: Props) {
   );
 }
 
-// React.memo로 감싸서 feed.feedId가 변경될 때만 재렌더링
 export default React.memo(FeedDetailItem, (prevProps, nextProps) => {
-  // feed.feedId가 같으면 재렌더링하지 않음
   return prevProps.feed.feedId === nextProps.feed.feedId;
 });
 
