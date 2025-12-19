@@ -9,12 +9,18 @@ interface ProfileImageProps {
   onChange?: (selected: string[]) => void;
 }
 
+type SelectedProfileImage = {
+  assetId: string;
+  uri: string; // ph://
+  filename?: string;
+};
+
 export default function useProfileImagePicker({
   maxSelect = 1,
   onChange,
 }: ProfileImageProps) {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
-  const [selected, setSelected] = useState<MediaLibrary.Asset | null>(null);
+  const [selected, setSelected] = useState<SelectedProfileImage | null>(null);
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
@@ -76,25 +82,12 @@ export default function useProfileImagePicker({
             mediaType: MediaLibrary.MediaType.photo,
           });
 
-        // iOS에서 localUri 확보
         let normalized = assets;
-        if (Platform.OS === 'ios') {
-          const infos = await Promise.all(
-            assets.map((a) =>
-              MediaLibrary.getAssetInfoAsync(a.id).catch(() => null),
-            ),
-          );
-          normalized = assets.map((a, i) => ({
-            ...a,
-            uri: infos[i]?.localUri ?? a.uri,
-          }));
-        }
 
         setPhotos((prev) => {
           const base = opts?.reset ? [] : prev;
           const seen = new Set(base.map((p) => p.id));
-          const next = normalized.filter((a) => !seen.has(a.id));
-          return [...base, ...next];
+          return [...base, ...normalized.filter((a) => !seen.has(a.id))];
         });
 
         setPageInfo({ endCursor, hasNextPage });
@@ -115,7 +108,15 @@ export default function useProfileImagePicker({
   /** 단일 선택 토글 */
   const toggleSelect = (photo: MediaLibrary.Asset) => {
     setSelected((prev) => {
-      const next = prev?.id === photo.id ? null : photo;
+      const next =
+        prev?.assetId === photo.id
+          ? null
+          : {
+              assetId: photo.id,
+              uri: photo.uri, // ph:// 그대로
+              filename: photo.filename,
+            };
+
       onChange?.(next ? [next.uri] : []);
       return next;
     });

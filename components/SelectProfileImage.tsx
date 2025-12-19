@@ -14,6 +14,8 @@ import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLeenkImageStore } from '@/stores/leenkStore';
 import { CONTAINER_PADDING } from '@/constants';
+import { SelectedImage } from '@/stores/feedWriteStore';
+import { prepareUploadImages } from '@/utils/prepareUploadImages';
 
 export default function SelectProfileImage({
   mode,
@@ -25,28 +27,32 @@ export default function SelectProfileImage({
 
   const { setProfileImage } = useProfileStore();
 
-  const [selectedUri, setSelectedUri] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(
+    null,
+  );
 
   const { setLeenkImage } = useLeenkImageStore();
 
   const handleSelectComplete = async () => {
-    if (!selectedUri) return;
+    if (!selectedImage) return;
 
     if (mode === 'leenk') {
-      setLeenkImage(selectedUri);
+      setLeenkImage(selectedImage.uri);
     } else {
-      setProfileImage(selectedUri);
+      setProfileImage(selectedImage.uri);
     }
 
     if (mode === 'edit') {
       try {
+        const [uploadImage] = await prepareUploadImages([selectedImage]);
+
         const fileName = `profile_${Date.now()}.jpg`;
         const presignedUrls = await getPresignedUrl(fileName, 'PROFILE');
         if (!presignedUrls || presignedUrls.length === 0) {
           throw new Error('Presigned URL을 받아올 수 없습니다.');
         }
         const mediaUrl = presignedUrls[0].mediaUrl;
-        await uploadImageToS3(mediaUrl, selectedUri);
+        await uploadImageToS3(mediaUrl, uploadImage.uri);
         await updateProfileImage({ profileImage: mediaUrl.split('?')[0] });
       } catch (error) {
         console.error('[SelectProfileImage] 이미지 업로드 실패:', error);
@@ -76,8 +82,8 @@ export default function SelectProfileImage({
             maxSelect={1}
             aspectRatio={AspectRatio.SQUARE}
             mode="profile"
-            onSelect={(uris) => {
-              setSelectedUri(uris[0]);
+            onSelectProfile={(image) => {
+              setSelectedImage(image);
             }}
           />
         </View>
@@ -93,7 +99,7 @@ export default function SelectProfileImage({
           <CustomButton
             variant="primary"
             size="lg"
-            disabled={!selectedUri}
+            disabled={!selectedImage}
             onPress={handleSelectComplete}
           >
             {mode === 'profile' || mode === 'leenk' ? '선택완료' : '다음'}

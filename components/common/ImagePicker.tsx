@@ -1,17 +1,19 @@
-import React, { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { FlatList, View } from 'react-native';
 import { ThumbnailItem, Loading } from '@/components';
 import useFeedImagePicker from '@/hooks/useFeedImagePicker';
+import useProfileImagePicker from '@/hooks/useProfileImagePicker';
 import { CONTAINER_PADDING, NUM_COLUMNS } from '@/constants';
 import { AspectRatio } from '@/types/aspect-ratio';
 import { height, width } from '@/theme/globalStyles';
-import useProfileImagePicker from '@/hooks/useProfileImagePicker';
+import { SelectedImage } from '@/stores/feedWriteStore';
 
 interface ImagePickerProps {
   maxSelect: number;
   aspectRatio: AspectRatio; // 1:1(SQUARE) or 9:16(PORTRAIT)
   mode?: 'profile' | 'feed'; // 프로필 이미지 선택인지 피드 이미지 선택인지 구분
   onSelect?: (uris: string[]) => void; // 선택된 사진이 1장일 경우 외부로 사진 바로 전달
+  onSelectProfile?: (image: SelectedImage | null) => void;
 }
 
 export default function ImagePicker({
@@ -19,39 +21,73 @@ export default function ImagePicker({
   aspectRatio = AspectRatio.SQUARE,
   mode = 'profile',
   onSelect,
+  onSelectProfile,
 }: ImagePickerProps) {
-  const picker =
+  /** mode별 picker 분리  */
+  const profilePicker =
     mode === 'profile'
       ? useProfileImagePicker({ maxSelect, onChange: onSelect })
-      : useFeedImagePicker({ maxSelect, onChange: onSelect });
+      : null;
 
-  const {
-    photos,
-    selected,
-    hasPermission,
-    requestPermission,
-    fetchPhotos,
-    hasNextPage,
-    toggleSelect,
-  } = picker;
+  const feedPicker =
+    mode === 'feed'
+      ? useFeedImagePicker({ maxSelect, onChange: onSelect })
+      : null;
 
-  const getSelectionNumber =
-    mode === 'feed' && 'getSelectionNumber' in picker
-      ? picker.getSelectionNumber
-      : undefined;
+  /** 공통 사용 값 */
+  const photos = profilePicker?.photos ?? feedPicker?.photos ?? [];
+  const hasPermission =
+    profilePicker?.hasPermission ?? feedPicker?.hasPermission ?? null;
+  const requestPermission =
+    profilePicker?.requestPermission ?? feedPicker?.requestPermission;
+  const fetchPhotos = profilePicker?.fetchPhotos ?? feedPicker?.fetchPhotos;
+  const hasNextPage =
+    profilePicker?.hasNextPage ?? feedPicker?.hasNextPage ?? false;
+  const toggleSelect = profilePicker?.toggleSelect ?? feedPicker?.toggleSelect;
 
   const initialLoading =
-    'initialLoading' in picker ? picker.initialLoading : false;
+    profilePicker?.initialLoading ?? feedPicker?.initialLoading ?? false;
   const pagingLoading =
-    'pagingLoading' in picker ? picker.pagingLoading : false;
+    profilePicker?.pagingLoading ?? feedPicker?.pagingLoading ?? false;
 
-  // 권한 요청 및 초기 사진 로딩
+  /** feed 전용 */
+  const getSelectionNumber =
+    mode === 'feed' ? feedPicker?.getSelectionNumber : undefined;
+  const selectedFeed = feedPicker?.selected ?? [];
+
+  const prevSelectedRef = useRef<string | null>(null);
+
+  /** profile 선택값 부모로 전달 */
+  useEffect(() => {
+    if (mode !== 'profile') return;
+    if (!onSelectProfile) return;
+    if (!profilePicker) return;
+
+    const selected = profilePicker.selected;
+    const currentId = selected?.assetId ?? null;
+
+    if (prevSelectedRef.current === currentId) return;
+
+    prevSelectedRef.current = currentId;
+
+    if (selected) {
+      onSelectProfile({
+        assetId: selected.assetId ?? '',
+        uri: selected.uri ?? '',
+        filename: selected.filename ?? '',
+      });
+    } else {
+      onSelectProfile(null);
+    }
+  }, [mode, profilePicker?.selected]);
+
+  /** 권한 요청 + 초기 로딩 */
   useEffect(() => {
     (async () => {
       try {
-        const granted = await requestPermission();
+        const granted = await requestPermission?.();
         if (granted) {
-          await fetchPhotos();
+          await fetchPhotos?.();
         }
       } catch (error) {
         console.error('이미지 권한 요청 또는 사진 가져오기 실패:', error);
@@ -60,17 +96,14 @@ export default function ImagePicker({
   }, []);
 
   if (hasPermission === false) return null;
-
-  if (initialLoading) {
-    return <Loading />;
-  }
+  if (initialLoading) return <Loading />;
 
   return (
     <View style={{ flex: 1, maxHeight: 600 }}>
       <FlatList
         data={photos}
         numColumns={NUM_COLUMNS}
-        keyExtractor={(item, index) => `${item.id}_${index}`}
+        keyExtractor={(item) => item.id}
         columnWrapperStyle={{
           justifyContent: 'flex-start',
           gap: 4 * width,
@@ -83,11 +116,13 @@ export default function ImagePicker({
         style={{ flexGrow: 1 }}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
-          if (hasNextPage && !pagingLoading) fetchPhotos();
+          if (hasNextPage && !pagingLoading) {
+            fetchPhotos?.();
+          }
         }}
         initialNumToRender={12}
         windowSize={5}
-        removeClippedSubviews={true}
+        removeClippedSubviews
         ListFooterComponent={pagingLoading ? <Loading /> : null}
         renderItem={({ item }) => (
           <ThumbnailItem
@@ -97,18 +132,13 @@ export default function ImagePicker({
             maxSelect={maxSelect}
             isSelected={
               mode === 'profile'
-                ? !!(
-                    selected &&
-                    !Array.isArray(selected) &&
-                    selected.id === item.id
-                  )
-                : Array.isArray(selected) &&
-                  selected.some((s) => s.uri === item.uri)
+                ? profilePicker?.selected?.uri === item.uri
+                : selectedFeed.some((s) => s.uri === item.uri)
             }
             selectionNumber={
               mode === 'feed' ? (getSelectionNumber?.(item.id) ?? null) : null
             }
-            onToggle={() => toggleSelect(item)}
+            onToggle={() => toggleSelect?.(item)}
           />
         )}
       />

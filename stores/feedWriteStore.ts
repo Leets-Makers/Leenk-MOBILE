@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { FeedConnectedUser, FeedDetail, Media } from '@/types/feed';
 
 export interface SelectedImage {
-  uri: string;
+  uri: string; // ph:// 그대로
   assetId?: string;
   filename: string;
 }
