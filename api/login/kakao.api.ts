@@ -2,8 +2,8 @@ import api from '@/api/api';
 import axios from 'axios';
 
 export type KakaoLoginResult =
-  | { success: true; data: any; code: number; message: string }
-  | { success: false; code: number; message: string };
+  | { data: any; code: number; message: string }
+  | { code: number; message: string };
 
 // Access Token 유효성 검증 (카카오 공식 API)
 const validateKakaoToken = async (accessToken: string) => {
@@ -31,7 +31,6 @@ export const kakaoLogin = async (
   if (typeof accessToken !== 'string') {
     console.error('[1] accessToken이 문자열이 아님');
     return {
-      success: false,
       code: -1,
       message: 'accessToken이 문자열이 아닙니다.',
     };
@@ -60,7 +59,6 @@ export const kakaoLogin = async (
     // console.log('[4] 백엔드 응답 성공:', response.data);
 
     return {
-      success: true,
       code,
       message,
       data,
@@ -73,7 +71,6 @@ export const kakaoLogin = async (
       );
       const { code, message } = error.response.data;
       return {
-        success: false,
         code,
         message,
       };
@@ -82,7 +79,6 @@ export const kakaoLogin = async (
     console.error('[4] 백엔드 예외:', error);
 
     return {
-      success: false,
       code: 0,
       message: '알 수 없는 오류가 발생했어요',
     };

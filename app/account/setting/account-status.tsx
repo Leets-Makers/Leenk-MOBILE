@@ -8,7 +8,7 @@ import { useState } from 'react';
 import styled from 'styled-components/native';
 import { useToastStore } from '@/stores/toastStore';
 import { deleteUser } from '@/api/users/deleteUser.api';
-import { deleteAccessToken } from '@/utils/tokenStorage';
+import { clearAllTokens } from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
 
 export default function AccountStatusPage() {
@@ -28,7 +28,7 @@ export default function AccountStatusPage() {
 
   const handleLogoutConfirm = async () => {
     try {
-      await deleteAccessToken();
+      await clearAllTokens();
       reset();
 
       setLogoutModalVisible(false);
@@ -45,7 +45,7 @@ export default function AccountStatusPage() {
   const handleDeleteConfirm = async () => {
     try {
       await deleteUser();
-      await deleteAccessToken();
+      await clearAllTokens();
       reset();
 
       showToast('탈퇴 완료! 이용해주셔서 고마웠어요 :)', 'success');
