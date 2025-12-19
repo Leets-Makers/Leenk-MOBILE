@@ -23,7 +23,7 @@ export default function ImagePicker({
   onSelect,
   onSelectProfile,
 }: ImagePickerProps) {
-  /** mode별 picker 분리  */
+  /* mode별 picker 분리  */
   const profilePicker =
     mode === 'profile'
       ? useProfileImagePicker({ maxSelect, onChange: onSelect })
@@ -34,7 +34,7 @@ export default function ImagePicker({
       ? useFeedImagePicker({ maxSelect, onChange: onSelect })
       : null;
 
-  /** 공통 사용 값 */
+  /* 공통 사용 값 */
   const photos = profilePicker?.photos ?? feedPicker?.photos ?? [];
   const hasPermission =
     profilePicker?.hasPermission ?? feedPicker?.hasPermission ?? null;
@@ -50,14 +50,14 @@ export default function ImagePicker({
   const pagingLoading =
     profilePicker?.pagingLoading ?? feedPicker?.pagingLoading ?? false;
 
-  /** feed 전용 */
+  /* feed 전용 */
   const getSelectionNumber =
     mode === 'feed' ? feedPicker?.getSelectionNumber : undefined;
   const selectedFeed = feedPicker?.selected ?? [];
 
   const prevSelectedRef = useRef<string | null>(null);
 
-  /** profile 선택값 부모로 전달 */
+  /* profile 선택값 부모로 전달 */
   useEffect(() => {
     if (mode !== 'profile') return;
     if (!onSelectProfile) return;
@@ -81,7 +81,7 @@ export default function ImagePicker({
     }
   }, [mode, profilePicker?.selected]);
 
-  /** 권한 요청 + 초기 로딩 */
+  /*  권한 요청 + 초기 로딩 */
   useEffect(() => {
     (async () => {
       try {

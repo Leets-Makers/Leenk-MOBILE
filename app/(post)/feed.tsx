@@ -13,7 +13,7 @@ import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { Media } from '@/types/feed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { prepareUploadImages } from '@/utils/prepareUploadImages';
+import { prepareUploadImages } from '@/utils';
 
 export default function PostFeedPage() {
   const insets = useSafeAreaInsets();
