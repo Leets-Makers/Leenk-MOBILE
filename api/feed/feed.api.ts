@@ -10,6 +10,8 @@ import { FeedDetail, UploadFeedPayload } from '@/types/feed';
 import { ApiResponse } from '@/api/api-type';
 import { Pageable } from '@/types/pageable';
 
+const PATH = '/feeds';
+
 export interface FeedListData {
   feeds: FeedItem[];
   pageable: Pageable;
@@ -30,7 +32,7 @@ export interface PatchFeedBody {
 // GET
 // 피드 전체 조회
 export const getFeedList = async (pageNumber: number, pageSize: number) => {
-  const res = await api.get<ApiResponse<FeedListData>>('/feeds', {
+  const res = await api.get<ApiResponse<FeedListData>>(PATH, {
     params: {
       pageNumber,
       pageSize,
@@ -41,7 +43,7 @@ export const getFeedList = async (pageNumber: number, pageSize: number) => {
 
 // 피드 상세 조회
 export const getFeedDetail = async (feedId: number) => {
-  const res = await api.get<ApiResponse<FeedDetail>>(`/feeds/${feedId}`);
+  const res = await api.get<ApiResponse<FeedDetail>>(`${PATH}/${feedId}`);
   return res.data.data;
 };
 
@@ -52,7 +54,7 @@ export const getFeedNavigation = async (
   nextSize: number = 1,
 ) => {
   const res = await api.get<ApiResponse<FeedNavigation>>(
-    `/feeds/${feedId}/navigation`,
+    `${PATH}/${feedId}/navigation`,
     {
       params: {
         prevSize,
@@ -65,14 +67,14 @@ export const getFeedNavigation = async (
 
 // 함께하는 사람 추가를 위한 사용자 전체 조회
 export const getAllUsers = async () => {
-  const res = await api.get<ApiResponse<Author[]>>('/feeds/users/all');
+  const res = await api.get<ApiResponse<Author[]>>(`${PATH}/users/all`);
   return res.data.data;
 };
 
 // 피드 공감한 유저 목록 조회
 export const getFeedReactions = async (feedId: number) => {
   const res = await api.get<ApiResponse<FeedReactedUser[]>>(
-    `/feeds/${feedId}/reactions`,
+    `${PATH}/${feedId}/reactions`,
   );
   return res.data.data;
 };
@@ -84,7 +86,7 @@ export const getOtherUserFeedList = async (
   pageSize: number,
 ) => {
   const res = await api.get<ApiResponse<FeedListData>>(
-    `/feeds/users/${userId}`,
+    `${PATH}/users/${userId}`,
     {
       params: {
         pageNumber,
@@ -102,7 +104,7 @@ export const getOtherUserLinkedFeedList = async (
   pageSize: number,
 ) => {
   const res = await api.get<ApiResponse<FeedListData>>(
-    `/feeds/users/${userId}/linked`,
+    `${PATH}/users/${userId}/linked`,
     {
       params: {
         pageNumber,
@@ -116,7 +118,7 @@ export const getOtherUserLinkedFeedList = async (
 // POST
 // 피드 업로드
 export const uploadFeed = async (payload: UploadFeedPayload) => {
-  const res = await api.post<ApiResponse<FeedDetail>>('/feeds', payload);
+  const res = await api.post<ApiResponse<FeedDetail>>(PATH, payload);
   return res.data.data;
 };
 
@@ -126,7 +128,7 @@ export const uploadFeedReactions = async (
   reactionCount: number,
 ) => {
   const res = await api.post<ApiResponse<string>>(
-    `/feeds/${feedId}/reactions`,
+    `${PATH}/${feedId}/reactions`,
     { reactionCount },
   );
   return res.data.data;
@@ -134,7 +136,7 @@ export const uploadFeedReactions = async (
 
 // 피드 신고하기
 export const reportFeed = async (feedId: number, report: string) => {
-  const res = await api.post<ApiResponse<string>>(`/feeds/${feedId}/reports`, {
+  const res = await api.post<ApiResponse<string>>(`${PATH}/${feedId}/reports`, {
     report,
   });
   return res.data.data;
@@ -143,7 +145,7 @@ export const reportFeed = async (feedId: number, report: string) => {
 // DELETE
 // 피드 삭제
 export const deleteFeed = async (feedId: number) => {
-  const res = await api.delete<ApiResponse<string>>(`/feeds/${feedId}`);
+  const res = await api.delete<ApiResponse<string>>(`${PATH}/${feedId}`);
   return res.data.data;
 };
 
@@ -155,7 +157,7 @@ export const patchMyFeed = async (feedId: number, body: PatchFeedBody) => {
     Object.entries(body).filter(([, v]) => v !== undefined),
   ) as PatchFeedBody;
 
-  const res = await api.patch<ApiResponse<string>>(`/feeds/${feedId}`, payload);
+  const res = await api.patch<ApiResponse<string>>(`${PATH}/${feedId}`, payload);
   return res.data.data;
 };
 
@@ -163,7 +165,7 @@ export const patchMyFeed = async (feedId: number, body: PatchFeedBody) => {
 // 마이페이지
 // 내가 작성한 피드 목록 조회
 export const getMyFeedList = async (pageNumber: number, pageSize: number) => {
-  const res = await api.get<ApiResponse<MyFeedListData>>('/feeds/me', {
+  const res = await api.get<ApiResponse<MyFeedListData>>(`${PATH}/me`, {
     params: { pageNumber, pageSize },
   });
   return res.data.data;
@@ -174,7 +176,7 @@ export const getMyLinkedFeedList = async (
   pageNumber: number,
   pageSize: number,
 ) => {
-  const res = await api.get<ApiResponse<FeedListData>>('/feeds/me/linked', {
+  const res = await api.get<ApiResponse<FeedListData>>(`${PATH}/me/linked`, {
     params: { pageNumber, pageSize },
   });
   return res.data.data;
