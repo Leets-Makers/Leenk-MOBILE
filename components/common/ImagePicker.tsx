@@ -37,7 +37,7 @@ export default function ImagePicker({
   /* 공통 사용 값 */
   const photos = profilePicker?.photos ?? feedPicker?.photos ?? [];
   const hasPermission =
-    profilePicker?.hasPermission ?? feedPicker?.hasPermission ?? null;
+    profilePicker?.hasPermission ?? feedPicker?.hasPermission ?? false;
   const requestPermission =
     profilePicker?.requestPermission ?? feedPicker?.requestPermission;
   const fetchPhotos = profilePicker?.fetchPhotos ?? feedPicker?.fetchPhotos;

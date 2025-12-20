@@ -31,14 +31,16 @@ import {
 import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
 import { Media } from '@/types/feed';
 import { StyledText } from './write/AuthorContent';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 interface Props {
   feed: FeedDetail;
 }
 
-function FeedDetailItem({ feed }: Props) {
+export default function FeedDetailItem({ feed }: Props) {
   const { modalType, openModal, closeModal, payload } = useModalStore();
   const isOpen = modalType === 'feedLinked' && payload?.feedId === feed.feedId;
+  const isMenuOpen = modalType === 'menu' && payload?.feedId === feed.feedId;
 
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
@@ -86,6 +88,22 @@ function FeedDetailItem({ feed }: Props) {
     return formatDate(feed.createdAt);
   }, [feed?.createdAt]);
 
+  // 피드 수정 로직
+  const handleEdit = () => {
+    if (!feed) return;
+
+    closeModal();
+
+    const store = useFeedWriteStore.getState();
+    store.reset(); // 이전 편집 상태  초기화
+    store.startEditFromDetail(feed); // 현재 상세의 데이터를 프리필
+
+    router.push({
+      pathname: '/(post)/feed/write',
+      params: { mode: 'edit', feedId: String(feed?.feedId) },
+    });
+  };
+
   // 피드 삭제/신고 로직
   const handleDelete = useCallback(() => {
     closeModal();
@@ -123,7 +141,7 @@ function FeedDetailItem({ feed }: Props) {
       <Header
         isBackWhite
         RightSection="KEBAB"
-        kebabPress={() => openModal('menu')}
+        kebabPress={() => openModal('menu', null, { feedId: feed.feedId })}
         style={{
           position: 'absolute',
           top: 35,
@@ -209,13 +227,13 @@ function FeedDetailItem({ feed }: Props) {
       />
 
       <MenuModal
-        visible={modalType === 'menu'}
+        visible={isMenuOpen}
         isWrite={false}
         onClose={closeModal}
         isOneOption={!isAuthor}
         firstOptionText={isAuthor ? '수정하기' : '신고하기'}
         secondOptionText={isAuthor ? '삭제하기' : undefined}
-        onPressFirst={isAuthor ? () => {} : handleReport}
+        onPressFirst={isAuthor ? handleEdit : handleReport}
         onPressSecond={isAuthor ? handleDelete : undefined}
       />
 
@@ -238,9 +256,9 @@ function FeedDetailItem({ feed }: Props) {
   );
 }
 
-export default React.memo(FeedDetailItem, (prevProps, nextProps) => {
-  return prevProps.feed.feedId === nextProps.feed.feedId;
-});
+// export default React.memo(FeedDetailItem, (prevProps, nextProps) => {
+//   return prevProps.feed.feedId === nextProps.feed.feedId;
+// });
 
 const Wrapper = styled.View`
   width: 100%;

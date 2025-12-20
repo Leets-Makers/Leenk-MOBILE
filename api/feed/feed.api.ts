@@ -94,7 +94,7 @@ export const getOtherUserFeedList = async (
       },
     },
   );
-  if (__DEV__) return res.data.data;
+  return res.data.data;
 };
 
 // 다른 유저가 함께한 피드 목록 조회
@@ -157,7 +157,10 @@ export const patchMyFeed = async (feedId: number, body: PatchFeedBody) => {
     Object.entries(body).filter(([, v]) => v !== undefined),
   ) as PatchFeedBody;
 
-  const res = await api.patch<ApiResponse<string>>(`${PATH}/${feedId}`, payload);
+  const res = await api.patch<ApiResponse<string>>(
+    `${PATH}/${feedId}`,
+    payload,
+  );
   return res.data.data;
 };
 
