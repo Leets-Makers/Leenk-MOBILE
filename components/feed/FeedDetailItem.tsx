@@ -256,10 +256,6 @@ export default function FeedDetailItem({ feed }: Props) {
   );
 }
 
-// export default React.memo(FeedDetailItem, (prevProps, nextProps) => {
-//   return prevProps.feed.feedId === nextProps.feed.feedId;
-// });
-
 const Wrapper = styled.View`
   width: 100%;
   height: 100%;
