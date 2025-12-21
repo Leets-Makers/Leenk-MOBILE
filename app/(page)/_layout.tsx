@@ -108,9 +108,9 @@ export default function TabLayout() {
                         <IconComponent
                           width={IconComponent === PlusIcon ? 28 : 24}
                           height={IconComponent === PlusIcon ? 28 : 24}
-                          stroke={
+                          color={
                             tab.isSpecial
-                              ? '#fff'
+                              ? colors.white
                               : isFocused
                                 ? colors.primary
                                 : colors.black
