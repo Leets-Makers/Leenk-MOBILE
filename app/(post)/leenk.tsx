@@ -34,6 +34,7 @@ import { useToastStore } from '@/stores/toastStore';
 import { updateLeenk } from '@/api/leenk/leenk.patch.api';
 import { getLeenkDetail } from '@/api/leenk/leenk.get.api';
 import { toISODateTime } from '@/utils/format-date';
+import { prepareSingleImageUpload, prepareUploadImages } from '@/utils';
 
 export default function PostLeenkPage() {
   const router = useRouter();
@@ -126,13 +127,20 @@ export default function PostLeenkPage() {
     if (!leenkImage) return '';
     if (isRemoteUrl(leenkImage)) return stripQuery(leenkImage);
 
-    const fileName = `leenk_${Date.now()}.jpg`;
-    const presignedUrls = await getPresignedUrl(fileName, 'LEENK');
+    // ph:// → file:// 변환
+    const localUri = await prepareSingleImageUpload(leenkImage);
+
+    // 파일명 생성 (단일 이미지)
+    const filename = `leenk_${Date.now()}.jpg`;
+
+    // presigned URL 요청
+    const presignedUrls = await getPresignedUrl([filename], 'LEENK');
+
     if (!presignedUrls || presignedUrls.length === 0) {
       throw new Error('Failed to get presigned URL.');
     }
     const signed = presignedUrls[0].mediaUrl;
-    await uploadImageToS3(signed, leenkImage);
+    await uploadImageToS3(signed, localUri);
     return stripQuery(signed);
   };
 
@@ -173,7 +181,7 @@ export default function PostLeenkPage() {
         router.push('/(page)/leenk');
       }
     } catch (e: any) {
-      // if (__DEV__) console.log('submit error:', e?.response ?? e);
+      if (__DEV__) console.log('submit error:', e?.response ?? e);
       showToast(isEdit ? '수정에 실패했어.' : '등록에 실패했어.', 'error');
     } finally {
       setSubmitting(false);

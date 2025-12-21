@@ -5,3 +5,4 @@ export * from './format-date';
 export * from './getLinkedUserBadgeLabel';
 export * from './prepareUploadImages';
 export * from './sort-by-author-first';
+export * from './prepareSingleImageUpload';
