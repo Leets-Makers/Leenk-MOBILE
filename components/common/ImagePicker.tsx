@@ -7,6 +7,8 @@ import { CONTAINER_PADDING, NUM_COLUMNS } from '@/constants';
 import { AspectRatio } from '@/types/aspect-ratio';
 import { height, width } from '@/theme/globalStyles';
 import { SelectedImage } from '@/stores/feedWriteStore';
+import { useToastStore } from '@/stores/toastStore';
+import useImagePicker from '@/hooks/useImagePicker';
 
 interface ImagePickerProps {
   maxSelect: number;
@@ -23,80 +25,53 @@ export default function ImagePicker({
   onSelect,
   onSelectProfile,
 }: ImagePickerProps) {
-  /* mode별 picker 분리  */
-  const profilePicker =
-    mode === 'profile'
-      ? useProfileImagePicker({ maxSelect, onChange: onSelect })
-      : null;
+  const { showToast } = useToastStore();
 
-  const feedPicker =
-    mode === 'feed'
-      ? useFeedImagePicker({ maxSelect, onChange: onSelect })
-      : null;
-
-  /* 공통 사용 값 */
-  const photos = profilePicker?.photos ?? feedPicker?.photos ?? [];
-  const hasPermission =
-    profilePicker?.hasPermission ?? feedPicker?.hasPermission ?? false;
-  const requestPermission =
-    profilePicker?.requestPermission ?? feedPicker?.requestPermission;
-  const fetchPhotos = profilePicker?.fetchPhotos ?? feedPicker?.fetchPhotos;
-  const hasNextPage =
-    profilePicker?.hasNextPage ?? feedPicker?.hasNextPage ?? false;
-  const toggleSelect = profilePicker?.toggleSelect ?? feedPicker?.toggleSelect;
-
-  const initialLoading =
-    profilePicker?.initialLoading ?? feedPicker?.initialLoading ?? false;
-  const pagingLoading =
-    profilePicker?.pagingLoading ?? feedPicker?.pagingLoading ?? false;
-
-  /* feed 전용 */
-  const getSelectionNumber =
-    mode === 'feed' ? feedPicker?.getSelectionNumber : undefined;
-  const selectedFeed = feedPicker?.selected ?? [];
-
-  const prevSelectedRef = useRef<string | null>(null);
+  const {
+    photos,
+    hasPermission,
+    requestPermission,
+    fetchPhotos,
+    hasNextPage,
+    initialLoading,
+    pagingLoading,
+    toggleSelect,
+    isSelected,
+    getSelectionNumber,
+    selectedProfile,
+  } = useImagePicker({
+    mode,
+    maxSelect,
+    onChange: onSelect,
+  });
 
   /* profile 선택값 부모로 전달 */
   useEffect(() => {
-    if (mode !== 'profile') return;
-    if (!onSelectProfile) return;
-    if (!profilePicker) return;
-
-    const selected = profilePicker.selected;
-    const currentId = selected?.assetId ?? null;
-
-    if (prevSelectedRef.current === currentId) return;
-
-    prevSelectedRef.current = currentId;
-
-    if (selected) {
-      onSelectProfile({
-        assetId: selected.assetId ?? '',
-        uri: selected.uri ?? '',
-        filename: selected.filename ?? '',
-      });
-    } else {
-      onSelectProfile(null);
+    if (mode === 'profile' && onSelectProfile) {
+      onSelectProfile(selectedProfile ?? null);
     }
-  }, [mode, profilePicker?.selected]);
+  }, [mode, selectedProfile, onSelectProfile]);
 
-  /*  권한 요청 + 초기 로딩 */
+  /* 권한 요청 + 초기 로딩 */
   useEffect(() => {
     (async () => {
       try {
-        const granted = await requestPermission?.();
+        const granted = await requestPermission();
         if (granted) {
-          await fetchPhotos?.();
+          await fetchPhotos();
         }
       } catch (error) {
         console.error('이미지 권한 요청 또는 사진 가져오기 실패:', error);
+        showToast(
+          '사진을 불러올 수 없어. 설정에서 사진 접근 권한을 확인해줘!',
+          'error',
+        );
       }
     })();
-  }, []);
+  }, [requestPermission, fetchPhotos]);
 
-  if (hasPermission === false) return null;
   if (initialLoading) return <Loading />;
+  if (hasPermission === false) return null;
 
   return (
     <View style={{ flex: 1, maxHeight: 600 }}>
@@ -130,13 +105,9 @@ export default function ImagePicker({
             aspectRatio={aspectRatio}
             mode={mode}
             maxSelect={maxSelect}
-            isSelected={
-              mode === 'profile'
-                ? profilePicker?.selected?.uri === item.uri
-                : selectedFeed.some((s) => s.uri === item.uri)
-            }
+            isSelected={isSelected(item)}
             selectionNumber={
-              mode === 'feed' ? (getSelectionNumber?.(item.id) ?? null) : null
+              getSelectionNumber ? getSelectionNumber(item.id) : null
             }
             onToggle={() => toggleSelect?.(item)}
           />

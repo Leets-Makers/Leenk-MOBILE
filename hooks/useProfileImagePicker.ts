@@ -136,6 +136,7 @@ export default function useProfileImagePicker({
     initialLoading,
     pagingLoading,
     hasNextPage: pageInfo.hasNextPage,
+    initialized,
     toggleSelect,
   };
 }

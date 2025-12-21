@@ -69,6 +69,7 @@ export default function useFeedImagePicker({
         setPageInfo({ endCursor, hasNextPage });
         if (!initialized) setInitialized(true);
       } finally {
+        setInitialized(true);
         setLoading(false);
       }
     },
@@ -110,8 +111,8 @@ export default function useFeedImagePicker({
   };
 
   // 화면에서 쓰기 편하도록 파생 상태 제공
-  const initialLoading = !initialized && loading; // 첫 로딩
-  const pagingLoading = initialized && loading; // 추가 로딩
+  const initialLoading = !initialized;
+  const pagingLoading = initialized && loading;
 
   return {
     photos,
@@ -123,6 +124,7 @@ export default function useFeedImagePicker({
     hasNextPage: pageInfo.hasNextPage,
     loading,
     initialLoading,
+    initialized,
     pagingLoading,
     toggleSelect,
     getSelectionNumber,

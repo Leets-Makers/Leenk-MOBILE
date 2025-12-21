@@ -4,7 +4,7 @@ import { FeedConnectedUser, FeedDetail, Media } from '@/types/feed';
 export interface SelectedImage {
   uri: string; // ph:// 그대로
   assetId?: string;
-  filename: string;
+  filename?: string;
 }
 
 export type EditImage =
@@ -126,7 +126,7 @@ export const useFeedWriteStore = create<FeedWriteStore>((set, get) => ({
       selectedImages.map(async (img) => {
         const { fileId } = await uploadLocal({
           uri: img.uri,
-          filename: img.filename,
+          filename: img.filename ?? '',
         });
         return { fileId };
       }),

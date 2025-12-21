@@ -31,6 +31,8 @@ export function useFeedDetailNavigation(initialFeedId: number) {
   const initialLoadDoneRef = useRef(false);
   const currentVisibleFeedIdRef = useRef<number>(initialFeedId);
 
+  const needsInitialScrollRef = useRef(true);
+
   // 초기 로딩
   const fetchInitialFeeds = async () => {
     try {
@@ -167,13 +169,14 @@ export function useFeedDetailNavigation(initialFeedId: number) {
   }, [hasMoreNext, isLoadingMore, feeds]);
 
   useEffect(() => {
-    if (!feeds.length) return;
+    if (!feeds.length || !needsInitialScrollRef.current) return;
 
     const targetFeedId = initialFeedIdRef.current;
 
     const index = feeds.findIndex((f) => f.feedId === targetFeedId);
     if (index === -1) return;
 
+    needsInitialScrollRef.current = false;
     requestAnimationFrame(() => {
       flatListRef.current?.scrollToIndex({
         index,
