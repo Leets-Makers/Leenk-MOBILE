@@ -26,8 +26,12 @@ export default function GradientOverlay({
   locations,
 }: GradientOverlayProps) {
   const isTop = type === 'top';
-  const gradientColors = (colors ??
-    (isTop ? TOP_DEFAULT : BOTTOM_DEFAULT)) as string[];
+
+  // colors가 비어있거나 유효하지 않으면 기본값 사용
+  const gradientColors =
+    colors && colors.length >= 2
+      ? colors
+      : (isTop ? TOP_DEFAULT : BOTTOM_DEFAULT);
 
   return (
     <LinearGradient

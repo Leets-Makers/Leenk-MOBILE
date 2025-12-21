@@ -44,6 +44,7 @@ export interface FeedReactedUser {
 }
 
 export interface FeedConnectedUser {
+  isAuthor?: boolean;
   userId: number;
   name: string;
   thumbnail?: string;
@@ -55,4 +56,30 @@ export interface UploadFeedPayload {
   description: string;
   media: Media[];
   userId?: number[];
+}
+
+// 피드 네비게이션 (이전/현재/다음 피드)
+export interface FeedNavigationItem {
+  feedId: number;
+  author: Author;
+  description: string;
+  totalReactionCount: number;
+  createdAt: string;
+  media: Media[];
+  linkedUserCount: number;
+  linkedUser: {
+    userId: number;
+    name: string;
+    thumbnail: string | null;
+    isUserBirthdayToday: boolean;
+    isAuthor: boolean;
+  }[];
+}
+
+export interface FeedNavigation {
+  current: FeedNavigationItem;
+  prevFeeds: FeedNavigationItem[];
+  nextFeeds: FeedNavigationItem[];
+  hasMorePrev: boolean;
+  hasMoreNext: boolean;
 }

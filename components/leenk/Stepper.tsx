@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import colors from '@/theme/color';
 import {
@@ -45,7 +45,7 @@ export default function Stepper({
     <Container>
       <RoundBtn onPress={handleDecrement} disabled={count <= min}>
         <IconWrapper>
-          <MinusIcon />
+          <MinusIcon color={colors.gray[900]} />
         </IconWrapper>
       </RoundBtn>
 
@@ -55,7 +55,7 @@ export default function Stepper({
 
       <RoundBtn onPress={handleIncrement} disabled={count >= max}>
         <IconWrapper>
-          <PlusIcon />
+          <PlusIcon color={colors.gray[900]} />
         </IconWrapper>
       </RoundBtn>
     </Container>

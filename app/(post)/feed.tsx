@@ -13,6 +13,7 @@ import { useFeedWriteStore } from '@/stores/feedWriteStore';
 import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { Media } from '@/types/feed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { prepareUploadImages } from '@/utils';
 
 export default function PostFeedPage() {
   const insets = useSafeAreaInsets();
@@ -43,7 +44,9 @@ export default function PostFeedPage() {
     setIsUploading(true);
 
     try {
-      const fileNames = selectedImages.map((img) => img.filename);
+      const uploadImages = await prepareUploadImages(selectedImages);
+
+      const fileNames = uploadImages.map((img) => img.filename);
 
       const presignedUrls = await getPresignedUrl(fileNames, 'FEED');
 
@@ -51,14 +54,14 @@ export default function PostFeedPage() {
 
       for (let i = 0; i < presignedUrls.length; i++) {
         const { fileName, mediaUrl } = presignedUrls[i];
-        const foundImage = selectedImages.find(
+
+        const foundImage = uploadImages.find(
           (img) => img.filename === fileName,
         );
         if (!foundImage) continue;
-        const { uri } = foundImage;
 
         try {
-          await uploadImageToS3(mediaUrl, uri);
+          await uploadImageToS3(mediaUrl, foundImage.uri);
         } catch (uploadError) {
           console.error(`S3 업로드 실패 (${fileName}):`, uploadError);
           continue;

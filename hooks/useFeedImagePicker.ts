@@ -1,7 +1,6 @@
 // useFeedImagePicker.ts
 import { useState, useCallback } from 'react';
 import * as MediaLibrary from 'expo-media-library';
-import { Platform } from 'react-native';
 import { SelectedImage, useFeedWriteStore } from '@/stores/feedWriteStore';
 
 type PageInfo = { endCursor: string | null; hasNextPage: boolean };
@@ -38,15 +37,17 @@ export default function useFeedImagePicker({
 
       setLoading(true);
       try {
-        const perm =
-          hasPermission === null
-            ? await MediaLibrary.getPermissionsAsync()
-            : { status: hasPermission ? 'granted' : 'denied' };
-        if (perm.status !== 'granted') {
-          setHasPermission(false);
+        // 권한 확인
+        let granted = hasPermission;
+        if (hasPermission === null) {
+          const perm = await MediaLibrary.getPermissionsAsync();
+          granted = perm.status === 'granted';
+          setHasPermission(granted);
+        }
+
+        if (!granted) {
           return;
         }
-        if (hasPermission === null) setHasPermission(true);
 
         const after = opts?.reset
           ? undefined
@@ -54,23 +55,12 @@ export default function useFeedImagePicker({
 
         const { assets, endCursor, hasNextPage } =
           await MediaLibrary.getAssetsAsync({
-            first: 24,
+            first: 50,
             after,
             mediaType: MediaLibrary.MediaType.photo,
           });
 
         let normalized = assets;
-        if (Platform.OS === 'ios') {
-          const infos = await Promise.all(
-            assets.map((a) =>
-              MediaLibrary.getAssetInfoAsync(a.id).catch(() => null),
-            ),
-          );
-          normalized = assets.map((a, i) => ({
-            ...a,
-            uri: infos[i]?.localUri ?? a.uri,
-          }));
-        }
 
         setPhotos((prev) => {
           const base = opts?.reset ? [] : prev;
@@ -93,30 +83,41 @@ export default function useFeedImagePicker({
   );
 
   const toggleSelect = (photo: MediaLibrary.Asset) => {
-    const isSelected = selected.some((i) => i.uri === photo.uri);
+    const isSelected = selected.some((i) => i.assetId === photo.id);
+
     let next: SelectedImage[];
-    if (isSelected) next = selected.filter((i) => i.uri !== photo.uri);
-    else if (selected.length < maxSelect)
-      next = [...selected, { uri: photo.uri, filename: photo.filename }];
-    else return;
+
+    if (isSelected) {
+      next = selected.filter((i) => i.assetId !== photo.id);
+    } else if (selected.length < maxSelect) {
+      next = [
+        ...selected,
+        {
+          assetId: photo.id,
+          uri: photo.uri, // ph:// 그대로
+          filename: photo.filename,
+        },
+      ];
+    } else {
+      return;
+    }
 
     setSelected(next);
     onChange?.(next.map((n) => n.uri));
   };
 
   const getSelectionNumber = (photoId: string) => {
-    const uri = photos.find((p) => p.id === photoId)?.uri;
-    const idx = selected.findIndex((i) => i.uri === uri);
+    const idx = selected.findIndex((i) => i.assetId === photoId);
     return idx >= 0 ? idx + 1 : null;
   };
 
   // 화면에서 쓰기 편하도록 파생 상태 제공
-  const initialLoading = !initialized && loading; // 첫 로딩
-  const pagingLoading = initialized && loading; // 추가 로딩
+  const initialLoading = !initialized;
+  const pagingLoading = initialized && loading;
 
   return {
     photos,
-    selected: photos.filter((p) => selected.some((i) => i.uri === p.uri)),
+    selected,
     hasPermission,
     requestPermission,
     fetchPhotos,
@@ -124,6 +125,7 @@ export default function useFeedImagePicker({
     hasNextPage: pageInfo.hasNextPage,
     loading,
     initialLoading,
+    initialized,
     pagingLoading,
     toggleSelect,
     getSelectionNumber,

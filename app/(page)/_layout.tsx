@@ -51,6 +51,7 @@ export default function TabLayout() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg[2] }}>
       <Tabs
+        initialRouteName="leenk"
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: true,
@@ -108,9 +109,9 @@ export default function TabLayout() {
                         <IconComponent
                           width={IconComponent === PlusIcon ? 28 : 24}
                           height={IconComponent === PlusIcon ? 28 : 24}
-                          stroke={
+                          color={
                             tab.isSpecial
-                              ? '#fff'
+                              ? colors.white
                               : isFocused
                                 ? colors.primary
                                 : colors.black

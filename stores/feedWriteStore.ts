@@ -2,8 +2,9 @@ import { create } from 'zustand';
 import { FeedConnectedUser, FeedDetail, Media } from '@/types/feed';
 
 export interface SelectedImage {
-  uri: string;
-  filename: string;
+  uri: string; // ph:// 그대로
+  assetId?: string;
+  filename?: string;
 }
 
 export type EditImage =
@@ -90,7 +91,7 @@ export const useFeedWriteStore = create<FeedWriteStore>((set, get) => ({
 
   setDescription: (text) => set({ description: text }),
 
-  /** 새 글쓰기 진입 */
+  /* 새 글쓰기 진입 */
   startCreate: () =>
     set({
       isEdit: false,
@@ -99,7 +100,7 @@ export const useFeedWriteStore = create<FeedWriteStore>((set, get) => ({
       description: '',
     }),
 
-  /** 수정 진입: 상세 응답으로 프리필 */
+  /* 수정 진입: 상세 응답으로 프리필 */
   startEditFromDetail: (d) =>
     set({
       isEdit: true,
@@ -116,7 +117,7 @@ export const useFeedWriteStore = create<FeedWriteStore>((set, get) => ({
       selectedImages: [],
     }),
 
-  /** 저장(PATCH) 바디 생성: mediaUrls는 id로, selectedImages는 업로드 후 fileId로 */
+  /* 저장(PATCH) 바디 생성: mediaUrls는 id로, selectedImages는 업로드 후 fileId로 */
   buildUpdatePayload: async (uploadLocal) => {
     const { mediaUrls, selectedImages, users, description } = get();
 
@@ -125,7 +126,7 @@ export const useFeedWriteStore = create<FeedWriteStore>((set, get) => ({
       selectedImages.map(async (img) => {
         const { fileId } = await uploadLocal({
           uri: img.uri,
-          filename: img.filename,
+          filename: img.filename ?? '',
         });
         return { fileId };
       }),

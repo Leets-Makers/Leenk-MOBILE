@@ -44,8 +44,11 @@ export default function HeartButton({
   const [hearts, setHearts] = useState<HeartData[]>([]);
   const [reactedUsers, setReactedUsers] = useState<FeedReactedUser[]>([]);
   const [totalReaction, setTotalReaction] = useState(totalReactionCount);
-  const { modalType, openModal, closeModal } = useModalStore();
+  const { modalType, openModal, closeModal, payload } = useModalStore();
   const { showToast } = useToastStore();
+
+  const isReactionModalOpen =
+    modalType === 'feedReaction' && payload?.feedId === feedId;
 
   const {
     count: localCount,
@@ -111,7 +114,7 @@ export default function HeartButton({
     try {
       const res = await getFeedReactions(feedId);
       setReactedUsers(res);
-      openModal('feedReaction');
+      openModal('feedReaction', null, { feedId });
     } catch (error) {
       console.error('공감한 사람 목록 조회 실패:', error);
       showToast('공감한 사람 목록 조회에 실패했어.', 'error');
@@ -161,7 +164,7 @@ export default function HeartButton({
       </HeartWithBadge>
 
       <UserListModal
-        visible={modalType === 'feedReaction'}
+        visible={isReactionModalOpen}
         title="공감한 Leets"
         list={reactedUsers}
         onClose={closeModal}

@@ -31,58 +31,46 @@ import {
 import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
 import { Media } from '@/types/feed';
 import { StyledText } from './write/AuthorContent';
+import { useFeedWriteStore } from '@/stores/feedWriteStore';
 
 interface Props {
   feed: FeedDetail;
 }
 
 export default function FeedDetailItem({ feed }: Props) {
-  const { modalType, openModal, closeModal } = useModalStore();
+  const { modalType, openModal, closeModal, payload } = useModalStore();
+  const isOpen = modalType === 'feedLinked' && payload?.feedId === feed.feedId;
+  const isMenuOpen = modalType === 'menu' && payload?.feedId === feed.feedId;
+
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
 
-  // ─────────────────────────────────────────────
-  // 1) media 안전 폴백 + BackgroundImageSlider 타입 맞추기
-  //    - 컴포넌트가 Media[] (ex: {url, type}) 를 기대하는 경우를 맞춰줌
-  // ─────────────────────────────────────────────
-
+  // 미디어(이미지) 배열 목록
   const media: Media[] = useMemo(() => {
-    // 서버/목록/상세에 따라 키가 다를 수 있음 → 가능한 모든 후보에서 수집
-    const raw =
-      (feed as any)?.media ??
-      (feed as any)?.mediaUrls ??
-      (feed as any)?.images ??
-      (feed as any)?.files ??
-      [];
+    if (!Array.isArray(feed?.media)) return [];
 
-    // 문자열 배열이면 { url } 객체로 매핑
-    if (typeof raw[0] === 'string') {
-      return (raw as string[]).filter(Boolean).map<Media>((url, idx) => ({
-        mediaUrl: url,
-        position: idx,
-        mediaId: `${feed?.feedId ?? 'tmp'}_${idx}`,
-        type: 'IMAGE',
-        mediaType: 'IMAGE', // mediaType 필드 추가 (필수)
-      }));
-    }
+    return feed.media.filter(
+      (item): item is Media =>
+        typeof item.mediaUrl === 'string' && item.mediaUrl.length > 0,
+    );
+  }, [feed?.media]);
 
-    return [];
-  }, [feed]);
-
-  // ─────────────────────────────────────────────
-  // 2) 작성자 정보 안전 폴백
-  // ─────────────────────────────────────────────
+  // 작성자 관련
   const authorId = feed?.author?.userId ?? 0;
   const authorName = feed?.author?.name ?? '사용자';
   const authorProfile = feed?.author?.thumbnail ?? undefined;
   const isAuthor = authorId === userInfo?.userId;
   const isAuthorBirthdayToday = feed?.author?.isUserBirthdayToday;
-
-  // ─────────────────────────────────────────────
-  // 3) 연결 배지 라벨 (널가드)
-  // ─────────────────────────────────────────────
   const linkedCount = feed?.linkedUserCount ?? 0;
-  const linkedUser = Array.isArray(feed?.linkedUser) ? feed.linkedUser : [];
+
+  // 함께한 유저 목록
+  const linkedUser = useMemo(() => {
+    if (!feed?.linkedUser || !Array.isArray(feed.linkedUser)) return [];
+    const result = [...feed.linkedUser];
+
+    return result;
+  }, [feed?.feedId, feed?.linkedUser]);
+
   const linkedLabel = useMemo(() => {
     const nonAuthor = linkedUser.filter((u) => !u.isAuthor);
     const first = nonAuthor[0]?.name ?? '사용자';
@@ -90,29 +78,33 @@ export default function FeedDetailItem({ feed }: Props) {
     return others > 0 ? `${first} 외 ${others}명` : first;
   }, [linkedUser, linkedCount]);
 
-  // ─────────────────────────────────────────────
-  // 4) 날짜 표시 안전 처리
-  //    - NaN년 NaN월 NaN일 방지: createdAt 존재/파싱 가능할 때만 formatDate
-  // ─────────────────────────────────────────────
+  // 피드 작성 날짜
   const createdAtText = useMemo(() => {
-    const raw =
-      (feed as any)?.createdAt ??
-      (feed as any)?.created_at ??
-      (feed as any)?.createdDate ??
-      null;
+    if (!feed?.createdAt) return '';
 
-    if (!raw) return ''; // 값이 없으면 빈 문자열
+    const date = new Date(feed.createdAt);
+    if (Number.isNaN(date.getTime())) return '';
 
-    // formatDate가 문자열/Date 모두 받는다면 그대로 전달,
-    // 아니라면 new Date로 검증 후 전달
-    const d = new Date(raw);
-    if (isNaN(d.getTime())) return '';
-    return formatDate(raw);
-  }, [feed]);
+    return formatDate(feed.createdAt);
+  }, [feed?.createdAt]);
 
-  // ─────────────────────────────────────────────
-  // 5) 메뉴/삭제/신고 로직
-  // ─────────────────────────────────────────────
+  // 피드 수정 로직
+  const handleEdit = () => {
+    if (!feed) return;
+
+    closeModal();
+
+    const store = useFeedWriteStore.getState();
+    store.reset(); // 이전 편집 상태  초기화
+    store.startEditFromDetail(feed); // 현재 상세의 데이터를 프리필
+
+    router.push({
+      pathname: '/(post)/feed/write',
+      params: { mode: 'edit', feedId: String(feed?.feedId) },
+    });
+  };
+
+  // 피드 삭제/신고 로직
   const handleDelete = useCallback(() => {
     closeModal();
     openModal('deleteConfirm');
@@ -139,15 +131,17 @@ export default function FeedDetailItem({ feed }: Props) {
 
   return (
     <Wrapper>
-      <BackgroundImageSlider
-        mediaUrls={media}
-        gradient={{ top: 120 * height, bottom: 520 * height }}
-      />
+      {media.length > 0 && (
+        <BackgroundImageSlider
+          mediaUrls={media}
+          gradient={{ top: 120 * height, bottom: 520 * height }}
+        />
+      )}
 
       <Header
         isBackWhite
         RightSection="KEBAB"
-        kebabPress={() => openModal('menu')}
+        kebabPress={() => openModal('menu', null, { feedId: feed.feedId })}
         style={{
           position: 'absolute',
           top: 35,
@@ -178,7 +172,9 @@ export default function FeedDetailItem({ feed }: Props) {
               <Badge
                 variant="gray"
                 label={linkedLabel}
-                onPress={() => openModal('feedLinked')}
+                onPress={() =>
+                  openModal('feedLinked', null, { feedId: feed.feedId })
+                }
               />
             )}
           </View>
@@ -224,20 +220,20 @@ export default function FeedDetailItem({ feed }: Props) {
 
       {/* 모달들 */}
       <UserListModal
-        visible={modalType === 'feedLinked'}
+        visible={isOpen}
         title="함께 연결된 Leets"
         list={linkedUser}
         onClose={closeModal}
       />
 
       <MenuModal
-        visible={modalType === 'menu'}
+        visible={isMenuOpen}
         isWrite={false}
         onClose={closeModal}
         isOneOption={!isAuthor}
         firstOptionText={isAuthor ? '수정하기' : '신고하기'}
         secondOptionText={isAuthor ? '삭제하기' : undefined}
-        onPressFirst={isAuthor ? () => {} : handleReport}
+        onPressFirst={isAuthor ? handleEdit : handleReport}
         onPressSecond={isAuthor ? handleDelete : undefined}
       />
 

@@ -7,14 +7,22 @@ type PageInfo = { endCursor: string | null; hasNextPage: boolean };
 interface ProfileImageProps {
   maxSelect: number;
   onChange?: (selected: string[]) => void;
+  onSelectProfile?: (image: SelectedProfileImage | null) => void;
 }
+
+type SelectedProfileImage = {
+  assetId: string;
+  uri: string; // ph://
+  filename?: string;
+};
 
 export default function useProfileImagePicker({
   maxSelect = 1,
   onChange,
+  onSelectProfile,
 }: ProfileImageProps) {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
-  const [selected, setSelected] = useState<MediaLibrary.Asset | null>(null);
+  const [selected, setSelected] = useState<SelectedProfileImage | null>(null);
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
@@ -56,13 +64,17 @@ export default function useProfileImagePicker({
       if (loading) return; // 중복 호출 가드
       setLoading(true);
       try {
-        // 항상 최신 권한 재조회 (설정에서 바꾼 뒤 복귀 케이스 대응)
-        const perm =
-          (await MediaLibrary.getPermissionsAsync()) as MediaLibrary.PermissionResponse & {
-            accessPrivileges?: 'all' | 'limited' | 'none';
-          };
-        const granted = isGranted(perm);
-        setHasPermission(granted);
+        // 권한 확인
+        let granted = hasPermission;
+        if (hasPermission === null) {
+          const perm =
+            (await MediaLibrary.getPermissionsAsync()) as MediaLibrary.PermissionResponse & {
+              accessPrivileges?: 'all' | 'limited' | 'none';
+            };
+          granted = isGranted(perm);
+          setHasPermission(granted);
+        }
+
         if (!granted) return;
 
         const after = opts?.reset
@@ -76,25 +88,12 @@ export default function useProfileImagePicker({
             mediaType: MediaLibrary.MediaType.photo,
           });
 
-        // iOS에서 localUri 확보
         let normalized = assets;
-        if (Platform.OS === 'ios') {
-          const infos = await Promise.all(
-            assets.map((a) =>
-              MediaLibrary.getAssetInfoAsync(a.id).catch(() => null),
-            ),
-          );
-          normalized = assets.map((a, i) => ({
-            ...a,
-            uri: infos[i]?.localUri ?? a.uri,
-          }));
-        }
 
         setPhotos((prev) => {
           const base = opts?.reset ? [] : prev;
           const seen = new Set(base.map((p) => p.id));
-          const next = normalized.filter((a) => !seen.has(a.id));
-          return [...base, ...next];
+          return [...base, ...normalized.filter((a) => !seen.has(a.id))];
         });
 
         setPageInfo({ endCursor, hasNextPage });
@@ -103,7 +102,7 @@ export default function useProfileImagePicker({
         setLoading(false);
       }
     },
-    [pageInfo.endCursor, loading, initialized],
+    [hasPermission, pageInfo.endCursor, loading, initialized],
   );
 
   /** 리스트를 처음부터 다시 불러오기 */
@@ -115,8 +114,21 @@ export default function useProfileImagePicker({
   /** 단일 선택 토글 */
   const toggleSelect = (photo: MediaLibrary.Asset) => {
     setSelected((prev) => {
-      const next = prev?.id === photo.id ? null : photo;
+      const next =
+        prev?.assetId === photo.id
+          ? null
+          : {
+              assetId: photo.id,
+              uri: photo.uri, // ph:// 그대로
+              filename: photo.filename,
+            };
+
+      // onChange 콜백 호출 (기존)
       onChange?.(next ? [next.uri] : []);
+
+      // onSelectProfile 콜백 직접 호출 (새로 추가)
+      onSelectProfile?.(next);
+
       return next;
     });
   };
@@ -135,6 +147,7 @@ export default function useProfileImagePicker({
     initialLoading,
     pagingLoading,
     hasNextPage: pageInfo.hasNextPage,
+    initialized,
     toggleSelect,
   };
 }
