@@ -71,7 +71,6 @@ export default function useFeedImagePicker({
         setPageInfo({ endCursor, hasNextPage });
         if (!initialized) setInitialized(true);
       } finally {
-        setInitialized(true);
         setLoading(false);
       }
     },
