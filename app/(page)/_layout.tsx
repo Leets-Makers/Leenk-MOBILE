@@ -51,6 +51,7 @@ export default function TabLayout() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg[2] }}>
       <Tabs
+        initialRouteName="leenk"
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: true,
