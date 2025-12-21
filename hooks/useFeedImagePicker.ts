@@ -37,15 +37,17 @@ export default function useFeedImagePicker({
 
       setLoading(true);
       try {
-        const perm =
-          hasPermission === null
-            ? await MediaLibrary.getPermissionsAsync()
-            : { status: hasPermission ? 'granted' : 'denied' };
-        if (perm.status !== 'granted') {
-          setHasPermission(false);
+        // 권한 확인
+        let granted = hasPermission;
+        if (hasPermission === null) {
+          const perm = await MediaLibrary.getPermissionsAsync();
+          granted = perm.status === 'granted';
+          setHasPermission(granted);
+        }
+
+        if (!granted) {
           return;
         }
-        if (hasPermission === null) setHasPermission(true);
 
         const after = opts?.reset
           ? undefined

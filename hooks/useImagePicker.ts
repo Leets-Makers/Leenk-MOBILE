@@ -9,10 +9,12 @@ export default function useImagePicker({
   mode,
   maxSelect,
   onChange,
+  onSelectProfile,
 }: {
   mode: Mode;
   maxSelect: number;
   onChange?: (uris: string[]) => void;
+  onSelectProfile?: (image: SelectedImage | null) => void;
 }) {
   const feedPicker = useFeedImagePicker({
     maxSelect,
@@ -22,6 +24,7 @@ export default function useImagePicker({
   const profilePicker = useProfileImagePicker({
     maxSelect: 1,
     onChange,
+    onSelectProfile, // 프로필 콜백 전달
   });
 
   const picker = mode === 'profile' ? profilePicker : feedPicker;
@@ -50,18 +53,6 @@ export default function useImagePicker({
   const getSelectionNumber =
     mode === 'feed' ? feedPicker.getSelectionNumber : undefined;
 
-  /** profile 전용 */
-  const selectedProfile: SelectedImage | null =
-    mode === 'profile'
-      ? profilePicker.selected
-        ? {
-            assetId: profilePicker.selected.assetId,
-            uri: profilePicker.selected.uri,
-            filename: profilePicker.selected.filename,
-          }
-        : null
-      : null;
-
   return {
     photos,
     hasPermission,
@@ -73,6 +64,5 @@ export default function useImagePicker({
     toggleSelect,
     isSelected,
     getSelectionNumber,
-    selectedProfile,
   };
 }

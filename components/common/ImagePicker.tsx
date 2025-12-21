@@ -38,27 +38,28 @@ export default function ImagePicker({
     toggleSelect,
     isSelected,
     getSelectionNumber,
-    selectedProfile,
   } = useImagePicker({
     mode,
     maxSelect,
     onChange: onSelect,
+    onSelectProfile, // 프로필 선택 콜백 전달
   });
 
-  /* profile 선택값 부모로 전달 */
+  // 권한 요청 및 사진 로딩 함수 ref
+  const requestPermissionRef = useRef(requestPermission);
+  const fetchPhotosRef = useRef(fetchPhotos);
   useEffect(() => {
-    if (mode === 'profile' && onSelectProfile) {
-      onSelectProfile(selectedProfile ?? null);
-    }
-  }, [mode, selectedProfile, onSelectProfile]);
+    requestPermissionRef.current = requestPermission;
+    fetchPhotosRef.current = fetchPhotos;
+  }, [requestPermission, fetchPhotos]);
 
   /* 권한 요청 + 초기 로딩 */
   useEffect(() => {
     (async () => {
       try {
-        const granted = await requestPermission();
+        const granted = await requestPermissionRef.current();
         if (granted) {
-          await fetchPhotos();
+          await fetchPhotosRef.current();
         }
       } catch (error) {
         console.error('이미지 권한 요청 또는 사진 가져오기 실패:', error);
@@ -68,7 +69,8 @@ export default function ImagePicker({
         );
       }
     })();
-  }, [requestPermission, fetchPhotos]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 초기 마운트 시에만 실행
 
   if (initialLoading) return <Loading />;
   if (hasPermission === false) return null;

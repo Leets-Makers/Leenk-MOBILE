@@ -7,6 +7,7 @@ type PageInfo = { endCursor: string | null; hasNextPage: boolean };
 interface ProfileImageProps {
   maxSelect: number;
   onChange?: (selected: string[]) => void;
+  onSelectProfile?: (image: SelectedProfileImage | null) => void;
 }
 
 type SelectedProfileImage = {
@@ -18,6 +19,7 @@ type SelectedProfileImage = {
 export default function useProfileImagePicker({
   maxSelect = 1,
   onChange,
+  onSelectProfile,
 }: ProfileImageProps) {
   const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [selected, setSelected] = useState<SelectedProfileImage | null>(null);
@@ -62,13 +64,17 @@ export default function useProfileImagePicker({
       if (loading) return; // 중복 호출 가드
       setLoading(true);
       try {
-        // 항상 최신 권한 재조회 (설정에서 바꾼 뒤 복귀 케이스 대응)
-        const perm =
-          (await MediaLibrary.getPermissionsAsync()) as MediaLibrary.PermissionResponse & {
-            accessPrivileges?: 'all' | 'limited' | 'none';
-          };
-        const granted = isGranted(perm);
-        setHasPermission(granted);
+        // 권한 확인
+        let granted = hasPermission;
+        if (hasPermission === null) {
+          const perm =
+            (await MediaLibrary.getPermissionsAsync()) as MediaLibrary.PermissionResponse & {
+              accessPrivileges?: 'all' | 'limited' | 'none';
+            };
+          granted = isGranted(perm);
+          setHasPermission(granted);
+        }
+
         if (!granted) return;
 
         const after = opts?.reset
@@ -96,7 +102,7 @@ export default function useProfileImagePicker({
         setLoading(false);
       }
     },
-    [pageInfo.endCursor, loading, initialized],
+    [hasPermission, pageInfo.endCursor, loading, initialized],
   );
 
   /** 리스트를 처음부터 다시 불러오기 */
@@ -117,7 +123,12 @@ export default function useProfileImagePicker({
               filename: photo.filename,
             };
 
+      // onChange 콜백 호출 (기존)
       onChange?.(next ? [next.uri] : []);
+
+      // onSelectProfile 콜백 직접 호출 (새로 추가)
+      onSelectProfile?.(next);
+
       return next;
     });
   };
