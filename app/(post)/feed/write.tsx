@@ -219,6 +219,17 @@ export default function FeedWritePage() {
             gradient={{ top: 120 * height, bottom: 420 * height }}
           />
 
+          {kbVisible && (
+            <View
+              pointerEvents="none"
+              style={{
+                ...StyleSheet.absoluteFillObject,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                zIndex: 1,
+              }}
+            />
+          )}
+
           {/* 헤더  */}
           <Header
             isBackWhite
