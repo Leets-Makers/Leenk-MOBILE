@@ -92,11 +92,13 @@ export default function FeedWritePage() {
 
   const hasAnyImage = mediaUrls.length > 0;
 
-  const previewMedia: Media[] = mediaUrls.map((m, idx) => ({
-    position: idx + 1,
-    mediaUrl: m.mediaUrl,
-    mediaType: m.mediaType,
-  }));
+  const previewMedia: Media[] = mediaUrls
+    .filter((m) => m.mediaUrl && m.mediaUrl.trim() !== '')
+    .map((m, idx) => ({
+      position: idx + 1,
+      mediaUrl: m.mediaUrl,
+      mediaType: m.mediaType,
+    }));
 
   const requestBodyCreate = {
     description,
@@ -214,10 +216,12 @@ export default function FeedWritePage() {
         onScrollBeginDrag={Keyboard.dismiss}
       >
         <View style={{ flex: 1 }}>
+          {/* {previewMedia.length > 0 && ( */}
           <BackgroundImageSlider
             mediaUrls={previewMedia}
             gradient={{ top: 120 * height, bottom: 420 * height }}
           />
+          {/* )} */}
 
           {kbVisible && (
             <View

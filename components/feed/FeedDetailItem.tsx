@@ -38,6 +38,8 @@ interface Props {
 }
 
 export default function FeedDetailItem({ feed }: Props) {
+  console.log('[FeedDetailItem] 피드 ID:', feed.feedId);
+
   const { modalType, openModal, closeModal, payload } = useModalStore();
   const isOpen = modalType === 'feedLinked' && payload?.feedId === feed.feedId;
   const isMenuOpen = modalType === 'menu' && payload?.feedId === feed.feedId;

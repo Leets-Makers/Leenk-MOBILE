@@ -33,13 +33,21 @@ export default function GradientOverlay({
       ? colors
       : (isTop ? TOP_DEFAULT : BOTTOM_DEFAULT);
 
+  // colors 배열이 비어있으면 렌더링하지 않음
+  if (!gradientColors || gradientColors.length < 2) {
+    return null;
+  }
+
+  // locations가 undefined면 기본값 사용
+  const gradientLocations = locations ?? [0, 1];
+
   return (
     <LinearGradient
       pointerEvents={pointerEvents ?? 'none'}
       colors={gradientColors as [string, string]}
       start={{ x: 0.5, y: isTop ? 0 : 1 }}
       end={{ x: 0.5, y: isTop ? 1 : 0 }}
-      locations={locations}
+      locations={gradientLocations}
       style={[
         {
           position: 'absolute',
