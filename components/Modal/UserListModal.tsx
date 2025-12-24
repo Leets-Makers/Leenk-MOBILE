@@ -39,9 +39,9 @@ export default function UserListModal({
         }),
         Animated.spring(slideAnim, {
           toValue: 0,
-          damping: 24,
-          stiffness: 180,
-          mass: 0.8,
+          damping: 20,
+          stiffness: 220,
+          mass: 0.6,
           useNativeDriver: true,
         }),
       ]).start();
