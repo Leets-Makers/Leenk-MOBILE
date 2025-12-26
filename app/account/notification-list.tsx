@@ -87,7 +87,13 @@ export default function NotificationListPage() {
         if (path === 'leenks') {
           router.push(`/leenk/${content.leenkId}`);
         } else {
-          router.push(`/feed/${content.feedId}`);
+          router.push({
+            pathname: '/feed',
+            params: {
+              feedId: content.feedId,
+              mode: 'single',
+            },
+          });
         }
       }
     } catch (error) {
