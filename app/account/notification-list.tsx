@@ -87,6 +87,7 @@ export default function NotificationListPage() {
         if (path === 'leenks') {
           router.push(`/leenk/${content.leenkId}`);
         } else {
+          console.log('feedId : ', content.feedId);
           router.push({
             pathname: '/feed',
             params: {
