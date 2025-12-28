@@ -3,6 +3,7 @@ import { FlatList, ViewToken } from 'react-native';
 import { router } from 'expo-router';
 import { getFeedNavigation } from '@/api/feed/feed.api';
 import { FeedNavigationItem } from '@/types/feed';
+import { useToastStore } from '@/stores/toastStore';
 
 const transformFeedItem = (item: FeedNavigationItem, uniqueKey?: string) => ({
   feedId: item.feedId,
@@ -24,6 +25,7 @@ export function useFeedDetailNavigation(initialFeedId: number) {
   const [hasMorePrev, setHasMorePrev] = useState(false);
   const [hasMoreNext, setHasMoreNext] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const { showToast } = useToastStore();
 
   const flatListRef = useRef<FlatList>(null);
   const currentIndexRef = useRef(0);
@@ -65,7 +67,17 @@ export function useFeedDetailNavigation(initialFeedId: number) {
 
       currentIndexRef.current = navigation.prevFeeds.length;
       initialLoadDoneRef.current = true;
-    } catch (e) {
+    } catch (e: any) {
+      const status = e?.response?.status;
+
+      if (status === 404) {
+        showToast('삭제된 피드야!', 'error');
+
+        setTimeout(() => {
+          router.back();
+        }, 900);
+        return;
+      }
       console.error('피드 네비게이션 초기 로드 실패', e);
     } finally {
       setIsLoading(false);

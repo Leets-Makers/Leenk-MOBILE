@@ -87,10 +87,18 @@ export default function LeenkDetailPage() {
         if (!signal?.canceled) {
           setLeenkDetail(data);
         }
-      } catch (e) {
-        if (!signal?.canceled) {
-          showToast('상세 정보를 불러오지 못했어.', 'error');
-          router.back();
+      } catch (e: any) {
+        if (signal?.canceled) return;
+
+        // 삭제된 링크 (404)
+        if (e?.response?.status === 404) {
+          showToast('삭제된 링크야!', 'error');
+
+          setTimeout(() => {
+            router.back();
+          }, 900);
+
+          return;
         }
       } finally {
         if (!signal?.canceled) setLoading(false);

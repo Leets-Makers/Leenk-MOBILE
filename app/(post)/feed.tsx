@@ -14,7 +14,6 @@ import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import { Media } from '@/types/feed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { prepareUploadImages } from '@/utils';
-import { useToastStore } from '@/stores/toastStore';
 
 export default function PostFeedPage() {
   const insets = useSafeAreaInsets();
@@ -27,7 +26,6 @@ export default function PostFeedPage() {
   const setMediaUrls = useFeedWriteStore.getState().setMediaUrls;
 
   const router = useRouter();
-  const { showToast } = useToastStore();
 
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +51,6 @@ export default function PostFeedPage() {
       const presignedUrls = await getPresignedUrl(fileNames, 'FEED');
 
       const mediaArray: Media[] = [];
-      const failedUploads: string[] = [];
 
       for (let i = 0; i < presignedUrls.length; i++) {
         const { fileName, mediaUrl } = presignedUrls[i];
@@ -65,37 +62,22 @@ export default function PostFeedPage() {
 
         try {
           await uploadImageToS3(mediaUrl, foundImage.uri);
-          mediaArray.push({
-            position: i + 1,
-            mediaUrl: mediaUrl.split('?')[0],
-            mediaType: 'IMAGE',
-          });
         } catch (uploadError) {
           console.error(`S3 업로드 실패 (${fileName}):`, uploadError);
-          failedUploads.push(fileName);
+          continue;
         }
-      }
 
-      // 모든 이미지 업로드 실패 시
-      if (mediaArray.length === 0) {
-        showToast('이미지 업로드에 실패했어. 다시 시도해줘!', 'error');
-        return;
-      }
-
-      // 일부 이미지만 실패한 경우
-      if (failedUploads.length > 0) {
-        showToast(
-          `${failedUploads.length}개의 이미지 업로드에 실패했어. 다시 시도해줘!`,
-          'error',
-        );
-        return;
+        mediaArray.push({
+          position: i + 1,
+          mediaUrl: mediaUrl.split('?')[0],
+          mediaType: 'IMAGE',
+        });
       }
 
       setMediaUrls(mediaArray);
       router.push('/(post)/feed/write');
     } catch (error) {
       console.error('이미지 업로드 중 에러 발생:', error);
-      showToast('이미지 업로드에 실패했어. 다시 시도해줘!', 'error');
     } finally {
       setIsUploading(false);
     }
