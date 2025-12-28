@@ -12,6 +12,7 @@ import { useModalStore } from '@/stores/modalStore';
 import { useToastStore } from '@/stores/toastStore';
 import { blockUser } from '@/api/users/deleteUser.api';
 import { useUserStore } from '@/stores/userStore';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function MyPage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function MyPage() {
   const [isLoading, setIsLoading] = useState(true);
   const { openModal, closeModal, modalType } = useModalStore();
   const { showToast } = useToastStore();
+  const showLoading = useDelayedLoading(isLoading, { delay: 250 });
 
   const viewedId = Number(id);
   const { userInfo } = useUserStore();
@@ -62,7 +64,7 @@ export default function MyPage() {
     fetchProfile();
   }, [id]);
 
-  if (isLoading) return <Loading />;
+  if (showLoading) return <Loading />;
   if (!profile) return null;
 
   return (

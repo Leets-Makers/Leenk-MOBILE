@@ -8,10 +8,12 @@ import ProfileCard from '@/components/mypage/ProfileCard';
 import MyPageButton from '@/components/mypage/MypageButton';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import { useProfileStore } from '@/stores/profileStore';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function MyPage() {
   const router = useRouter();
   const { userInfo, error, refetch, loading } = useUserInfo();
+  const showLoading = useDelayedLoading(loading);
   const {
     setkakaoTalkId,
     setintroduction,
@@ -41,7 +43,7 @@ export default function MyPage() {
     }
   }, [userInfo, setkakaoTalkId, setintroduction, setMbti, setProfileImage]);
 
-  if (loading) return <Loading />;
+  if (showLoading) return <Loading />;
 
   return (
     <Container>

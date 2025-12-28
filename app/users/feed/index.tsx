@@ -9,6 +9,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { ContainerWithNoPadding } from '@/app/account/my-feed';
 import { FEED_PADDING } from '@/constants';
 import { View } from 'react-native';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function OtherUserProfilePage() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -25,11 +26,16 @@ export default function OtherUserProfilePage() {
     pageSize: 10,
   });
 
+  const showInitialLoading = useDelayedLoading(
+    isLoading && feeds.length === 0,
+    { delay: 250 },
+  );
+
   useEffect(() => {
     refresh();
   }, [tab]);
 
-  if (feeds.length === 0 && isLoading) return <Loading />;
+  if (showInitialLoading) return <Loading />;
 
   if (!feeds) return null;
 

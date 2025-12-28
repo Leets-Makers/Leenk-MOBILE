@@ -5,6 +5,7 @@ import FeedDetailItem from './FeedDetailItem';
 import { Loading } from '@/components';
 import { useFeedDetailNavigation } from '@/hooks/useFeedDetailNavigation';
 import { SCREEN_HEIGHT } from '@/theme/globalStyles';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 interface FeedDetailListProps {
   initialFeedId: number;
 }
@@ -21,7 +22,12 @@ export default function FeedDetailList({ initialFeedId }: FeedDetailListProps) {
     isLoadingMore,
   } = useFeedDetailNavigation(initialFeedId);
 
-  if (isLoading && feeds.length === 0) return <Loading />;
+  const showInitialLoading = useDelayedLoading(
+    isLoading && feeds.length === 0,
+    { delay: 250 },
+  );
+
+  if (showInitialLoading) return <Loading />;
 
   return (
     <FlatList

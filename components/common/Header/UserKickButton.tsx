@@ -13,6 +13,7 @@ import PopupModal from '@/components/Modal/PopupModal';
 import { kickLeenkParticipants } from '@/api/leenk/leenk.del.api';
 import { useToastStore } from '@/stores/toastStore';
 import Loading from '../Loading';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 interface Props {
   leenkId: number;
@@ -36,6 +37,8 @@ export default function UserKickButton({
   const [loading, setLoading] = useState(false);
 
   const isZero = selectedUsers.length === 0;
+
+  const showLoading = useDelayedLoading(loading, { delay: 250 });
 
   const handlePress = () => {
     if (!isZero) {
@@ -85,7 +88,7 @@ export default function UserKickButton({
     resetSelection();
   };
 
-  if (loading) return <Loading />;
+  if (showLoading) return <Loading />;
 
   return (
     <>

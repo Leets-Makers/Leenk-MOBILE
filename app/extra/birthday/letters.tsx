@@ -15,6 +15,7 @@ import { useBirthdayStore } from '@/stores/birthdayStore';
 import { LeenkGrayIcon } from '@/assets';
 import { useFocusEffect } from 'expo-router';
 import { postMarkBirthdayLetters } from '@/api/extra/birthday/birthday.post.api';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function BirthdayLettersPage() {
   const {
@@ -23,6 +24,11 @@ export default function BirthdayLettersPage() {
     hasNewLetters,
     birthdayLettersLoading,
   } = useBirthdayStore();
+
+  const showLoading = useDelayedLoading(
+    birthdayLettersLoading && birthdayLetters === null,
+    { delay: 250 },
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -65,7 +71,7 @@ export default function BirthdayLettersPage() {
           </Header>
         </View>
 
-        {birthdayLettersLoading && <Loading />}
+        {showLoading && <Loading />}
 
         {!birthdayLettersLoading && letters.length === 0 ? (
           <EmptyWrapper>

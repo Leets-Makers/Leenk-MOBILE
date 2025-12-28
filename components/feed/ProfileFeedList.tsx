@@ -5,6 +5,7 @@ import styled from 'styled-components/native';
 import { height, width } from '@/theme/globalStyles';
 import { useEffect } from 'react';
 import { FEED_PADDING } from '@/constants';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 interface FeedListProps {
   type: 'myFeed' | 'myJoined';
@@ -35,7 +36,12 @@ export default function ProfileFeedList({
     onTotalReactionCountChange(totalReactionCount ?? 0);
   }, [totalReactionCount, onTotalReactionCountChange]);
 
-  if (feeds.length === 0 && isLoading) return <Loading />;
+  const showInitialLoading = useDelayedLoading(
+    isLoading && feeds.length === 0,
+    { delay: 250 },
+  );
+
+  if (showInitialLoading) return <Loading />;
   if (!feeds) return null;
 
   return (

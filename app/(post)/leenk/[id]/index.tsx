@@ -32,6 +32,7 @@ import * as Linking from 'expo-linking';
 import * as Clipboard from 'expo-clipboard';
 import { useDetailFirstLaunch } from '@/hooks/useFirstLaunch';
 import OnBoardingModal from '@/components/Modal/OnBoardingModal';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function LeenkDetailPage() {
   const { id } = useLocalSearchParams<{ id: string | string[] }>();
@@ -53,6 +54,11 @@ export default function LeenkDetailPage() {
 
   const firstLaunch = useDetailFirstLaunch();
   const [showOnBoarding, setShowOnBoarding] = useState(false);
+
+  const isInitialLoading = loading && !leenkDetail;
+  const isBlockingAction = deleting;
+
+  const showInitialLoading = useDelayedLoading(isInitialLoading);
 
   useEffect(() => {
     if (firstLaunch === true) {
@@ -289,7 +295,11 @@ export default function LeenkDetailPage() {
     }
   };
 
-  if (loading || deleting || !leenkDetail) {
+  if (showInitialLoading) {
+    return <Loading />;
+  }
+
+  if (deleting || !leenkDetail) {
     return <Loading />;
   }
 
