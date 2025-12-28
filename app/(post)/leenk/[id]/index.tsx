@@ -200,7 +200,7 @@ export default function LeenkDetailPage() {
       await deleteLeenk(leenkDetail.id);
       showToast('삭제 완료!', 'success');
       closeModal();
-      router.replace('/leenk');
+      router.replace('/(page)/leenk');
     } catch (err) {
       console.error('링크 삭제 오류:', err);
       showToast('삭제에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
