@@ -84,7 +84,7 @@ export default function TermsPage() {
           <CheckBox checked={serviceCheck} onPress={toggleServiceCheck} noBox />
           <CheckText>서비스 이용약관 (필수)</CheckText>
         </CheckLeft>
-        <RightArrowIcon />
+        <RightArrowIcon stroke={colors.gray[400]} />
       </CheckItem>
 
       <CheckItem onPress={() => setVisibleModal('info')}>
@@ -92,7 +92,7 @@ export default function TermsPage() {
           <CheckBox checked={infoCheck} onPress={toggleInfoCheck} noBox />
           <CheckText>개인정보 수집/이용 동의 (필수)</CheckText>
         </CheckLeft>
-        <RightArrowIcon />
+        <RightArrowIcon stroke={colors.gray[400]} />
       </CheckItem>
 
       <BottomButtonContainer $paddingBottom={insets.bottom}>

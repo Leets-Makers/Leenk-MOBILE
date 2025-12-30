@@ -12,7 +12,7 @@ import styled from 'styled-components/native';
 import { Platform, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Share } from 'react-native';
+import Share from 'react-native-share';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
@@ -281,14 +281,20 @@ export default function LeenkDetailPage() {
       });
       // 예: "leenk://leenk/123"
 
-      // iOS는 url 필드를 더 잘 인식
-      if (Platform.OS === 'ios') {
-        await Share.share({ url: deepLink, message: leenkDetail?.title });
-      } else {
-        await Share.share({ message: `${leenkDetail?.title}\n${deepLink}` });
+      const shareOptions = {
+        title: leenkDetail?.title,
+        message: `${leenkDetail?.title}\n${deepLink}`,
+        url: deepLink,
+      };
+
+      await Share.open(shareOptions);
+    } catch (error: any) {
+      // 사용자가 공유를 취소한 경우 (error.message === 'User did not share')
+      if (error?.message && error.message.includes('User did not share')) {
+        return; // 에러 표시 없이 종료
       }
-    } catch {
-      // 실패 시 클립보드 복사 폴백
+
+      // 실제 에러인 경우 클립보드 복사 폴백
       const fallback = Linking.createURL(`/leenk/${leenkId}`, {
         scheme: 'leenk',
       });
