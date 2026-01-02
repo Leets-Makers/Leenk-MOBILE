@@ -1,7 +1,6 @@
-import React from 'react';
 import { Modal, Platform, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
-import { width, height, radius } from '@/theme/globalStyles';
+import { width, height, radius, fonts } from '@/theme/globalStyles';
 import colors from '@/theme/color';
 import { FlatList } from 'react-native-gesture-handler';
 import {
@@ -38,7 +37,7 @@ export default function NotificationModal({
   ): item is NewLeenkParticipantDetails =>
     (item as NewLeenkParticipantDetails).participantName !== undefined;
 
-  const isScrollable = data.length > 5;
+  const isScrollable = data.length >= 4;
 
   return (
     <Modal
@@ -70,8 +69,8 @@ export default function NotificationModal({
                         </LeftSection>
                       </Row>
                       <ContentContainer>
-                        <Title>{item.body}</Title>
-                        <SubText>{item.name}</SubText>
+                        <SubText>{item.body}</SubText>
+                        <Title>{item.name}</Title>
                       </ContentContainer>
                     </Item>
                   );
@@ -105,7 +104,7 @@ export default function NotificationModal({
                         </LeftSection>
                       </Row>
                       <ContentContainer>
-                        <Title>{item.participantName}</Title>
+                        <StyledTitle>{item.participantName}</StyledTitle>
                       </ContentContainer>
                     </Item>
                   );
@@ -171,6 +170,9 @@ const Item = styled.View`
 
 const ContentContainer = styled.View`
   margin-left: ${28 * width}px;
+  display: flex;
+  gap: ${6 * height}px;
+  align-items: flex-start;
 `;
 
 const GradientOverlay = styled(LinearGradient).attrs({
@@ -182,4 +184,8 @@ const GradientOverlay = styled(LinearGradient).attrs({
   bottom: 0;
   height: ${60 * height}px;
   z-index: 1;
+`;
+
+const StyledTitle = styled(SubText)`
+  color: ${colors.text[1]};
 `;

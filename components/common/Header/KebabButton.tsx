@@ -14,7 +14,10 @@ export default function KebabButton({
   const iconColor = color === 'white' ? colors.white : colors.black;
 
   return (
-    <TouchableOpacity onPress={handleKebab || (() => {})}>
+    <TouchableOpacity
+      onPress={handleKebab || (() => {})}
+      hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
+    >
       <KebabIcon color={iconColor} width={18} height={18} />
     </TouchableOpacity>
   );

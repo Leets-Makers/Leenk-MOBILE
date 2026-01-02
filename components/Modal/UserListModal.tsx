@@ -1,10 +1,17 @@
-import { Modal, Pressable, Platform, KeyboardAvoidingView } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  Platform,
+  KeyboardAvoidingView,
+  Animated,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { BlurView } from 'expo-blur';
 import colors from '@/theme/color';
 import { fonts, fontSize, radius, height, width } from '@/theme/globalStyles';
 import { FeedReactedUser, FeedConnectedUser } from '@/types/feed';
 import UserListModalContent from '../feed/UserListModalContent';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   visible: boolean;
@@ -19,14 +26,61 @@ export default function UserListModal({
   list,
   onClose,
 }: Props) {
-  return (
-    <Modal visible={visible} transparent animationType="slide">
-      <Backdrop>
-        <Pressable style={{ flex: 1 }} onPress={onClose} />
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(500)).current;
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={{ flex: 1, justifyContent: 'flex-end' }}
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 120,
+          useNativeDriver: true,
+        }),
+        Animated.spring(slideAnim, {
+          toValue: 0,
+          damping: 20,
+          stiffness: 220,
+          mass: 0.6,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 500,
+          duration: 350,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [visible, fadeAnim, slideAnim]);
+
+  return (
+    <Modal
+      key={visible ? 'open' : 'closed'}
+      visible={visible}
+      transparent
+      animationType="none"
+    >
+      <AnimatedBackdrop style={{ opacity: fadeAnim }}>
+        <Pressable style={{ flex: 1 }} onPress={onClose} />
+      </AnimatedBackdrop>
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1, justifyContent: 'flex-end' }}
+        pointerEvents="box-none"
+      >
+        <Animated.View
+          style={{
+            transform: [{ translateY: slideAnim }],
+          }}
         >
           <SheetContainer>
             <SheetBox>
@@ -42,15 +96,19 @@ export default function UserListModal({
               </BlurBackground>
             </SheetBox>
           </SheetContainer>
-        </KeyboardAvoidingView>
-      </Backdrop>
+        </Animated.View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
-const Backdrop = styled.Pressable`
-  flex: 1;
-  justify-content: flex-end;
+const AnimatedBackdrop = styled(Animated.View)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const SheetContainer = styled.View`
