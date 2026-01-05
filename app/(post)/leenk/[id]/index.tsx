@@ -12,7 +12,7 @@ import styled from 'styled-components/native';
 import { Platform, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Share } from 'react-native';
+import Share from 'react-native-share';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import LeenkContentSection from '@/components/leenk/LeenkDetailContent';
@@ -93,10 +93,18 @@ export default function LeenkDetailPage() {
         if (!signal?.canceled) {
           setLeenkDetail(data);
         }
-      } catch (e) {
-        if (!signal?.canceled) {
-          showToast('상세 정보를 불러오지 못했어.', 'error');
-          router.back();
+      } catch (e: any) {
+        if (signal?.canceled) return;
+
+        // 삭제된 링크 (404)
+        if (e?.response?.status === 404) {
+          showToast('삭제된 링크야!', 'error');
+
+          setTimeout(() => {
+            router.back();
+          }, 900);
+
+          return;
         }
       } finally {
         if (!signal?.canceled) setLoading(false);
@@ -198,7 +206,7 @@ export default function LeenkDetailPage() {
       await deleteLeenk(leenkDetail.id);
       showToast('삭제 완료!', 'success');
       closeModal();
-      router.replace('/leenk');
+      router.replace('/(page)/leenk');
     } catch (err) {
       console.error('링크 삭제 오류:', err);
       showToast('삭제에 실패했어. 잠시 후 다시 시도해 줘.', 'error');
@@ -279,14 +287,20 @@ export default function LeenkDetailPage() {
       });
       // 예: "leenk://leenk/123"
 
-      // iOS는 url 필드를 더 잘 인식
-      if (Platform.OS === 'ios') {
-        await Share.share({ url: deepLink, message: leenkDetail?.title });
-      } else {
-        await Share.share({ message: `${leenkDetail?.title}\n${deepLink}` });
+      const shareOptions = {
+        title: leenkDetail?.title,
+        message: `${leenkDetail?.title}\n${deepLink}`,
+        url: deepLink,
+      };
+
+      await Share.open(shareOptions);
+    } catch (error: any) {
+      // 사용자가 공유를 취소한 경우 (error.message === 'User did not share')
+      if (error?.message && error.message.includes('User did not share')) {
+        return; // 에러 표시 없이 종료
       }
-    } catch {
-      // 실패 시 클립보드 복사 폴백
+
+      // 실제 에러인 경우 클립보드 복사 폴백
       const fallback = Linking.createURL(`/leenk/${leenkId}`, {
         scheme: 'leenk',
       });

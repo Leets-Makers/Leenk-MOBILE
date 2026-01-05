@@ -55,6 +55,9 @@ export default function LeenkContentSection({
       <Inner>
         <TitleRow>
           <Title>{data.title}</Title>
+          {/* <ShareButton onPress={onShare}>
+            <ShareIcon width={width * 24} height={height * 24} />
+          </ShareButton> */}
         </TitleRow>
 
         <RowWrapper>
@@ -67,9 +70,7 @@ export default function LeenkContentSection({
           </Pressable>
 
           <TimeText style={{ marginLeft: width * 8 }}>
-            {data.author.name}
-            {''}・{''}
-            {formatRelativeTime(data.createdAt)}
+            {data.author.name} ・ {formatRelativeTime(data.createdAt)}
           </TimeText>
         </RowWrapper>
 

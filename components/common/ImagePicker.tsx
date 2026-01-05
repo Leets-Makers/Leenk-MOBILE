@@ -104,6 +104,11 @@ export default function ImagePicker({
         windowSize={5}
         removeClippedSubviews
         ListFooterComponent={pagingLoading ? <Loading /> : null}
+        ListFooterComponentStyle={{
+          marginTop: 44 * height,
+          marginBottom: 40 * height,
+          alignItems: 'center',
+        }}
         renderItem={({ item }) => (
           <ThumbnailItem
             asset={item}

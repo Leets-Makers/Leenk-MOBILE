@@ -1,7 +1,6 @@
 import { RightArrowIcon } from '@/assets';
 import colors from '@/theme/color';
 import { fonts, fontSize, width } from '@/theme/globalStyles';
-import React from 'react';
 import styled from 'styled-components/native';
 import Toggle from '@/components/common/Toggle';
 

@@ -41,6 +41,8 @@ export default function FeedDetailItem({ feed }: Props) {
   const { modalType, openModal, closeModal, payload } = useModalStore();
   const isOpen = modalType === 'feedLinked' && payload?.feedId === feed.feedId;
   const isMenuOpen = modalType === 'menu' && payload?.feedId === feed.feedId;
+  const isDeleteConfirmOpen =
+    modalType === 'deleteConfirm' && payload?.feedId === feed.feedId;
 
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
@@ -107,8 +109,8 @@ export default function FeedDetailItem({ feed }: Props) {
   // 피드 삭제/신고 로직
   const handleDelete = useCallback(() => {
     closeModal();
-    openModal('deleteConfirm');
-  }, [closeModal, openModal]);
+    openModal('deleteConfirm', null, { feedId: feed.feedId });
+  }, [closeModal, openModal, feed.feedId]);
 
   const handleReport = useCallback(() => {
     closeModal();
@@ -237,7 +239,7 @@ export default function FeedDetailItem({ feed }: Props) {
         onPressSecond={isAuthor ? handleDelete : undefined}
       />
 
-      {modalType === 'deleteConfirm' && (
+      {isDeleteConfirmOpen && (
         <PopupModal
           isOpen
           onRightBtn={handleConfirmDelete}

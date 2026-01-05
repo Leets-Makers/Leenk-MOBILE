@@ -93,11 +93,13 @@ export default function FeedWritePage() {
 
   const hasAnyImage = mediaUrls.length > 0;
 
-  const previewMedia: Media[] = mediaUrls.map((m, idx) => ({
-    position: idx + 1,
-    mediaUrl: m.mediaUrl,
-    mediaType: m.mediaType,
-  }));
+  const previewMedia: Media[] = mediaUrls
+    .filter((m) => m.mediaUrl && m.mediaUrl.trim() !== '')
+    .map((m, idx) => ({
+      position: idx + 1,
+      mediaUrl: m.mediaUrl,
+      mediaType: m.mediaType,
+    }));
 
   const requestBodyCreate = {
     description,
@@ -161,8 +163,6 @@ export default function FeedWritePage() {
     setIsModalOpen(false);
     setIsUploading(true);
     try {
-      // if (__DEV__) console.log('수정 내용 : ', requestBodyEdit);
-
       const idNum = typeof feedId === 'string' ? Number(feedId) : NaN;
       if (Number.isNaN(idNum) || idNum <= 0) {
         showToast('잘못된 피드 아이디야!', 'error');
@@ -216,10 +216,23 @@ export default function FeedWritePage() {
         onScrollBeginDrag={Keyboard.dismiss}
       >
         <View style={{ flex: 1 }}>
-          <BackgroundImageSlider
-            mediaUrls={previewMedia}
-            gradient={{ top: 120 * height, bottom: 420 * height }}
-          />
+          {previewMedia.length > 0 && (
+            <BackgroundImageSlider
+              mediaUrls={previewMedia}
+              gradient={{ top: 120 * height, bottom: 420 * height }}
+            />
+          )}
+
+          {kbVisible && (
+            <View
+              pointerEvents="none"
+              style={{
+                ...StyleSheet.absoluteFillObject,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                zIndex: 1,
+              }}
+            />
+          )}
 
           {/* 헤더  */}
           <Header

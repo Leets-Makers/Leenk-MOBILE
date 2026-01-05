@@ -8,6 +8,7 @@ import {
   getNotificationsSetting,
   patchNotificationsSetting,
 } from '@/api/users/notification.api';
+import * as Haptics from 'expo-haptics';
 
 export default function SettingNotificationsPage() {
   const [toggles, setToggles] = useState({
@@ -57,6 +58,9 @@ export default function SettingNotificationsPage() {
   const handleToggle = async (key: keyof typeof toggles, apiKey: string) => {
     const newValue = !toggles[key];
 
+    //햅틱
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+
     setToggles((prev) => ({
       ...prev,
       [key]: newValue,
@@ -66,6 +70,8 @@ export default function SettingNotificationsPage() {
       await patchNotificationsSetting({ [apiKey]: newValue });
     } catch (error) {
       console.error('알림 설정 업데이트 실패:', error);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
       setToggles((prev) => ({
         ...prev,
         [key]: !newValue,
