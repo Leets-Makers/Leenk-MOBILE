@@ -12,7 +12,6 @@ import {
 import colors from '@/theme/color';
 import CustomButton from '../common/Button/CustomButton';
 import Loading from '../common/Loading';
-import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 /* 
 🦄스타일링 설명
@@ -47,9 +46,7 @@ export default function PopupModal({
   rightBtnText,
   isLoading = false,
 }: PopupModalProps) {
-  const showLoading = useDelayedLoading(isLoading, { delay: 250 });
-
-  if (showLoading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
     <Modal
