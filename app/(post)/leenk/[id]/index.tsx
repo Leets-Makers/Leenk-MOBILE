@@ -56,7 +56,6 @@ export default function LeenkDetailPage() {
   const [showOnBoarding, setShowOnBoarding] = useState(false);
 
   const isInitialLoading = loading && !leenkDetail;
-  const isBlockingAction = deleting;
 
   const showInitialLoading = useDelayedLoading(isInitialLoading);
 
