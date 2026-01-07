@@ -17,6 +17,8 @@ import { useToastStore } from '@/stores/toastStore';
 import { reportFeed } from '@/api/feed/feed.api';
 import { reportLeenk } from '@/api/leenk/leenk.post.api';
 import { postBirthdayLetter } from '@/api/extra/birthday/birthday.post.api';
+import { useFadeSlideAnimation } from '@/hooks/useFadeSlideAnimation';
+import { Animated } from 'react-native';
 
 interface TextInputModalProps {
   type: 'feed' | 'leenk' | 'birthday';
@@ -37,6 +39,12 @@ export default function TextInputModal({
     (type === 'feed' && modalType === 'feedReport') ||
     (type === 'leenk' && modalType === 'leenkReport') ||
     (type === 'birthday' && modalType === 'birthdayLetter');
+
+  const { backdropStyle, sheetStyle } = useFadeSlideAnimation({
+    visible: isOpen,
+    initialOffset: 400,
+    preset: 'soft',
+  });
 
   const targetId = type === 'feed' ? feedId : leenkId;
 
@@ -104,23 +112,27 @@ export default function TextInputModal({
     <Modal
       visible={isOpen}
       transparent
-      animationType="slide"
+      animationType="none"
       onRequestClose={closeModal}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Backdrop>
-          <Pressable style={{ flex: 1 }} onPress={closeModal} />
+        <ModalRoot>
+          {/* Backdrop */}
+          <AnimatedBackdrop style={backdropStyle}>
+            <Pressable style={{ flex: 1 }} onPress={closeModal} />
+          </AnimatedBackdrop>
 
+          {/* Sheet */}
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? -20 * height : 0}
             style={{ flex: 1, justifyContent: 'flex-end' }}
+            pointerEvents="box-none"
           >
-            <SheetContainer>
+            <AnimatedSheet style={sheetStyle}>
               <SheetBox>
                 <Title>{title}</Title>
                 <SubText>{subtitle}</SubText>
-
                 <Textarea
                   placeholder="텍스트를 입력해 주세요"
                   value={text}
@@ -129,7 +141,6 @@ export default function TextInputModal({
                   minHeight={30}
                   maxHeight={40}
                 />
-
                 <ButtonWrapper>
                   <CustomButton
                     variant="primary"
@@ -144,23 +155,28 @@ export default function TextInputModal({
                   </CancelButton>
                 </ButtonWrapper>
               </SheetBox>
-            </SheetContainer>
+            </AnimatedSheet>
           </KeyboardAvoidingView>
-        </Backdrop>
+        </ModalRoot>
       </TouchableWithoutFeedback>
     </Modal>
   );
 }
 
-const Backdrop = styled.View`
+const ModalRoot = styled.View`
   flex: 1;
-  justify-content: flex-end;
-  background-color: rgba(0, 0, 0, 0.3);
 `;
 
-const SheetContainer = styled.View`
-  flex: 1;
-  justify-content: flex-end;
+const AnimatedBackdrop = styled(Animated.View)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const AnimatedSheet = styled(Animated.View)`
   padding: ${20 * height}px ${16 * width}px ${30 * height}px;
 `;
 

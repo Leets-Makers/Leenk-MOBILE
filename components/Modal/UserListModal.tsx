@@ -11,7 +11,7 @@ import colors from '@/theme/color';
 import { fonts, fontSize, radius, height, width } from '@/theme/globalStyles';
 import { FeedReactedUser, FeedConnectedUser } from '@/types/feed';
 import UserListModalContent from '../feed/UserListModalContent';
-import { useEffect, useRef } from 'react';
+import { useFadeSlideAnimation } from '@/hooks/useFadeSlideAnimation';
 
 interface Props {
   visible: boolean;
@@ -26,40 +26,9 @@ export default function UserListModal({
   list,
   onClose,
 }: Props) {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(500)).current;
-
-  useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 120,
-          useNativeDriver: true,
-        }),
-        Animated.spring(slideAnim, {
-          toValue: 0,
-          damping: 20,
-          stiffness: 220,
-          mass: 0.6,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 500,
-          duration: 350,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible, fadeAnim, slideAnim]);
+  const { backdropStyle, sheetStyle } = useFadeSlideAnimation({
+    visible,
+  });
 
   return (
     <Modal
@@ -68,7 +37,7 @@ export default function UserListModal({
       transparent
       animationType="none"
     >
-      <AnimatedBackdrop style={{ opacity: fadeAnim }}>
+      <AnimatedBackdrop style={backdropStyle}>
         <Pressable style={{ flex: 1 }} onPress={onClose} />
       </AnimatedBackdrop>
 
@@ -77,11 +46,7 @@ export default function UserListModal({
         style={{ flex: 1, justifyContent: 'flex-end' }}
         pointerEvents="box-none"
       >
-        <Animated.View
-          style={{
-            transform: [{ translateY: slideAnim }],
-          }}
-        >
+        <Animated.View style={sheetStyle}>
           <SheetContainer>
             <SheetBox>
               <BlurBackground intensity={20} tint="light">
