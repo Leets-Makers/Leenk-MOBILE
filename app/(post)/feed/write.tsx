@@ -23,6 +23,7 @@ import AuthorContent from '@/components/feed/write/AuthorContent';
 import DescriptionContent from '@/components/feed/write/DescriptionContent';
 import useIOSKeyboardSpacer from '@/hooks/useIOSKeyboardSpacer';
 import ButtonContent from '@/components/feed/write/ButtonContent';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function FeedWritePage() {
   const { mode, feedId } = useLocalSearchParams<{
@@ -197,10 +198,11 @@ export default function FeedWritePage() {
     });
   };
 
-  if (!userInfo) {
+  const showLoading = useDelayedLoading(!userInfo);
+
+  if (showLoading) {
     return <Loading />;
   }
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}

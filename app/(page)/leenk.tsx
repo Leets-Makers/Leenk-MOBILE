@@ -17,6 +17,7 @@ import { useFocusEffect } from 'expo-router';
 import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import { SubText, TitleText } from '@/components/OnBoarding';
 import { CongratsIcon } from '@/assets';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 
 const FOOTER_SPACER = 10 * height;
@@ -128,6 +129,8 @@ export default function LeenkPage() {
   const showInitialLoader =
     loading && !pullRefreshing && data.length === 0 && page === 0;
 
+  const showDelayedInitialLoader = useDelayedLoading(showInitialLoader);
+
   return (
     <ContainerWithNoPadding>
       <View style={{ paddingHorizontal: FEED_PADDING * width }}>
@@ -142,8 +145,7 @@ export default function LeenkPage() {
           }}
         />
       </View>
-
-      {showInitialLoader ? (
+      {showDelayedInitialLoader ? (
         <Loading />
       ) : (
         <LeenkList

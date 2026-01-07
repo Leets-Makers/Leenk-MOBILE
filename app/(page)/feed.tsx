@@ -9,6 +9,7 @@ import { useUserInfo } from '@/hooks/useUserInfo';
 import { useUserStore } from '@/stores/userStore';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { FEED_PADDING } from '@/constants';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function FeedPage() {
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
@@ -37,8 +38,13 @@ export default function FeedPage() {
     refresh,
   } = useFeedList({ type: 'all', pageSize: 10 });
 
-  if (feeds.length === 0 && isLoading) return <Loading />;
+  // 초기 진입 로딩 조건
+  const isInitialLoading = isLoading && feeds.length === 0;
 
+  // 250ms 지연 로딩
+  const showLoading = useDelayedLoading(isInitialLoading);
+
+  if (showLoading) return <Loading />;
   if (!feeds) return null;
 
   return (

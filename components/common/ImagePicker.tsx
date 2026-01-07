@@ -9,6 +9,7 @@ import { height, width } from '@/theme/globalStyles';
 import { SelectedImage } from '@/stores/feedWriteStore';
 import { useToastStore } from '@/stores/toastStore';
 import useImagePicker from '@/hooks/useImagePicker';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 interface ImagePickerProps {
   maxSelect: number;
@@ -53,6 +54,8 @@ export default function ImagePicker({
     fetchPhotosRef.current = fetchPhotos;
   }, [requestPermission, fetchPhotos]);
 
+  const showInitialLoading = useDelayedLoading(initialLoading, { delay: 250 });
+
   /* 권한 요청 + 초기 로딩 */
   useEffect(() => {
     (async () => {
@@ -72,7 +75,7 @@ export default function ImagePicker({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 초기 마운트 시에만 실행
 
-  if (initialLoading) return <Loading />;
+  if (showInitialLoading) return <Loading />;
   if (hasPermission === false) return null;
 
   return (

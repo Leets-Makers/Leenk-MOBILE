@@ -11,6 +11,7 @@ import useLeenkList from '@/hooks/useLeenkList';
 import { LeenkList, Separator } from '@/app/(page)/leenk';
 import { LeenkListItem } from '@/components';
 import colors from '@/theme/color';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function OtherUserLeenkPage() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -31,7 +32,12 @@ export default function OtherUserLeenkPage() {
   const listRef = useRef<any>(null);
   const onEndReachedCalledDuringMomentum = useRef(false);
 
-  if (leenks.length === 0 && isLoading) return <Loading />;
+  const showInitialLoading = useDelayedLoading(
+    isLoading && leenks.length === 0,
+    { delay: 250 },
+  );
+
+  if (showInitialLoading) return <Loading />;
 
   return (
     <Container>

@@ -47,6 +47,7 @@ export default function PopupModal({
   isLoading = false,
 }: PopupModalProps) {
   if (isLoading) return <Loading />;
+
   return (
     <Modal
       animationType="none"

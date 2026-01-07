@@ -21,6 +21,7 @@ import { useUserInfo } from '@/hooks/useUserInfo';
 import ImageModal from '@/components/Modal/ImageModal';
 import { BirthdayUser } from '@/types/birthday';
 import { LeenkGrayIcon } from '@/assets';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function ExtraPage() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function ExtraPage() {
     fetchUpcomingBirthdayUsers,
     loading,
   } = useBirthdayStore();
+  const showLoading = useDelayedLoading(loading);
 
   useFocusEffect(
     useCallback(() => {
@@ -75,7 +77,7 @@ export default function ExtraPage() {
         <Header LeftSection="LOGO" RightSection="BELL" />
       </HeaderWrapper>
       <Container>
-        {loading ? (
+        {showLoading ? (
           <Loading />
         ) : isEmpty ? (
           <EmptyWrapper>

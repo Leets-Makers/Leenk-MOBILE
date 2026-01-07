@@ -17,6 +17,7 @@ import { useUserStore } from '@/stores/userStore';
 import { FEED_PADDING } from '@/constants';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 
 export default function NotificationListPage() {
   const [data, setData] = useState<Notification[]>([]);
@@ -27,6 +28,8 @@ export default function NotificationListPage() {
   const [selectedDetails, setSelectedDetails] = useState<ModalData[]>([]);
 
   const { showToast } = useToastStore();
+
+  const showLoading = useDelayedLoading(loading, { delay: 250 });
 
   const openDetailModal = (details: ModalData[]) => {
     setSelectedDetails(details);
@@ -100,7 +103,7 @@ export default function NotificationListPage() {
     <Container>
       <Header style={{ paddingHorizontal: FEED_PADDING * width }} />
       <SafeAreaView edges={['bottom']} style={{ flex: 1 }}>
-        {loading && !refreshing ? (
+        {showLoading && !refreshing ? (
           <Loading />
         ) : (
           <FlatList
