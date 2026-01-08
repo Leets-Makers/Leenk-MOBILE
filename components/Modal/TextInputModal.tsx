@@ -82,12 +82,16 @@ export default function TextInputModal({
 
   const { title, subtitle, buttonText, onSubmit } = modalConfig[type];
 
+  const handleClose = () => {
+    setText('');
+    closeModal();
+  };
+
   const handleSubmit = async () => {
     try {
       await onSubmit();
       if (type === 'birthday') {
-        closeModal();
-        setText('');
+        handleClose();
 
         requestAnimationFrame(() => {
           openModal('birthdayLetterFinish');
@@ -96,15 +100,13 @@ export default function TextInputModal({
         return;
       }
 
-      closeModal();
-      setText('');
+      handleClose();
     } catch (error) {
       const errorMessage = type === 'birthday' ? '전송 실패!' : '신고 실패!';
       console.error(`${type} 처리 실패:`, error);
       showToast(errorMessage, 'error');
 
-      closeModal();
-      setText('');
+      handleClose();
     }
   };
 
@@ -115,50 +117,56 @@ export default function TextInputModal({
       animationType="none"
       onRequestClose={closeModal}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ModalRoot>
-          {/* Backdrop */}
+      <ModalRoot>
+        {/* Backdrop */}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <AnimatedBackdrop style={backdropStyle}>
-            <Pressable style={{ flex: 1 }} onPress={closeModal} />
+            <Pressable
+              style={{ flex: 1 }}
+              onPress={() => {
+                Keyboard.dismiss();
+                handleClose();
+              }}
+            />
           </AnimatedBackdrop>
+        </TouchableWithoutFeedback>
 
-          {/* Sheet */}
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? -20 * height : 0}
-            style={{ flex: 1, justifyContent: 'flex-end' }}
-            pointerEvents="box-none"
-          >
-            <AnimatedSheet style={sheetStyle}>
-              <SheetBox>
-                <Title>{title}</Title>
-                <SubText>{subtitle}</SubText>
-                <Textarea
-                  placeholder="텍스트를 입력해 주세요"
-                  value={text}
-                  onChangeText={setText}
-                  maxLength={type === 'birthday' ? 40 : 100}
-                  minHeight={30}
-                  maxHeight={40}
-                />
-                <ButtonWrapper>
-                  <CustomButton
-                    variant="primary"
-                    size="lg"
-                    onPress={handleSubmit}
-                    disabled={text.length === 0}
-                  >
-                    {buttonText}
-                  </CustomButton>
-                  <CancelButton onPress={closeModal}>
-                    <CancelText>취소</CancelText>
-                  </CancelButton>
-                </ButtonWrapper>
-              </SheetBox>
-            </AnimatedSheet>
-          </KeyboardAvoidingView>
-        </ModalRoot>
-      </TouchableWithoutFeedback>
+        {/* Sheet */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? -20 * height : 0}
+          style={{ flex: 1, justifyContent: 'flex-end' }}
+          pointerEvents="box-none"
+        >
+          <AnimatedSheet style={sheetStyle}>
+            <SheetBox>
+              <Title>{title}</Title>
+              <SubText>{subtitle}</SubText>
+              <Textarea
+                placeholder="텍스트를 입력해 주세요"
+                value={text}
+                onChangeText={setText}
+                maxLength={type === 'birthday' ? 40 : 100}
+                minHeight={30}
+                maxHeight={40}
+              />
+              <ButtonWrapper>
+                <CustomButton
+                  variant="primary"
+                  size="lg"
+                  onPress={handleSubmit}
+                  disabled={text.length === 0}
+                >
+                  {buttonText}
+                </CustomButton>
+                <CancelButton onPress={handleClose}>
+                  <CancelText>취소</CancelText>
+                </CancelButton>
+              </ButtonWrapper>
+            </SheetBox>
+          </AnimatedSheet>
+        </KeyboardAvoidingView>
+      </ModalRoot>
     </Modal>
   );
 }
