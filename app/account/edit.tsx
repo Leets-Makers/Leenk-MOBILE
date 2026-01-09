@@ -153,7 +153,7 @@ export default function AccountEdit() {
               value={edituserInfo}
               placeholder={kakaoTalkId}
               onChangeText={(text) => {
-                const filtered = text.replace(/[^a-zA-Z0-9]/g, '');
+                const filtered = text.replace(/[^a-zA-Z0-9._-]/g, '');
                 setEdituserInfo(filtered);
               }}
               maxLength={20}
