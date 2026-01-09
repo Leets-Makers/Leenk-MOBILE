@@ -11,7 +11,7 @@ import {
   radius,
   width,
 } from '@/theme/globalStyles';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { RightArrowIcon } from '@/assets';
 import { useRouter } from 'expo-router';
@@ -63,6 +63,10 @@ export default function TermsPage() {
       showToast('약관 동의에 실패했어.', 'error');
     }
   };
+
+  useEffect(() => {
+    setAllCheck(serviceCheck && infoCheck);
+  }, [serviceCheck, infoCheck]);
 
   return (
     <Container>
