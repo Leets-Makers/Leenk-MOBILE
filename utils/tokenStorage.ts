@@ -104,18 +104,38 @@ export const deleteTempAccessToken = async () => {
 // Auth Status
 export const saveAuthStatus = async (status: AuthStatus) => {
   if (Platform.OS === 'web') return;
-  await SecureStore.setItemAsync(AUTH_STATUS_KEY, status);
+  try {
+    await SecureStore.setItemAsync(AUTH_STATUS_KEY, status);
+  } catch (err) {
+    console.error('[SecureStore] authStatus 저장 중 에러 발생:', err);
+    throw err;
+  }
 };
 
 export const getAuthStatus = async (): Promise<AuthStatus> => {
   if (Platform.OS === 'web') return 'NONE';
-  const status = await SecureStore.getItemAsync(AUTH_STATUS_KEY);
-  return (status as AuthStatus) ?? 'NONE';
+  try {
+    const status = await SecureStore.getItemAsync(AUTH_STATUS_KEY);
+    if (
+      status === 'NONE' ||
+      status === 'REGISTERING' ||
+      status === 'AUTHENTICATED'
+    )
+      return status;
+    return 'NONE';
+  } catch (err) {
+    console.error('[SecureStore] authStatus 조회 중 에러 발생:', err);
+    return 'NONE';
+  }
 };
 
 export const deleteAuthStatus = async () => {
   if (Platform.OS === 'web') return;
-  await SecureStore.deleteItemAsync(AUTH_STATUS_KEY);
+  try {
+    await SecureStore.deleteItemAsync(AUTH_STATUS_KEY);
+  } catch (err) {
+    console.error('[SecureStore] authStatus 삭제 중 에러 발생:', err);
+  }
 };
 
 // Clear All
