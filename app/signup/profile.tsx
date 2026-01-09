@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import {
   Platform,
   Animated,
@@ -57,6 +58,13 @@ export default function ProfilePage() {
   const randomMbti = useRandomMbti(2000);
   const insets = useSafeAreaInsets();
   const { showToast } = useToastStore();
+
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const isIOS = Platform.OS === 'ios';
   const androidTranslateY = useKeyboardAnimation(12);
@@ -145,7 +153,7 @@ export default function ProfilePage() {
       } catch (e) {
         console.error('[handleNext] 실패:', e);
       } finally {
-        setIsSubmitting(false);
+        if (mountedRef.current) setIsSubmitting(false);
       }
     }
   };
@@ -175,7 +183,7 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('[handleSkip] 실패:', error);
     } finally {
-      setIsSubmitting(false);
+      if (mountedRef.current) setIsSubmitting(false);
     }
   };
 
