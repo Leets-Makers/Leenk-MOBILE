@@ -1,11 +1,14 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import type { AuthStatus } from '@/types/auth';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const FCM_TOKEN_KEY = 'fcm_token';
 
 const TEMP_ACCESS_TOKEN_KEY = 'temp_access_token';
+
+const AUTH_STATUS_KEY = 'auth_status';
 
 // Access Token
 export const saveAccessToken = async (token: string) => {
@@ -98,10 +101,28 @@ export const deleteTempAccessToken = async () => {
   await SecureStore.deleteItemAsync(TEMP_ACCESS_TOKEN_KEY);
 };
 
+// Auth Status
+export const saveAuthStatus = async (status: AuthStatus) => {
+  if (Platform.OS === 'web') return;
+  await SecureStore.setItemAsync(AUTH_STATUS_KEY, status);
+};
+
+export const getAuthStatus = async (): Promise<AuthStatus> => {
+  if (Platform.OS === 'web') return 'NONE';
+  const status = await SecureStore.getItemAsync(AUTH_STATUS_KEY);
+  return (status as AuthStatus) ?? 'NONE';
+};
+
+export const deleteAuthStatus = async () => {
+  if (Platform.OS === 'web') return;
+  await SecureStore.deleteItemAsync(AUTH_STATUS_KEY);
+};
+
 // Clear All
 export const clearAllTokens = async () => {
   await deleteAccessToken();
   await deleteRefreshToken();
   await deleteFcmToken();
   await deleteTempAccessToken();
+  await deleteAuthStatus();
 };
