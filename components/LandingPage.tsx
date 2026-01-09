@@ -34,6 +34,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { AppleLogo } from '@/assets';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { appleLogin } from '@/api/login/apple.api';
+import { saveAuthStatus } from '@/utils/tokenStorage';
 
 // FCM 토큰 서버 전송 함수
 export const registerFcmToken = async () => {
@@ -82,6 +83,7 @@ export default function LandingPage() {
 
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
+      await saveAuthStatus('REGISTERING');
 
       setName(data.name);
       setPosition(data.position);
@@ -100,6 +102,7 @@ export default function LandingPage() {
 
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
+      await saveAuthStatus('AUTHENTICATED');
 
       // SecureStore 반영 대기
       await new Promise((r) => setTimeout(r, 150));

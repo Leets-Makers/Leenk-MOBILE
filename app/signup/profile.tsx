@@ -28,6 +28,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useKeyboardAnimation from '@/hooks/useKeyboardAnimation';
 import { useToastStore } from '@/stores/toastStore';
 import { registerFcmToken } from '@/components/LandingPage';
+import { saveAuthStatus } from '@/utils/tokenStorage';
 import CalendarButton from '@/components/leenk/CalendarButton';
 import dayjs from 'dayjs';
 
@@ -90,6 +91,7 @@ export default function ProfilePage() {
           throw new Error('presigned URL 생성에 실패했습니다.');
         }
         const mediaUrl = presignedUrls[0].mediaUrl;
+
         await uploadImageToS3(mediaUrl, profileImage);
 
         try {
@@ -128,7 +130,9 @@ export default function ProfilePage() {
       try {
         await saveProfile();
         await registerFcmToken();
-        router.replace('/(page)/feed');
+        await saveAuthStatus('AUTHENTICATED');
+
+        router.replace('/(page)/leenk');
       } catch (e) {
         console.error('[handleNext] 실패:', e);
       }
@@ -147,11 +151,12 @@ export default function ProfilePage() {
     setSkipModalVisible(false);
     try {
       await saveProfile();
+      await registerFcmToken();
+      await saveAuthStatus('AUTHENTICATED');
+      router.replace('/(page)/leenk');
     } catch (error) {
       console.error('[handleSkip] 실패:', error);
     }
-    await registerFcmToken();
-    router.replace('/(page)/feed');
   };
 
   const handleImagePick = () => {
@@ -174,16 +179,6 @@ export default function ProfilePage() {
           >
             지금은 넘어갈래
           </CustomButton>
-          <PopupModal
-            isOpen={skipModalVisible}
-            onLeftBtn={() => setSkipModalVisible(false)}
-            onRightBtn={handleSkip}
-            mainText="프로필을 나중에 만들래?"
-            subText="마이페이지에서 마저 설정할 수 있어."
-            leftBtnText="취소"
-            rightBtnText="나중에 할래"
-            isCancel={false}
-          />
         </>
       )}
 
@@ -240,6 +235,16 @@ export default function ProfilePage() {
 
   return (
     <Container>
+      <PopupModal
+        isOpen={skipModalVisible}
+        onLeftBtn={() => setSkipModalVisible(false)}
+        onRightBtn={handleSkip}
+        mainText="프로필을 나중에 만들래?"
+        subText="마이페이지에서 마저 설정할 수 있어."
+        leftBtnText="취소"
+        rightBtnText="나중에 할래"
+        isCancel={false}
+      />
       <Scroll
         automaticallyAdjustKeyboardInsets={false}
         keyboardDismissMode="interactive"
@@ -256,7 +261,7 @@ export default function ProfilePage() {
               title="카카오톡 ID를 입력해줘"
               value={kakaoTalkId}
               onChangeText={(text) =>
-                setkakaoTalkId(text.replace(/[^a-zA-Z0-9]/g, ''))
+                setkakaoTalkId(text.replace(/[^a-zA-Z0-9._-]/g, ''))
               }
               placeholder="모임원들과의 연락을 위해 필요해"
               subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
