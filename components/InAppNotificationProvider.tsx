@@ -47,10 +47,16 @@ const ROUTES = {
   feed: '/feed/[id]' as const,
 };
 
-const BLOCKED_PATHS = ['/', '/signup'];
+const BLOCKED_PATH_PREFIXES = ['/', '/signup'];
 
-export const isBlockedRoute = (pathname: string) =>
-  BLOCKED_PATHS.some((blocked) => blocked === pathname);
+export const isBlockedRoute = (pathname: string) => {
+  return BLOCKED_PATH_PREFIXES.some((prefix) => {
+    if (prefix === '/') {
+      return pathname === '/';
+    }
+    return pathname === prefix || pathname.startsWith(prefix + '/');
+  });
+};
 
 // FCM data → 앱 내 라우팅
 function navigateFromData(raw?: Record<string, unknown>) {
