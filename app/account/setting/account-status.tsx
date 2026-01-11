@@ -10,6 +10,7 @@ import { useToastStore } from '@/stores/toastStore';
 import { deleteUser } from '@/api/users/deleteUser.api';
 import { clearAllTokens } from '@/utils/tokenStorage';
 import { useProfileStore } from '@/stores/profileStore';
+import { saveAuthStatus } from '@/utils/tokenStorage';
 
 export default function AccountStatusPage() {
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function AccountStatusPage() {
   const handleLogoutConfirm = async () => {
     try {
       await clearAllTokens();
+      await saveAuthStatus('NONE');
       reset();
 
       setLogoutModalVisible(false);
@@ -46,6 +48,7 @@ export default function AccountStatusPage() {
     try {
       await deleteUser();
       await clearAllTokens();
+      await saveAuthStatus('NONE');
       reset();
 
       showToast('탈퇴 완료! 이용해주셔서 고마웠어요 :)', 'success');

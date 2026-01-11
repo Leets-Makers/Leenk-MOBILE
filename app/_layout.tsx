@@ -21,7 +21,9 @@ import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useUserStore } from '@/stores/userStore';
 import { InAppNotificationProvider } from '@/components/InAppNotificationProvider';
 import { LogBox } from 'react-native';
+import { getAuthStatus, clearAllTokens } from '@/utils/tokenStorage';
 import * as Clarity from '@microsoft/react-native-clarity';
+import { saveAuthStatus } from '@/utils/tokenStorage';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -72,16 +74,28 @@ export default function RootLayout() {
     });
   }, []);
 
-  useEffect(() => {
-    const autoLogin = async () => {
-      if (!kakaoNativeAppKey) return;
+  const didRunRef = useRef(false);
 
+  useEffect(() => {
+    if (didRunRef.current) return;
+    didRunRef.current = true;
+
+    const autoLogin = async () => {
       try {
-        await initializeKakaoSDK(kakaoNativeAppKey);
+        const status = await getAuthStatus();
+
+        if (status === 'REGISTERING') {
+          await clearAllTokens();
+        }
+
+        if (!kakaoNativeAppKey) return;
+
         const accessToken = await getAccessToken();
+
         if (accessToken) {
           const data = await getUsersInfo();
           setUserInfo(data);
+          saveAuthStatus('AUTHENTICATED');
           router.replace('/leenk');
         } else {
           router.replace('/');

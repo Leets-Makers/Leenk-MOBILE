@@ -1,11 +1,14 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import type { AuthStatus } from '@/types/auth';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const FCM_TOKEN_KEY = 'fcm_token';
 
 const TEMP_ACCESS_TOKEN_KEY = 'temp_access_token';
+
+const AUTH_STATUS_KEY = 'auth_status';
 
 // Access Token
 export const saveAccessToken = async (token: string) => {
@@ -98,10 +101,48 @@ export const deleteTempAccessToken = async () => {
   await SecureStore.deleteItemAsync(TEMP_ACCESS_TOKEN_KEY);
 };
 
+// Auth Status
+export const saveAuthStatus = async (status: AuthStatus) => {
+  if (Platform.OS === 'web') return;
+  try {
+    await SecureStore.setItemAsync(AUTH_STATUS_KEY, status);
+  } catch (err) {
+    console.error('[SecureStore] authStatus 저장 중 에러 발생:', err);
+    throw err;
+  }
+};
+
+export const getAuthStatus = async (): Promise<AuthStatus> => {
+  if (Platform.OS === 'web') return 'NONE';
+  try {
+    const status = await SecureStore.getItemAsync(AUTH_STATUS_KEY);
+    if (
+      status === 'NONE' ||
+      status === 'REGISTERING' ||
+      status === 'AUTHENTICATED'
+    )
+      return status;
+    return 'NONE';
+  } catch (err) {
+    console.error('[SecureStore] authStatus 조회 중 에러 발생:', err);
+    return 'NONE';
+  }
+};
+
+export const deleteAuthStatus = async () => {
+  if (Platform.OS === 'web') return;
+  try {
+    await SecureStore.deleteItemAsync(AUTH_STATUS_KEY);
+  } catch (err) {
+    console.error('[SecureStore] authStatus 삭제 중 에러 발생:', err);
+  }
+};
+
 // Clear All
 export const clearAllTokens = async () => {
   await deleteAccessToken();
   await deleteRefreshToken();
   await deleteFcmToken();
   await deleteTempAccessToken();
+  await deleteAuthStatus();
 };

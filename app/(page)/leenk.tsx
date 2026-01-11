@@ -18,6 +18,7 @@ import BottomSheetModal from '@/components/Modal/BottomSheetModal';
 import { SubText, TitleText } from '@/components/OnBoarding';
 import { CongratsIcon } from '@/assets';
 import { useDelayedLoading } from '@/hooks/useDelayedLoading';
+import { useAuthFlagStore } from '@/stores/authFlagStore';
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 
 const FOOTER_SPACER = 10 * height;
@@ -43,6 +44,8 @@ export default function LeenkPage() {
   const { userInfo: fetchedUserInfo, refetch } = useUserInfo();
   const { userInfo, setUserInfo } = useUserStore();
 
+  const { justSignedUp, hydrate, clearJustSignedUp } = useAuthFlagStore();
+
   const firstLaunch = useFirstLaunch();
 
   useEffect(() => {
@@ -56,11 +59,16 @@ export default function LeenkPage() {
   }, [fetchedUserInfo, userInfo, setUserInfo]);
 
   useEffect(() => {
+    if (justSignedUp) {
+      setShowWelcomeModal(true);
+      clearJustSignedUp();
+      return;
+    }
+
     if (firstLaunch === true) {
-      // 처음 방문이면 모달 표시
       setShowWelcomeModal(true);
     }
-  }, [firstLaunch]);
+  }, [justSignedUp, firstLaunch]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -130,6 +138,10 @@ export default function LeenkPage() {
     loading && !pullRefreshing && data.length === 0 && page === 0;
 
   const showDelayedInitialLoader = useDelayedLoading(showInitialLoader);
+
+  useEffect(() => {
+    hydrate();
+  }, []);
 
   return (
     <ContainerWithNoPadding>
