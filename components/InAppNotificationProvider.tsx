@@ -14,7 +14,7 @@ import Animated, {
   useAnimatedStyle,
   runOnJS,
 } from 'react-native-reanimated';
-import { router, type Href } from 'expo-router';
+import { router, usePathname, type Href } from 'expo-router';
 import colors from '@/theme/color';
 import { LeenkIcon, LogoNotify } from '@/assets';
 import styled from 'styled-components/native';
@@ -47,6 +47,17 @@ const ROUTES = {
   feed: '/feed/[id]' as const,
 };
 
+const BLOCKED_PATH_PREFIXES = ['/', '/signup'];
+
+export const isBlockedRoute = (pathname: string) => {
+  return BLOCKED_PATH_PREFIXES.some((prefix) => {
+    if (prefix === '/') {
+      return pathname === '/';
+    }
+    return pathname === prefix || pathname.startsWith(prefix + '/');
+  });
+};
+
 // FCM data → 앱 내 라우팅
 function navigateFromData(raw?: Record<string, unknown>) {
   const d = raw ?? {};
@@ -74,6 +85,9 @@ export function InAppNotificationProvider({
   const [payload, setPayload] = useState<InAppPayload | null>(null);
   const [visible, setVisible] = useState(false);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const pathname = usePathname();
+
+  const blocked = isBlockedRoute(pathname);
 
   // 애니메이션: 위에서 아래로 슬라이드 인/아웃
   const ty = useSharedValue(-200);
@@ -128,7 +142,7 @@ export function InAppNotificationProvider({
     <Ctx.Provider value={ctxValue}>
       {children}
 
-      {visible && (
+      {visible && !blocked && (
         <Overlay pointerEvents="box-none">
           <SafeAreaView edges={['top']} style={{ pointerEvents: 'box-none' }}>
             <CardWrap style={aStyle}>

@@ -15,6 +15,11 @@ export const appleLogin = async (idToken: string) => {
     const { code, message, data } = response.data;
     return { code, message, data };
   } catch (error: any) {
+    console.log('APPLE LOGIN ERROR', error);
+    console.log('message', error?.message);
+    console.log('response', error?.response);
+    console.log('response data', error?.response?.data);
+
     if (error.response?.data) {
       const { code, message } = error.response.data;
       return { code, message };

@@ -17,6 +17,8 @@ import { useToastStore } from '@/stores/toastStore';
 import { reportFeed } from '@/api/feed/feed.api';
 import { reportLeenk } from '@/api/leenk/leenk.post.api';
 import { postBirthdayLetter } from '@/api/extra/birthday/birthday.post.api';
+import { useFadeSlideAnimation } from '@/hooks/useFadeSlideAnimation';
+import { Animated } from 'react-native';
 
 interface TextInputModalProps {
   type: 'feed' | 'leenk' | 'birthday';
@@ -37,6 +39,12 @@ export default function TextInputModal({
     (type === 'feed' && modalType === 'feedReport') ||
     (type === 'leenk' && modalType === 'leenkReport') ||
     (type === 'birthday' && modalType === 'birthdayLetter');
+
+  const { backdropStyle, sheetStyle } = useFadeSlideAnimation({
+    visible: isOpen,
+    initialOffset: 400,
+    preset: 'soft',
+  });
 
   const targetId = type === 'feed' ? feedId : leenkId;
 
@@ -74,12 +82,16 @@ export default function TextInputModal({
 
   const { title, subtitle, buttonText, onSubmit } = modalConfig[type];
 
+  const handleClose = () => {
+    setText('');
+    closeModal();
+  };
+
   const handleSubmit = async () => {
     try {
       await onSubmit();
       if (type === 'birthday') {
-        closeModal();
-        setText('');
+        handleClose();
 
         requestAnimationFrame(() => {
           openModal('birthdayLetterFinish');
@@ -88,15 +100,13 @@ export default function TextInputModal({
         return;
       }
 
-      closeModal();
-      setText('');
+      handleClose();
     } catch (error) {
       const errorMessage = type === 'birthday' ? '전송 실패!' : '신고 실패!';
       console.error(`${type} 처리 실패:`, error);
       showToast(errorMessage, 'error');
 
-      closeModal();
-      setText('');
+      handleClose();
     }
   };
 
@@ -104,63 +114,77 @@ export default function TextInputModal({
     <Modal
       visible={isOpen}
       transparent
-      animationType="slide"
+      animationType="none"
       onRequestClose={closeModal}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Backdrop>
-          <Pressable style={{ flex: 1 }} onPress={closeModal} />
+      <ModalRoot>
+        {/* Backdrop */}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <AnimatedBackdrop style={backdropStyle}>
+            <Pressable
+              style={{ flex: 1 }}
+              onPress={() => {
+                Keyboard.dismiss();
+                handleClose();
+              }}
+            />
+          </AnimatedBackdrop>
+        </TouchableWithoutFeedback>
 
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? -20 * height : 0}
-            style={{ flex: 1, justifyContent: 'flex-end' }}
-          >
-            <SheetContainer>
-              <SheetBox>
-                <Title>{title}</Title>
-                <SubText>{subtitle}</SubText>
-
-                <Textarea
-                  placeholder="텍스트를 입력해 주세요"
-                  value={text}
-                  onChangeText={setText}
-                  maxLength={type === 'birthday' ? 40 : 100}
-                  minHeight={30}
-                  maxHeight={40}
-                />
-
-                <ButtonWrapper>
-                  <CustomButton
-                    variant="primary"
-                    size="lg"
-                    onPress={handleSubmit}
-                    disabled={text.length === 0}
-                  >
-                    {buttonText}
-                  </CustomButton>
-                  <CancelButton onPress={closeModal}>
-                    <CancelText>취소</CancelText>
-                  </CancelButton>
-                </ButtonWrapper>
-              </SheetBox>
-            </SheetContainer>
-          </KeyboardAvoidingView>
-        </Backdrop>
-      </TouchableWithoutFeedback>
+        {/* Sheet */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? -20 * height : 0}
+          style={{ flex: 1, justifyContent: 'flex-end' }}
+          pointerEvents="box-none"
+        >
+          <AnimatedSheet style={sheetStyle}>
+            <SheetBox>
+              <Title>{title}</Title>
+              <SubText>{subtitle}</SubText>
+              <Textarea
+                placeholder="텍스트를 입력해 주세요"
+                value={text}
+                onChangeText={setText}
+                maxLength={type === 'birthday' ? 40 : 100}
+                minHeight={30}
+                maxHeight={40}
+              />
+              <ButtonWrapper>
+                <CustomButton
+                  variant="primary"
+                  size="lg"
+                  onPress={handleSubmit}
+                  disabled={text.length === 0}
+                >
+                  {buttonText}
+                </CustomButton>
+                <CancelButton onPress={handleClose}>
+                  <CancelText>취소</CancelText>
+                </CancelButton>
+              </ButtonWrapper>
+            </SheetBox>
+          </AnimatedSheet>
+        </KeyboardAvoidingView>
+      </ModalRoot>
     </Modal>
   );
 }
 
-const Backdrop = styled.View`
+const ModalRoot = styled.View`
   flex: 1;
-  justify-content: flex-end;
-  background-color: rgba(0, 0, 0, 0.3);
 `;
 
-const SheetContainer = styled.View`
-  flex: 1;
-  justify-content: flex-end;
+const AnimatedBackdrop = styled(Animated.View)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const AnimatedSheet = styled(Animated.View)`
   padding: ${20 * height}px ${16 * width}px ${30 * height}px;
 `;
 
