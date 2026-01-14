@@ -210,11 +210,10 @@ export default function ProfilePage() {
         await withTimeout(registerFcmToken(), 3000);
       } catch (e) {
         console.warn('[handleSkip] registerFcmToken failed or timeout', e);
-        showToast('[handleNext] FCM 등록 실패', 'error'); // 테스트 이후 삭제
+        showToast('[handleSkip] FCM 등록 실패', 'error'); // 테스트 이후 삭제
       }
 
       await saveAuthStatus('AUTHENTICATED');
-      await setJustSignedUp(true);
       await useAuthFlagStore.getState().setJustSignedUp();
 
       router.replace('/(page)/leenk');
