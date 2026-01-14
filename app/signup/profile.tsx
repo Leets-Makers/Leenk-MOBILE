@@ -58,6 +58,7 @@ export default function ProfilePage() {
   const randomMbti = useRandomMbti(2000);
   const insets = useSafeAreaInsets();
   const { showToast } = useToastStore();
+  const [isKakaoConfirmed, setIsKakaoConfirmed] = useState(false);
 
   const mountedRef = useRef(true);
   useEffect(() => {
@@ -214,6 +215,7 @@ export default function ProfilePage() {
       }
 
       await saveAuthStatus('AUTHENTICATED');
+      await setJustSignedUp(true);
       await useAuthFlagStore.getState().setJustSignedUp();
 
       router.replace('/(page)/leenk');
@@ -258,7 +260,8 @@ export default function ProfilePage() {
           (step === 'id' &&
             (kakaoTalkId.trim() === '' ||
               kakaoTalkId.length < 4 ||
-              kakaoTalkId.length > 20)) ||
+              kakaoTalkId.length > 20 ||
+              !isKakaoConfirmed)) ||
           (step === 'introduction' && introduction.trim() === '') ||
           (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
         }
@@ -325,9 +328,10 @@ export default function ProfilePage() {
             <Input
               title="카카오톡 ID를 입력해줘"
               value={kakaoTalkId}
-              onChangeText={(text) =>
-                setkakaoTalkId(text.replace(/[^a-zA-Z0-9._-]/g, ''))
-              }
+              onChangeText={(text) => {
+                setkakaoTalkId(text.replace(/[^a-zA-Z0-9._-]/g, ''));
+                setIsKakaoConfirmed(false);
+              }}
               placeholder="모임원들과의 연락을 위해 필요해"
               subMessage="ID는 카카오톡 > 친구 추가 > 카카오톡 ID 에서 볼 수 있어."
               accessoryID={isIOS ? ACCESSORY_ID : undefined}
@@ -339,8 +343,12 @@ export default function ProfilePage() {
             />
             <PopupModal
               isOpen={kakaoModalVisible}
-              onLeftBtn={() => setKakaoModalVisible(false)}
+              onLeftBtn={() => {
+                setIsKakaoConfirmed(false);
+                setKakaoModalVisible(false);
+              }}
               onRightBtn={() => {
+                setIsKakaoConfirmed(true);
                 setKakaoModalVisible(false);
                 setTimeout(() => setStep('photo'), 100);
               }}
