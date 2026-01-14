@@ -87,6 +87,16 @@ export default function ProfilePage() {
 
   const ACCESSORY_ID = 'profile-accessory';
 
+  // 타임 아웃 처리
+  const withTimeout = <T,>(promise: Promise<T>, ms = 3000) => {
+    return Promise.race([
+      promise,
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('FCM_TIMEOUT')), ms),
+      ),
+    ]);
+  };
+
   // ----- 저장 -----
   const saveProfile = async () => {
     const payload: UpdateProfilePayload = {};
@@ -96,6 +106,8 @@ export default function ProfilePage() {
     if (birthday) payload.birthday = birthday;
 
     if (profileImage) {
+      showToast('프로필 이미지 업로드 시도', 'success'); // 테스트 이후 삭제
+
       const fileName = `profile_${Date.now()}.jpg`;
       try {
         const presignedUrls = await getPresignedUrl(fileName, 'PROFILE');
@@ -112,6 +124,8 @@ export default function ProfilePage() {
         } catch {
           payload.profileImage = mediaUrl.split('?')[0];
         }
+
+        showToast('프로필 이미지 업로드에 성공했어.', 'success'); // 테스트 이후 삭제
       } catch (error) {
         console.error('[saveProfile] 프로필 이미지 업로드 실패:', error);
         showToast('프로필 이미지 업로드에 실패했어.', 'error');
@@ -121,6 +135,7 @@ export default function ProfilePage() {
 
     try {
       await updateUserProfile(payload);
+      showToast('프로필 저장에 성공했어.', 'success'); // 테스트 이후 삭제
     } catch (error) {
       console.error('[saveProfile] 프로필 저장 실패:', error);
       showToast('프로필 저장에 실패했어.', 'error');
@@ -145,11 +160,25 @@ export default function ProfilePage() {
         setIsSubmitting(true);
 
         await saveProfile();
-        await registerFcmToken();
+
+        try {
+          await withTimeout(registerFcmToken(), 3000);
+        } catch (e) {
+          console.warn('[handleNext] registerFcmToken failed or timeout', e);
+          showToast('[handleNext] FCM 등록 실패', 'error'); // 테스트 이후 삭제
+        }
+
         await saveAuthStatus('AUTHENTICATED');
         await useAuthFlagStore.getState().setJustSignedUp();
 
         router.replace('/(page)/leenk');
+
+        // iOS replace 실패 대비
+        setTimeout(() => {
+          if (mountedRef.current) {
+            setIsSubmitting(false);
+          }
+        }, 500);
       } catch (e) {
         console.error('[handleNext] 실패:', e);
       } finally {
@@ -167,6 +196,8 @@ export default function ProfilePage() {
   };
 
   const handleSkip = async () => {
+    console.log('[handleSkip] skip pressed');
+
     if (isSubmitting) return;
 
     setSkipModalVisible(false);
@@ -174,7 +205,14 @@ export default function ProfilePage() {
       setIsSubmitting(true);
 
       await saveProfile();
-      await registerFcmToken();
+
+      try {
+        await withTimeout(registerFcmToken(), 3000);
+      } catch (e) {
+        console.warn('[handleSkip] registerFcmToken failed or timeout', e);
+        showToast('[handleNext] FCM 등록 실패', 'error'); // 테스트 이후 삭제
+      }
+
       await saveAuthStatus('AUTHENTICATED');
       await setJustSignedUp(true);
       await useAuthFlagStore.getState().setJustSignedUp();
