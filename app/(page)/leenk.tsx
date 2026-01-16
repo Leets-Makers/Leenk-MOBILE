@@ -19,6 +19,10 @@ import { SubText, TitleText } from '@/components/OnBoarding';
 import { CongratsIcon } from '@/assets';
 import { useDelayedLoading } from '@/hooks/useDelayedLoading';
 import { useAuthFlagStore } from '@/stores/authFlagStore';
+import { getAuthStatus } from '@/utils/tokenStorage';
+import { useRouter } from 'expo-router';
+import { useToastStore } from '@/stores/toastStore';
+
 import useFirstLaunch from '@/hooks/useFirstLaunch';
 
 const FOOTER_SPACER = 10 * height;
@@ -35,6 +39,8 @@ export default function LeenkPage() {
   const [loading, setLoading] = useState(false);
   const [pullRefreshing, setPullRefreshing] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const router = useRouter();
+  const { showToast } = useToastStore();
 
   const didMountRef = useRef(false);
   const listRef = useRef<import('react-native').FlatList<Leenk>>(null);
@@ -47,6 +53,32 @@ export default function LeenkPage() {
   const { justSignedUp, hydrate, clearJustSignedUp } = useAuthFlagStore();
 
   const firstLaunch = useFirstLaunch();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      let cancelled = false;
+
+      const checkAuth = async () => {
+        // 토큰 상태 확인 (로그인 여부)
+        const status = await getAuthStatus();
+        if (cancelled) return;
+
+        // 인증되지 않은 경우
+        if (status !== 'AUTHENTICATED') {
+          showToast('로그인이 필요해', 'error');
+          setTimeout(() => {
+            router.replace('/');
+          }, 1200);
+        }
+      };
+
+      checkAuth();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [showToast, router]),
+  );
 
   useEffect(() => {
     refetch();
