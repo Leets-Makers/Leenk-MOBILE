@@ -10,6 +10,7 @@ import { Position } from '@/constants/Position';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { useToastStore } from '@/stores/toastStore';
 import { deleteAuthStatus } from '@/utils/tokenStorage';
+import { clearAllTokens } from '@/utils/tokenStorage';
 
 export default function VerifyPage() {
   useBlockBackHandler({ block: true });
@@ -19,6 +20,7 @@ export default function VerifyPage() {
   const { showToast } = useToastStore();
 
   const handleCancel = async () => {
+    await clearAllTokens();
     await deleteAuthStatus();
     reset();
     router.replace('/');
