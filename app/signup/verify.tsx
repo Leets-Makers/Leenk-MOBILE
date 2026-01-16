@@ -9,15 +9,18 @@ import { useProfileStore } from '@/stores/profileStore';
 import { Position } from '@/constants/Position';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { useToastStore } from '@/stores/toastStore';
+import { deleteAuthStatus } from '@/utils/tokenStorage';
 
 export default function VerifyPage() {
   useBlockBackHandler({ block: true });
 
   const router = useRouter();
-  const { name, cardinal, position } = useProfileStore();
+  const { name, cardinal, position, reset } = useProfileStore();
   const { showToast } = useToastStore();
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
+    await deleteAuthStatus();
+    reset();
     router.replace('/');
     showToast('관리자에게 문의해주세요.', 'error');
   };
