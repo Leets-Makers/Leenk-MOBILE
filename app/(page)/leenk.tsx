@@ -67,6 +67,7 @@ export default function LeenkPage() {
         if (status !== 'AUTHENTICATED') {
           showToast('로그인이 필요해', 'error');
           setTimeout(() => {
+            if (cancelled) return;
             router.replace('/');
           }, 1200);
         }
