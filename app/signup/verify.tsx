@@ -9,7 +9,6 @@ import { useProfileStore } from '@/stores/profileStore';
 import { Position } from '@/constants/Position';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { useToastStore } from '@/stores/toastStore';
-import { deleteAuthStatus } from '@/utils/tokenStorage';
 import { clearAllTokens } from '@/utils/tokenStorage';
 
 export default function VerifyPage() {
@@ -22,7 +21,6 @@ export default function VerifyPage() {
   const handleCancel = async () => {
     try {
       await clearAllTokens();
-      await deleteAuthStatus();
     } catch (e) {
       if (__DEV__) console.error('토큰 정리 실패:', e);
     }
