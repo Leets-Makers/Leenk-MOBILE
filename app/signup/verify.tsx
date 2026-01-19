@@ -20,11 +20,15 @@ export default function VerifyPage() {
   const { showToast } = useToastStore();
 
   const handleCancel = async () => {
-    await clearAllTokens();
-    await deleteAuthStatus();
+    try {
+      await clearAllTokens();
+      await deleteAuthStatus();
+    } catch (e) {
+      if (__DEV__) console.error('토큰 정리 실패:', e);
+    }
     reset();
-    router.replace('/');
     showToast('관리자에게 문의해주세요.', 'error');
+    router.replace('/');
   };
 
   const handleRight = () => {
