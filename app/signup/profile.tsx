@@ -13,7 +13,7 @@ import { CustomButton, Header, Input, Textarea } from '@/components';
 import colors from '@/theme/color';
 import { fontSize, height, width, fonts } from '@/theme/globalStyles';
 // import { Image } from 'expo-image';
-import { Image } from 'react-native';
+// import { Image } from 'react-native';
 
 import { DefaultProfileImage } from '@/assets';
 import { useRouter } from 'expo-router';
@@ -22,7 +22,7 @@ import {
   UpdateProfilePayload,
   updateUserProfile,
 } from '@/api/login/patchUsersInfo.api';
-import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
+// import { getPresignedUrl, uploadImageToS3 } from '@/api/file/s3Upload';
 import useRandomMbti from '@/hooks/useRandomMbti';
 import ProfileTitleText from '@/components/signup/ProfileTitleText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -48,7 +48,7 @@ export default function ProfilePage() {
     setBirthday,
     mbti,
     setMbti,
-    profileImage,
+    // profileImage,
   } = useProfileStore();
 
   const [kakaoModalVisible, setKakaoModalVisible] = useState(false);
@@ -106,37 +106,34 @@ export default function ProfilePage() {
     if (mbti) payload.mbti = mbti;
     if (birthday) payload.birthday = birthday;
 
-    if (profileImage) {
-      showToast('프로필 이미지 업로드 시도', 'success'); // 테스트 이후 삭제
+    // if (profileImage) {
 
-      const fileName = `profile_${Date.now()}.jpg`;
-      try {
-        const presignedUrls = await getPresignedUrl(fileName, 'PROFILE');
-        if (!presignedUrls || presignedUrls.length === 0) {
-          throw new Error('presigned URL 생성에 실패했습니다.');
-        }
-        const mediaUrl = presignedUrls[0].mediaUrl;
+    //   const fileName = `profile_${Date.now()}.jpg`;
+    //   try {
+    //     const presignedUrls = await getPresignedUrl(fileName, 'PROFILE');
+    //     if (!presignedUrls || presignedUrls.length === 0) {
+    //       throw new Error('presigned URL 생성에 실패했습니다.');
+    //     }
+    //     const mediaUrl = presignedUrls[0].mediaUrl;
 
-        await uploadImageToS3(mediaUrl, profileImage);
+    //     await uploadImageToS3(mediaUrl, profileImage);
 
-        try {
-          const url = new URL(mediaUrl);
-          payload.profileImage = `${url.protocol}//${url.host}${url.pathname}`;
-        } catch {
-          payload.profileImage = mediaUrl.split('?')[0];
-        }
+    //     try {
+    //       const url = new URL(mediaUrl);
+    //       payload.profileImage = `${url.protocol}//${url.host}${url.pathname}`;
+    //     } catch {
+    //       payload.profileImage = mediaUrl.split('?')[0];
+    //     }
 
-        showToast('프로필 이미지 업로드에 성공했어.', 'success'); // 테스트 이후 삭제
-      } catch (error) {
-        console.error('[saveProfile] 프로필 이미지 업로드 실패:', error);
-        showToast('프로필 이미지 업로드에 실패했어.', 'error');
-        throw error;
-      }
-    }
+    //   } catch (error) {
+    //     console.error('[saveProfile] 프로필 이미지 업로드 실패:', error);
+    //     showToast('프로필 이미지 업로드에 실패했어.', 'error');
+    //     throw error;
+    //   }
+    // }
 
     try {
       await updateUserProfile(payload);
-      showToast('프로필 저장에 성공했어.', 'success'); // 테스트 이후 삭제
     } catch (error) {
       console.error('[saveProfile] 프로필 저장 실패:', error);
       showToast('프로필 저장에 실패했어.', 'error');
@@ -150,8 +147,8 @@ export default function ProfilePage() {
 
     if (step === 'id') {
       setKakaoModalVisible(true);
-    } else if (step === 'photo') {
-      setStep('introduction');
+      // } else if (step === 'photo') {
+      //   setStep('introduction');
     } else if (step === 'introduction') {
       setStep('birthday');
     } else if (step === 'birthday') {
@@ -166,7 +163,6 @@ export default function ProfilePage() {
           await withTimeout(registerFcmToken(), 3000);
         } catch (e) {
           console.warn('[handleNext] registerFcmToken failed or timeout', e);
-          showToast('[handleNext] FCM 등록 실패', 'error'); // 테스트 이후 삭제
         }
 
         await saveAuthStatus('AUTHENTICATED');
@@ -189,16 +185,15 @@ export default function ProfilePage() {
   };
 
   const handlePrevStep = () => {
-    if (step === 'photo') setStep('id');
-    else if (step === 'introduction') setStep('photo');
+    if (step === 'introduction') setStep('id');
+    // if (step === 'photo') setStep('id');
+    // else if (step === 'introduction') setStep('photo');
     else if (step === 'birthday') setStep('introduction');
     else if (step === 'mbti') setStep('birthday');
     else router.back();
   };
 
   const handleSkip = async () => {
-    console.log('[handleSkip] skip pressed');
-
     if (isSubmitting) return;
 
     setSkipModalVisible(false);
@@ -211,7 +206,6 @@ export default function ProfilePage() {
         await withTimeout(registerFcmToken(), 3000);
       } catch (e) {
         console.warn('[handleSkip] registerFcmToken failed or timeout', e);
-        showToast('[handleSkip] FCM 등록 실패', 'error'); // 테스트 이후 삭제
       }
 
       await saveAuthStatus('AUTHENTICATED');
@@ -226,9 +220,9 @@ export default function ProfilePage() {
     }
   };
 
-  const handleImagePick = () => {
-    router.push('/signup/select-image');
-  };
+  // const handleImagePick = () => {
+  //   router.push('/signup/select-image');
+  // };
 
   // ----- 버튼 묶음 -----
   const NormalButtons = () => (
@@ -350,7 +344,8 @@ export default function ProfilePage() {
               onRightBtn={() => {
                 setIsKakaoConfirmed(true);
                 setKakaoModalVisible(false);
-                setTimeout(() => setStep('photo'), 100);
+                // setTimeout(() => setStep('photo'), 100);
+                setTimeout(() => setStep('introduction'), 100);
               }}
               mainText={kakaoTalkId}
               subText="카톡 아이디가 맞는지 확인해 줘."
@@ -405,7 +400,7 @@ export default function ProfilePage() {
           />
         )}
 
-        {step === 'photo' && (
+        {/* {step === 'photo' && (
           <>
             <StyledSubText>프로필 사진을 설정해줘</StyledSubText>
             <ImagePreview>
@@ -429,7 +424,7 @@ export default function ProfilePage() {
               프로필 사진 선택하기
             </CustomButton>
           </>
-        )}
+        )} */}
       </Scroll>
 
       {/* ===== 하단 액션 영역 ===== */}
