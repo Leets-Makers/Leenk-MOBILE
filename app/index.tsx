@@ -30,7 +30,7 @@ export default function IndexPage() {
       try {
         const token = await getAccessToken();
         if (token && !isTokenExpired(token)) {
-          router.replace('/(page)/feed');
+          router.replace('/(page)/leenk');
           return;
         }
       } catch (error) {

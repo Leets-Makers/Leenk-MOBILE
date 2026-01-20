@@ -9,17 +9,24 @@ import { useProfileStore } from '@/stores/profileStore';
 import { Position } from '@/constants/Position';
 import { useBlockBackHandler } from '@/hooks/useBlockBackHandler';
 import { useToastStore } from '@/stores/toastStore';
+import { clearAllTokens } from '@/utils/tokenStorage';
 
 export default function VerifyPage() {
   useBlockBackHandler({ block: true });
 
   const router = useRouter();
-  const { name, cardinal, position } = useProfileStore();
+  const { name, cardinal, position, reset } = useProfileStore();
   const { showToast } = useToastStore();
 
-  const handleCancel = () => {
-    router.replace('/');
+  const handleCancel = async () => {
+    try {
+      await clearAllTokens();
+    } catch (e) {
+      if (__DEV__) console.error('토큰 정리 실패:', e);
+    }
+    reset();
     showToast('관리자에게 문의해주세요.', 'error');
+    router.replace('/');
   };
 
   const handleRight = () => {

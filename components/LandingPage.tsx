@@ -81,9 +81,14 @@ export default function LandingPage() {
         return;
       }
 
+      useProfileStore.getState().reset?.();
+
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
       await saveAuthStatus('REGISTERING');
+
+      // iOS Keychain 반영 대기
+      await new Promise((r) => setTimeout(r, 150));
 
       setName(data.name);
       setPosition(data.position);
