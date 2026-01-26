@@ -327,7 +327,8 @@ export default function LeenkDetailPage() {
         style={{
           position: 'absolute',
           width: '100%',
-          top: 35,
+          top: insets.top + 16 * height,
+          marginTop: 0,
           zIndex: 9999,
           paddingHorizontal: width * CONTAINER_PADDING,
         }}

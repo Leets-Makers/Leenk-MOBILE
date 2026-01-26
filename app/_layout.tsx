@@ -233,7 +233,9 @@ function RootLayoutNav() {
         <InAppNotificationProvider>
           <NotificationInitializer />
 
-          <StatusBar
+          <StatusBar translucent style="dark" backgroundColor="transparent" />
+
+          {/* <StatusBar
             style="dark"
             backgroundColor={
               pathname === '/account/notification-list'
@@ -241,10 +243,10 @@ function RootLayoutNav() {
                 : colors.bg[2]
             }
             translucent={Platform.OS === 'ios'}
-          />
+          /> */}
 
           {/* 조건부 SafeAreaView (상단 배경 색 유지용) */}
-          {!isExcluded && (
+          {/* {!isExcluded && (
             <SafeAreaView
               edges={['top']}
               style={{
@@ -254,7 +256,7 @@ function RootLayoutNav() {
                     : colors.bg[2],
               }}
             />
-          )}
+          )} */}
 
           <ThemeProvider value={DefaultTheme}>
             <Stack
