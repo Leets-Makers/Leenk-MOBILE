@@ -32,6 +32,7 @@ import { CONTAINER_PADDING, FEED_PADDING } from '@/constants';
 import { Media } from '@/types/feed';
 import { StyledText } from './write/AuthorContent';
 import { useFeedWriteStore } from '@/stores/feedWriteStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   feed: FeedDetail;
@@ -46,6 +47,8 @@ export default function FeedDetailItem({ feed }: Props) {
 
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
+
+  const insets = useSafeAreaInsets();
 
   // 미디어(이미지) 배열 목록
   const media: Media[] = useMemo(() => {
@@ -146,7 +149,8 @@ export default function FeedDetailItem({ feed }: Props) {
         kebabPress={() => openModal('menu', null, { feedId: feed.feedId })}
         style={{
           position: 'absolute',
-          top: 35,
+          top: insets.top + 16 * height,
+          marginTop: 0,
           width: '100%',
           zIndex: 20,
           paddingHorizontal: CONTAINER_PADDING * width,

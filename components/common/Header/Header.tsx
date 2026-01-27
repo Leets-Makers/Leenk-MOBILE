@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { ViewProps } from 'react-native';
 import { fonts, fontSize, height, lineHeight } from '@/theme/globalStyles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LogoText } from '@/assets';
 import {
@@ -37,8 +38,16 @@ export default function Header({
   isWebView = false,
   ...props
 }: HeaderProps) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <Container {...props}>
+    <Container
+      {...props}
+      style={[
+        { marginTop: insets.top + 16 * height },
+        props.style,
+      ]}
+    >
       <Side>
         {LeftSection === 'LOGO' && <LogoText width={65} height={24} />}
         {LeftSection === 'BACK' && (
@@ -79,7 +88,6 @@ const Container = styled.View`
   justify-content: space-between;
   width: 100%;
   height: ${44 * height}px;
-  margin-top: ${16 * height}px;
 `;
 
 const Side = styled.View`
