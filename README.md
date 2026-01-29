@@ -50,10 +50,12 @@ Leenk는 이런 순간을 자연스럽게 연결해주는 서비스예요.
   <tr>
     <td align="center"><img src="https://github.com/dalzzy.png" width="160"></td>
     <td align="center"><img src="https://github.com/JIN921.png" width="160"></td>
+    <td align="center"><img src="https://github.com/nabbang6.png" width="160"></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/dalzzy">계다현</td>
     <td align="center"><a href="https://github.com/JIN921">이유진</td>
+    <td align="center"><a href="https://github.com/nabbang6">서나영</td>
   </tr>
 </table>
 
@@ -64,11 +66,15 @@ Leenk는 이런 순간을 자연스럽게 연결해주는 서비스예요.
     <td align="center"><img src="https://github.com/hyxklee.png" width="160"></td>
     <td align="center"><img src="https://github.com/huncozyboy.png" width="160"></td>
     <td align="center"><img src="https://github.com/jj0526.png" width="160"></td>
+    <td align="center"><img src="https://github.com/1winhyun.png" width="160"></td>
+    <td align="center"><img src="https://github.com/soo0711.png" width="160"></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/hyxklee">이강혁</td>
     <td align="center"><a href="https://github.com/huncozyboy">이지훈</td>
     <td align="center"><a href="https://github.com/jj0526">전시현</td>
+    <td align="center"><a href="https://github.com/1winhyun">한승현</td>
+    <td align="center"><a href="https://github.com/soo0711">전수현</td>
   </tr>
 </table>
 <br>
@@ -100,6 +106,7 @@ Leenk는 이런 순간을 자연스럽게 연결해주는 서비스예요.
 <p>BE</p>  
 </td>  
 <td>  
+<img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
 <img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">  
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
@@ -121,6 +128,7 @@ Leenk는 이런 순간을 자연스럽게 연결해주는 서비스예요.
 <img src="https://img.shields.io/badge/Notion-d9d9d9?style=for-the-badge&logo=Notion&logoColor=000">  
 <img src="https://img.shields.io/badge/Figma-ff7262?style=for-the-badge&logo=Figma&logoColor=ffffff">  
 <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=ffffff">  
+<img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white">
   
 </td>  
 </tr>  
