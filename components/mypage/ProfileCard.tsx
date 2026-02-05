@@ -15,11 +15,11 @@ import ProfileImageWithFallback from '@/components/feed/ProfileImageWithFallback
 import { formatMonthDay } from '@/utils/format-date';
 
 type ProfileCardProps = {
-  cardinal: number;
+  cardinal?: number;
   name: string;
   imageUrl?: string;
-  introduction: string;
-  kakaoTalkId: string;
+  introduction?: string;
+  kakaoTalkId?: string;
   mbti?: string;
   birthday?: string;
   isMyProfile?: boolean;
@@ -48,9 +48,11 @@ export default function ProfileCard({
         <TextWrapper>
           <LeftSection>
             <NameText>{name}</NameText>
-            <BadgeWrapper>
-              <Badge>{cardinal}기</Badge>
-            </BadgeWrapper>
+            {cardinal && (
+              <BadgeWrapper>
+                <Badge>{cardinal}기</Badge>
+              </BadgeWrapper>
+            )}
           </LeftSection>
 
           <InfoSection>
@@ -71,8 +73,8 @@ export default function ProfileCard({
           isUserBirthdayToday={isUserBirthdayToday}
         />
       </RowContainer>
-      <IntroContainer>{introduction}</IntroContainer>
-      <KakaoIdButton kakaoTalkId={kakaoTalkId} />
+      {introduction?.trim() && <IntroContainer>{introduction}</IntroContainer>}
+      <KakaoIdButton kakaoTalkId={kakaoTalkId ? kakaoTalkId : '미등록'} />
 
       {isMyProfile && (
         <CustomButton

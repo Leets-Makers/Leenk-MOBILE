@@ -1,16 +1,18 @@
 import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useCallback, useState } from 'react';
+import { getRefreshToken } from '@/utils/tokenStorage';
 
 export interface UserInfo {
   userId: number;
-  cardinal: number;
   name: string;
-  position: 'FE' | 'BE' | 'D' | 'PM';
-  thumbnail: string;
-  kakaoTalkId: string;
-  introduction: string;
-  mbti: string;
-  birthday: string;
+
+  cardinal?: number | null;
+  position?: 'FE' | 'BE' | 'D' | 'PM' | null;
+  thumbnail?: string | null;
+  kakaoTalkId?: string | null;
+  introduction?: string | null;
+  mbti?: string | null;
+  birthday?: string | null;
   isUserBirthdayToday: boolean;
 }
 
@@ -21,6 +23,10 @@ export const useUserInfo = () => {
 
   const fetchUserInfo = useCallback(async () => {
     if (loading) return;
+
+    const refreshToken = await getRefreshToken();
+    if (!refreshToken) return;
+
     try {
       setLoading(true);
       setError(null);
@@ -32,7 +38,7 @@ export const useUserInfo = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loading]);
 
   return { userInfo, loading, error, refetch: fetchUserInfo };
 };
