@@ -68,74 +68,70 @@ export default function LandingPage() {
   const shouldBlock = fromLogout === 'true';
   useBlockBackHandler({ block: shouldBlock });
 
-  // const handleSocialLogin = async (result: any) => {
-  //   const code = result.code;
-  //   const data = result.data;
-  //   const message = result.message || '로그인에 실패했습니다';
+  const handleSocialLogin = async (result: any) => {
+    const code = result.code;
+    const data = result.data;
+    const message = result.message || '로그인에 실패했습니다';
 
-  //   // --- 정상 로그인 ---
-  //   if (code === 1002) {
-  //     // 최초 로그인(회원가입 페이지로 이동)
-  //     if (!data?.accessToken || !data?.refreshToken) {
-  //       showToast('토큰 발급 실패', 'error');
-  //       return;
-  //     }
+    if (!data?.accessToken || !data?.refreshToken) {
+      showToast('토큰 발급 실패', 'error');
+      return;
+    }
 
-  //     useProfileStore.getState().reset?.();
+    // --- 정상 로그인 ---
+    if (code === 1002) {
+      // 최초 로그인(회원가입 페이지로 이동)
+      useProfileStore.getState().reset?.();
 
-  //     await saveAccessToken(data.accessToken);
-  //     await saveRefreshToken(data.refreshToken);
-  //     await saveAuthStatus('REGISTERING');
+      await saveAccessToken(data.accessToken);
+      await saveRefreshToken(data.refreshToken);
+      await saveAuthStatus('REGISTERING');
 
-  //     // iOS Keychain 반영 대기
-  //     await new Promise((r) => setTimeout(r, 150));
+      // iOS Keychain 반영 대기
+      await new Promise((r) => setTimeout(r, 150));
 
-  //     setName(data.name);
-  //     setPosition(data.position);
-  //     setCardinal(data.cardinal);
+      setName(data.name);
+      // setPosition(data.position);
+      // setCardinal(data.cardinal);
 
-  //     router.push('/signup/terms');
-  //     return;
-  //   }
+      router.push('/signup/terms');
+      return;
+    }
 
-  //   if (code === 1003) {
-  //     // 일반 로그인(홈으로 이동)
-  //     if (!data?.accessToken || !data?.refreshToken) {
-  //       showToast('토큰 발급 실패', 'error');
-  //       return;
-  //     }
+    if (code === 1003) {
+      // 일반 로그인(홈으로 이동)
+      await saveAccessToken(data.accessToken);
+      await saveRefreshToken(data.refreshToken);
+      await saveAuthStatus('AUTHENTICATED');
 
-  //     await saveAccessToken(data.accessToken);
-  //     await saveRefreshToken(data.refreshToken);
-  //     await saveAuthStatus('AUTHENTICATED');
+      // SecureStore 반영 대기
+      await new Promise((r) => setTimeout(r, 150));
 
-  //     // SecureStore 반영 대기
-  //     await new Promise((r) => setTimeout(r, 150));
+      await registerFcmToken();
+      router.replace('/(page)/leenk');
+      return;
+    }
 
-  //     await registerFcmToken();
-  //     router.replace('/(page)/leenk');
-  //     return;
-  //   }
-
-  //   // ---- 예외 처리 ----
-  //   switch (code) {
-  //     case 2000: // weeth 가입 승인 안된 유저
-  //       setWaitModal(true);
-  //       break;
-  //     case 2001:
-  //       await clearAllTokens();
-  //       if (__DEV__) console.error('서버 인증 에러:', result.message);
-  //       showToast(message, 'error');
-  //       break;
-  //     case 2002: // weeth에 가입되지 않은 유저
-  //       setNotRegisterModal(true);
-  //       break;
-  //     default:
-  //       if (__DEV__) console.error('알 수 없는 예외:', code, result.message);
-  //       await clearAllTokens();
-  //       showToast(message, 'error');
-  //   }
-  // };
+    // ---- 예외 처리 ----
+    switch (code) {
+      // case 2000: // weeth 가입 승인 안된 유저
+      //   setWaitModal(true);
+      //   break;
+      case 2001:
+        await clearAllTokens();
+        if (__DEV__) console.error('서버 인증 에러:', result.message);
+        showToast(message, 'error');
+        break;
+      // case 2002: // weeth에 가입되지 않은 유저
+      //   setNotRegisterModal(true);
+      //   break;
+      default:
+        if (__DEV__) console.error('알 수 없는 예외:', code, result.message);
+        await clearAllTokens();
+        showToast(message, 'error');
+    }
+    return;
+  };
 
   // const handleKakaoLogin = async () => {
   //   try {
@@ -202,7 +198,7 @@ export default function LandingPage() {
         name, // 최초 로그인 시에만 의미 있음
       });
 
-      await handleAppleAuth(result);
+      await handleSocialLogin(result);
     } catch (error: any) {
       if (error?.code === 'ERR_REQUEST_CANCELED') return;
 
@@ -211,55 +207,6 @@ export default function LandingPage() {
     }
   };
 
-  const handleAppleAuth = async (result: any) => {
-    const { code, data, message } = result;
-
-    if (!data?.accessToken || !data?.refreshToken) {
-      showToast('토큰 발급 실패', 'error');
-      return;
-    }
-
-    // 최초 로그인 > 자체 온보딩
-    if (code === 1002) {
-      await saveAccessToken(data.accessToken);
-      await saveRefreshToken(data.refreshToken);
-      await saveAuthStatus('REGISTERING');
-
-      await new Promise((r) => setTimeout(r, 150));
-
-      useProfileStore.getState().reset?.();
-      if (data.name) setName(data.name);
-
-      router.push('/signup/terms');
-      return;
-    }
-
-    // 기존 로그인
-    if (code === 1003) {
-      await saveAccessToken(data.accessToken);
-      await saveRefreshToken(data.refreshToken);
-      await saveAuthStatus('AUTHENTICATED');
-
-      await new Promise((r) => setTimeout(r, 150));
-
-      await registerFcmToken();
-      router.replace('/(page)/leenk');
-      return;
-    }
-
-    // 예외
-    if (code !== 1002 && code !== 1003) {
-      switch (code) {
-        case 2001:
-          await clearAllTokens();
-          showToast(message, 'error');
-          break;
-        default:
-          showToast(message || '로그인에 실패했어요', 'error');
-      }
-      return;
-    }
-  };
   // const handleLogin = async () => {
   //   if (!id.trim()) return showToast('이메일을 입력해줘', 'error');
   //   if (!isValidEmail(id))
