@@ -329,7 +329,7 @@ export default function LandingPage() {
               fullWidth
               onPress={handleAppleLogin}
               style={{
-                marginBottom: 60 * height,
+                marginBottom: 30 * height,
                 shadowColor: colors.black,
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.04,
