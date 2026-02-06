@@ -22,6 +22,7 @@ import { updateUserAgreement } from '@/api/users/patchUserEachInfo.api';
 import { useToastStore } from '@/stores/toastStore';
 import { registerFcmToken } from '@/components/LandingPage';
 import { saveAuthStatus } from '@/utils/tokenStorage';
+import { setJustSignedUp } from '@/utils/authFlagStorage';
 import { useAuthFlagStore } from '@/stores/authFlagStore';
 
 export default function TermsPage() {
@@ -81,8 +82,13 @@ export default function TermsPage() {
       }
 
       // 3. 인증 상태 확정
-      await saveAuthStatus('AUTHENTICATED');
-      await useAuthFlagStore.getState().setJustSignedUp();
+      try {
+        await saveAuthStatus('AUTHENTICATED');
+        await setJustSignedUp(true);
+        await useAuthFlagStore.getState().setJustSignedUp();
+      } catch (e) {
+        console.error('[handleNext] auth state persistence failed', e);
+      }
 
       // 4. 홈으로
       // router.replace('/signup/verify');
