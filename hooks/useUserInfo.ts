@@ -1,6 +1,8 @@
 import { getUsersInfo } from '@/api/users/getUsersInfo.api';
 import { useCallback, useState } from 'react';
-import { getRefreshToken } from '@/utils/tokenStorage';
+import { getRefreshToken, clearAllTokens } from '@/utils/tokenStorage';
+import { useRouter } from 'expo-router';
+import axios from 'axios';
 
 export interface UserInfo {
   userId: number;
@@ -20,6 +22,7 @@ export const useUserInfo = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const router = useRouter();
 
   const fetchUserInfo = useCallback(async () => {
     if (loading) return;
@@ -35,10 +38,17 @@ export const useUserInfo = () => {
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Unknown error'));
       console.error('유저 정보 불러오기 실패:', err);
+
+      // 유저 정보가 없는 경우 토큰 삭제 및 로그아웃 처리
+      if (axios.isAxiosError(err) && err.response?.status === 404) {
+        console.log('유저 정보 없음 (404) - 로그아웃 처리');
+        await clearAllTokens();
+        router.replace('/');
+      }
     } finally {
       setLoading(false);
     }
-  }, [loading]);
+  }, [loading, router]);
 
   return { userInfo, loading, error, refetch: fetchUserInfo };
 };
