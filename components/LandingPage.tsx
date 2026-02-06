@@ -188,8 +188,13 @@ export default function LandingPage() {
         return;
       }
 
-      const name = credential.fullName?.givenName
-        ? `${credential.fullName.familyName ?? ''}${credential.fullName.givenName}`
+      const givenName = credential.fullName?.givenName ?? '';
+      const familyName = credential.fullName?.familyName ?? '';
+
+      // 한국어 이름 형식: 성(familyName) + 이름(givenName), 공백 없음
+      // 둘 중 하나라도 있으면 조합, 둘 다 없으면 undefined
+      const name = (givenName || familyName)
+        ? `${familyName}${givenName}`.trim() || undefined
         : undefined;
 
       const result = await appleLogin({
