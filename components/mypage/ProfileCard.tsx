@@ -74,7 +74,7 @@ export default function ProfileCard({
         />
       </RowContainer>
       {introduction?.trim() && <IntroContainer>{introduction}</IntroContainer>}
-      <KakaoIdButton kakaoTalkId={kakaoTalkId ? kakaoTalkId : '미등록'} />
+      {kakaoTalkId && <KakaoIdButton kakaoTalkId={kakaoTalkId} />}
 
       {isMyProfile && (
         <CustomButton
