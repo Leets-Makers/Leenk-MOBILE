@@ -73,14 +73,14 @@ export default function LandingPage() {
     const data = result.data;
     const message = result.message || '로그인에 실패했습니다';
 
-    if (!data?.accessToken || !data?.refreshToken) {
-      showToast('토큰 발급 실패', 'error');
-      return;
-    }
-
     // --- 정상 로그인 ---
     if (code === 1002) {
       // 최초 로그인(회원가입 페이지로 이동)
+      if (!data?.accessToken || !data?.refreshToken) {
+        showToast('토큰 발급 실패', 'error');
+        return;
+      }
+
       useProfileStore.getState().reset?.();
 
       await saveAccessToken(data.accessToken);
@@ -100,6 +100,11 @@ export default function LandingPage() {
 
     if (code === 1003) {
       // 일반 로그인(홈으로 이동)
+      if (!data?.accessToken || !data?.refreshToken) {
+        showToast('토큰 발급 실패', 'error');
+        return;
+      }
+
       await saveAccessToken(data.accessToken);
       await saveRefreshToken(data.refreshToken);
       await saveAuthStatus('AUTHENTICATED');
