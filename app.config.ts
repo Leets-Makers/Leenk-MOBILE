@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Leenk',
   slug: 'Leenk',
-  version: '1.1.6',
+  version: '1.1.17',
   orientation: 'portrait',
   icon: './assets/images/ic_logo.png',
   scheme: 'leenk',
@@ -19,6 +19,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       NSPhotoLibraryUsageDescription:
         '피드 작성, 링크(모임) 개설 시 사진을 업로드하거나 프로필 사진을 설정하기 위해 사진 보관함 접근 권한에 동의가 필요합니다. 설정에서 이를 변경할 수 있습니다.',
       CFBundleURLTypes: [{ CFBundleURLSchemes: ['leenk'] }],
+      ITSAppUsesNonExemptEncryption: false,
     },
     googleServicesFile: './GoogleService-Info.plist',
     usesAppleSignIn: true,

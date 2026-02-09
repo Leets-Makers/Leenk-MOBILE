@@ -6,11 +6,15 @@
         "buildType": "apk"
       },
       "ios": {
-        "simulator": true
+        "simulator": true,
+        "image": "latest"
       }
     },
     "production": {
-      "distribution": "store"
+      "distribution": "store",
+      "ios": {
+        "image": "latest"
+      }
     }
   }
 }

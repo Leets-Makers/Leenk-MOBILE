@@ -29,19 +29,19 @@ export default function MyPage() {
       if (!error) {
         refetch();
       }
-    }, [error, refetch]),
+    }, [error, refetch, userInfo]),
   );
 
   // userInfo 값이 변경될 때만 store 업데이트
   useEffect(() => {
-    if (userInfo) {
-      setkakaoTalkId(userInfo.kakaoTalkId);
-      setintroduction(userInfo.introduction);
-      setMbti(userInfo.mbti);
-      setBirthday(userInfo.birthday);
-      setProfileImage(userInfo.thumbnail);
-    }
-  }, [userInfo, setkakaoTalkId, setintroduction, setMbti, setProfileImage]);
+    if (!userInfo) return;
+
+    setkakaoTalkId(userInfo.kakaoTalkId ?? '');
+    setintroduction(userInfo.introduction ?? '');
+    setMbti(userInfo.mbti ?? '');
+    setBirthday(userInfo.birthday ?? '');
+    setProfileImage(userInfo.thumbnail ?? '');
+  }, [userInfo]);
 
   if (showLoading) return <Loading />;
 
@@ -52,14 +52,14 @@ export default function MyPage() {
       </Header>
       {userInfo && (
         <ProfileCard
-          cardinal={userInfo?.cardinal}
-          name={userInfo?.name}
-          imageUrl={userInfo?.thumbnail}
-          kakaoTalkId={userInfo?.kakaoTalkId}
-          introduction={userInfo?.introduction}
-          mbti={userInfo?.mbti}
-          birthday={userInfo?.birthday}
-          isUserBirthdayToday={userInfo?.isUserBirthdayToday}
+          cardinal={userInfo.cardinal ?? undefined}
+          name={userInfo.name}
+          imageUrl={userInfo.thumbnail ?? undefined}
+          kakaoTalkId={userInfo.kakaoTalkId ?? undefined}
+          introduction={userInfo.introduction ?? undefined}
+          mbti={userInfo.mbti ?? undefined}
+          birthday={userInfo.birthday ?? undefined}
+          isUserBirthdayToday={userInfo.isUserBirthdayToday}
           isMyProfile
         />
       )}

@@ -1,16 +1,22 @@
 import api from '@/api/api';
 
-export const appleLogin = async (idToken: string) => {
+interface AppleLoginRequest {
+  idToken: string;
+  authCode: string;
+  name?: string; // 최초 로그인 시에만 전달
+}
+
+export const appleLogin = async ({
+  idToken,
+  authCode,
+  name,
+}: AppleLoginRequest) => {
   try {
-    const response = await api.post(
-      '/apple/login',
-      {},
-      {
-        headers: {
-          'Apple-Identity-Token': idToken,
-        },
-      },
-    );
+    const response = await api.post('/apple/login', {
+      idToken,
+      authCode,
+      name,
+    });
 
     const { code, message, data } = response.data;
     return { code, message, data };
