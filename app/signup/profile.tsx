@@ -31,7 +31,7 @@ import { useToastStore } from '@/stores/toastStore';
 import { registerFcmToken } from '@/components/LandingPage';
 import { saveAuthStatus } from '@/utils/tokenStorage';
 import CalendarButton from '@/components/leenk/CalendarButton';
-import { setJustSignedUp } from '@/utils/authFlagStorage';
+// import { setJustSignedUp } from '@/utils/authFlagStorage';
 import { useAuthFlagStore } from '@/stores/authFlagStore';
 import { Loading } from '@/components';
 import dayjs from 'dayjs';
@@ -204,7 +204,6 @@ export default function ProfilePage() {
       }
 
       await saveAuthStatus('AUTHENTICATED');
-      await setJustSignedUp(true);
       await useAuthFlagStore.getState().setJustSignedUp();
 
       router.replace('/(page)/leenk');

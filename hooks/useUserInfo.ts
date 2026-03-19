@@ -28,12 +28,15 @@ export const useUserInfo = () => {
 
   const fetchUserInfo = useCallback(async () => {
     if (loadingRef.current) return;
+    loadingRef.current = true;
 
     const refreshToken = await getRefreshToken();
-    if (!refreshToken) return;
+    if (!refreshToken) {
+      loadingRef.current = false;
+      return;
+    }
 
     try {
-      loadingRef.current = true;
       setLoading(true);
       setError(null);
       const data = await getUsersInfo();
