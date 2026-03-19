@@ -38,24 +38,24 @@ import dayjs from 'dayjs';
 
 export default function ProfilePage() {
   const {
-    step,
-    setStep,
+    // step,
+    // setStep,
     kakaoTalkId,
     setkakaoTalkId,
-    introduction,
-    setintroduction,
-    birthday,
-    setBirthday,
-    mbti,
-    setMbti,
+    // introduction,
+    // setintroduction,
+    // birthday,
+    // setBirthday,
+    // mbti,
+    // setMbti,
     // profileImage,
   } = useProfileStore();
 
   const [kakaoModalVisible, setKakaoModalVisible] = useState(false);
-  const [skipModalVisible, setSkipModalVisible] = useState(false);
+  // const [skipModalVisible, setSkipModalVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const randomMbti = useRandomMbti(2000);
+  // const randomMbti = useRandomMbti(2000);
   const insets = useSafeAreaInsets();
   const { showToast } = useToastStore();
   const [isKakaoConfirmed, setIsKakaoConfirmed] = useState(false);
@@ -102,9 +102,9 @@ export default function ProfilePage() {
   const saveProfile = async () => {
     const payload: UpdateProfilePayload = {};
     if (kakaoTalkId) payload.kakaoTalkId = kakaoTalkId;
-    if (introduction) payload.introduction = introduction;
-    if (mbti) payload.mbti = mbti;
-    if (birthday) payload.birthday = birthday;
+    // if (introduction) payload.introduction = introduction;
+    // if (mbti) payload.mbti = mbti;
+    // if (birthday) payload.birthday = birthday;
 
     // if (profileImage) {
 
@@ -144,59 +144,54 @@ export default function ProfilePage() {
   // ----- 다음 -----
   const handleNext = async () => {
     if (isSubmitting) return;
+    setKakaoModalVisible(true);
 
-    if (step === 'id') {
-      setKakaoModalVisible(true);
-      // } else if (step === 'photo') {
-      //   setStep('introduction');
-    } else if (step === 'introduction') {
-      setStep('birthday');
-    } else if (step === 'birthday') {
-      setStep('mbti');
-    } else {
-      try {
-        setIsSubmitting(true);
-
-        await saveProfile();
-
-        try {
-          await withTimeout(registerFcmToken(), 3000);
-        } catch (e) {
-          console.warn('[handleNext] registerFcmToken failed or timeout', e);
-        }
-
-        await saveAuthStatus('AUTHENTICATED');
-        await useAuthFlagStore.getState().setJustSignedUp();
-
-        router.replace('/(page)/leenk');
-
-        // iOS replace 실패 대비
-        setTimeout(() => {
-          if (mountedRef.current) {
-            setIsSubmitting(false);
-          }
-        }, 500);
-      } catch (e) {
-        console.error('[handleNext] 실패:', e);
-      } finally {
-        if (mountedRef.current) setIsSubmitting(false);
-      }
-    }
+    // if (step === 'id') {
+    //   setKakaoModalVisible(true);
+    //   // } else if (step === 'photo') {
+    //   //   setStep('introduction');
+    // } else if (step === 'introduction') {
+    //   setStep('birthday');
+    // } else if (step === 'birthday') {
+    //   setStep('mbti');
+    // } else {
+    //   try {
+    //     setIsSubmitting(true);
+    //
+    //     await saveProfile();
+    //
+    //     try {
+    //       await withTimeout(registerFcmToken(), 3000);
+    //     } catch (e) {
+    //       console.warn('[handleNext] registerFcmToken failed or timeout', e);
+    //     }
+    //
+    //     await saveAuthStatus('AUTHENTICATED');
+    //     await useAuthFlagStore.getState().setJustSignedUp();
+    //
+    //     router.replace('/(page)/leenk');
+    //
+    //     // iOS replace 실패 대비
+    //     setTimeout(() => {
+    //       if (mountedRef.current) {
+    //         setIsSubmitting(false);
+    //       }
+    //     }, 500);
+    //   } catch (e) {
+    //     console.error('[handleNext] 실패:', e);
+    //   } finally {
+    //     if (mountedRef.current) setIsSubmitting(false);
+    //   }
+    // }
   };
 
-  const handlePrevStep = () => {
-    if (step === 'introduction') setStep('id');
-    // if (step === 'photo') setStep('id');
-    // else if (step === 'introduction') setStep('photo');
-    else if (step === 'birthday') setStep('introduction');
-    else if (step === 'mbti') setStep('birthday');
-    else router.back();
-  };
-
-  const handleSkip = async () => {
+  // 카카오톡 ID 확인 후 회원가입 완료
+  const handleConfirmAndComplete = async () => {
     if (isSubmitting) return;
 
-    setSkipModalVisible(false);
+    setIsKakaoConfirmed(true);
+    setKakaoModalVisible(false);
+
     try {
       setIsSubmitting(true);
 
@@ -205,7 +200,7 @@ export default function ProfilePage() {
       try {
         await withTimeout(registerFcmToken(), 3000);
       } catch (e) {
-        console.warn('[handleSkip] registerFcmToken failed or timeout', e);
+        console.warn('[handleNext] registerFcmToken failed or timeout', e);
       }
 
       await saveAuthStatus('AUTHENTICATED');
@@ -213,12 +208,55 @@ export default function ProfilePage() {
       await useAuthFlagStore.getState().setJustSignedUp();
 
       router.replace('/(page)/leenk');
-    } catch (error) {
-      console.error('[handleSkip] 실패:', error);
+
+      setTimeout(() => {
+        if (mountedRef.current) {
+          setIsSubmitting(false);
+        }
+      }, 500);
+    } catch (e) {
+      console.error('[handleNext] 실패:', e);
     } finally {
       if (mountedRef.current) setIsSubmitting(false);
     }
   };
+
+  const handlePrevStep = () => {
+    // if (step === 'introduction') setStep('id');
+    // // if (step === 'photo') setStep('id');
+    // // else if (step === 'introduction') setStep('photo');
+    // else if (step === 'birthday') setStep('introduction');
+    // else if (step === 'mbti') setStep('birthday');
+    // else router.back();
+    router.back();
+  };
+
+  // const handleSkip = async () => {
+  //   if (isSubmitting) return;
+  //
+  //   setSkipModalVisible(false);
+  //   try {
+  //     setIsSubmitting(true);
+  //
+  //     await saveProfile();
+  //
+  //     try {
+  //       await withTimeout(registerFcmToken(), 3000);
+  //     } catch (e) {
+  //       console.warn('[handleSkip] registerFcmToken failed or timeout', e);
+  //     }
+  //
+  //     await saveAuthStatus('AUTHENTICATED');
+  //     await setJustSignedUp(true);
+  //     await useAuthFlagStore.getState().setJustSignedUp();
+  //
+  //     router.replace('/(page)/leenk');
+  //   } catch (error) {
+  //     console.error('[handleSkip] 실패:', error);
+  //   } finally {
+  //     if (mountedRef.current) setIsSubmitting(false);
+  //   }
+  // };
 
   // const handleImagePick = () => {
   //   router.push('/signup/select-image');
@@ -227,7 +265,7 @@ export default function ProfilePage() {
   // ----- 버튼 묶음 -----
   const NormalButtons = () => (
     <View style={{ width: '100%' }}>
-      {step !== 'id' && (
+      {/* {step !== 'id' && (
         <>
           <CustomButton
             variant="text"
@@ -241,7 +279,7 @@ export default function ProfilePage() {
             지금은 넘어갈래
           </CustomButton>
         </>
-      )}
+      )} */}
 
       <CustomButton
         variant="primary"
@@ -251,16 +289,21 @@ export default function ProfilePage() {
         size="lg"
         style={{ marginBottom: 10 * height }}
         disabled={
-          (step === 'id' &&
-            (kakaoTalkId.trim() === '' ||
-              kakaoTalkId.length < 4 ||
-              kakaoTalkId.length > 20 ||
-              !isKakaoConfirmed)) ||
-          (step === 'introduction' && introduction.trim() === '') ||
-          (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
+          kakaoTalkId.trim() === '' ||
+          kakaoTalkId.length < 4 ||
+          kakaoTalkId.length > 20 ||
+          !isKakaoConfirmed
+          // (step === 'id' &&
+          //   (kakaoTalkId.trim() === '' ||
+          //     kakaoTalkId.length < 4 ||
+          //     kakaoTalkId.length > 20 ||
+          //     !isKakaoConfirmed)) ||
+          // (step === 'introduction' && introduction.trim() === '') ||
+          // (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
         }
       >
-        {step === 'mbti' ? '시작하자' : '다음으로'}
+        {/* {step === 'mbti' ? '시작하자' : '다음으로'} */}
+        다음으로
       </CustomButton>
     </View>
   );
@@ -276,15 +319,19 @@ export default function ProfilePage() {
         size="lg"
         style={{ marginBottom: 0 }}
         disabled={
-          (step === 'id' &&
-            (kakaoTalkId.trim() === '' ||
-              kakaoTalkId.length < 4 ||
-              kakaoTalkId.length > 20)) ||
-          (step === 'introduction' && introduction.trim() === '') ||
-          (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
+          kakaoTalkId.trim() === '' ||
+          kakaoTalkId.length < 4 ||
+          kakaoTalkId.length > 20
+          // (step === 'id' &&
+          //   (kakaoTalkId.trim() === '' ||
+          //     kakaoTalkId.length < 4 ||
+          //     kakaoTalkId.length > 20)) ||
+          // (step === 'introduction' && introduction.trim() === '') ||
+          // (step === 'mbti' && (mbti.trim() === '' || mbti.length !== 4))
         }
       >
-        {step === 'mbti' ? '시작하자' : '다음으로'}
+        {/* {step === 'mbti' ? '시작하자' : '다음으로'} */}
+        다음으로
       </CustomButton>
     </View>
   );
@@ -297,7 +344,7 @@ export default function ProfilePage() {
 
   return (
     <Container>
-      <PopupModal
+      {/* <PopupModal
         isOpen={skipModalVisible}
         onLeftBtn={() => setSkipModalVisible(false)}
         onRightBtn={handleSkip}
@@ -306,7 +353,7 @@ export default function ProfilePage() {
         leftBtnText="취소"
         rightBtnText="나중에 할래"
         isCancel={false}
-      />
+      /> */}
       <Scroll
         automaticallyAdjustKeyboardInsets={false}
         keyboardDismissMode="interactive"
@@ -317,7 +364,7 @@ export default function ProfilePage() {
         <Header signUpBackPress={handlePrevStep} />
         <ProfileTitleText>프로필을 만들어보자</ProfileTitleText>
 
-        {step === 'id' && (
+        {/* {step === 'id' && ( */}
           <>
             <Input
               title="카카오톡 ID를 입력해줘"
@@ -341,12 +388,7 @@ export default function ProfilePage() {
                 setIsKakaoConfirmed(false);
                 setKakaoModalVisible(false);
               }}
-              onRightBtn={() => {
-                setIsKakaoConfirmed(true);
-                setKakaoModalVisible(false);
-                // setTimeout(() => setStep('photo'), 100);
-                setTimeout(() => setStep('introduction'), 100);
-              }}
+              onRightBtn={handleConfirmAndComplete}
               mainText={kakaoTalkId}
               subText="카톡 아이디가 맞는지 확인해 줘."
               leftBtnText="아니야"
@@ -354,9 +396,9 @@ export default function ProfilePage() {
               isCancel={false}
             />
           </>
-        )}
+        {/* )} */}
 
-        {step === 'introduction' && (
+        {/* {step === 'introduction' && (
           <Textarea
             value={introduction}
             onChangeText={setintroduction}
@@ -366,9 +408,9 @@ export default function ProfilePage() {
             minHeight={1}
             accessoryID={isIOS ? ACCESSORY_ID : undefined}
           />
-        )}
+        )} */}
 
-        {step === 'birthday' && (
+        {/* {step === 'birthday' && (
           <>
             <StyledSubText>생일을 알려줘</StyledSubText>
             <CalendarButton
@@ -384,9 +426,9 @@ export default function ProfilePage() {
               placeholder="생일 축하를 받을 수 있어"
             />
           </>
-        )}
+        )} */}
 
-        {step === 'mbti' && (
+        {/* {step === 'mbti' && (
           <Input
             title="MBTI를 입력해줘"
             value={mbti}
@@ -398,7 +440,7 @@ export default function ProfilePage() {
             maxLength={4}
             accessoryID={isIOS ? ACCESSORY_ID : undefined}
           />
-        )}
+        )} */}
 
         {/* {step === 'photo' && (
           <>
