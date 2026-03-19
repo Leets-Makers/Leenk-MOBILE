@@ -290,8 +290,7 @@ export default function ProfilePage() {
         disabled={
           kakaoTalkId.trim() === '' ||
           kakaoTalkId.length < 4 ||
-          kakaoTalkId.length > 20 ||
-          !isKakaoConfirmed
+          kakaoTalkId.length > 20
           // (step === 'id' &&
           //   (kakaoTalkId.trim() === '' ||
           //     kakaoTalkId.length < 4 ||
