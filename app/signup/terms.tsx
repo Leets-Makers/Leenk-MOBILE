@@ -20,10 +20,6 @@ import { infoTerm, serviceTerm } from '@/constants/termsText';
 import LinearGradient from 'react-native-linear-gradient';
 import { updateUserAgreement } from '@/api/users/patchUserEachInfo.api';
 import { useToastStore } from '@/stores/toastStore';
-import { registerFcmToken } from '@/components/LandingPage';
-import { saveAuthStatus } from '@/utils/tokenStorage';
-import { setJustSignedUp } from '@/utils/authFlagStorage';
-import { useAuthFlagStore } from '@/stores/authFlagStore';
 
 export default function TermsPage() {
   const [allCheck, setAllCheck] = useState(false);
@@ -56,43 +52,14 @@ export default function TermsPage() {
     setAllCheck(serviceCheck && next);
   };
 
-  // 타임 아웃 처리
-  const withTimeout = <T,>(promise: Promise<T>, ms = 3000) => {
-    return Promise.race([
-      promise,
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('FCM_TIMEOUT')), ms),
-      ),
-    ]);
-  };
-
   const handleNext = async () => {
     try {
-      // 1. 약관 동의 저장
       await updateUserAgreement({
         termsService: serviceCheck,
         privacyPolicy: infoCheck,
       });
 
-      // 2. FCM 토큰 등록
-      try {
-        await withTimeout(registerFcmToken(), 3000);
-      } catch (e) {
-        console.warn('[handleNext] registerFcmToken failed or timeout', e);
-      }
-
-      // 3. 인증 상태 확정
-      try {
-        await saveAuthStatus('AUTHENTICATED');
-        await setJustSignedUp(true);
-        await useAuthFlagStore.getState().setJustSignedUp();
-      } catch (e) {
-        console.error('[handleNext] auth state persistence failed', e);
-      }
-
-      // 4. 홈으로
-      // router.replace('/signup/verify');
-      router.replace('/(page)/leenk');
+      router.replace('/signup/profile');
     } catch (error) {
       showToast('약관 동의에 실패했어.', 'error');
     }

@@ -1,5 +1,5 @@
 import { getUsersInfo } from '@/api/users/getUsersInfo.api';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { getRefreshToken, clearAllTokens } from '@/utils/tokenStorage';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
@@ -24,11 +24,17 @@ export const useUserInfo = () => {
   const [error, setError] = useState<Error | null>(null);
   const router = useRouter();
 
+  const loadingRef = useRef(false);
+
   const fetchUserInfo = useCallback(async () => {
-    if (loading) return;
+    if (loadingRef.current) return;
+    loadingRef.current = true;
 
     const refreshToken = await getRefreshToken();
-    if (!refreshToken) return;
+    if (!refreshToken) {
+      loadingRef.current = false;
+      return;
+    }
 
     try {
       setLoading(true);
@@ -46,9 +52,10 @@ export const useUserInfo = () => {
         router.replace('/');
       }
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
-  }, [loading, router]);
+  }, [router]);
 
   return { userInfo, loading, error, refetch: fetchUserInfo };
 };
