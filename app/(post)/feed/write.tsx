@@ -24,6 +24,7 @@ import DescriptionContent from '@/components/feed/write/DescriptionContent';
 import useIOSKeyboardSpacer from '@/hooks/useIOSKeyboardSpacer';
 import ButtonContent from '@/components/feed/write/ButtonContent';
 import { useDelayedLoading } from '@/hooks/useDelayedLoading';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function FeedWritePage() {
   const { mode, feedId } = useLocalSearchParams<{
@@ -34,6 +35,7 @@ export default function FeedWritePage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const { showToast } = useToastStore();
   const { userInfo } = useUserStore();
@@ -239,7 +241,8 @@ export default function FeedWritePage() {
             isBackWhite
             style={{
               position: 'absolute',
-              top: 35,
+              top: insets.top + 16 * height,
+              marginTop: 0,
               width: '100%',
               zIndex: 9999,
               paddingHorizontal: 16 * width,

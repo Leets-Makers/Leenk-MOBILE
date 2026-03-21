@@ -153,7 +153,9 @@ export default function ParticipantsList() {
   );
 }
 
-const Container = styled(SafeAreaView)`
+const Container = styled(SafeAreaView).attrs({
+  edges: ['bottom'],
+})`
   flex: 1;
   padding-horizontal: ${CONTAINER_PADDING};
   background-color: ${colors.white};
