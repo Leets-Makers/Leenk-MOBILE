@@ -128,7 +128,9 @@ export default function LinkMembersPage() {
   );
 }
 
-const Container = styled(SafeAreaView)`
+const Container = styled(SafeAreaView).attrs({
+  edges: ['bottom'],
+})`
   flex: 1;
   padding: 0 ${FEED_PADDING * width}px;
   background-color: ${colors.gray[50]};
