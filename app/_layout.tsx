@@ -24,6 +24,11 @@ import { LogBox } from 'react-native';
 import { getAuthStatus, clearAllTokens } from '@/utils/tokenStorage';
 import * as Clarity from '@microsoft/react-native-clarity';
 import { saveAuthStatus } from '@/utils/tokenStorage';
+import {
+  handleNotificationOpen,
+  markAuthResolved,
+  markNavigatorMounted,
+} from '@/utils/notificationRouter';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -33,16 +38,6 @@ export {
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: 'index',
-};
-
-type NotiData = {
-  type?: 'leenk' | 'feed';
-  id?: string | number;
-};
-
-const ROUTES = {
-  leenk: '/leenk/[id]' as const,
-  feed: '/feed/[id]' as const,
 };
 
 LogBox.ignoreLogs([
@@ -105,6 +100,8 @@ export default function RootLayout() {
         router.replace('/');
       } finally {
         setAppReady(true);
+        // 자동 로그인의 replace가 끝난 뒤에 대기 중인 딥링크를 흘려보낸다.
+        markAuthResolved();
         await SplashScreen.hideAsync();
       }
     };
@@ -158,52 +155,24 @@ function RootLayoutNav() {
 
   // =========================
   // 🔔 푸시 알림 → 딥링크 이동 처리
+  // 목적지 해석과 중복 처리는 notificationRouter가 담당한다.
   // =========================
 
-  // 동일 알림으로 중복 네비게이션을 방지하기 위한 Set
-  const handledNotiIdsRef = useRef<Set<string>>(new Set());
-
-  // 알림 data를 해석해서 라우팅하는 헬퍼
-  const navigateFromData = (raw?: Record<string, unknown>) => {
-    const data = (raw ?? {}) as NotiData;
-
-    const type = (data.type ?? '').toString().toLowerCase();
-    const id = data.id != null ? String(data.id).trim() : '';
-    if (!id) return;
-
-    if (type === 'leenk') {
-      // 타입드 라우트: pathname + params 형태
-      router.push({
-        pathname: ROUTES.leenk,
-        params: { id },
-      });
-      return;
-    }
-
-    if (type === 'feed') {
-      router.push({
-        pathname: ROUTES.feed,
-        params: { id },
-      });
-      return;
-    }
-  };
+  useEffect(() => {
+    // Stack이 마운트된 뒤에야 이동이 유실되지 않는다.
+    markNavigatorMounted();
+  }, []);
 
   useEffect(() => {
     // 앱이 실행 중(포어그라운드/백그라운드)일 때 알림을 "탭"한 경우 수신
     const sub = Notifications.addNotificationResponseReceivedListener(
       (resp) => {
-        const id = resp.notification.request.identifier;
-
-        // 이미 처리한 알림이면 무시 (중복 네비 방지)
-        if (handledNotiIdsRef.current.has(id)) return;
-        handledNotiIdsRef.current.add(id);
-
-        // 알림 data로부터 목적지 이동
-        const data = resp.notification.request.content.data as
-          | Record<string, unknown>
-          | undefined;
-        navigateFromData(data);
+        handleNotificationOpen(
+          resp.notification.request.identifier,
+          resp.notification.request.content.data as
+            | Record<string, unknown>
+            | undefined,
+        );
       },
     );
 
@@ -216,14 +185,12 @@ function RootLayoutNav() {
       const last = await Notifications.getLastNotificationResponseAsync();
       if (!last) return;
 
-      const id = last.notification.request.identifier;
-      if (handledNotiIdsRef.current.has(id)) return;
-      handledNotiIdsRef.current.add(id);
-
-      const data = last.notification.request.content.data as
-        | Record<string, unknown>
-        | undefined;
-      navigateFromData(data);
+      handleNotificationOpen(
+        last.notification.request.identifier,
+        last.notification.request.content.data as
+          | Record<string, unknown>
+          | undefined,
+      );
     })();
   }, []);
 
